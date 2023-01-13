@@ -114,4 +114,4 @@ search:
   format: html
 
 pandoc:
-  lua_filters: filter.lua
+  lua_filters: lua/image-asset.lua

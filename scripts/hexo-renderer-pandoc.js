@@ -17,6 +17,9 @@ hexo.config.pandoc = Object.assign({
     extra: [],
 }, hexo.config.pandoc);
 
+// must have the `?.lua` specified!
+const pandoc_env = {...process.env,LUA_PATH:path.join(process.cwd(),'lua','?.lua')};
+
 const argument = (name, value = undefined) => {
     if (value) {
         return `--${name}=${value}`;
@@ -98,10 +101,13 @@ const renderer = (data, options) => {
 
     if (current_post) {
         // manually add root path
-        const path = `/${current_post.path}`;
-        const title = current_post.title;
-        extra.push(argument('metadata', `path:${path}`));
-        extra.push(argument('metadata', `title:${title}`));
+        const post_path = `/${current_post.path}`;
+        // the filename (xxx.md) may not correspond to title field in Markdown Front Matter
+        const filename = path.basename(data.path,'.md');
+        log.debug('Filename: %s',yellow(filename));
+        // const title = current_post.title;
+        extra.push(argument('metadata', `path:${post_path}`));
+        extra.push(argument('metadata', `title:${filename}`));
     }
 
     // if we are rendering a post,
@@ -139,9 +145,9 @@ const renderer = (data, options) => {
 
     log.debug('Pandoc command: %s',yellow(`${pandoc_bin} ${args.join(' ')}`));
 
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {        
         const task = spawn(pandoc_bin, args, {
-            env: process.env,
+            env: pandoc_env,
             cwd: process.cwd()
         });
         const encoding = 'utf-8';
