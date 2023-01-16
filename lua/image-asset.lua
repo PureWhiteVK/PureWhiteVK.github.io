@@ -10,7 +10,7 @@ local new_path
 local path_prefix
 
 local function Meta(meta)
-    logging.temp('Meta',meta)
+    -- logging.temp('Meta',meta)
     local meta_path = meta['path']
     local meta_title = meta['title']
     if (meta_path == nil or meta_title == nil) then

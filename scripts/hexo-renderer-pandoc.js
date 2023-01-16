@@ -18,7 +18,7 @@ hexo.config.pandoc = Object.assign({
 }, hexo.config.pandoc);
 
 // must have the `?.lua` specified!
-const pandoc_env = {...process.env,LUA_PATH:path.join(process.cwd(),'lua','?.lua')};
+const pandoc_env = { ...process.env, LUA_PATH: path.join(process.cwd(), 'lua', '?.lua') };
 
 const argument = (name, value = undefined) => {
     if (value) {
@@ -41,7 +41,7 @@ const get_cache = (stream, encoding) => {
 }
 
 const renderer = (data, options) => {
-    const log = hexo.log;
+    const { log } = hexo;
 
     let config = hexo.config.pandoc;
 
@@ -103,8 +103,8 @@ const renderer = (data, options) => {
         // manually add root path
         const post_path = `/${current_post.path}`;
         // the filename (xxx.md) may not correspond to title field in Markdown Front Matter
-        const filename = path.basename(data.path,'.md');
-        log.debug('Filename: %s',yellow(filename));
+        const filename = path.basename(data.path, '.md');
+        log.debug('Filename: %s', yellow(filename));
         // const title = current_post.title;
         extra.push(argument('metadata', `path:${post_path}`));
         extra.push(argument('metadata', `title:${filename}`));
@@ -143,9 +143,9 @@ const renderer = (data, options) => {
         ...filters,
     ];
 
-    log.debug('Pandoc command: %s',yellow(`${pandoc_bin} ${args.join(' ')}`));
+    log.debug('Pandoc command: %s', yellow(`${pandoc_bin} ${args.join(' ')}`));
 
-    return new Promise((resolve, reject) => {        
+    return new Promise((resolve, reject) => {
         const task = spawn(pandoc_bin, args, {
             env: pandoc_env,
             cwd: process.cwd()
@@ -174,7 +174,7 @@ const renderer = (data, options) => {
         task.on('close', code => {
             let stderr_msg = get_cache(stderr_cache, encoding);
             if (code) {
-                const e = new Error(`pandoc process exited with code ${code}.${stderr_msg.length > 0 ? stderr_msg : ''}`);
+                const e = new Error(`pandoc process exited with code ${code}.${stderr_msg.length > 0 ? `\n${stderr_msg}` : ''}`);
                 e.code = code;
                 return reject(e);
             }
