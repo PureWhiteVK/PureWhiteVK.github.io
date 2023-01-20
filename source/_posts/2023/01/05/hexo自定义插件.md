@@ -2,17 +2,17 @@
 title: hexo自定义插件
 mathjax: false
 tags:
-  - hexo
-  - pandoc
-  - node.js
-  - lua
+- hexo
+- pandoc
+- node.js
+- lua
 category: 学习笔记
 abbrlink: 9a20
 date: 2023-01-05 12:20:55
 ---
 
 
-# Hello, Plugin
+# Hexo Plugin
 
 参考官方[文档](https://hexo.io/zh-cn/docs/plugins)，我们有两种创建插件方式
 
@@ -74,7 +74,7 @@ INFO  Deleted public folder.
 
 
 
-## Plugin 写法
+## plugin 写法
 
 参考官方[文档](https://hexo.io/zh-cn/api)的扩展部分，其给出了所有插件的种类
 
@@ -388,7 +388,7 @@ html 图片
 
 
 
-## hexo plugin
+## plugin
 
 在调用 filter 之前，我们首先将 pandoc 集成到 hexo 中。幸运的是已经有大佬写了相关调用插件了（[hexo-renderer-pandoc](https://github.com/wzpan/hexo-renderer-pandoc)），其代码也很简单，不到200行，可以直接通过脚本集成到 hexo 中。
 
@@ -558,9 +558,9 @@ pandoc --lua-filter=smallcaps.lua -o test.html test.md
 <p><span class="smallcaps">hello world!</span></p>
 ```
 
-可以看到，在 html 中并不能原生支持 smallcaps 样式，但是 pandoc 为其制定了一个 css 类名，通过这个我们可以手动实现 smallcaps 效果。
+可以看到，在 html 中并不能原生支持 smallcaps 样式，但是 pandoc 为其指定了一个 css 类名，通过类名这个我们可以手动实现 smallcaps 效果。
 
-### filter 格式
+### filter 写法
 
 上面的代码第一眼看上有点奇怪，怎么以来就是一个 `return` 语句，返回的 `{}` 怎么直接套了一个 `{xxx = xxx}`
 
@@ -576,7 +576,7 @@ module.export.x = [
 ];
 ```
 
-然后在 pandoc 内部调用时，直接使用
+然后在 pandoc 内部调用时，直接使用下面语句
 
 ```lua
 local f = require("smallcaps")
@@ -634,7 +634,13 @@ process para
 process image
 ```
 
-从输出结果上我们可以看到，首先处理的是 meta，之后是两个 para，最后是 image，而 image 实际上是包裹在 para 中的。
+从输出结果上我们可以看到，首先处理的是 meta，之后是两个 para，最后是 image，其对应的文档结构如下
+
+```html
+<meta>...</meta>
+<p>hello</p>
+<p><img src="url-to-image" alt="test-image"/></p>
+```
 
 注：如果函数中没有返回任何值（或者返回 nil），表示该函数不会对抽象语法树进行修改
 
@@ -663,21 +669,21 @@ return {
 }
 ```
 
-同时在命令行中通过 `--metadata` 来指定对应的 url_prefix 信息
+同时在命令行中通过 `--metadata=key:value` 来指定元数据信息
 
-完整命令如下
+转换命令如下
 
 ```bash
 pandoc --metadata=url_prefix:test --lua-filter test.lua -o test.html test.md
 ```
 
-输出如下
+输出
 
 ```bash
 image.src:      test/test.jpg
 ```
 
-输出的 html如下
+转换后的 html 代码
 
 ```html
 <p>hello</p>
@@ -687,9 +693,9 @@ image.src:      test/test.jpg
 </figure>
 ```
 
-可以看到 `src` 部分已经替换成了我们需要的链接，并且其还将图片标记也添加了 figcaption 进行包裹
+可以看到 `src` 部分已经替换成了我们需要的链接，并且其还对图片添加了 figcaption 
 
-之前我们提到，在 markdown 文档中可能存在 html 代码，对于这一部分我们也想要进行处理，默认 pandoc 会将其解析为 RawBlock 不做处理，但也可以使用 `pandoc.read` 进行解析，生成抽象语法树，这样我们也可以对 html 形式的图片进行处理了
+之前我们提到，在 markdown 文档中可能存在 html 代码，对于这一部分我们也想要进行处理，默认 pandoc 会将其解析为 RawBlock，即不做任何处理，但也可以使用 `pandoc.read` 进行解析，生成抽象语法树，这样我们就可以对 html 形式的图片进行解析了。
 
 完整代码如下
 
