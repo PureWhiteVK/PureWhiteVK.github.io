@@ -31,6 +31,9 @@ local function Image(image)
     if (prefix == path_prefix) then
         image.src = new_path .. postfix
     end
+    -- delete image caption info and title (just a hack)
+    image.caption = {}
+    image.title = ''
     return image
 end
 
