@@ -6,7 +6,7 @@ date: 2023-01-03 14:09:39
 tags:
 - mathjax
 - LaTex
-category: 学习笔记
+category: Hexo使用记录
 ---
 
 

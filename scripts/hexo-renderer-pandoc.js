@@ -2,9 +2,8 @@
 
 'use strict';
 
-const spawn = require('cross-spawn');
+const { spawn } = require('node:child_process');
 const path = require('node:path')
-const { CacheStream } = require('hexo-util');
 const assert = require('node:assert');
 const { yellow } = require('picocolors');
 
@@ -148,43 +147,37 @@ const renderer = (data, options) => {
     return new Promise((resolve, reject) => {
         const task = spawn(pandoc_bin, args, {
             env: pandoc_env,
-            cwd: process.cwd()
+            cwd: process.cwd(),
+            stdio: 'pipe'
         });
         const encoding = 'utf-8';
 
-        const stdout_cache = new CacheStream();
-        const stderr_cache = new CacheStream();
+        const stdout_chunks = [];
+        const stderr_chunks = [];
 
-        if (task.stdout) {
-            task.stdout.setEncoding(encoding);
-            task.stdout.pipe(stdout_cache);
-        }
+        task.stdout.on('data', chunk => stdout_chunks.push(Buffer.from(chunk)));
+        task.stdout.on('error', err => log.error(err));
 
-        if (task.stderr) {
-            task.stderr.setEncoding(encoding);
-            task.stderr.pipe(stderr_cache);
-        }
+        task.stderr.on('data', chunk => stderr_chunks.push(Buffer.from(chunk)));
+        task.stderr.on('error', err => log.error(err));
 
-        if (task.stdin) {
-            task.stdin.setEncoding(encoding);
-            task.stdin.write(data.text);
-            task.stdin.end();
-        }
+        task.stdin.end(data.text, encoding);
 
         task.on('close', code => {
-            let stderr_msg = get_cache(stderr_cache, encoding);
+            let stderr_msg = Buffer.concat(stderr_chunks).toString(encoding);
             if (code) {
                 const e = new Error(`pandoc process exited with code ${code}.${stderr_msg.length > 0 ? `\n${stderr_msg}` : ''}`);
                 e.code = code;
                 return reject(e);
             }
             if (stderr_msg.length > 0) {
-                if (stderr_msg.endsWith('\n')) {
-                    stderr_msg = stderr_msg.slice(0, -1)
-                }
-                log.debug(`Pandoc:\n%s`, yellow(stderr_msg));
+                log.debug(`Pandoc:\n%s`, yellow(stderr_msg.trim()));
             }
-            resolve(get_cache(stdout_cache, encoding));
+            const output = Buffer.concat(stdout_chunks).toString(encoding);
+            const length = output.length;
+            log.debug(`Pandoc Output Size: ${length} bytes`);
+            log.debug(`Pandoc Output Preview:\n%s`, yellow(length > 100 ? output.substring(length - 100, length).trim() : output.trim()));
+            resolve(output);
         });
     });
 };

@@ -6,7 +6,7 @@ tags:
 - pandoc
 - node.js
 - lua
-category: 学习笔记
+category: Hexo使用记录
 abbrlink: 9a20
 date: 2023-01-05 12:20:55
 ---
@@ -396,78 +396,53 @@ html 图片
 
 这三类都可以实现外部命令的执行，由于我们需要对 pandoc 提供 markdown 文本输入并获取 html 输出，数据量较大，`spawn` 是最符合我们需求的，为了满足跨平台要求，我们可以使用 `cross-spawn`来执行命令。
 
-`spawn`  是一个异步函数，我们需要提供一系列回调函数来获取其执行状态，在 [hexo-utils](https://github.com/hexojs/hexo-util) 中也提供了 `CacheStream` 来辅助我们获取子命令的输出结果，具体用法如下：
+`spawn`  是一个异步函数，其输入和输出是通过 `stdin`、`stdout` 以及 `stderr` 三个`Stream` 实现的，我们需要注册相应回调才能拿到结果。
 
 ```js
 'use strict'
-
 const { spawn } = require('node:child_process');
-const { CacheStream } = require('hexo-util')
-
-const get_cache = (stream, encoding) => {
-  const buf = stream.getCache();
-  stream.destroy();
-  if (!encoding) return buf;
-  return buf.toString(encoding);
-}
-
 const main = async () => {
   return new Promise((resolve, reject) => {
-    const task = spawn("pandoc", ["--version"], {
+    const task = spawn('pandoc', ['--version'], {
       env: process.env,
       cwd: process.cwd()
     });
-
     const encoding = 'utf-8';
-    const stdout_cache = new CacheStream();
-    const stderr_cache = new CacheStream();
-
-    if (task.stdout) {
-      task.stdout.setEncoding(encoding);
-      task.stdout.pipe(stdout_cache);
-    }
-    if (task.stderr) {
-      task.stderr.setEncoding(encoding);
-      task.stderr.pipe(stderr_cache);
-    }
-    if (task.stdin) {
-      task.stdin.setEncoding(encoding);
-      // task.stdin.write(data.text);
-      task.stdin.end();
-    }
-
+    const stdout_chunks = [];
+    const stderr_chunks = [];
+    task.stdout.on('data', chunk => stdout_chunks.push(Buffer.from(chunk)));
+    task.stdout.on('error', err => log.error(err));
+    task.stderr.on('data', chunk => stderr_chunks.push(Buffer.from(chunk)));
+    task.stderr.on('error', err => log.error(err));
+    // task.stdin.end(data.text, encoding);
     task.on('close', code => {
-      let stderr_msg = get_cache(stderr_cache, encoding);
+      let stderr_msg = Buffer.concat(stderr_chunks).toString(encoding);
       if (code) {
         const e = new Error(`pandoc process exited with code ${code}.${stderr_msg.length > 0 ? `\n${stderr_msg}` : ''}`);
         e.code = code;
         return reject(e);
       }
       if (stderr_msg.length > 0) {
-        if (stderr_msg.endsWith('\n')) {
-          stderr_msg = stderr_msg.slice(0, -1)
-        }
-        log.debug(`Pandoc:\n%s`, stderr_msg);
+        log.debug(`Pandoc:\n%s`, stderr_msg.trim());
       }
-      resolve(get_cache(stdout_cache, encoding));
-    })
+      let stdout_msg = Buffer.concat(stdout_chunks).toString(encoding);
+      resolve(stdout_msg);
+    });
   });
 }
-
-main().then(output => console.log(`output from spawn:\n${output}`)).catch(e => console.log(e));
+main().then(output => console.log(`output from spawn:\n${output.trim()}`)).catch(e => console.log(e));
 ```
 
 输出结果
 
 ```bash
-(base) PS D:\hexo-temp> node .\scripts\test.js
-output from pandoc:
-pandoc 2.19.2
-Compiled with pandoc-types 1.22.2.1, texmath 0.12.5.2, skylighting 0.13,
-citeproc 0.8.0.1, ipynb 0.2, hslua 2.2.1
+➜  Node node test.js
+output from spawn:
+pandoc 3.0.1
+Features: +server +lua
 Scripting engine: Lua 5.4
-User data directory: C:\Users\xiao\AppData\Roaming\pandoc
-Copyright (C) 2006-2022 John MacFarlane. Web:  https://pandoc.org
+User data directory: /home/xiao/.local/share/pandoc
+Copyright (C) 2006-2023 John MacFarlane. Web:  https://pandoc.org
 This is free software; see the source for copying conditions. There is no
 warranty, not even for merchantability or fitness for a particular purpose.
 ```
@@ -477,9 +452,7 @@ warranty, not even for merchantability or fitness for a particular purpose.
 如果我们需要向 pandoc 传输数据（例如待处理的 markdown 文本流），我们可以直接在 `stdin` 中直接写入，同时注意写入完成后**记得关闭输入流**，否则 pandoc 进程会一直等待输入。
 
 ```js
-task.stdin.setEncoding(encoding);
-task.stdin.write(<some-data>);
-task.stdin.end();
+task.stdin.end(data.text, encoding);
 ```
 
 在 pandoc 进行 markdown 转换的命令如下
@@ -499,19 +472,19 @@ pandoc --from=gfm --to=html5 --mathjax
 例如我们写一个简单的 `h1` 标题，其 markdown 代码为 `# This is h1` ，对应 html 代码为 `<h1>This is h1</h1>`
 
 ```js
-const task = spawn("pandoc", ["--from=gfm","--to=html5","--mathjax"], {
+const task = spawn('pandoc', ['--from=gfm','--to=html5','--mathjax'], {
     env: process.env,
     cwd: process.cwd()
 });
 ...
-task.stdin.write("# This is h1");
+task.stdin.end('# This is h1', encoding);
 ...
 ```
 
 执行结果
 
 ```bash
-(base) PS D:\hexo-temp> node .\scripts\test.js
+➜  Node node test.js
 output from spawn:
 <h1 id="this-is-h1">This is h1</h1>
 ```
@@ -569,11 +542,9 @@ pandoc --lua-filter=smallcaps.lua -o test.html test.md
 那么最开始的 `return` 就表示这个脚本可以作为包被外部使用，就有点类似于 common js 中模块写法
 
 ```js
-module.export.x = [
-    {
-        Strong = function(elem){...}
-    }
-];
+module.exports ={
+	Strong = function(elem){...}
+};
 ```
 
 然后在 pandoc 内部调用时，直接使用下面语句
@@ -642,13 +613,13 @@ process image
 <p><img src="url-to-image" alt="test-image"/></p>
 ```
 
-注：如果函数中没有返回任何值（或者返回 nil），表示该函数不会对抽象语法树进行修改
+注：**如果函数中没有返回任何值（或者返回 nil），表示该函数不会对抽象语法树进行修改**。
 
 
 
 ## final filter
 
-参考 pandoc 对于 [image](https://pandoc.org/lua-filters.html#type-image) 节点的描述，通过 `src` 字段可以读取到图片的链接信息，我们只需要修改 url 值即可，根据之前的描述，我们可以编写一个简单的 filter
+参考 pandoc 对于 [image](https://pandoc.org/lua-filters.html#type-image) 标签的描述，通过 `src` 字段可以读取到图片的链接信息，我们只需要修改 url 值即可，根据之前的描述，我们可以编写一个简单的 filter
 
 ```
 local url_prefix
@@ -693,7 +664,7 @@ image.src:      test/test.jpg
 </figure>
 ```
 
-可以看到 `src` 部分已经替换成了我们需要的链接，并且其还对图片添加了 figcaption 
+可以看到 `src` 部分已经替换成了我们需要的链接，并且还对图片添加了 figcaption 
 
 之前我们提到，在 markdown 文档中可能存在 html 代码，对于这一部分我们也想要进行处理，默认 pandoc 会将其解析为 RawBlock，即不做任何处理，但也可以使用 `pandoc.read` 进行解析，生成抽象语法树，这样我们就可以对 html 形式的图片进行解析了。
 
@@ -735,6 +706,9 @@ local function Image(image)
     if (prefix == path_prefix) then
         image.src = new_path .. postfix
     end
+    -- delete image caption info and title (just a hack)
+    image.caption = {}
+    image.title = ''
     return image
 end
 
@@ -762,16 +736,15 @@ return {
 }
 ```
 
-以及完整的插件代码
+最后给出完整的插件代码
 
 ```js
 // code modified from https://github.com/wzpan/hexo-renderer-pandoc/blob/master/index.js
 
 'use strict';
 
-const spawn = require('cross-spawn');
+const { spawn } = require('node:child_process');
 const path = require('node:path')
-const { CacheStream } = require('hexo-util');
 const assert = require('node:assert');
 const { yellow } = require('picocolors');
 
@@ -915,43 +888,37 @@ const renderer = (data, options) => {
     return new Promise((resolve, reject) => {
         const task = spawn(pandoc_bin, args, {
             env: pandoc_env,
-            cwd: process.cwd()
+            cwd: process.cwd(),
+            stdio: 'pipe'
         });
         const encoding = 'utf-8';
 
-        const stdout_cache = new CacheStream();
-        const stderr_cache = new CacheStream();
+        const stdout_chunks = [];
+        const stderr_chunks = [];
 
-        if (task.stdout) {
-            task.stdout.setEncoding(encoding);
-            task.stdout.pipe(stdout_cache);
-        }
+        task.stdout.on('data', chunk => stdout_chunks.push(Buffer.from(chunk)));
+        task.stdout.on('error', err => log.error(err));
 
-        if (task.stderr) {
-            task.stderr.setEncoding(encoding);
-            task.stderr.pipe(stderr_cache);
-        }
+        task.stderr.on('data', chunk => stderr_chunks.push(Buffer.from(chunk)));
+        task.stderr.on('error', err => log.error(err));
 
-        if (task.stdin) {
-            task.stdin.setEncoding(encoding);
-            task.stdin.write(data.text);
-            task.stdin.end();
-        }
+        task.stdin.end(data.text, encoding);
 
         task.on('close', code => {
-            let stderr_msg = get_cache(stderr_cache, encoding);
+            let stderr_msg = Buffer.concat(stderr_chunks).toString(encoding);
             if (code) {
                 const e = new Error(`pandoc process exited with code ${code}.${stderr_msg.length > 0 ? `\n${stderr_msg}` : ''}`);
                 e.code = code;
                 return reject(e);
             }
             if (stderr_msg.length > 0) {
-                if (stderr_msg.endsWith('\n')) {
-                    stderr_msg = stderr_msg.slice(0, -1)
-                }
-                log.debug(`Pandoc:\n%s`, yellow(stderr_msg));
+                log.debug(`Pandoc:\n%s`, yellow(stderr_msg.trim()));
             }
-            resolve(get_cache(stdout_cache, encoding));
+            const output = Buffer.concat(stdout_chunks).toString(encoding);
+            const length = output.length;
+            log.debug(`Pandoc Output Size: ${length} bytes`);
+            log.debug(`Pandoc Output Preview:\n%s`, yellow(length > 100 ? output.substring(length - 100, length).trim() : output.trim()));
+            resolve(output);
         });
     });
 };
@@ -969,7 +936,7 @@ hexo.extend.renderer.register('mdtext', 'html', renderer, true);
 
 # 总结
 
-写了很多，大概记录了一下 hexo 自定义插件过程，还有很多没有详细介绍的，有兴趣的话参照下方的参考链接进行自行编写即可，弄清楚逻辑后代码写起来还是很快的。
+写了很多，大概记录了一下 hexo 自定义插件过程，还有很多没有详细介绍的，有兴趣的话参照下方的链接自行编写即可，弄清楚逻辑后代码写起来还是很快的。
 
 
 
@@ -978,7 +945,6 @@ hexo.extend.renderer.register('mdtext', 'html', renderer, true);
 1. [插件 | Hexo](https://hexo.io/zh-cn/docs/plugins)
 2. [wzpan/hexo-renderer-pandoc: A pandoc-markdown-flavor renderer for hexo. (github.com)](https://github.com/wzpan/hexo-renderer-pandoc)
 3. [Child process | Node.js v18.13.0 Documentation (nodejs.org)](https://nodejs.org/docs/latest-v18.x/api/child_process.html#child_processspawncommand-args-options)
-4. [moxystudio/node-cross-spawn: A cross platform solution to node's spawn and spawnSync (github.com)](https://github.com/moxystudio/node-cross-spawn)
 5. [Pandoc - Pandoc Lua Filters](https://pandoc.org/lua-filters.html)
 6. [wlupton/pandoc-lua-logging: Pandoc lua filter logging support (github.com)](https://github.com/wlupton/pandoc-lua-logging)
 7. [Lua 5.4 Reference Manual - contents](http://www.lua.org/manual/5.4/)
