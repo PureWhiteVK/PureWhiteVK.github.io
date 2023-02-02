@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"purewhitevk.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.14.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"default"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="字符串编码 Encodings should be known, not divined. 问题描述 在前一篇我们使用 pandoc 的 lua filter 解决了 markdown 转 html 中链接问题，但是在调试代码的过程中发现了一个问题，在不同的 shell 中执行 lua 脚本时，输出中文有时会乱码，有时又不会乱码，搞得有点烦，本篇就针对字符串问题做一个探究，搞清楚乱码的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="字符串编码">
+<meta property="og:url" content="https://purewhitevk.github.io/posts/c4ef/">
+<meta property="og:site_name" content="PureWhite&#39;s Blog">
+<meta property="og:description" content="字符串编码 Encodings should be known, not divined. 问题描述 在前一篇我们使用 pandoc 的 lua filter 解决了 markdown 转 html 中链接问题，但是在调试代码的过程中发现了一个问题，在不同的 shell 中执行 lua 脚本时，输出中文有时会乱码，有时又不会乱码，搞得有点烦，本篇就针对字符串问题做一个探究，搞清楚乱码的">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/c4ef/image-20230117150536045.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/c4ef/image-20230117150241891.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/c4ef/image-20230119233748271.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/c4ef/image-20230117151454957.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/c4ef/image-20230117152301608.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/c4ef/image-20230117154659021.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/c4ef/ascii-chars-table-landscape.jpg">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/c4ef/image-20230118163241733.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/c4ef/image-20230118172323075.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/c4ef/image-20230120002426547.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/c4ef/image-20230127221806025.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/c4ef/image-20230120000459771.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/c4ef/image-20230120000558448.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/c4ef/image-20230129173623164.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/c4ef/image-20230129173845768.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/c4ef/image-20230118163241733.png">
+<meta property="article:published_time" content="2023-01-08T08:16:20.000Z">
+<meta property="article:modified_time" content="2023-01-08T08:16:20.000Z">
+<meta property="article:author" content="PureWhiteVK">
+<meta property="article:tag" content="C++">
+<meta property="article:tag" content="Unicode">
+<meta property="article:tag" content="UTF-8">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://purewhitevk.github.io/posts/c4ef/image-20230117150536045.png">
+
+
+<link rel="canonical" href="https://purewhitevk.github.io/posts/c4ef/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://purewhitevk.github.io/posts/c4ef/","path":"posts/c4ef/","title":"字符串编码"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>字符串编码 | PureWhite's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">PureWhite's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">11</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">1</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">5</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%BC%96%E7%A0%81"><span class="nav-number">1.</span> <span class="nav-text">字符串编码</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E6%8F%8F%E8%BF%B0"><span class="nav-number">1.1.</span> <span class="nav-text">问题描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%96%E7%A0%81%E7%AE%80%E5%8F%B2"><span class="nav-number">1.2.</span> <span class="nav-text">编码简史</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ascii"><span class="nav-number">1.2.1.</span> <span class="nav-text">ASCII</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ansi"><span class="nav-number">1.2.2.</span> <span class="nav-text">ANSI</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#unicode"><span class="nav-number">1.2.3.</span> <span class="nav-text">Unicode</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A4%A7%E5%B0%8F%E7%AB%AF%E4%B8%8E%E5%AD%97%E8%8A%82%E9%A1%BA%E5%BA%8F"><span class="nav-number">1.2.3.1.</span> <span class="nav-text">大小端与字节顺序</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#utf-8--utf-8-with-bom"><span class="nav-number">1.2.3.2.</span> <span class="nav-text">UTF-8 &amp; UTF-8 with BOM</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#utf-16--utf-32"><span class="nav-number">1.2.3.3.</span> <span class="nav-text">UTF-16 &amp; UTF-32</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#unicode-in-c"><span class="nav-number">1.3.</span> <span class="nav-text">Unicode in C++</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">2.</span> <span class="nav-text">参考</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="PureWhiteVK"
+      src="/images/Touma.Kazusa.256x256.png">
+  <p class="site-author-name" itemprop="name">PureWhiteVK</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">5</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/PureWhiteVK" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;PureWhiteVK" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:yl_xiao@outlook.com" title="E-Mail → mailto:yl_xiao@outlook.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/dead.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://purewhitevk.github.io/posts/c4ef/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/Touma.Kazusa.256x256.png">
+      <meta itemprop="name" content="PureWhiteVK">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PureWhite's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="字符串编码 | PureWhite's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          字符串编码
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023/01/08 16:16:20" itemprop="dateCreated datePublished" datetime="2023-01-08T16:16:20+08:00">2023/01/08</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">学习笔记</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>6.4k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>23 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="字符串编码">字符串编码</h1>
+<p><em><strong>Encodings should be known, not divined.</strong></em></p>
+<h2 id="问题描述">问题描述</h2>
+<p>在前一篇我们使用 pandoc 的 lua filter 解决了 markdown 转 html
+中链接问题，但是在调试代码的过程中发现了一个问题，在不同的 shell 中执行
+lua
+脚本时，输出中文有时会乱码，有时又不会乱码，搞得有点烦，本篇就针对字符串问题做一个探究，搞清楚乱码的源头以及解决方案。</p>
+<p>首先看一个简单的示例，下面是一段简单的 c 语言 hello world</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">int</span> argc,<span class="type">char</span>** argv)</span> &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;你好，世界！😉&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>文件保存格式为：<code>UTF-8</code>（注意看 vscode 的右下角，写着
+UTF-8）</p>
+<p><img data-src="/posts/c4ef/image-20230117150536045.png"
+style="zoom:50%;" /></p>
+<span id="more"></span>
+
+<p>使用 msvc 编译后，分别在 git
+bash、msys2、powershell上运行后输出结果如下</p>
+<p><img data-src="/posts/c4ef/image-20230117150241891.png"
+style="zoom: 67%;" /></p>
+<blockquote>
+<p>注：使用 msvc 编译 UTF-8 文件时，需要添加 <code>/utf-8</code>
+参数，否则会使用本机默认编码进行编译，有可能导致编译失败。</p>
+<p><img data-src="/posts/c4ef/image-20230119233748271.png" /></p>
+</blockquote>
+<p>可以看到，仅在 git bash 中能正确输出中文，如果我们将编码保存为
+GBK，再编译运行</p>
+<p><img data-src="/posts/c4ef/image-20230117151454957.png"
+style="zoom:50%;" /></p>
+<p>输出结果如下：</p>
+<p><img data-src="/posts/c4ef/image-20230117152301608.png"
+style="zoom: 67%;" /></p>
+<p>可以看到此时在 Git Bash 中输出乱码了，而在 msys2 和 powershell
+中可以正确输出中文了，但是 emoji 的输出还是有问题（变成了问号）</p>
+<p>再使用 python 输出上面那句话看看效果</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">print</span>(<span class="string">&quot;你好，世界！😉&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>分别在三个终端中进行测试，输出结果如下</p>
+<p><img data-src="/posts/c4ef/image-20230117154659021.png"
+style="zoom: 67%;" /></p>
+<p>此时 git bash 中直接报错，说 GBK 无法解析 <code>U+1F609</code>
+也就是笑脸 😉 ，而在 msys2 和 powershell 中均可以正确输出中文，但是
+powershell 中无法输出 emoji 表情，而 msys2 可以正确输出。</p>
+<p>这个结果更令人费解了，C 语言和 Python
+输出结果不一致，在不同终端下输出也不一样。</p>
+<h2 id="编码简史">编码简史</h2>
+<p>关于编码的发展过程，下面这篇文章做了很好的介绍</p>
+<blockquote>
+<p><a
+target="_blank" rel="noopener" href="https://www.joelonsoftware.com/2003/10/08/the-absolute-minimum-every-software-developer-absolutely-positively-must-know-about-unicode-and-character-sets-no-excuses/">The
+Absolute Minimum Every Software Developer Absolutely, Positively Must
+Know About Unicode and Character Sets (No Excuses!) – Joel on
+Software</a></p>
+</blockquote>
+<p>参考这篇文章，我们做一个简单的总结。</p>
+<h3 id="ascii">ASCII</h3>
+<p>在计算机中，所有数据都是以二进制形式存储的，我们在屏幕上阅读的文字如
+“A”，“你好”
+等也需要以二进制形式存储。<strong>编码描述的就是我们如何将可阅读的字符存储在计算机中</strong>。
+ASCII ( /ˈæski/ )
+编码是早期常用的一种编码（现在也很常用，只不过是其他编码兼容该编码罢了）。其包含128个字符，使用
+8 位存储（剩下的 128 - 255 部分称为扩展 ASCII
+编码，不过并不常用），下图展示了所有的ASCII字符及其对应的编码值（图片来自：<a
+target="_blank" rel="noopener" href="http://www.asciicharstable.com/"><span>http://www.asciicharstable.com/</span></a>）</p>
+<p><img data-src="/posts/c4ef/ascii-chars-table-landscape.jpg"
+style="zoom: 25%;" /></p>
+<p>例如大写字母 <code>A</code> 对应的 ASCII 十进制编码就是
+<code>65</code>，也即二进制的 <code>0b01000001</code> 和十六进制的
+<code>0x41</code>。</p>
+<p>从表中可以看到，仅包含大小写字母，而中文、俄语等文字并不包括在内。为了解决这个问题，一些厂家就自定义了一套编码格式，从而支持其他语言的字符显示。但是厂家自定义的编码并不能跨平台，例如在
+IBM 上编写的文档就有可能无法在 Mach 上打开，因为他们使用的编码不同。</p>
+<h3 id="ansi">ANSI</h3>
+<p>厂家自定义编码太杂乱，为了实现跨平台，后来就统一了编码（车同轨，书同文？），称为
+ANSI 编码。ANSI 编码并不将所有的字符都编码到一张表上，其仅确保前 128
+个字符（也就是 ASCII 编码部分）是一致的，后面部分的编码由代码页（code
+page）决定，不同地区使用不同的代码页，从而在不同地区显示不同的文字。目前
+Windows
+仍然支持的这种编码方式，可以在控制面板的时钟和区域中进行设置。</p>
+<p><img data-src="/posts/c4ef/image-20230118163241733.png"
+style="zoom:50%;" /></p>
+<p>对于中日韩文而言，其使用的是表意文字（ideograph），可能包含数万个字符，仅使用
+8 位显然是无法表示这些字符的。后面就将 ANSI 编码扩展到了两个字节，其中
+<code>0x80</code> 至 <code>0xFFFF</code>
+部分由代码页来决定编码。中文对应的编码方式有 GB 2312 及其扩展
+GBK（<strong>G</strong>uo jia <strong>B</strong>iao zhun
+<strong>K</strong>uo zhan，国家标准扩展）。</p>
+<blockquote>
+<p>注：GBK 和 ANSI 的关系：GBK 属于 ANSI
+的一部分，其专门负责对中文进行编码，而其他字母等仍使用 ASCII
+编码，例如一段话</p>
+<p><code>Hi, 你好</code>，对应的 GBK ANSI 编码为，其中 <code>Hi,</code>
+仍是单字节编码，而后面的 <code>你好</code> 则是双字节编码</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[0x48,0x69,0x20,0xC4,0xE3,0xBA,0xC3]</span><br></pre></td></tr></table></figure>
+
+<p>GBK 实际上是一个定长编码，其描述的所有字符都是双字节，但是此时 ANSI
+就是一个变长编码，其既包含单字节字符，也包含双字节字符。</p>
+</blockquote>
+<p>在 Windows 下，可以使用 <code>chcp</code> 命令查看当前控制台使用的
+ANSI 代码页（同时也可以使用该命令切换控制台使用的代码页）</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(base) PS C:\Users\xiao&gt; chcp</span><br><span class="line">活动代码页: 936</span><br></pre></td></tr></table></figure>
+
+<p>在程序中可以使用 <code>GetACP()</code>
+函数来查询程序中使用的代码页（需要调用 Windows API）</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;winnls.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">(<span class="type">int</span> argc,<span class="type">char</span>** argv)</span> </span>&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;current Windows ANSI code page identifier is: %u&quot;</span>,<span class="built_in">GetACP</span>());</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行结果</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(base) PS D:\Code\Cpp\encoding-demo\bin&gt; .\test.exe    </span><br><span class="line">current Windows ANSI code page identifier is: 936</span><br></pre></td></tr></table></figure>
+
+<p>在微软 win32 文档中给出了代码页标识符的相关描述：<a
+target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/windows/win32/intl/code-page-identifiers">Code
+Page Identifiers - Win32 apps | Microsoft Learn</a></p>
+<p><img data-src="/posts/c4ef/image-20230118172323075.png"
+style="zoom:50%;" /></p>
+<p>可以看到，本机 Windows 的ANSI代码页编号为 936，对应 GB2312
+编码，而后续 GBK 发布后更新了 GBK 部分的字符，因此也常称为 GBK
+编码。</p>
+<p>采用代码页的方式在单语言场景下足够使用了，但是有时我们可能会浏览其他语言的网站，或接收到其他语言的邮件，我们的系统上就无法显示这些字符了（代码页并不能随便切换）。</p>
+<p><strong>彩蛋：”烫烫烫烫烫烫烫烫...“？</strong></p>
+<p>在 GBK 编码中，烫的编码为 <code>[0xCC,0xCC]</code>，在 MSVC
+的调试模式下，会自动将未初始化的内存设置为
+<code>0xCC</code>（字节），用来进行 <a
+target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-cn/cpp/build/reference/rtc-run-time-error-checks?view=msvc-170">运行时错误检查</a>。</p>
+<p>添加 <code>/RTC1</code>
+编译标志即可开启检查功能，我们进行调试时，就会看到如下字样</p>
+<p><img data-src="/posts/c4ef/image-20230120002426547.png"
+style="zoom: 50%;" /></p>
+<p>下面是测试代码</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 此处故意不初始化</span></span><br><span class="line"><span class="type">uint32_t</span> v;</span><br><span class="line"><span class="type">uint8_t</span> *arr = <span class="built_in">reinterpret_cast</span>&lt;<span class="type">uint8_t</span> *&gt;(&amp;v);</span><br><span class="line"><span class="function">std::string <span class="title">s</span><span class="params">(arr, arr + <span class="number">4</span>)</span></span>;</span><br><span class="line">std::cout &lt;&lt; s &lt;&lt; std::endl;</span><br></pre></td></tr></table></figure>
+
+<p>输出结果就为 <code>烫烫</code></p>
+<p>除了 <code>烫</code>，还有可能出现 <code>屯屯屯屯</code>，因为 MSVC
+在调试时会将动态分配的内存值初始化为 <code>0xCD</code>，而
+<code>屯</code> 的 GBK 编码刚好是 <code>[0xCD,0xCD]</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">&quot;烫&quot;</span>.encode(<span class="string">&quot;gbk&quot;</span>)</span><br><span class="line"><span class="string">b&#x27;\xcc\xcc&#x27;</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">&#x27;屯&#x27;</span>.encode(<span class="string">&#x27;gbk&#x27;</span>)</span><br><span class="line"><span class="string">b&#x27;\xcd\xcd&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="unicode">Unicode</h3>
+<p>为了解决在同一系统上的跨语言显示问题，就只能将全部字符编码到一张表上，这种表示方式称为
+Unicode，中文称为 <strong>统一码</strong>，不过一般直接说 Unicode
+即可。注意这里我们用的表述是
+字符的<strong>表示方式</strong>，而不是编码方式。Unicode
+为每一个字符分配一个 code point（码点），就唯一表示一个字符，例如
+<code>你</code> 的 Unicode 码点为 <code>U+4F60</code>，<code>U+</code>
+前缀就表示这是一个 Unicode 码点，后面的十六进制就表示具体的代码值。</p>
+<p><strong>码点和编码之间并不是一一对应关系，码点只是一个形式化的表示方式（可以理解为字符在字符空间中的一个坐标），其并不关心具体如何在计算机中存储的</strong>。UTF
+(<strong>U</strong>nicode <strong>T</strong>ransformation
+<strong>F</strong>ormat，Unicode 传输格式)
+才是决定具体如何在计算机中存储和传输的，根据使用场景不同，包含以下六类：</p>
+<ul>
+<li>UTF-8</li>
+<li>UTF-8 with BOM</li>
+<li>UTF-16 LE</li>
+<li>UTF-16 BE</li>
+<li>UTF-32 BE</li>
+<li>UTF-32 LE</li>
+</ul>
+<p>注：BOM 表示 <strong>B</strong>yte <strong>O</strong>rder
+<strong>M</strong>ark，字节顺序标志，LE 和 BE 分别代表 Little Endian
+（小端）以及 Big Endian （大端）</p>
+<h4 id="大小端与字节顺序">大小端与字节顺序</h4>
+<p>大小端描述的是字节在多字节数据中的存储顺序，例如一个
+<code>uint32_t</code> 是 4 个字节，例如
+<code>0x1f2f3f4f</code>，其各字节信息如下：</p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Value(uint32_t): 0x1f2f3f4f</span><br><span class="line">Byte View:</span><br><span class="line">+------+----------+----------+----------+----------+</span><br><span class="line">| bits |   0..7   |   8..15  |  16..23  |  24..31  |</span><br><span class="line">+------+----------+----------+----------+----------+</span><br><span class="line">| byte |  byte[0] |  byte[1] |  byte[2] |  byte[3] |</span><br><span class="line">+------+----------+----------+----------+----------+</span><br><span class="line">|  hex |    4f    |    3f    |    2f    |    1f    |</span><br><span class="line">+------+----------+----------+----------+----------+</span><br><span class="line">|  bin | 01001111 | 00111111 | 00101111 | 00011111 |</span><br><span class="line">+------+----------+----------+----------+----------+</span><br></pre></td></tr></table></figure>
+
+<p>而其实际在内存中存储按字节顺序可以分为两种存储顺序</p>
+<ul>
+<li><p><strong>按内存地址从低到高，字节顺序从低字节到高字节存储</strong></p>
+<p>这种字节排列顺序称为小端，因为低位字节（小值）优先存储</p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Little Endian Memory View:</span><br><span class="line">+------+---------------+---------------+---------------+---------------+</span><br><span class="line">| addr | 0x1fdd3356050 | 0x1fdd3356051 | 0x1fdd3356052 | 0x1fdd3356053 |</span><br><span class="line">+------+---------------+---------------+---------------+---------------+</span><br><span class="line">|  hex |       4f      |       3f      |       2f      |       1f      |</span><br><span class="line">+------+---------------+---------------+---------------+---------------+</span><br><span class="line">|  bin |    01001111   |    00111111   |    00101111   |    00011111   |</span><br><span class="line">+------+---------------+---------------+---------------+---------------+</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>按内存地址从低到高，字节顺序从高字节到低字节存储</strong></p>
+<p>这种字节排列顺序称为大端，因为高位字节（大值）优先存储</p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Big Endian Memory View:</span><br><span class="line">+------+---------------+---------------+---------------+---------------+</span><br><span class="line">| addr | 0x1fdd3356550 | 0x1fdd3356551 | 0x1fdd3356552 | 0x1fdd3356553 |</span><br><span class="line">+------+---------------+---------------+---------------+---------------+</span><br><span class="line">|  hex |       1f      |       2f      |       3f      |       4f      |</span><br><span class="line">+------+---------------+---------------+---------------+---------------+</span><br><span class="line">|  bin |    00011111   |    00101111   |    00111111   |    01001111   |</span><br><span class="line">+------+---------------+---------------+---------------+---------------+</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>注：<strong>无论是大端还是小端，一个字节中的 bit
+的排列顺序永远都是从低位到高位</strong></p>
+<blockquote>
+<p>大端和小端出自 Jonathan Swift 的《格列佛游记》（Gulliver's
+Trabels）一书，其中交战的两个派别无法就应该从哪一端（小端还是大端）打开一个半熟的鸡蛋达成一致。</p>
+<p>一下是 Jonathan Swift 在1726年关于大小端之争的历史描述：</p>
+<p><em>“......下面要告诉你的是，Lilliput 和 Blefuscu
+这两大强国在过去36个月里一直在苦战。战争开始是由于以下的原因：我们大家都认为，吃鸡蛋前，原始的方法是打破鸡蛋较大的一端，可是当今皇帝的祖父小时候吃鸡蛋，一次按古法打鸡蛋是碰巧将一个手指弄破了，因此他的父亲，当时的皇帝，就下了一道敕令，命令全体臣民吃鸡蛋时打破鸡蛋较小的一端，违令者重罚。老百姓们对这项命令极为反感。历史告诉我们，由此曾发生过六次叛乱，其中一个皇帝送了命，另一个丢了王位。这些叛乱大多都是由
+Blefuscu
+的国王大臣们煽动起来的。叛乱平息后，流亡的人总是逃到那个帝国去寻救避难。据估计，先后几次有11000人情愿受死也不肯去打破鸡蛋较小的一端。关于这一争端，曾出版过几百本大部著作，不过大端派的书一直是受禁的，法律也规定该派的任何人不得做官。”</em></p>
+<p><em>（此段译文摘自网上蒋剑锋译的
+《格列佛游记》第一卷第4章。）</em></p>
+<p><img data-src="data:image/jpeg;base64,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" /></p>
+</blockquote>
+<p>大小端在日常使用中两者都有可能遇到，但在网络传输中 TCP/IP
+规定数据包字节序为大端，如果是小端机器，那么在传输过程中就需要先将小端数据转换成大端数据再进行发送，同时在接受数据时也需要先将数据转换成小端再进行读取（仅针对多字节数据，例如
+<code>short</code>，<code>int</code>，<code>double</code>等
+），字节序和字符串编码一样，<strong>我们在使用前必须提前知道处理的数据字节序情况</strong>，否则就会出问题。</p>
+<h4 id="utf-8--utf-8-with-bom">UTF-8 &amp; UTF-8 with BOM</h4>
+<p>前面提到，UTF-8 后面的 8 表示其编码单位是 8 位，即我们可以使用
+<code>char</code> 来存储 UTF-8 字符串，但是很明显 8 位存不下所有的
+Unicode 字符，那么就使用多个编码单位来表示一个字符。</p>
+<p>为了确保我们可以从字节流中准确还原出 Unicode 字符，UTF-8
+编码规则如下（RFC3629）</p>
+<ol type="1">
+<li>确定 Unicode 字符所需要的字节数</li>
+<li>在首字节中添加长度标识前缀（<code>110</code>，<code>1110</code>，<code>11110</code>)，在剩下字节中添加标识前缀（<code>10</code>）</li>
+<li>对于单字节字符，直接使用 ASCII
+编码，对于多字节字符，从低位到高位开始，每次选取 6
+位填入编码中（从后向前）</li>
+</ol>
+<p>下表展示了 Code 和 UTF-8 编码之间的转换关系</p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">UTF-8 &lt;-&gt; Unicode Conversion</span><br><span class="line">+---------------------+----------+----------+----------+----------+</span><br><span class="line">|    Unicode Range    |  Byte[0] |  Byte[1] |  Byte[2] |  Byte[3] |</span><br><span class="line">+---------------------+----------+----------+----------+----------+</span><br><span class="line">| U+000000 ~ U+00007F | 0xxxxxxx |          |          |          |</span><br><span class="line">+---------------------+----------+----------+----------+----------+</span><br><span class="line">| U+000080 ~ U+0007FF | 110xxxxx | 10xxxxxx |          |          |</span><br><span class="line">+---------------------+----------+----------+----------+----------+</span><br><span class="line">| U+000800 ~ U+00FFFF | 1110xxxx | 10xxxxxx | 10xxxxxx |          |</span><br><span class="line">+---------------------+----------+----------+----------+----------+</span><br><span class="line">| U+010000 ~ U+10FFFF | 11110xxx | 10xxxxxx | 10xxxxxx | 10xxxxxx |</span><br><span class="line">+---------------------+----------+----------+----------+----------+</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>注：实际上使用 4 个字节的 UTF-8 编码最大可以表示到 U+1FFFFF（21位的
+Unicode 字符），且 UTF-8 最多可以使用 6 个字节来表示一个 Unicode
+字符，但是为了和 UTF-16 的表示范围一致，其将最大可表示范围限制到了
+<code>U+10FFFF</code>（也就是 20 位的 Unicode 字符）</p>
+</blockquote>
+<p>下面来几个转换样例（编码）：</p>
+<p><code>A</code>：U+0041</p>
+<p>对于在 <code>U+0000</code> 到 <code>U+007F</code>
+之间的字符，直接使用 ASCII 码即可</p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">+---------------------+----------+</span><br><span class="line">|       Unicode       |  Byte[0] |</span><br><span class="line">+---------------------+----------+</span><br><span class="line">| U+000000 ~ U+00007F | 0xxxxxxx |</span><br><span class="line">+---------------------+----------+</span><br><span class="line">|       U+000041      |  1000001 |</span><br><span class="line">+---------------------+----------+</span><br><span class="line">|       U+000041      | 01000001 |</span><br><span class="line">+---------------------+----------+</span><br><span class="line">|       U+000041      |   \x41   |</span><br><span class="line">+---------------------+----------+</span><br></pre></td></tr></table></figure>
+
+<p><code>α</code>：U+03B1</p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">+---------------------+----------+----------+</span><br><span class="line">|       Unicode       |  Byte[0] |  Byte[1] |</span><br><span class="line">+---------------------+----------+----------+</span><br><span class="line">| U+000080 ~ U+0007FF | 110xxxxx | 10xxxxxx |</span><br><span class="line">+---------------------+----------+----------+</span><br><span class="line">|       U+0003B1      |    01110 |   110001 |</span><br><span class="line">+---------------------+----------+----------+</span><br><span class="line">|       U+0003B1      | 11001110 | 10110001 |</span><br><span class="line">+---------------------+----------+----------+</span><br><span class="line">|       U+0003B1      |   \xce   |   \xb1   |</span><br><span class="line">+---------------------+----------+----------+</span><br></pre></td></tr></table></figure>
+
+<p><code>你</code>：U+4F60</p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">+---------------------+----------+----------+----------+</span><br><span class="line">|       Unicode       |  Byte[0] |  Byte[1] |  Byte[2] |</span><br><span class="line">+---------------------+----------+----------+----------+</span><br><span class="line">| U+000800 ~ U+00FFFF | 1110xxxx | 10xxxxxx | 10xxxxxx |</span><br><span class="line">+---------------------+----------+----------+----------+</span><br><span class="line">|       U+004F60      |     0100 |   111101 |   100000 |</span><br><span class="line">+---------------------+----------+----------+----------+</span><br><span class="line">|       U+004F60      | 11100100 | 10111101 | 10100000 |</span><br><span class="line">+---------------------+----------+----------+----------+</span><br><span class="line">|       U+004F60      |   \xe4   |   \xbd   |   \xa0   |</span><br><span class="line">+---------------------+----------+----------+----------+</span><br></pre></td></tr></table></figure>
+
+<p><code>🧐</code>：U+1F9D0</p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">+---------------------+----------+----------+----------+----------+</span><br><span class="line">|       Unicode       |  Byte[0] |  Byte[1] |  Byte[2] |  Byte[3] |</span><br><span class="line">+---------------------+----------+----------+----------+----------+</span><br><span class="line">| U+010000 ~ U+1FFFFF | 11110xxx | 10xxxxxx | 10xxxxxx | 10xxxxxx |</span><br><span class="line">+---------------------+----------+----------+----------+----------+</span><br><span class="line">|       U+01F9D0      |      000 |   011111 |   100111 |   010000 |</span><br><span class="line">+---------------------+----------+----------+----------+----------+</span><br><span class="line">|       U+01F9D0      | 11110000 | 10011111 | 10100111 | 10010000 |</span><br><span class="line">+---------------------+----------+----------+----------+----------+</span><br><span class="line">|       U+01F9D0      |   \xf0   |   \x9f   |   \xa7   |   \x90   |</span><br><span class="line">+---------------------+----------+----------+----------+----------+</span><br></pre></td></tr></table></figure>
+
+<p>Unicode 转 UTF-8 代码实现（C++），通过简单的位运算就可以实现了</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">std::vector&lt;<span class="type">uint8_t</span>&gt; <span class="title">encode_utf8</span><span class="params">(<span class="type">uint32_t</span> u)</span> </span>&#123;</span><br><span class="line">  std::vector&lt;<span class="type">uint8_t</span>&gt; res;</span><br><span class="line">  <span class="keyword">if</span> (u &lt; <span class="number">0x80</span>) &#123;</span><br><span class="line">    res.<span class="built_in">emplace_back</span>(u);</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (u &lt; <span class="number">0x800</span>) &#123;</span><br><span class="line">    res.<span class="built_in">emplace_back</span>(<span class="number">0xc0</span> | (u &gt;&gt; <span class="number">6</span>));</span><br><span class="line">    res.<span class="built_in">emplace_back</span>(<span class="number">0x80</span> | (u &amp; <span class="number">0x3f</span>));</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (u &lt; <span class="number">0x10000</span>) &#123;</span><br><span class="line">    res.<span class="built_in">emplace_back</span>(<span class="number">0xe0</span> | (u &gt;&gt; <span class="number">12</span>));</span><br><span class="line">    res.<span class="built_in">emplace_back</span>(<span class="number">0x80</span> | ((u &gt;&gt; <span class="number">6</span>) &amp; <span class="number">0x3f</span>));</span><br><span class="line">    res.<span class="built_in">emplace_back</span>(<span class="number">0x80</span> | (u &amp; <span class="number">0x3f</span>));</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (u &lt; <span class="number">0x10ffff</span>) &#123;</span><br><span class="line">    res.<span class="built_in">emplace_back</span>(<span class="number">0xf0</span> | (u &gt;&gt; <span class="number">18</span>));</span><br><span class="line">    res.<span class="built_in">emplace_back</span>(<span class="number">0x80</span> | ((u &gt;&gt; <span class="number">12</span>) &amp; <span class="number">0x3f</span>));</span><br><span class="line">    res.<span class="built_in">emplace_back</span>(<span class="number">0x80</span> | ((u &gt;&gt; <span class="number">6</span>) &amp; <span class="number">0x3f</span>));</span><br><span class="line">    res.<span class="built_in">emplace_back</span>(<span class="number">0x80</span> | (u &amp; <span class="number">0x3f</span>));</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    std::cerr &lt;&lt; fmt::format(<span class="string">&quot;Failed to encode &#123;&#125; to UTF-8, replaced with U+FFFD&quot;</span>,</span><br><span class="line">                             <span class="built_in">unicode</span>(u))</span><br><span class="line">              &lt;&lt; std::endl;</span><br><span class="line">    res.<span class="built_in">emplace_back</span>(<span class="number">0xef</span>);</span><br><span class="line">    res.<span class="built_in">emplace_back</span>(<span class="number">0xbf</span>);</span><br><span class="line">    res.<span class="built_in">emplace_back</span>(<span class="number">0xbd</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>对于 UTF-8
+字符串的解码，也是类似，我们首先判断当前字节流前缀信息，得出当前字符的字节位数，然后根据这个信息读取后续的字节数据。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">bool</span> one_byte = (curr_byte &gt;&gt; <span class="number">7</span>) == <span class="number">0x0</span>; </span><br><span class="line"><span class="type">bool</span> two_bytes = (curr_byte &gt;&gt; <span class="number">5</span>) == <span class="number">0x6</span>;</span><br><span class="line"><span class="type">bool</span> three_bytes = (curr_byte &gt;&gt; <span class="number">4</span>) == <span class="number">0xE</span>;</span><br><span class="line"><span class="type">bool</span> four_bytes = (curr_byte &gt;&gt; <span class="number">3</span>) == <span class="number">0x1E</span>;</span><br></pre></td></tr></table></figure>
+
+<p>完整 UTF-8 转 Unicode 代码如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">std::vector&lt;<span class="type">uint32_t</span>&gt; <span class="title">decode_utf8</span><span class="params">(<span class="type">const</span> std::string &amp;s)</span> </span>&#123;</span><br><span class="line">  std::vector&lt;<span class="type">uint32_t</span>&gt; res;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">auto</span> it = s.<span class="built_in">begin</span>(); it != s.<span class="built_in">end</span>(); it++) &#123;</span><br><span class="line">    <span class="type">uint32_t</span> c = <span class="number">0</span>;</span><br><span class="line">    <span class="type">uint8_t</span> curr = *it;</span><br><span class="line">    <span class="keyword">if</span> ((curr &gt;&gt; <span class="number">7</span>) == <span class="number">0x0</span>) &#123;</span><br><span class="line">      res.<span class="built_in">emplace_back</span>(curr);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> ((curr &gt;&gt; <span class="number">5</span>) == <span class="number">0x6</span>) &#123;</span><br><span class="line">      c |= (curr &amp; <span class="number">0x1f</span>) &lt;&lt; <span class="number">6</span>; <span class="built_in">assert</span>(++it != s.<span class="built_in">end</span>());</span><br><span class="line">      c |= (*it &amp; <span class="number">0x3f</span>);</span><br><span class="line">      res.<span class="built_in">emplace_back</span>(c);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> ((curr &gt;&gt; <span class="number">4</span>) == <span class="number">0xE</span>) &#123;</span><br><span class="line">      c |= (curr &amp; <span class="number">0xf</span>) &lt;&lt; <span class="number">12</span>; <span class="built_in">assert</span>(++it != s.<span class="built_in">end</span>());</span><br><span class="line">      c |= (*it &amp; <span class="number">0x3f</span>) &lt;&lt; <span class="number">6</span>;  <span class="built_in">assert</span>(++it != s.<span class="built_in">end</span>());</span><br><span class="line">      c |= (*it &amp; <span class="number">0x3f</span>);</span><br><span class="line">      res.<span class="built_in">emplace_back</span>(c);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> ((curr &gt;&gt; <span class="number">3</span>) == <span class="number">0x1E</span>) &#123;</span><br><span class="line">      <span class="comment">// get 3 bit from value</span></span><br><span class="line">      c |= (curr &amp; <span class="number">0x7</span>) &lt;&lt; <span class="number">18</span>; <span class="built_in">assert</span>(++it != s.<span class="built_in">end</span>());</span><br><span class="line">      c |= (*it &amp; <span class="number">0x3f</span>) &lt;&lt; <span class="number">12</span>; <span class="built_in">assert</span>(++it != s.<span class="built_in">end</span>());</span><br><span class="line">      c |= (*it &amp; <span class="number">0x3f</span>) &lt;&lt; <span class="number">6</span>;  <span class="built_in">assert</span>(++it != s.<span class="built_in">end</span>());</span><br><span class="line">      c |= (*it &amp; <span class="number">0x3f</span>);</span><br><span class="line">      res.<span class="built_in">emplace_back</span>(c);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      std::cerr &lt;&lt; fmt::format(<span class="string">&quot;Failed to decode byte &#123;&#125; at index: &#123;&#125;&quot;</span>,</span><br><span class="line">                               <span class="built_in">hex</span>(*it), it - s.<span class="built_in">begin</span>())</span><br><span class="line">                &lt;&lt; std::endl;</span><br><span class="line">      <span class="built_in">assert</span>(<span class="literal">false</span>);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>注：对于 UTF-8
+的解码，还有很多加速算法，这里就不做过多的介绍了，详细可以参考这篇博客：<a
+target="_blank" rel="noopener" href="https://nullprogram.com/blog/2017/10/06/">A Branchless UTF-8
+Decoder (nullprogram.com)</a></p>
+</blockquote>
+<p>最后我们再简单介绍一下 UTF-8 with BOM，从名字上就可以知道，UTF-8 with
+BOM 就是在 UTF-8 的基础之上添加了一个 BOM（字节序标志），这个标志的
+Unicode code point为 <code>U+FEFF</code> ，表示
+”零宽无间断间隔“，仅在传输过程中用来确认字节顺序，打印时不占字宽，（但在控制台打印等宽表格中会计算其长度，导致输出有问题，这一点需要注意）。</p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">UTF-8 encoding of U+00FEFF</span><br><span class="line">+---------------------+----------+----------+----------+</span><br><span class="line">|       Unicode       |  Byte[0] |  Byte[1] |  Byte[2] |</span><br><span class="line">+---------------------+----------+----------+----------+</span><br><span class="line">| U+000800 ~ U+00FFFF | 1110xxxx | 10xxxxxx | 10xxxxxx |</span><br><span class="line">+---------------------+----------+----------+----------+</span><br><span class="line">|       U+00FEFF      |     1111 |   111011 |   111111 |</span><br><span class="line">+---------------------+----------+----------+----------+</span><br><span class="line">|       U+00FEFF      | 11101111 | 10111011 | 10111111 |</span><br><span class="line">+---------------------+----------+----------+----------+</span><br><span class="line">|       U+00FEFF      |   \xef   |   \xbb   |   \xbf   |</span><br><span class="line">+---------------------+----------+----------+----------+</span><br></pre></td></tr></table></figure>
+
+<p>将文件手动保存为 UTF-8 with BOM</p>
+<p><img data-src="/posts/c4ef/image-20230127221806025.png"
+style="zoom:50%;" /></p>
+<p>以二进制形式读取文件（<code>rb</code>），我们可以看到文件的前三个字节为固定的
+<code>[0xEF,0xBB,0xBF]</code></p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">+----------------+--------------+-----------------+</span><br><span class="line">|      file      | size (bytes) |  first 3 bytes  |</span><br><span class="line">+----------------+--------------+-----------------+</span><br><span class="line">| UTF-8 with BOM |     207      | b&#x27;\xef\xbb\xbf&#x27; |</span><br><span class="line">|     UTF-8      |     204      | b&#x27;\xe3\x80\x8e&#x27; |</span><br><span class="line">+----------------+--------------+-----------------+</span><br></pre></td></tr></table></figure>
+
+<p>由于 UTF-8
+的编码单位为字节，实际上完全没必要考虑字节顺序的问题，因此并不推荐使用
+UTF-8 with BOM ，甚至在某些情况下 UTF-8 with BOM
+还会导致代码无法运行（例如 PHP）。</p>
+<p><strong>彩蛋：”锟斤拷“ 是怎么来的？</strong></p>
+<p>对于编码失败的情况，UTF-8 编码器会直接将其转换成 <code>U+FFFD</code>
+，显示为 <code>�</code>，其对应的 UTF-8 编码如下：</p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">UTF-8 encoding of U+00FFFD</span><br><span class="line">+---------------------+----------+----------+----------+</span><br><span class="line">|       Unicode       |  Byte[0] |  Byte[1] |  Byte[2] |</span><br><span class="line">+---------------------+----------+----------+----------+</span><br><span class="line">| U+000800 ~ U+00FFFF | 1110xxxx | 10xxxxxx | 10xxxxxx |</span><br><span class="line">+---------------------+----------+----------+----------+</span><br><span class="line">|       U+00FFFD      |     1111 |   111111 |   111101 |</span><br><span class="line">+---------------------+----------+----------+----------+</span><br><span class="line">|       U+00FFFD      | 11101111 | 10111111 | 10111101 |</span><br><span class="line">+---------------------+----------+----------+----------+</span><br><span class="line">|       U+00FFFD      |   \xef   |   \xbf   |   \xbd   |</span><br><span class="line">+---------------------+----------+----------+----------+</span><br></pre></td></tr></table></figure>
+
+<p>即
+<code>[0xEF,0xBF,0xBD]</code>，在编码错误的情况下，就可能会连着出现，也就是</p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[...,0xEF,0xBF,0xBD,0xEF,0xBF,0xBD,...]</span><br></pre></td></tr></table></figure>
+
+<p>由于 <strong>GBK
+编码是双字节编码</strong>，其会将其解析为三个汉字，而这三个字就是
+<code>锟斤拷</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">b&#x27;\xef\xbf\xbd\xef\xbf\xbd&#x27;</span>.decode(<span class="string">&#x27;gbk&#x27;</span>)</span><br><span class="line"><span class="string">&#x27;锟斤拷&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>在中文环境下，出现 <code>锟斤拷</code>
+就基本上就表示我们将一个原本是正常编码的文件<strong>采用 UTF-8
+编码打开并以 UTF-8 保存</strong>，由于 UTF-8
+编码无法对文件中字符进行编码，就全部替换成了
+<code>�</code>，此时我们再通过 GBK 打开时就会出现满屏的
+<code>锟斤拷</code>
+了，而且这种错误是不可逆的，因为无法编码的字符已经被替换成了
+<code>�</code>，我们再也无法找回之前的编码了。</p>
+<p>下面给出了一个具体示例：</p>
+<p>文件初始内容：</p>
+<p><img data-src="/posts/c4ef/image-20230120000459771.png"
+style="zoom:50%;" /></p>
+<p>我们原本的文件是 GBK 编码的，我们将窗口关闭，再打开。由于 VS Code
+并不知道文件的编码，便默认使用 UTF-8 编码打开，内容如下：</p>
+<p><img data-src="/posts/c4ef/image-20230120000558448.png" /></p>
+<p>如果此时我们手贱，将文件保存的话（<kbd>Ctrl</kbd> +
+<kbd>S</kbd>），文件就会以 UTF-8 编码保存，而其中 <code>�</code>
+就会直接写入到文件中。</p>
+<p>假如我们又看到了文件名中的
+<code>文本-gbk</code>，知道文件的正确编码为 GBK，再次使用 GBK
+编码打开时，文件内容如下：<img data-src="/posts/c4ef/image-20230120000912272.png" /></p>
+<p>我们永远也不知道文件里写了什么了！😭</p>
+<blockquote>
+<p><em>“白色相簿”什么的，已经无所谓了。</em></p>
+<p><em>因为已经不再有歌，值得去唱了。</em></p>
+<p><em>传达不了的恋情，已经不需要了。</em></p>
+<p><em>因为已经不再有人，值得去爱了。</em></p>
+</blockquote>
+<p>血的教训告诉我们：<strong>当打开不知道编码的文件时，千万不要手贱按下保存，保存后很有可能无法还原了！</strong></p>
+<h4 id="utf-16--utf-32">UTF-16 &amp; UTF-32</h4>
+<p>UTF-16 的编码单位为 16 位，即 2 字节，而 UTF-32 的编码单位为 32
+位，4字节。</p>
+<blockquote>
+<p>注：编码单位（code
+uint）是编码中每个字符编码的基本元素，对于定长编码中，编码单位大小就等于字符大小，例如
+GBK 中编码单位为 2 字节，其可表示的所有字符都是 2
+字节；对于变长编码，一个字符的编码可以由多个编码单位进行表示。</p>
+</blockquote>
+<p>由于 UTF-16 和 UTF-32
+的编码单位为多字节，必定要考虑字节顺序问题。我们可以手动指定字节顺序（和
+UTF-8 with BOM 类似，在文件开头添加 <code>U+FEFF</code>
+来自动判断编码），也可以直接使用 <code>LE</code>
+后缀或<code>BE</code>后缀的编码来表示，例如 UTF-16LE 和 UTF-16BE。</p>
+<p>在 UTF-16 编码中，一个字符由1个或2个16位整数表示，最大可表示字符为
+<code>U+10FFFF</code>，<strong>参考 UTF-16
+规范（RFC2781）</strong>，其编码和解码规则如下：</p>
+<ol type="1">
+<li>对于 <code>U+0000 ~ U+FFFF</code>
+的字符，其直接使用1个16位整数表示即可，且值等于 Unicode Code Point
+值。</li>
+<li>对于 <code>U+010000 ~ U+10FFFF</code>
+的字符，使用2个16位整数表示（称为 surrogate
+pair，代理对，意为16位整数对表示一个字符），每个部分存储 Unicode Code
+Point 的10 位（需要进行特殊处理），再在前面添加前缀（6
+位），第一个前缀为 <code>110110</code>，第二个前缀为
+<code>110111</code></li>
+<li>对于 <code>&gt; U+10FFFF</code> 的字符无法使用 UTF-16
+编码表示（目前并不存在）</li>
+</ol>
+<blockquote>
+<p>为了保证 UTF-16 解码的唯一性，对于 <code>U+D800 ~ U+DFFF</code> 的
+Unicode 字符不做编码。</p>
+</blockquote>
+<p>同样，下面给出了一个转换示例</p>
+<p><code>🧐</code>：U+1F9D0</p>
+<ol type="1">
+<li><p>首先减去 <code>0x10000</code>，确保 <code>U'</code> 的范围在
+<code>0xFFFFF</code> 之间（最多支持 20 位）</p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">U&#x27; = U - 0x10000</span><br><span class="line">   = 0xf9d0</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>分别取出 <code>U'</code> 的
+前10位和后10位，填充到两个16位整数中</p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">w0 = (U&#x27; &gt;&gt; 10) &amp; 0x3ff</span><br><span class="line">   = 0b0000111110</span><br><span class="line">w1 = U&#x27; &amp; 0x3ff</span><br><span class="line">   = 0b0111010000</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>最后添加6位的前缀</p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">w0 = w0 | 0xd800</span><br><span class="line">   = 0b1101100000111110</span><br><span class="line">   = 0xd83e</span><br><span class="line">w1 = w1 | 0xdc00</span><br><span class="line">   = 0b1101110111010000 </span><br><span class="line">   = 0xddd0</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>最终得到 <code>🧐</code> 的 UTF-16 编码为
+<code>[0xd83e,0xddd0]</code></p>
+<ul>
+<li>UTF-16LE： <code>b'\x3e\xd8\xd0\xdd'</code></li>
+<li>UTF-16BE： <code>b'\xd8\x3e\xdd\xd0'</code></li>
+</ul>
+<p>代码写起来就十分简单了，将上面的过程翻译成 C++ 位运算即可</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">std::vector&lt;<span class="type">uint16_t</span>&gt; <span class="title">encode_utf16</span><span class="params">(<span class="type">uint32_t</span> u)</span> </span>&#123;</span><br><span class="line">  std::vector&lt;<span class="type">uint16_t</span>&gt; res;</span><br><span class="line">  <span class="keyword">if</span> (u &lt; <span class="number">0xd800</span> || (u &gt; <span class="number">0xdfff</span> &amp;&amp; u &lt;= <span class="number">0xffff</span>)) &#123;</span><br><span class="line">    res.<span class="built_in">emplace_back</span>(u);</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (u &gt; <span class="number">0xffff</span> &amp;&amp; u &lt;= <span class="number">0x10ffff</span>) &#123;</span><br><span class="line">    u -= <span class="number">0x10000</span>;</span><br><span class="line">    res.<span class="built_in">emplace_back</span>(((u &gt;&gt; <span class="number">10</span>) &amp; <span class="number">0x3ff</span>) | <span class="number">0xd800</span>);</span><br><span class="line">    res.<span class="built_in">emplace_back</span>((u &amp; <span class="number">0x3ff</span>) | <span class="number">0xdc00</span>);</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    std::cerr &lt;&lt; fmt::format(</span><br><span class="line">                     <span class="string">&quot;Failed to encode &#123;&#125; to UTF-16, replaced with U+FFFD&quot;</span>,</span><br><span class="line">                     <span class="built_in">unicode</span>(u))</span><br><span class="line">              &lt;&lt; std::endl;</span><br><span class="line">    res.<span class="built_in">emplace_back</span>(<span class="number">0xfffd</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>对于解码也是一样，不过我们需要验证一下 surrogate
+的有效性（必须成对存在）</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">std::vector&lt;<span class="type">uint32_t</span>&gt; <span class="title">decode_utf16</span><span class="params">(<span class="type">const</span> std::vector&lt;<span class="type">uint16_t</span>&gt; &amp;s)</span> </span>&#123;</span><br><span class="line">  std::vector&lt;<span class="type">uint32_t</span>&gt; res;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">auto</span> it = s.<span class="built_in">begin</span>(); it != s.<span class="built_in">end</span>(); it++) &#123;</span><br><span class="line">    <span class="type">uint16_t</span> w0 = *it;</span><br><span class="line">    <span class="keyword">if</span> (w0 &lt; <span class="number">0xd800</span> || w0 &gt; <span class="number">0xdfff</span>) &#123;</span><br><span class="line">      res.<span class="built_in">emplace_back</span>(w0);</span><br><span class="line">      <span class="keyword">continue</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">assert</span>(++it != s.<span class="built_in">end</span>());</span><br><span class="line">    <span class="type">uint16_t</span> w1 = *it;</span><br><span class="line">    <span class="keyword">if</span> (w1 &lt; <span class="number">0xdc00</span> || w1 &gt; <span class="number">0xdfff</span>) &#123;</span><br><span class="line">      std::cerr &lt;&lt; fmt::format(<span class="string">&quot;Failed to decode word &#123;:#04x&#125; at index &#123;&#125;&quot;</span>, w1,</span><br><span class="line">                               it - s.<span class="built_in">begin</span>())</span><br><span class="line">                &lt;&lt; std::endl;</span><br><span class="line">      <span class="built_in">assert</span>(<span class="literal">false</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    res.<span class="built_in">emplace_back</span>(<span class="number">0x10000</span> + ((w0 &amp; <span class="number">0x3ff</span>) &lt;&lt; <span class="number">10</span>) | (w1 &amp; <span class="number">0x3ff</span>));</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>注：UTF-16、UTF-16LE、UTF-16BE 的区别：</p>
+<ul>
+<li>UTF-16 类似于 UTF-8 with BOM，在文件开头添加 <code>U+FEFF</code>
+标记，用来标识存储内容的字节顺序</li>
+<li>而 UTF-16LE 和 UTF-16BE则是在编码时就约定好字节顺序，不需要通过 BOM
+来确定。</li>
+</ul>
+<p>对于 UTF-32、UTF-32LE、UTF-32BE 也是类似，和 UTF-8 with BOM
+类似，一般直接使用 LE 或 BE 版本即可，最好不要在文件开头添加
+BOM（有可能影响文件解析）</p>
+</blockquote>
+<p>而对于 UTF-32 编码，就简单很多了，目前最大的 Unicode 字符也就到
+<code>U+10FFFF</code>，使用 32 位来表示完全足够了（即 Unicode code point
+就是 UTF-32 编码值）。但是代价也很明显，存储代价太大了，对于纯 ASCII
+的代码，需要 4 倍的存储空间。而在 Python 中就采用了
+Latin-1（ASCII）、UTF-16 和 UTF-32
+的混合表示方式（代价是性能，但是其字符串操作上十分便捷）。</p>
+<h2 id="unicode-in-c">Unicode in C++</h2>
+<p>目前 Windows 并不支持 UTF-8（使用的 UTF-16），如果我们编写了一段 c++
+程序输出 UTF-8
+字符串，我们会看到乱码的结果。<strong>除此之外，对于文件的读写、命令行参数的传递也会出现同样的问题</strong>。如果我们想编写跨平台应用程序，最好保证使用的所有字符串都是
+UTF-8。通过 <code>Boost.Nowide</code>
+库可以实现这个转换。（单纯输出乱码的话可以使用 <code>fmt::print</code>
+来解决乱码问题）</p>
+<p>使用时我们需要<strong>确保在程序中使用的 <code>char*</code> 和
+<code>std::string</code> 都是 UTF-8
+编码的</strong>，进行文件I/O、解析命令行命令以及 stdout、stdin、stderr
+时统一使用nowide库进行操作，就基本可以屏蔽掉大部分的坑。</p>
+<p>对于命令行命令的解析，有一点小坑，我们需要手动链接
+<code>shell32.dll</code> ，这个在 Windows SDK
+中自带，只需要链接上即可。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;boost/nowide/args.hpp&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;boost/nowide/iostream.hpp&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;fmt/core.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;fmt/ranges.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> nw = boost::nowide;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span> **argv)</span> </span>&#123;</span><br><span class="line">  nw::args _(argc, argv);</span><br><span class="line">  <span class="function">std::vector&lt;std::string&gt; <span class="title">args</span><span class="params">(argv, argv + argc)</span></span>;</span><br><span class="line">  nw::cout &lt;&lt; fmt::format(<span class="string">&quot;arguments: &#123;&#125;&quot;</span>, args) &lt;&lt; std::endl;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>对应的 xmake</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">target(<span class="string">&quot;nw&quot;</span>)</span><br><span class="line">    set_kind(<span class="string">&quot;binary&quot;</span>)</span><br><span class="line">    set_languages(<span class="string">&quot;cxx17&quot;</span>)</span><br><span class="line">    add_files(<span class="string">&quot;src/nw.cpp&quot;</span>)</span><br><span class="line">    add_packages(<span class="string">&quot;fmt&quot;</span>,<span class="string">&quot;tabulate&quot;</span>,<span class="string">&quot;boost&quot;</span>)</span><br><span class="line">    <span class="keyword">if</span> is_plat(<span class="string">&quot;windows&quot;</span>) <span class="keyword">then</span> </span><br><span class="line">        add_cxxflags(<span class="string">&quot;/utf-8&quot;</span>,&#123;tools=<span class="string">&quot;cl&quot;</span>&#125;)</span><br><span class="line">        add_cxxflags(<span class="string">&quot;/RTC1&quot;</span>,&#123;tools=<span class="string">&quot;cl&quot;</span>&#125;)</span><br><span class="line">        add_defines(<span class="string">&quot;BOOST_USE_WINDOWS_H&quot;</span>,<span class="string">&quot;NOMINMAX&quot;</span>)</span><br><span class="line">        add_links(<span class="string">&quot;shell32&quot;</span>)</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">    set_installdir(<span class="built_in">path</span>.join(<span class="built_in">os</span>.scriptdir()))</span><br></pre></td></tr></table></figure>
+
+<p>输出结果</p>
+<p><img data-src="/posts/c4ef/image-20230129173623164.png"
+style="zoom:50%;" /></p>
+<p>此处链接 <code>shell32.dll</code> 十分关键，如果没有就会报错
+LNK2019：无法解析的外部符号 <code>__imp_CommandLineToArgvW</code></p>
+<p><img data-src="/posts/c4ef/image-20230129173845768.png"
+style="zoom:50%;" /></p>
+<p>这个函数实际上就是 Windows
+提供的命令行参数编码转换函数，具体可以参考：<a
+target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-commandlinetoargvw">CommandLineToArgvW
+function (shellapi.h) - Win32 apps | Microsoft Learn</a></p>
+<p>还有另外一种解决方案，就是开启 UTF-8 实验性功能，这样 Windows
+强制所有编码都是
+UTF-8，就是对一些老应用不友好，特别是之前编译的中文应用，因为其使用的可能是
+GBK 编码。</p>
+<p><img data-src="/posts/c4ef/image-20230118163241733.png"
+style="zoom:50%;" /></p>
+<p>将其勾上然后重启电脑就可以了，这样我们直接通过 <code>std::cout</code>
+以及 <code>std::fstream</code>
+打开文件时就不会乱码了，但是无法确保其他人也这么做，所以还是老老实实使用
+Nowide 库比较靠谱。</p>
+<h1 id="参考">参考</h1>
+<ol type="1">
+<li><a
+target="_blank" rel="noopener" href="https://www.joelonsoftware.com/2003/10/08/the-absolute-minimum-every-software-developer-absolutely-positively-must-know-about-unicode-and-character-sets-no-excuses/">The
+Absolute Minimum Every Software Developer Absolutely, Positively Must
+Know About Unicode and Character Sets (No Excuses!) – Joel on
+Software</a></li>
+<li><a target="_blank" rel="noopener" href="https://utf8everywhere.org/zh-cn">UTF-8 遍地开花
+(utf8everywhere.org)</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://www.boost.org/doc/libs/1_81_0/libs/nowide/doc/html/index.html">Boost.Nowide:
+Boost.Nowide - 1.81.0</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/windows/win32/api/winnls/nf-winnls-getacp">GetACP
+function (winnls.h) - Win32 apps | Microsoft Learn</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/windows/win32/intl/code-pages?source=recommendations">Code
+Pages - Win32 apps | Microsoft Learn</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/windows/win32/intl/code-page-identifiers">Code
+Page Identifiers - Win32 apps | Microsoft Learn</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://stackoverflow.com/questions/61449854/getting-error-lnk2019-unresolved-external-symbol-when-compiling-sdl2-code-in-wi">visual
+c++ - Getting error LNK2019: unresolved external symbol when compiling
+SDL2 code in Windows using MSVC - Stack Overflow</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://stackoverflow.com/questions/56419639/what-does-beta-use-unicode-utf-8-for-worldwide-language-support-actually-do">c#
+- What does "Beta: Use Unicode UTF-8 for worldwide language support"
+actually do? - Stack Overflow</a></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>PureWhiteVK
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://purewhitevk.github.io/posts/c4ef/" title="字符串编码">https://purewhitevk.github.io/posts/c4ef/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/dead.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/C/" rel="tag"># C++</a>
+              <a href="/tags/Unicode/" rel="tag"># Unicode</a>
+              <a href="/tags/UTF-8/" rel="tag"># UTF-8</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/9a20/" rel="prev" title="hexo自定义插件">
+                  <i class="fa fa-chevron-left"></i> hexo自定义插件
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/55c5/" rel="next" title="虚函数执行原理理解">
+                  虚函数执行原理理解 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PureWhiteVK</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">23k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">1:23</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,1438 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"purewhitevk.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.14.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"default"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="之前我们已经配置好了 hexo 对 LaTex 公式的支持（在 markdown 的 Front Matter 中添加 mathjax: true 开启 LaTex 公式渲染支持），支持两种形式的公式输入  内联公式（inline），通过 $...$ 进行包裹（必须在同一行） 例：markdown 代码 $\phi &#x3D; 30$ 对应内联公式渲染结果 \(\phi &#x3D; 30\) 在 $">
+<meta property="og:type" content="article">
+<meta property="og:title" content="LaTex公式学习笔记">
+<meta property="og:url" content="https://purewhitevk.github.io/posts/caff/">
+<meta property="og:site_name" content="PureWhite&#39;s Blog">
+<meta property="og:description" content="之前我们已经配置好了 hexo 对 LaTex 公式的支持（在 markdown 的 Front Matter 中添加 mathjax: true 开启 LaTex 公式渲染支持），支持两种形式的公式输入  内联公式（inline），通过 $...$ 进行包裹（必须在同一行） 例：markdown 代码 $\phi &#x3D; 30$ 对应内联公式渲染结果 \(\phi &#x3D; 30\) 在 $">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/caff/no-physics-error.svg">
+<meta property="article:published_time" content="2023-01-03T06:09:39.000Z">
+<meta property="article:modified_time" content="2023-01-03T06:09:39.000Z">
+<meta property="article:author" content="PureWhiteVK">
+<meta property="article:tag" content="mathjax">
+<meta property="article:tag" content="LaTex">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://purewhitevk.github.io/posts/caff/no-physics-error.svg">
+
+
+<link rel="canonical" href="https://purewhitevk.github.io/posts/caff/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://purewhitevk.github.io/posts/caff/","path":"posts/caff/","title":"LaTex公式学习笔记"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>LaTex公式学习笔记 | PureWhite's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">PureWhite's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">11</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">1</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">5</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E7%AC%A6%E5%8F%B7"><span class="nav-number">1.</span> <span class="nav-text">常用符号</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B3%E7%B3%BB%E5%92%8C%E8%BF%90%E7%AE%97%E7%AC%A6%E5%8F%B7"><span class="nav-number">1.1.</span> <span class="nav-text">关系和运算符号</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%AD%E5%A4%B4%E7%AC%A6%E5%8F%B7"><span class="nav-number">1.2.</span> <span class="nav-text">箭头符号</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%8C%E8%85%8A%E5%AD%97%E6%AF%8D"><span class="nav-number">1.3.</span> <span class="nav-text">希腊字母</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E8%A7%92%E5%87%BD%E6%95%B0"><span class="nav-number">1.4.</span> <span class="nav-text">三角函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E7%AC%A6%E5%8F%B7"><span class="nav-number">1.5.</span> <span class="nav-text">其他符号</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%87%E8%AF%86%E7%AC%A6%E5%8F%B7"><span class="nav-number">1.6.</span> <span class="nav-text">标识符号</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8B%AC%E5%8F%B7"><span class="nav-number">1.7.</span> <span class="nav-text">括号</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A9%BA%E6%A0%BC"><span class="nav-number">1.8.</span> <span class="nav-text">空格</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AD%97%E4%BD%93"><span class="nav-number">2.</span> <span class="nav-text">字体</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E5%85%AC%E5%BC%8F%E5%86%99%E6%B3%95"><span class="nav-number">3.</span> <span class="nav-text">常用公式写法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E8%A7%92%E5%87%BD%E6%95%B0-1"><span class="nav-number">3.1.</span> <span class="nav-text">三角函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9E%81%E9%99%90"><span class="nav-number">3.2.</span> <span class="nav-text">极限</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%96%E6%A8%A1"><span class="nav-number">3.3.</span> <span class="nav-text">取模</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8A%E4%B8%8B%E6%A0%87"><span class="nav-number">3.4.</span> <span class="nav-text">上下标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E6%95%B0%E5%92%8C%E4%BA%8C%E9%A1%B9%E5%BC%8F%E7%B3%BB%E6%95%B0"><span class="nav-number">3.5.</span> <span class="nav-text">分数和二项式系数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%B9%E5%BC%8F"><span class="nav-number">3.6.</span> <span class="nav-text">根式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B1%82%E5%92%8C%E4%B9%98%E7%A7%AF%E4%B8%8E%E7%A7%AF%E5%88%86"><span class="nav-number">3.7.</span> <span class="nav-text">求和、乘积与积分</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9F%A9%E9%98%B5"><span class="nav-number">3.8.</span> <span class="nav-text">矩阵</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%AC%E5%BC%8F%E7%9A%84%E5%AF%B9%E9%BD%90"><span class="nav-number">4.</span> <span class="nav-text">公式的对齐</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%B9%E9%BD%90%E6%98%BE%E7%A4%BA"><span class="nav-number">4.1.</span> <span class="nav-text">对齐显示</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B1%85%E4%B8%AD%E6%98%BE%E7%A4%BA"><span class="nav-number">4.2.</span> <span class="nav-text">居中显示</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AF%BC%E5%85%A5%E5%85%B6%E4%BB%96%E5%8C%85"><span class="nav-number">5.</span> <span class="nav-text">导入其他包</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">6.</span> <span class="nav-text">参考</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="PureWhiteVK"
+      src="/images/Touma.Kazusa.256x256.png">
+  <p class="site-author-name" itemprop="name">PureWhiteVK</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">5</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/PureWhiteVK" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;PureWhiteVK" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:yl_xiao@outlook.com" title="E-Mail → mailto:yl_xiao@outlook.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/dead.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://purewhitevk.github.io/posts/caff/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/Touma.Kazusa.256x256.png">
+      <meta itemprop="name" content="PureWhiteVK">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PureWhite's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="LaTex公式学习笔记 | PureWhite's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          LaTex公式学习笔记
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023/01/03 14:09:39" itemprop="dateCreated datePublished" datetime="2023-01-03T14:09:39+08:00">2023/01/03</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">学习笔记</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>4.3k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>16 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>之前我们已经配置好了 hexo 对 LaTex 公式的支持（在 markdown 的 Front
+Matter 中添加 <code>mathjax: true</code> 开启 LaTex
+公式渲染支持），支持两种形式的公式输入</p>
+<ul>
+<li><p>内联公式（inline），通过 <code>$...$</code>
+进行包裹（必须在同一行）</p>
+<p>例：markdown 代码 <code>$\phi = 30$</code> 对应内联公式渲染结果 <span
+class="math inline">\(\phi = 30\)</span></p>
+<p>在 <code>$</code>
+和公式之间不能存在空格，也就是说，对于<code>$ \phi = 30 $</code>
+并不能得到正确的渲染结果</p></li>
+<li><p>块公式（block），通过 <code>$$...$$</code>
+进行包裹（两个<code>$$</code>必须在不同行）</p>
+<p>例：markdown 代码</p>
+<figure class="highlight latex"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">$</span><span class="built_in">$</span></span><br><span class="line"><span class="keyword">\int</span> <span class="built_in">_</span>0 <span class="built_in">^</span><span class="keyword">\pi</span> <span class="keyword">\sin</span>(x) = 2</span><br><span class="line"><span class="built_in">$</span><span class="built_in">$</span></span><br></pre></td></tr></table></figure>
+
+<p>对应块渲染结果 <span class="math display">\[
+\int _0 ^ \pi \sin x = 2
+\]</span></p></li>
+</ul>
+<p>现在我们可以在 markdown
+文档中添加并渲染公式了，那么下一步就是如何正确书写公式，以及一些常用公式符号。</p>
+<span id="more"></span>
+
+<h1 id="常用符号">常用符号</h1>
+<p>可以使用在线的<a
+target="_blank" rel="noopener" href="https://www.latexlive.com/">LaTex公式编辑器</a>来手动选取，下面列举了一些常用的符号</p>
+<h2 id="关系和运算符号">关系和运算符号</h2>
+<p><span class="math display">\[
+\begin{align}
+&amp; &lt; &amp; &amp; \mathtt{&lt;} &amp;
+&amp; \leq &amp; &amp; \mathtt{\backslash leq} &amp;
+&amp; \ll &amp; &amp; \mathtt{\backslash ll} &amp;
+\\
+&amp; &gt; &amp; &amp; \mathtt{&gt;} &amp;
+&amp; \geq &amp; &amp; \mathtt{\backslash geq} &amp;
+&amp; \gg &amp; &amp; \mathtt{\backslash gg} &amp;
+\\
+\\
+&amp; \in &amp; &amp; \mathtt{\backslash in} &amp;
+&amp; \subset &amp; &amp; \mathtt{\backslash subset} &amp;
+&amp; \subseteq &amp; &amp; \mathtt{\backslash subseteq} &amp;
+\\
+&amp; \ni &amp; &amp; \mathtt{\backslash ni} &amp;
+&amp; \supset &amp; &amp; \mathtt{\backslash supset} &amp;
+&amp; \supseteq &amp; &amp; \mathtt{\backslash supseteq} &amp;
+\\
+&amp; \notin &amp; &amp; \mathtt{\backslash notin} &amp;
+\\
+\\
+&amp; = &amp; &amp; \mathtt{=} &amp;
+&amp; \neq &amp; &amp; \mathtt{\backslash neq} &amp;
+&amp; \equiv &amp; &amp; \mathtt{\backslash equiv} &amp;
+\\
+&amp; \approx &amp; &amp; \mathtt{\backslash approx} &amp;
+&amp; \propto &amp; &amp; \mathtt{\backslash propto} &amp;
+\\
+\\
+&amp; \parallel &amp; &amp; \mathtt{\backslash parallel} &amp;
+&amp; \nparallel &amp; &amp; \mathtt{\backslash nparallel} &amp;
+&amp; \sim &amp; &amp; \mathtt{\backslash sim} &amp;
+\\
+&amp; \perp &amp; &amp; \mathtt{\backslash perp} &amp;
+\\
+\\
+&amp; + &amp; &amp; \text{+} &amp;
+&amp; - &amp; &amp; \text{-} &amp;
+&amp; \star &amp; &amp; \mathtt{\backslash star} &amp;
+\\
+&amp; \times &amp; &amp; \mathtt{\backslash times} &amp;
+&amp; \div &amp; &amp; \mathtt{\backslash div} &amp;
+&amp; \cdot &amp; &amp; \mathtt{\backslash cdot} &amp;
+\\
+&amp; \cup &amp; &amp; \mathtt{\backslash cup} &amp;
+&amp; \cap &amp; &amp; \mathtt{\backslash cap} &amp;
+&amp; \ast &amp; &amp; \mathtt{\backslash ast} &amp;
+\\
+&amp; \vee &amp; &amp; \mathtt{\backslash vee} &amp;
+&amp; \wedge &amp; &amp; \mathtt{\backslash wedge} &amp;
+&amp; \oplus &amp; &amp; \mathtt{\backslash oplus} &amp;
+\\
+&amp; \otimes &amp; &amp; \mathtt{\backslash otimes} &amp;
+&amp; \ominus &amp; &amp; \mathtt{\backslash ominus} &amp;
+&amp; \odot &amp; &amp; \mathtt{\backslash odot} &amp;
+\end{align}
+\]</span></p>
+<h2 id="箭头符号">箭头符号</h2>
+<p><span class="math display">\[
+\begin{align}
+&amp; \leftarrow &amp; &amp; \mathtt{\backslash leftarrow} &amp;
+&amp; \rightarrow &amp; &amp; \mathtt{\backslash rightarrow} &amp;
+\\
+&amp; \uparrow &amp; &amp; \mathtt{\backslash uparrow} &amp;
+&amp; \downarrow &amp; &amp; \mathtt{\backslash downarrow} &amp;
+\\
+&amp; \updownarrow &amp; &amp; \mathtt{\backslash updownarrow} &amp;
+&amp; \leftrightarrow &amp; &amp; \mathtt{\backslash leftrightarrow}
+&amp;
+\\
+\\
+&amp; \nwarrow &amp; &amp; \mathtt{\backslash nwarrow} &amp;
+&amp; \nearrow &amp; &amp; \mathtt{\backslash nearrow} &amp;
+\\
+&amp; \swarrow &amp; &amp; \mathtt{\backslash swarrow} &amp;
+&amp; \searrow &amp; &amp; \mathtt{\backslash searrow} &amp;
+\\
+\\
+&amp; \mapsto &amp; &amp; \mathtt{\backslash mapsto} &amp;
+&amp; \rightleftharpoons &amp; &amp; \mathtt{\backslash
+rightleftharpoons} &amp;
+\\
+&amp; \leftharpoonup &amp; &amp; \mathtt{\backslash leftharpoonup} &amp;
+&amp; \rightharpoonup &amp; &amp; \mathtt{\backslash rightharpoonup}
+&amp;
+\\
+&amp; \leftharpoondown &amp; &amp; \mathtt{\backslash leftharpoondown}
+&amp;
+&amp; \rightharpoondown &amp; &amp; \mathtt{\backslash rightharpoondown}
+&amp;
+\\
+\\
+&amp; \longleftarrow &amp; &amp; \mathtt{\backslash longleftarrow} &amp;
+&amp; \longrightarrow &amp; &amp; \mathtt{\backslash longrightarrow}
+&amp;
+\\
+&amp; \longleftrightarrow &amp; &amp; \mathtt{\backslash
+longleftrightarrow} &amp;
+&amp; \longmapsto &amp; &amp; \mathtt{\backslash longmapsto} &amp;
+\\
+\\
+&amp; \Leftarrow &amp; &amp; \mathtt{\backslash Leftarrow} &amp;
+&amp; \Rightarrow &amp; &amp; \mathtt{\backslash Rightarrow} &amp;
+\\
+&amp; \Uparrow &amp; &amp; \mathtt{\backslash Uparrow} &amp;
+&amp; \Downarrow &amp; &amp; \mathtt{\backslash Downarrow} &amp;
+\\
+&amp; \Updownarrow &amp; &amp; \mathtt{\backslash Updownarrow} &amp;
+&amp; \Leftrightarrow &amp; &amp; \mathtt{\backslash Leftrightarrow}
+&amp;
+\\
+&amp; \Longleftarrow &amp; &amp; \mathtt{\backslash Longleftarrow} &amp;
+&amp; \Longrightarrow &amp; &amp; \mathtt{\backslash Longrightarrow}
+&amp;
+\\
+&amp; \Longleftrightarrow &amp; &amp; \mathtt{\backslash
+Longleftrightarrow} &amp;
+\end{align}
+\]</span></p>
+<p>注：当我们需要表示当且仅当关系是常用 <code>\Longleftrightarrow</code>
+，为了简写，也可以使用 <code>\iff</code> （if and only if, 当且仅当)
+来简化</p>
+<h2 id="希腊字母">希腊字母</h2>
+<p><span class="math display">\[
+\begin{align}
+&amp;\alpha &amp; &amp; \mathtt{\backslash alpha}&amp;  
+&amp;\beta &amp; &amp; \mathtt{\backslash beta}&amp;
+&amp;\gamma &amp; &amp; \mathtt{\backslash gamma}&amp;
+\\
+&amp;\delta &amp; &amp; \mathtt{\backslash delta}&amp;
+&amp;\epsilon &amp; &amp; \mathtt{\backslash epsilon}&amp;
+&amp;\zeta &amp; &amp; \mathtt{\backslash zeta}&amp;
+\\
+&amp;\eta &amp; &amp; \mathtt{\backslash eta}&amp;
+&amp;\theta &amp; &amp; \mathtt{\backslash theta}&amp;
+&amp;\iota &amp; &amp; \mathtt{\backslash iota}&amp;
+\\
+&amp;\kappa &amp; &amp; \mathtt{\backslash kappa}&amp;
+&amp;\lambda &amp; &amp; \mathtt{\backslash lambda}&amp;
+&amp;\mu &amp; &amp; \mathtt{\backslash mu}&amp;
+\\
+&amp;\nu &amp; &amp; \mathtt{\backslash nu}&amp;
+&amp;\xi &amp; &amp; \mathtt{\backslash xi}&amp;
+&amp;\omicron &amp; &amp; \mathtt{\backslash omicron}&amp;
+\\
+&amp;\pi &amp; &amp; \mathtt{\backslash pi}&amp;
+&amp;\rho &amp; &amp; \mathtt{\backslash rho}&amp;
+&amp;\sigma &amp; &amp; \mathtt{\backslash sigma}&amp;
+\\
+&amp;\tau &amp; &amp; \mathtt{\backslash tau}&amp;
+&amp;\upsilon &amp; &amp; \mathtt{\backslash upsilon}&amp;
+&amp;\phi &amp; &amp; \mathtt{\backslash phi}&amp;
+\\
+&amp;\chi &amp; &amp; \mathtt{\backslash chi}&amp;
+&amp;\psi &amp; &amp; \mathtt{\backslash psi}&amp;
+&amp;\omega &amp; &amp; \mathtt{\backslash omega}&amp;
+\\
+\\
+&amp; \varepsilon &amp; &amp; \mathtt{\backslash varepsilon} &amp;
+&amp; \vartheta &amp; &amp; \mathtt{\backslash vartheta} &amp;
+&amp; \varpi &amp; &amp; \mathtt{\backslash varpi} &amp;
+\\
+&amp; \varrho &amp; &amp; \mathtt{\backslash varrho} &amp;
+&amp; \varsigma &amp; &amp; \mathtt{\backslash varsigma} &amp;
+&amp; \varphi &amp; &amp; \mathtt{\backslash varphi} &amp;
+\\
+&amp; \varkappa &amp; &amp; \mathtt{\backslash varkappa} &amp;
+\\
+\\
+&amp;\Gamma &amp; &amp; \mathtt{\backslash Gamma}&amp;  
+&amp; \Lambda &amp; &amp; \mathtt{\backslash Lambda} &amp;
+&amp;\Sigma &amp; &amp; \mathtt{\backslash Sigma}&amp;  
+\\
+&amp; \Psi &amp; &amp; \mathtt{\backslash Psi} &amp;
+&amp;\Delta &amp; &amp; \mathtt{\backslash Delta}&amp;  
+&amp; \Xi &amp; &amp; \mathtt{\backslash Xi} &amp;
+\\
+&amp;\Upsilon &amp; &amp; \mathtt{\backslash Upsilon}&amp;  
+&amp; \Omega &amp; &amp; \mathtt{\backslash Omega} &amp;
+&amp;\Theta &amp; &amp; \mathtt{\backslash Theta}&amp;  
+\\
+&amp; \Pi &amp; &amp; \mathtt{\backslash Pi} &amp;
+&amp;\Phi &amp; &amp; \mathtt{\backslash Phi}&amp;  
+\end{align}
+\]</span></p>
+<h2 id="三角函数">三角函数</h2>
+<p><span class="math display">\[
+\begin{align}
+&amp;\sin&amp; &amp;\mathtt{\backslash sin}&amp;
+&amp;\cos&amp; &amp;\mathtt{\backslash cos}&amp;
+\\
+&amp;\tan&amp; &amp;\mathtt{\backslash tan}&amp;
+&amp;\cot&amp; &amp;\mathtt{\backslash cot}&amp;
+\\
+&amp;\sec&amp; &amp;\mathtt{\backslash sec}&amp;
+&amp;\csc&amp; &amp;\mathtt{\backslash csc}&amp;
+\\
+\\
+&amp;\arcsin&amp; &amp;\mathtt{\backslash arcsin}&amp;
+&amp;\arccos&amp; &amp;\mathtt{\backslash arccos}&amp;
+\\
+&amp;\arctan&amp; &amp;\mathtt{\backslash arctan}&amp;
+\\
+\\
+&amp;\sinh&amp; &amp;\mathtt{\backslash sinh}&amp;
+&amp;\cosh&amp; &amp;\mathtt{\backslash cosh}&amp;
+\\
+&amp;\tanh&amp; &amp;\mathtt{\backslash tanh}&amp;
+&amp;\coth&amp; &amp;\mathtt{\backslash coth}&amp;
+\\
+\end{align}
+\]</span></p>
+<h2 id="其他符号">其他符号</h2>
+<p><span class="math display">\[
+\begin{align}
+&amp; \infty &amp; &amp; \mathtt{\backslash infty} &amp;
+&amp; \Re &amp; &amp; \mathtt{\backslash Re} &amp;
+\\
+&amp; \forall &amp; &amp; \mathtt{\backslash forall} &amp;
+&amp; \exists &amp; &amp; \mathtt{\backslash exists} &amp;
+\\
+&amp; \nexists &amp; &amp; \mathtt{\backslash nexists} &amp;
+&amp; \emptyset &amp; &amp; \mathtt{\backslash emptyset} &amp;
+\\
+&amp; \varnothing &amp; &amp; \mathtt{\backslash varnothing} &amp;
+&amp; \top &amp; &amp; \mathtt{\backslash top} &amp;
+\\
+&amp; \partial &amp; &amp; \mathtt{\backslash partial} &amp;
+&amp; \nabla &amp; &amp; \mathtt{\backslash nabla} &amp;
+\end{align}
+\]</span></p>
+<h2 id="标识符号">标识符号</h2>
+<p>有时我们可能需要在字母上添加上标（例如平均数 <span
+class="math inline">\(\bar{x}\)</span>，估计值 <span
+class="math inline">\(\hat{x}\)</span> 等），下标（下划线 <span
+class="math inline">\(\underline{x}\)</span> ）等</p>
+<table>
+<thead>
+<tr class="header">
+<th>Code</th>
+<th>Result</th>
+<th>Code</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>a'</code> or <code>a^&#123;\prime&#125;</code></td>
+<td><span class="math inline">\(a&#39;\)</span></td>
+<td><code>a''</code></td>
+<td><span class="math inline">\(a&#39;&#39;\)</span></td>
+</tr>
+<tr class="even">
+<td><code>\hat&#123;a&#125;</code></td>
+<td><span class="math inline">\(\hat{a}\)</span></td>
+<td><code>\bar&#123;a&#125;</code></td>
+<td><span class="math inline">\(\bar{a}\)</span></td>
+</tr>
+<tr class="odd">
+<td><code>\acute&#123;a&#125;</code></td>
+<td><span class="math inline">\(\acute{a}\)</span></td>
+<td><code>\check&#123;a&#125;</code></td>
+<td><span class="math inline">\(\check{a}\)</span></td>
+</tr>
+<tr class="even">
+<td><code>\grave&#123;a&#125;</code></td>
+<td><span class="math inline">\(\grave{a}\)</span></td>
+<td><code>\dot&#123;a&#125;</code></td>
+<td><span class="math inline">\(\dot{a}\)</span></td>
+</tr>
+<tr class="odd">
+<td><code>\mathring&#123;a&#125;</code></td>
+<td><span class="math inline">\(\mathring{a}\)</span></td>
+<td><code>\breve&#123;a&#125;</code></td>
+<td><span class="math inline">\(\breve{a}\)</span></td>
+</tr>
+<tr class="even">
+<td><code>\tilde&#123;a&#125;</code></td>
+<td><span class="math inline">\(\tilde{a}\)</span></td>
+<td><code>\vec&#123;a&#125;</code></td>
+<td><span class="math inline">\(\vec{a}\)</span></td>
+</tr>
+<tr class="odd">
+<td><code>\underline&#123;a&#125;</code></td>
+<td><span class="math inline">\(\underline{a}\)</span></td>
+<td><code>\overline&#123;a&#125;</code></td>
+<td><span class="math inline">\(\overline{a}\)</span></td>
+</tr>
+<tr class="even">
+<td><code>\overrightarrow&#123;AB&#125;</code></td>
+<td><span class="math inline">\(\overrightarrow{AB}\)</span></td>
+<td><code>\overleftarrow&#123;AB&#125;</code></td>
+<td><span class="math inline">\(\overleftarrow{AB}\)</span></td>
+</tr>
+<tr class="odd">
+<td><code>\widehat&#123;AB&#125;</code></td>
+<td><span class="math inline">\(\widehat{AB}\)</span></td>
+<td><code>\widetilde&#123;AB&#125;</code></td>
+<td><span class="math inline">\(\widetilde{AB}\)</span></td>
+</tr>
+</tbody>
+</table>
+<h2 id="括号">括号</h2>
+<p>常见的括号 <code>()</code>、中括号 <code>[]</code>、以及大括号
+<code>&#123;&#125;</code> 都可以直接在键盘中输入，由于大括号在 LaTex
+中的特殊含义（用来包裹一段公式），我们使用时需要添加 <code>\</code>
+进行转义，即 <code>\&#123;</code> 和 <code>\&#125;</code></p>
+<p>对于竖线 <code>|</code> ，我们可以直接从键盘中输入，也可以使用
+<code>\mid</code> 来表示，双竖线（范数的表示）可以使用 <code>\|</code>
+来表示（不能使用两个竖线，因为双竖线应该表示为一个字符），示例如下</p>
+<figure class="highlight latex"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">\|</span>x<span class="keyword">\|</span><span class="built_in">_</span>2</span><br></pre></td></tr></table></figure>
+
+<p><span class="math display">\[
+\|x\|_2
+\]</span></p>
+<p>其他分隔符表示如下 <span class="math display">\[
+\begin{align}
+&amp; / &amp; &amp; \mathtt{/} &amp;
+&amp; \backslash &amp; &amp; \mathtt{\backslash backslash} &amp;
+\\
+&amp; \langle &amp; &amp; \mathtt{\backslash langle} &amp;
+&amp; \rangle &amp; &amp; \mathtt{\backslash rangle} &amp;
+\\
+&amp; \lceil &amp; &amp; \mathtt{\backslash lceil} &amp;
+&amp; \rceil &amp; &amp; \mathtt{\backslash rceil} &amp;
+\\
+&amp; \lfloor &amp; &amp; \mathtt{\backslash lfloor} &amp;
+&amp; \rfloor &amp; &amp; \mathtt{\backslash rfloor} &amp;
+\end{align}
+\]</span></p>
+<p>当我们使用这些括号包裹一个大的公式时，如下所示</p>
+<figure class="highlight latex"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(<span class="keyword">\frac</span>&#123;x<span class="built_in">^</span>2&#125;&#123;y<span class="built_in">^</span>3&#125;)</span><br></pre></td></tr></table></figure>
+
+<p><span class="math display">\[
+(\frac{x^2}{y^3})
+\]</span></p>
+<p>我们可以发现这个括号（parentheses）不能完全的包裹住公式，此时我们需要使用
+<code>\left(...\right)</code> 来自动调整括号的大小</p>
+<figure class="highlight latex"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">\left</span>(<span class="keyword">\frac</span>&#123;x<span class="built_in">^</span>2&#125;&#123;y<span class="built_in">^</span>3&#125;<span class="keyword">\right</span>)</span><br></pre></td></tr></table></figure>
+
+<p><span class="math display">\[
+\left(\frac{x^2}{y^3}\right)
+\]</span></p>
+<p>除此之外，在中间表示时还可以使用 <code>\middle</code>
+来进行控制（条件概率时）</p>
+<figure class="highlight latex"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">P<span class="keyword">\left</span>(A=2<span class="keyword">\middle</span>|<span class="keyword">\frac</span>&#123;A<span class="built_in">^</span>2&#125;&#123;B&#125;&gt;4<span class="keyword">\right</span>)</span><br></pre></td></tr></table></figure>
+
+<p><span class="math display">\[
+P\left(A=2\middle| \frac{A^2}{B}&gt;4\right)
+\]</span></p>
+<p>而对于花括号（curly
+braces）和方括号（brackets）时，需要使用转义符进行转义
+<code>\&#123;</code></p>
+<figure class="highlight latex"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">\left</span><span class="keyword">\&#123;</span><span class="keyword">\frac</span>&#123;x<span class="built_in">^</span>2&#125;&#123;y<span class="built_in">^</span>3&#125;<span class="keyword">\right</span><span class="keyword">\&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p><span class="math display">\[
+\left\{\frac{x^2}{y^3}\right\}
+\]</span></p>
+<p>我们还可以使用 <code>.</code> 来忽略左侧或右侧符号</p>
+<figure class="highlight latex"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">\left</span>. <span class="keyword">\frac</span>&#123;x<span class="built_in">^</span>3&#125;&#123;3&#125; <span class="keyword">\right</span>| <span class="built_in">_</span>0 <span class="built_in">^</span>1</span><br></pre></td></tr></table></figure>
+
+<p><span class="math display">\[
+\left.\frac{x^3}{3}\right|_0^1
+\]</span></p>
+<p>最终，如果我们还是不满意，可以手动调整符号的大小</p>
+<figure class="highlight latex"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">( <span class="keyword">\big</span>( <span class="keyword">\Big</span>( <span class="keyword">\bigg</span>( <span class="keyword">\Bigg</span>(</span><br></pre></td></tr></table></figure>
+
+<p><span class="math display">\[
+( \big( \Big( \bigg( \Bigg(
+\]</span></p>
+<h2 id="空格">空格</h2>
+<p>如果我们直接在公式中输入空格，如果直接在字母中间插入空格，会被直接忽略掉，如果我们明确需要插入空格，需要通过指令形式显式给出，在
+LaTex 中空格相关的指令总结如下</p>
+<table>
+<thead>
+<tr class="header">
+<th>指令</th>
+<th>描述</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>（space）</td>
+<td>默认空格</td>
+<td><span class="math inline">\(abc \rightarrow \leftarrow
+abc\)</span></td>
+</tr>
+<tr class="even">
+<td><code>\,</code></td>
+<td>短空格(3/18 em)</td>
+<td><span class="math inline">\(abc \rightarrow\,\leftarrow
+abc\)</span></td>
+</tr>
+<tr class="odd">
+<td><code>\!</code></td>
+<td>短负空格(-3/18 em)</td>
+<td><span class="math inline">\(abc \rightarrow \! \leftarrow
+abc\)</span></td>
+</tr>
+<tr class="even">
+<td><code>!:</code></td>
+<td>中空格(4/18 em)</td>
+<td><span class="math inline">\(abc \rightarrow\:\leftarrow
+abc\)</span></td>
+</tr>
+<tr class="odd">
+<td><code>!;</code></td>
+<td>大空格(5/18 em)</td>
+<td><span class="math inline">\(abc \rightarrow\;\leftarrow
+abc\)</span></td>
+</tr>
+<tr class="even">
+<td><code>\enspace</code></td>
+<td>0.5字宽空格 (0.5 em)</td>
+<td><span class="math inline">\(abc \rightarrow\enspace\leftarrow
+abc\)</span></td>
+</tr>
+<tr class="odd">
+<td><code>\quad</code></td>
+<td>1字宽空格(1 em)</td>
+<td><span class="math inline">\(abc \rightarrow\quad\leftarrow
+abc\)</span></td>
+</tr>
+<tr class="even">
+<td><code>\qquad</code></td>
+<td>2字宽空格(2 em)</td>
+<td><span class="math inline">\(abc \rightarrow\qquad\leftarrow
+abc\)</span></td>
+</tr>
+<tr class="odd">
+<td><code>\hspace&#123;3em&#125;</code></td>
+<td>自定义宽度空格</td>
+<td><span class="math inline">\(abc \rightarrow\hspace{3em}\leftarrow
+abc\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>注：em 是一种长度单位，和 px 意义，但是其是相对字宽来度量的，1 em
+就表示一个字宽</p>
+<p>空格在积分公式的书写上十分有用，如果我们直接写的话，如下所示</p>
+<figure class="highlight latex"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">\int</span> y <span class="keyword">\mathrm</span>&#123;d&#125; x</span><br></pre></td></tr></table></figure>
+
+<p><span class="math display">\[
+\int y \mathrm{d} x
+\]</span></p>
+<p>我们可以看到被积函数 <span class="math inline">\(y\)</span> 和微元
+<span class="math inline">\(\mathrm{d}x\)</span>
+之间距离太短，看起来不是很自然，此时我们就可以在二者之间插入一个小的空白，如下所示</p>
+<figure class="highlight latex"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">\int</span> y <span class="keyword">\,</span><span class="keyword">\mathrm</span>&#123;d&#125; x</span><br></pre></td></tr></table></figure>
+
+<p><span class="math display">\[
+\int y \,\mathrm{d} x
+\]</span></p>
+<p>这样看起来就十分自然了。</p>
+<p>另外一个示例就是分段函数的表示</p>
+<figure class="highlight latex"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">$</span><span class="built_in">$</span></span><br><span class="line">f(n) = </span><br><span class="line"><span class="keyword">\begin</span>&#123;cases&#125;</span><br><span class="line">n / 2 <span class="built_in">&amp;</span> <span class="keyword">\quad</span> <span class="keyword">\text</span>&#123;if &#125; n <span class="keyword">\text</span>&#123; is even&#125; <span class="keyword">\\</span></span><br><span class="line">-(n+1)/2 <span class="built_in">&amp;</span> <span class="keyword">\quad</span> <span class="keyword">\text</span>&#123;if &#125; n <span class="keyword">\text</span>&#123; is odd&#125;</span><br><span class="line"><span class="keyword">\end</span>&#123;cases&#125;</span><br><span class="line"><span class="built_in">$</span><span class="built_in">$</span></span><br></pre></td></tr></table></figure>
+
+<p><span class="math display">\[
+f(n) =
+\begin{cases}
+n / 2 &amp; \quad \text{if } n \text{ is even} \\
+-(n+1)/2 &amp; \quad \text{if } n \text{ is odd}
+\end{cases}
+\]</span></p>
+<h1 id="字体">字体</h1>
+<table>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Command</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Upright Roman Font</td>
+<td><code>\mathrm&#123;&#125;</code></td>
+<td><span class="math inline">\(\mathrm{x}\)</span></td>
+</tr>
+<tr class="even">
+<td>Normal Italic Font</td>
+<td><code>\mathnormal&#123;&#125;</code></td>
+<td><span class="math inline">\(\mathnormal{x}\)</span></td>
+</tr>
+<tr class="odd">
+<td>Calligraphic Font</td>
+<td><code>\mathcal&#123;&#125;</code></td>
+<td><span class="math inline">\(\mathcal{X}\)</span></td>
+</tr>
+<tr class="even">
+<td>Upright Roman Boldface</td>
+<td><code>\mathbf&#123;&#125;</code></td>
+<td><span class="math inline">\(\mathbf{x}\)</span></td>
+</tr>
+<tr class="odd">
+<td>Upright Sans Serif</td>
+<td><code>\mathsf&#123;&#125;</code></td>
+<td><span class="math inline">\(\mathsf{x}\)</span></td>
+</tr>
+<tr class="even">
+<td>Italic Font</td>
+<td><code>\mathit&#123;&#125;</code></td>
+<td><span class="math inline">\(\mathit{x}\)</span></td>
+</tr>
+<tr class="odd">
+<td>Typewritter Font</td>
+<td><code>\mathtt&#123;&#125;</code></td>
+<td><span class="math inline">\(\mathtt{x}\)</span></td>
+</tr>
+<tr class="even">
+<td>Blackboard Bold Font</td>
+<td><code>\mathbb&#123;&#125;</code></td>
+<td><span class="math inline">\(\mathbb{X}\)</span></td>
+</tr>
+<tr class="odd">
+<td>Eular Calligraphic Font</td>
+<td><code>\mathscr&#123;&#125;</code></td>
+<td><span class="math inline">\(\mathscr{X}\)</span></td>
+</tr>
+<tr class="even">
+<td>Fraktur(Gothic) Font</td>
+<td><code>\mathfrak&#123;&#125;</code></td>
+<td><span class="math inline">\(\mathfrak{X}\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>注：</p>
+<ol type="1">
+<li>Calligraphic 表示书法体（花体），Euler Calligraphic
+为欧拉手稿字体</li>
+<li>Sans Serif 表示非衬线字体（不包含其他多余的笔画）</li>
+<li>Boldface 表示粗体</li>
+<li>Typewriter Font 是等宽字体</li>
+<li>如果不加任何标注，默认的字体就是 Normal Italic Font，也就是 Roman
+字体的斜体形式，如 <span class="math inline">\(hello\)</span></li>
+</ol>
+<h1 id="常用公式写法">常用公式写法</h1>
+<h2 id="三角函数-1">三角函数</h2>
+<figure class="highlight latex"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">\cos</span> (2<span class="keyword">\theta</span>) = <span class="keyword">\cos</span><span class="built_in">^</span>2 <span class="keyword">\theta</span> - <span class="keyword">\sin</span><span class="built_in">^</span>2 <span class="keyword">\theta</span></span><br></pre></td></tr></table></figure>
+
+<p><span class="math display">\[
+\cos (2\theta) = \cos^2 \theta - \sin^2 \theta
+\]</span></p>
+<h2 id="极限">极限</h2>
+<figure class="highlight latex"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">\lim</span><span class="keyword">\limits</span><span class="built_in">_</span>&#123;x <span class="keyword">\to</span> <span class="keyword">\infty</span>&#125; <span class="keyword">\exp</span>(-x) = 0</span><br></pre></td></tr></table></figure>
+
+<p><span class="math display">\[
+\lim\limits_{x \to \infty} \exp(-x) = 0
+\]</span></p>
+<p><code>\limits</code> 指令将后续紧跟的上标 <code>^</code> 和下标
+<code>_</code>
+放置在当前符号的上方（不写的其实也可以正常渲染，但是加上比较符合我们的观察）</p>
+<h2 id="取模">取模</h2>
+<figure class="highlight latex"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">\begin</span>&#123;align&#125;</span><br><span class="line"><span class="built_in">&amp;</span> a <span class="keyword">\bmod</span> b <span class="keyword">\\</span></span><br><span class="line"><span class="built_in">&amp;</span> x <span class="keyword">\equiv</span> a <span class="keyword">\pmod</span>&#123;b&#125; </span><br><span class="line"><span class="keyword">\end</span>&#123;align&#125;</span><br></pre></td></tr></table></figure>
+
+<p><span class="math display">\[
+\begin{align}
+&amp; a \bmod b \\
+&amp; x \equiv a \pmod{b}
+\end{align}
+\]</span></p>
+<h2 id="上下标">上下标</h2>
+<p>通过 <code>_</code> 表示下标，<code>^</code>
+表示上标，如果需要将一块一整体进行上标，需要使用 <code>&#123;&#125;</code>
+进行包裹</p>
+<figure class="highlight latex"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">\begin</span>&#123;align&#125;</span><br><span class="line">n<span class="built_in">^</span>&#123;22&#125; <span class="built_in">&amp;</span> <span class="keyword">\\</span></span><br><span class="line">k<span class="built_in">_</span>&#123;n+1&#125; <span class="built_in">&amp;</span> = n<span class="built_in">^</span>2 + k<span class="built_in">_</span>n<span class="built_in">^</span>2 - k<span class="built_in">_</span>&#123;n-1&#125; <span class="keyword">\\</span></span><br><span class="line">f(n) <span class="built_in">&amp;</span> = <span class="keyword">\left</span>. n<span class="built_in">^</span>5 + 4n<span class="built_in">^</span>2 + 2 <span class="keyword">\right</span>|<span class="built_in">_</span>&#123;n=17&#125;</span><br><span class="line"><span class="keyword">\end</span>&#123;align&#125;</span><br></pre></td></tr></table></figure>
+
+<p><span class="math display">\[
+\begin{align}
+n^{22} &amp; \\
+k_{n+1} &amp; = n^2 + k_n^2 - k_{n-1} \\
+f(n) &amp; = \left. n^5 + 4n^2 + 2 \right|_{n=17}
+\end{align}
+\]</span></p>
+<h2 id="分数和二项式系数">分数和二项式系数</h2>
+<p>使用 <code>\frac&#123;numerator&#125;&#123;denominator&#125;</code>
+来表示分数（numerator表示分子，denominator表示分母）</p>
+<figure class="highlight latex"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">\frac</span>&#123;n!&#125;&#123;k!(n-k)!&#125; = <span class="keyword">\binom</span>&#123;n&#125;&#123;k&#125;</span><br></pre></td></tr></table></figure>
+
+<p><span class="math display">\[
+\frac{n!}{k!(n-k)!} = \binom{n}{k}
+\]</span></p>
+<p>分数也可以进行嵌套</p>
+<figure class="highlight latex"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">\frac</span>&#123;<span class="keyword">\frac</span>&#123;1&#125;&#123;x&#125;+<span class="keyword">\frac</span>&#123;1&#125;&#123;y&#125;&#125;&#123;y-z&#125;</span><br></pre></td></tr></table></figure>
+
+<p><span class="math display">\[
+\frac{\frac{1}{x}+\frac{1}{y}}{y-z}
+\]</span></p>
+<p>为了在一行表示分数，我们也可以将分数表示为斜线形式</p>
+<figure class="highlight latex"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">^</span>3/<span class="built_in">_</span>7 <span class="keyword">\quad</span> 3 / 7</span><br></pre></td></tr></table></figure>
+
+<p><span class="math display">\[
+^3/_7 \quad 3 / 7
+\]</span> 使用 <code>\frac&#123;...&#125;&#123;...&#125;</code>
+我们也可以表示其他内容，例如乘法和加法公式</p>
+<figure class="highlight latex"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">\frac</span>&#123;</span><br><span class="line">	<span class="keyword">\begin</span>&#123;array&#125;[b]&#123;r&#125;</span><br><span class="line">		<span class="keyword">\left</span>( x<span class="built_in">_</span>1 x<span class="built_in">_</span>2 <span class="keyword">\right</span>) <span class="keyword">\\</span></span><br><span class="line">		<span class="keyword">\times</span> <span class="keyword">\left</span>( x&#x27;<span class="built_in">_</span>1 x&#x27;<span class="built_in">_</span>2 <span class="keyword">\right</span>)</span><br><span class="line">	<span class="keyword">\end</span>&#123;array&#125;</span><br><span class="line">&#125;&#123;</span><br><span class="line">	<span class="keyword">\left</span>( y<span class="built_in">_</span>1 y<span class="built_in">_</span>2 y<span class="built_in">_</span>3 y<span class="built_in">_</span>4 <span class="keyword">\right</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><span class="math display">\[
+\frac{
+\begin{array}[b]{r}
+\left( x_1 x_2 \right)\\
+\times \left(x&#39;_1 x&#39;_2\right)
+\end{array}
+}{
+\left( y_1y_2y_3y_4 \right)
+}
+\]</span></p>
+<p>其中对齐公式使用的 <code>\align</code> 以及
+<code>\begin&#123;&#125;...\end&#123;&#125;</code> 会单独进行详细地介绍。</p>
+<h2 id="根式">根式</h2>
+<p>使用 <code>\sqrt&#123;...&#125;</code>
+来表示根号，默认为2，也可以指定为其他幂次，通过<code>\sqrt[n]&#123;&#125;</code>
+来指定</p>
+<figure class="highlight latex"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">\sqrt</span>[n]&#123;1 + x + x<span class="built_in">^</span>2 + x<span class="built_in">^</span>3 +<span class="keyword">\cdots</span> + x<span class="built_in">^</span>n&#125;</span><br></pre></td></tr></table></figure>
+
+<p><span class="math display">\[
+\sqrt[n]{1+x+x^2+x^3+\cdots+x^n}
+\]</span></p>
+<h2 id="求和乘积与积分">求和、乘积与积分</h2>
+<p>通过 <code>\sum _&#123;&#125; ^&#123;&#125; &#123;&#125;</code> 来表示大型加法表达式，如下</p>
+<figure class="highlight latex"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">$</span><span class="built_in">$</span></span><br><span class="line"><span class="keyword">\sum</span> <span class="built_in">_</span>&#123;i=1&#125; <span class="built_in">^</span>&#123;<span class="keyword">\infty</span>&#125; x<span class="built_in">^</span>i</span><br><span class="line"><span class="built_in">$</span><span class="built_in">$</span></span><br></pre></td></tr></table></figure>
+
+<p><span class="math display">\[
+\sum _{i=1} ^{\infty} x^i
+\]</span></p>
+<p>对于连乘也是类似 <code>\prod _&#123;&#125; ^&#123;&#125; &#123;&#125;</code>
+来表示大型乘法表达式，如下</p>
+<figure class="highlight latex"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">$</span><span class="built_in">$</span></span><br><span class="line"><span class="keyword">\prod</span> <span class="built_in">_</span>&#123;i=1&#125; <span class="built_in">^</span>&#123;n&#125; x<span class="built_in">^</span>i</span><br><span class="line"><span class="built_in">$</span><span class="built_in">$</span></span><br></pre></td></tr></table></figure>
+
+<p><span class="math display">\[
+\prod _{i=1} ^{n} x^i
+\]</span></p>
+<p>积分（integral），通过 <code>\int _&#123;&#125; ^&#123;&#125; &#123;&#125;</code>
+来表示积分符号</p>
+<figure class="highlight latex"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">$</span><span class="built_in">$</span></span><br><span class="line"><span class="keyword">\int</span> <span class="built_in">_</span>&#123;0&#125; <span class="built_in">^</span>&#123;<span class="keyword">\pi</span>&#125; <span class="keyword">\sin</span> x <span class="keyword">\,</span><span class="keyword">\mathrm</span>&#123;d&#125;x</span><br><span class="line"><span class="built_in">$</span><span class="built_in">$</span></span><br></pre></td></tr></table></figure>
+
+<p><span class="math display">\[
+\int _{0} ^{\pi} \sin x \,\mathrm{d}x
+\]</span></p>
+<p>除了一重积分外，我们还有各种各样的积分符号，如二重积分、三重积分、曲面积分等等，其使用的积分符号也有相应的变化</p>
+<figure class="highlight latex"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">$</span><span class="built_in">$</span></span><br><span class="line"><span class="keyword">\begin</span>&#123;align&#125;</span><br><span class="line"><span class="built_in">&amp;</span> <span class="keyword">\iint</span> <span class="keyword">\limits</span> <span class="built_in">_</span>V <span class="keyword">\mu</span>(u,v) <span class="keyword">\,</span><span class="keyword">\mathrm</span>&#123;d&#125;u<span class="keyword">\,</span><span class="keyword">\mathrm</span>&#123;d&#125;v</span><br><span class="line"><span class="keyword">\\</span></span><br><span class="line"><span class="built_in">&amp;</span> <span class="keyword">\iiint</span> <span class="keyword">\limits</span> <span class="built_in">_</span>V <span class="keyword">\mu</span>(u,v,w) <span class="keyword">\,</span><span class="keyword">\mathrm</span>&#123;d&#125;u<span class="keyword">\,</span><span class="keyword">\mathrm</span>&#123;d&#125;v<span class="keyword">\,</span><span class="keyword">\mathrm</span>&#123;d&#125;w</span><br><span class="line"><span class="keyword">\\</span></span><br><span class="line"><span class="built_in">&amp;</span> <span class="keyword">\iiiint</span> <span class="keyword">\limits</span> <span class="built_in">_</span>V <span class="keyword">\mu</span>(t,u,v,w) <span class="keyword">\,</span><span class="keyword">\mathrm</span>&#123;d&#125;t<span class="keyword">\,</span><span class="keyword">\mathrm</span>&#123;d&#125;u<span class="keyword">\,</span><span class="keyword">\mathrm</span>&#123;d&#125;v<span class="keyword">\,</span><span class="keyword">\mathrm</span>&#123;d&#125;w</span><br><span class="line"><span class="keyword">\\</span></span><br><span class="line"><span class="built_in">&amp;</span> <span class="keyword">\idotsint</span> <span class="keyword">\limits</span> <span class="built_in">_</span>V <span class="keyword">\mu</span>(u<span class="built_in">_</span>1,<span class="keyword">\dots</span>,u<span class="built_in">_</span>k) <span class="keyword">\,</span><span class="keyword">\mathrm</span>&#123;d&#125;u<span class="built_in">_</span>1 <span class="keyword">\dots</span> <span class="keyword">\mathrm</span>&#123;d&#125;u<span class="built_in">_</span>k</span><br><span class="line"><span class="keyword">\end</span>&#123;align&#125;</span><br><span class="line"><span class="built_in">$</span><span class="built_in">$</span></span><br></pre></td></tr></table></figure>
+
+<p><span class="math display">\[
+\begin{align}
+&amp; \iint \limits _V \mu(u,v) \,\mathrm{d}u\,\mathrm{d}v
+\\
+&amp; \iiint \limits _V \mu(u,v,w)
+\,\mathrm{d}u\,\mathrm{d}v\,\mathrm{d}w
+\\
+&amp; \iiiint \limits _V \mu(t,u,v,w)
+\,\mathrm{d}t\,\mathrm{d}u\,\mathrm{d}v\,\mathrm{d}w
+\\
+&amp; \idotsint \limits _V \mu(u_1,\dots,u_k) \,\mathrm{d}u_1 \dots
+\mathrm{d}u_k
+\end{align}
+\]</span></p>
+<h2 id="矩阵">矩阵</h2>
+<p>对于矩阵而言，需要使用 <code>\begin&#123;&#125;...\end&#123;&#125;</code>
+来包裹（对齐）</p>
+<p>普通矩阵</p>
+<figure class="highlight latex"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">$</span><span class="built_in">$</span></span><br><span class="line"><span class="keyword">\begin</span>&#123;matrix&#125;</span><br><span class="line">1 <span class="built_in">&amp;</span> 2 <span class="built_in">&amp;</span> 3<span class="keyword">\\</span></span><br><span class="line">a <span class="built_in">&amp;</span> b <span class="built_in">&amp;</span> c</span><br><span class="line"><span class="keyword">\end</span>&#123;matrix&#125;</span><br><span class="line"><span class="built_in">$</span><span class="built_in">$</span></span><br></pre></td></tr></table></figure>
+
+<p><span class="math display">\[
+\begin{matrix}
+1 &amp; 2 &amp; 3\\
+a &amp; b &amp; c
+\end{matrix}
+\]</span></p>
+<p>括号矩阵（<code>pmatrix</code>）</p>
+<figure class="highlight latex"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">$</span><span class="built_in">$</span></span><br><span class="line"><span class="keyword">\begin</span>&#123;pmatrix&#125;</span><br><span class="line">1 <span class="built_in">&amp;</span> 2 <span class="built_in">&amp;</span> 3<span class="keyword">\\</span></span><br><span class="line">a <span class="built_in">&amp;</span> b <span class="built_in">&amp;</span> c</span><br><span class="line"><span class="keyword">\end</span>&#123;pmatrix&#125;</span><br><span class="line"><span class="built_in">$</span><span class="built_in">$</span></span><br></pre></td></tr></table></figure>
+
+<p><span class="math display">\[
+\begin{pmatrix}
+1 &amp; 2 &amp; 3\\
+a &amp; b &amp; c
+\end{pmatrix}
+\]</span></p>
+<p>方括号矩阵（<code>bmatrix</code>）</p>
+<figure class="highlight latex"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">$</span><span class="built_in">$</span></span><br><span class="line"><span class="keyword">\begin</span>&#123;bmatrix&#125;</span><br><span class="line">1 <span class="built_in">&amp;</span> 2 <span class="built_in">&amp;</span> 3<span class="keyword">\\</span></span><br><span class="line">a <span class="built_in">&amp;</span> b <span class="built_in">&amp;</span> c</span><br><span class="line"><span class="keyword">\end</span>&#123;bmatrix&#125;</span><br><span class="line"><span class="built_in">$</span><span class="built_in">$</span></span><br></pre></td></tr></table></figure>
+
+<p><span class="math display">\[
+\begin{bmatrix}
+1 &amp; 2 &amp; 3\\
+a &amp; b &amp; c
+\end{bmatrix}
+\]</span></p>
+<p>花括号矩阵（<code>Bmatrix</code>）</p>
+<figure class="highlight latex"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">$</span><span class="built_in">$</span></span><br><span class="line"><span class="keyword">\begin</span>&#123;Bmatrix&#125;</span><br><span class="line">1 <span class="built_in">&amp;</span> 2 <span class="built_in">&amp;</span> 3<span class="keyword">\\</span></span><br><span class="line">a <span class="built_in">&amp;</span> b <span class="built_in">&amp;</span> c</span><br><span class="line"><span class="keyword">\end</span>&#123;Bmatrix&#125;</span><br><span class="line"><span class="built_in">$</span><span class="built_in">$</span></span><br></pre></td></tr></table></figure>
+
+<p><span class="math display">\[
+\begin{Bmatrix}
+1 &amp; 2 &amp; 3\\
+a &amp; b &amp; c
+\end{Bmatrix}
+\]</span></p>
+<p>竖线矩阵（<code>vmatrix</code>）</p>
+<figure class="highlight latex"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">$</span><span class="built_in">$</span></span><br><span class="line"><span class="keyword">\begin</span>&#123;vmatrix&#125;</span><br><span class="line">1 <span class="built_in">&amp;</span> 2 <span class="built_in">&amp;</span> 3<span class="keyword">\\</span></span><br><span class="line">4 <span class="built_in">&amp;</span> 5 <span class="built_in">&amp;</span> 6<span class="keyword">\\</span></span><br><span class="line">7 <span class="built_in">&amp;</span> 8 <span class="built_in">&amp;</span> 9</span><br><span class="line"><span class="keyword">\end</span>&#123;vmatrix&#125;</span><br><span class="line"><span class="built_in">$</span><span class="built_in">$</span></span><br></pre></td></tr></table></figure>
+
+<p><span class="math display">\[
+\begin{vmatrix}
+1 &amp; 2 &amp; 3\\
+4 &amp; 5 &amp; 6\\
+7 &amp; 8 &amp; 9
+\end{vmatrix}
+\]</span></p>
+<p>双数竖线矩阵（<code>Vmatrix</code>）</p>
+<figure class="highlight latex"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">$</span><span class="built_in">$</span></span><br><span class="line"><span class="keyword">\begin</span>&#123;Vmatrix&#125;</span><br><span class="line">1 <span class="built_in">&amp;</span> 2 <span class="built_in">&amp;</span> 3<span class="keyword">\\</span></span><br><span class="line">4 <span class="built_in">&amp;</span> 5 <span class="built_in">&amp;</span> 6<span class="keyword">\\</span></span><br><span class="line">7 <span class="built_in">&amp;</span> 8 <span class="built_in">&amp;</span> 9</span><br><span class="line"><span class="keyword">\end</span>&#123;Vmatrix&#125;</span><br><span class="line"><span class="built_in">$</span><span class="built_in">$</span></span><br></pre></td></tr></table></figure>
+
+<p><span class="math display">\[
+\begin{Vmatrix}
+1 &amp; 2 &amp; 3\\
+4 &amp; 5 &amp; 6\\
+7 &amp; 8 &amp; 9
+\end{Vmatrix}
+\]</span></p>
+<p>我们也可以使用其他分界符搭配 <code>\left ... \right</code>
+来构造其他形式，例如</p>
+<figure class="highlight latex"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">$</span><span class="built_in">$</span></span><br><span class="line"><span class="keyword">\left</span><span class="keyword">\langle</span></span><br><span class="line"><span class="keyword">\begin</span>&#123;matrix&#125;</span><br><span class="line">1 <span class="built_in">&amp;</span> 2 <span class="built_in">&amp;</span> 3<span class="keyword">\\</span></span><br><span class="line">a <span class="built_in">&amp;</span> b <span class="built_in">&amp;</span> c</span><br><span class="line"><span class="keyword">\end</span>&#123;matrix&#125;</span><br><span class="line"><span class="keyword">\right</span><span class="keyword">\rangle</span></span><br><span class="line"><span class="built_in">$</span><span class="built_in">$</span></span><br></pre></td></tr></table></figure>
+
+<p><span class="math display">\[
+\left\langle
+\begin{matrix}
+1 &amp; 2 &amp; 3\\
+a &amp; b &amp; c
+\end{matrix}
+\right\rangle
+\]</span></p>
+<p>如果想在一行显示矩阵，我们可以使用 <code>smallmatrix</code> 布局</p>
+<figure class="highlight latex"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">$</span> <span class="keyword">\big</span>(<span class="keyword">\begin</span>&#123;smallmatrix&#125;</span><br><span class="line">  a <span class="built_in">&amp;</span> b<span class="keyword">\\</span></span><br><span class="line">  c <span class="built_in">&amp;</span> d</span><br><span class="line"><span class="keyword">\end</span>&#123;smallmatrix&#125;<span class="keyword">\big</span>)<span class="built_in">$</span></span><br></pre></td></tr></table></figure>
+
+<p>这一行包含矩阵公式：<span
+class="math inline">\(\big(\begin{smallmatrix}a&amp;b\\c&amp;d\end{smallmatrix}\big)\)</span></p>
+<p>注：在 markdown 中，内联公式必须在同一行</p>
+<p>(但是这一行不是很好写捏:(</p>
+<h1 id="公式的对齐">公式的对齐</h1>
+<h2 id="对齐显示">对齐显示</h2>
+<p>使用 <code>align</code> 来表示多行对齐公式（还有一个
+<code>align</code> ，其效果和 <code>align</code>
+类似，只不过二者使用场景不一样，在 markdown 需要对齐的话使用
+<code>align</code> 基本就可以了），使用 <code>\\</code>
+来换行，<code>&amp;</code> 来指示需要对齐的位置</p>
+<figure class="highlight latex"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">$</span><span class="built_in">$</span></span><br><span class="line"><span class="keyword">\begin</span>&#123;align&#125;</span><br><span class="line">A <span class="built_in">&amp;</span> = <span class="keyword">\frac</span>&#123;<span class="keyword">\pi</span> r<span class="built_in">^</span>2&#125;&#123;2&#125; <span class="keyword">\\</span></span><br><span class="line">  <span class="built_in">&amp;</span> = <span class="keyword">\frac</span>&#123;1&#125;&#123;2&#125; <span class="keyword">\pi</span> r<span class="built_in">^</span>2</span><br><span class="line"><span class="keyword">\end</span>&#123;align&#125;</span><br><span class="line"><span class="built_in">$</span><span class="built_in">$</span></span><br></pre></td></tr></table></figure>
+
+<p><span class="math display">\[
+\begin{align}
+A &amp; = \frac{\pi r^2}{2} \\
+&amp; = \frac{1}{2} \pi r^2
+\end{align}
+\]</span></p>
+<p>这样就可以在等号处对齐了。</p>
+<p>我们也可以使用 <code>align</code> 实现表格式的对齐，示例如下：</p>
+<figure class="highlight latex"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">$</span><span class="built_in">$</span></span><br><span class="line"><span class="keyword">\begin</span>&#123;align&#125;</span><br><span class="line">f(x) = a x<span class="built_in">^</span>2 + b x + c <span class="keyword">\quad</span>  g(x) = d x<span class="built_in">^</span>3 <span class="keyword">\\</span></span><br><span class="line">f&#x27;(x) = 2 a x + b  <span class="keyword">\quad</span> g&#x27;(x) = 3 d x <span class="built_in">^</span>2 </span><br><span class="line"><span class="keyword">\end</span>&#123;align&#125;</span><br><span class="line"><span class="built_in">$</span><span class="built_in">$</span></span><br></pre></td></tr></table></figure>
+
+<p><span class="math display">\[
+\begin{align}
+f(x) = a x^2 + b x + c \quad  g(x) = d x^3 \\
+f&#39;(x) = 2 a x + b  \quad g&#39;(x) = 3 d x ^2
+\end{align}
+\]</span></p>
+<p>我们的目标是将两个公式分别在等号处对齐。</p>
+<p>首先观察一下其对齐情况，可以看到两行公式目前在末尾处是对齐的，这就相当于我们在末尾加上了一个
+<code>&amp;</code></p>
+<figure class="highlight latex"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">$</span><span class="built_in">$</span></span><br><span class="line"><span class="keyword">\begin</span>&#123;align&#125;</span><br><span class="line">f(x) = a x<span class="built_in">^</span>2 + b x + c <span class="keyword">\quad</span>  g(x) = d x<span class="built_in">^</span>3 <span class="built_in">&amp;</span> <span class="keyword">\\</span></span><br><span class="line">f&#x27;(x) = 2 a x + b  <span class="keyword">\quad</span> g&#x27;(x) = 3 d x <span class="built_in">^</span>2 <span class="built_in">&amp;</span></span><br><span class="line"><span class="keyword">\end</span>&#123;align&#125;</span><br><span class="line"><span class="built_in">$</span><span class="built_in">$</span></span><br></pre></td></tr></table></figure>
+
+<p><span class="math display">\[
+\begin{align}
+f(x) = a x^2 + b x + c \quad  g(x) = d x^3 &amp; \\
+f&#39;(x) = 2 a x + b  \quad g&#39;(x) = 3 d x ^2 &amp;
+\end{align}
+\]</span></p>
+<p>如果用表格来描述这个公式，如下所示</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: right;"><span
+class="math inline">\(\Rightarrow\)</span></th>
+<th style="text-align: center;"><code>&amp;</code></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;"><span class="math inline">\(f(x) = a x^2
++ b x + c \quad  g(x) = d x^3\)</span></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><span class="math inline">\(f&#39;(x) = 2
+a x + b  \quad g&#39;(x) = 3 d x ^2\)</span></td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+<p>如果我们想要公式在第一个等于号时对齐，那么在等号前加上
+<code>&amp;</code>，如下</p>
+<figure class="highlight latex"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">$</span><span class="built_in">$</span></span><br><span class="line"><span class="keyword">\begin</span>&#123;align&#125;</span><br><span class="line">f(x) <span class="built_in">&amp;</span>= a x<span class="built_in">^</span>2 + b x + c <span class="keyword">\quad</span>  g(x) = d x<span class="built_in">^</span>3 <span class="built_in">&amp;</span> <span class="keyword">\\</span></span><br><span class="line">f&#x27;(x) <span class="built_in">&amp;</span>= 2 a x + b  <span class="keyword">\quad</span> g&#x27;(x) = 3 d x <span class="built_in">^</span>2 <span class="built_in">&amp;</span></span><br><span class="line"><span class="keyword">\end</span>&#123;align&#125;</span><br><span class="line"><span class="built_in">$</span><span class="built_in">$</span></span><br></pre></td></tr></table></figure>
+
+<p><span class="math display">\[
+\begin{align}
+f(x) &amp;= a x^2 + b x + c \quad  g(x) = d x^3 &amp; \\
+f&#39;(x) &amp;= 2 a x + b  \quad g&#39;(x) = 3 d x ^2 &amp;
+\end{align}
+\]</span></p>
+<p>可以观察到，此时在 <span class="math inline">\(f(x)\)</span> 和 <span
+class="math inline">\(f&#39;(x)\)</span>
+后的等号对齐了，但是其末尾处并不对齐了</p>
+<p>此时我们将其表格化，如下所示</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: right;"><span
+class="math inline">\(\Rightarrow\)</span></th>
+<th style="text-align: center;"><code>&amp;</code></th>
+<th style="text-align: left;"><span
+class="math inline">\(\Leftarrow\)</span></th>
+<th style="text-align: center;"><code>&amp;</code></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">$f(x) $</td>
+<td style="text-align: center;"></td>
+<td style="text-align: left;"><span class="math inline">\(=a x^2 + b x +
+c \quad  g(x) = d x^3\)</span></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><span
+class="math inline">\(f&#39;(x)\)</span></td>
+<td style="text-align: center;"></td>
+<td style="text-align: left;"><span class="math inline">\(= 2 a x +
+b  \quad g&#39;(x) = 3 d x ^2\)</span></td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+<p>可以看到，我们插入的 <code>&amp;</code> 将公式划分成了两列，而在
+<code>&amp;</code> 左侧的列为右对齐，右侧的列为左对齐，这样就形成了在
+<code>&amp;</code>
+处对齐的效果，由于后半部所在的列已经左对齐了，自然也就不能在末尾处对齐了。</p>
+<p>我们继续对公式进行修改，将 <code>\quad</code> 替换为
+<code>&amp;</code></p>
+<figure class="highlight latex"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">$</span><span class="built_in">$</span></span><br><span class="line"><span class="keyword">\begin</span>&#123;align&#125;</span><br><span class="line">f(x) <span class="built_in">&amp;</span>= a x<span class="built_in">^</span>2 + b x + c <span class="built_in">&amp;</span>  g(x) = d x<span class="built_in">^</span>3 <span class="keyword">\\</span></span><br><span class="line">f&#x27;(x) <span class="built_in">&amp;</span>= 2 a x + b  <span class="built_in">&amp;</span> g&#x27;(x) = 3 d x <span class="built_in">^</span>2</span><br><span class="line"><span class="keyword">\end</span>&#123;align&#125;</span><br><span class="line"><span class="built_in">$</span><span class="built_in">$</span></span><br></pre></td></tr></table></figure>
+
+<p><span class="math display">\[
+\begin{align}
+f(x) &amp;= a x^2 + b x + c &amp;  g(x) = d x^3 \\
+f&#39;(x) &amp;= 2 a x + b  &amp; g&#39;(x) = 3 d x ^2
+\end{align}
+\]</span></p>
+<p>此时可以发现公式又在末尾处对齐了，将其转化成表格</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: right;"><span
+class="math inline">\(\Rightarrow\)</span></th>
+<th style="text-align: center;"><code>&amp;</code></th>
+<th><span class="math inline">\(\Leftarrow\)</span></th>
+<th style="text-align: center;"><code>&amp;</code></th>
+<th style="text-align: right;"><span
+class="math inline">\(\Rightarrow\)</span></th>
+<th style="text-align: center;"><code>&amp;</code></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">$f(x) $</td>
+<td style="text-align: center;"></td>
+<td><span class="math inline">\(=a x^2 + b x + c\)</span></td>
+<td style="text-align: center;"></td>
+<td style="text-align: right;"><span class="math inline">\(g(x) = d
+x^3\)</span></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><span
+class="math inline">\(f&#39;(x)\)</span></td>
+<td style="text-align: center;"></td>
+<td><span class="math inline">\(= 2 a x + b\)</span></td>
+<td style="text-align: center;"></td>
+<td style="text-align: right;"><span class="math inline">\(g&#39;(x) = 3
+d x ^2\)</span></td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+<p>最后我们在 <span class="math inline">\(g(x)\)</span> 和 <span
+class="math inline">\(g&#39;(x)\)</span> 后添加 <code>&amp;</code></p>
+<figure class="highlight latex"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">$</span><span class="built_in">$</span></span><br><span class="line"><span class="keyword">\begin</span>&#123;align&#125;</span><br><span class="line">f(x) <span class="built_in">&amp;</span>= a x<span class="built_in">^</span>2 + b x + c <span class="built_in">&amp;</span>  g(x) <span class="built_in">&amp;</span> = d x<span class="built_in">^</span>3 <span class="keyword">\\</span></span><br><span class="line">f&#x27;(x) <span class="built_in">&amp;</span>= 2 a x + b  <span class="built_in">&amp;</span> g&#x27;(x)  <span class="built_in">&amp;</span> = 3 d x <span class="built_in">^</span>2</span><br><span class="line"><span class="keyword">\end</span>&#123;align&#125;</span><br><span class="line"><span class="built_in">$</span><span class="built_in">$</span></span><br></pre></td></tr></table></figure>
+
+<p><span class="math display">\[
+\begin{align}
+f(x) &amp;= a x^2 + b x + c &amp;  g(x) &amp; = d x^3 \\
+f&#39;(x) &amp;= 2 a x + b  &amp; g&#39;(x)  &amp; = 3 d x ^2
+\end{align}
+\]</span></p>
+<p>最终的表格如下所示</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: right;"><span
+class="math inline">\(\Rightarrow\)</span></th>
+<th style="text-align: center;"><code>&amp;</code></th>
+<th><span class="math inline">\(\Leftarrow\)</span></th>
+<th style="text-align: center;"><code>&amp;</code></th>
+<th style="text-align: right;"><span
+class="math inline">\(\Rightarrow\)</span></th>
+<th style="text-align: center;"><code>&amp;</code></th>
+<th><span class="math inline">\(\Leftarrow\)</span></th>
+<th style="text-align: center;"><code>&amp;</code></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;"><span
+class="math inline">\(f(x)\)</span></td>
+<td style="text-align: center;"></td>
+<td><span class="math inline">\(=ax^2+bx+c\)</span></td>
+<td style="text-align: center;"></td>
+<td style="text-align: right;"><span
+class="math inline">\(g(x)\)</span></td>
+<td style="text-align: center;"></td>
+<td><span class="math inline">\(=dx^3\)</span></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><span
+class="math inline">\(f&#39;(x)\)</span></td>
+<td style="text-align: center;"></td>
+<td><span class="math inline">\(= 2 a x + b\)</span></td>
+<td style="text-align: center;"></td>
+<td style="text-align: right;"><span
+class="math inline">\(g&#39;(x)\)</span></td>
+<td style="text-align: center;"></td>
+<td><span class="math inline">\(=3dx^3\)</span></td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+<p>从上面的解析中可以看出，<code>&amp;</code> 有两个作用</p>
+<ol type="1">
+<li>分块，以 <code>&amp;</code> 为中心划分成左右两部分</li>
+<li>如果左侧列没有对齐的话，优先右对齐，对于右侧列同理，优先左对齐</li>
+</ol>
+<p>这样我们参照上面的表格，第一个和第三个 <code>&amp;</code>
+左右两侧都是如此，但是第二个 <code>&amp;</code>
+由于其左侧块已经有对齐方式了（左对齐），无法再进行布局安排，因此这个
+<code>&amp;</code> 只起到了第一个作用，第二个已经自动忽略了。</p>
+<p>Tips：如果想实现列表形式的公式展示，可以将 <code>&amp;</code>
+作为列的分割符，对于一列，我们直接使用 <code>&amp; a &amp;</code>
+包裹即可（左对齐）</p>
+<figure class="highlight latex"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">$</span><span class="built_in">$</span></span><br><span class="line"><span class="keyword">\begin</span>&#123;align&#125;</span><br><span class="line"><span class="built_in">&amp;</span> a <span class="built_in">&amp;</span> <span class="built_in">&amp;</span> b <span class="built_in">&amp;</span> <span class="built_in">&amp;</span> c <span class="built_in">&amp;</span> d <span class="built_in">&amp;</span> <span class="keyword">\\</span></span><br><span class="line"><span class="built_in">&amp;</span> e <span class="built_in">&amp;</span> <span class="built_in">&amp;</span> f <span class="built_in">&amp;</span> <span class="built_in">&amp;</span> g <span class="built_in">&amp;</span> h <span class="built_in">&amp;</span></span><br><span class="line"><span class="keyword">\end</span>&#123;align&#125;</span><br><span class="line"><span class="built_in">$</span><span class="built_in">$</span></span><br></pre></td></tr></table></figure>
+
+<p><span class="math display">\[
+\begin{align}
+&amp; a &amp; &amp; b &amp; &amp; c &amp; d &amp; \\
+&amp; e &amp; &amp; f &amp; &amp; g &amp; h &amp;
+\end{align}
+\]</span></p>
+<p>这样虽然有些冗余，但是使用起来比较简单，无需思考 <code>&amp;</code>
+放置的位置</p>
+<h2 id="居中显示">居中显示</h2>
+<p>相比于自定义对齐，居中显示就显得简单很多，使用 <code>gather</code>
+即可</p>
+<figure class="highlight latex"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">$</span><span class="built_in">$</span></span><br><span class="line"><span class="keyword">\begin</span>&#123;gather&#125;</span><br><span class="line">2x - 5y =  8 <span class="keyword">\\</span> </span><br><span class="line">3x<span class="built_in">^</span>2 + 9y =  3a + c</span><br><span class="line"><span class="keyword">\end</span>&#123;gather&#125;</span><br><span class="line"><span class="built_in">$</span><span class="built_in">$</span></span><br></pre></td></tr></table></figure>
+
+<p><span class="math display">\[
+\begin{gather}
+2x - 5y =  8 \\
+3x^2 + 9y =  3a + c
+\end{gather}
+\]</span></p>
+<h1 id="导入其他包">导入其他包</h1>
+<p>有时候我们想要在 MathJax 中使用其他宏包，例如 Physics
+宏，我们可以直接在 LaTex 代码中使用 <code>require&#123;...&#125;</code>
+来添加扩展。</p>
+<figure class="highlight latex"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">$</span><span class="built_in">$</span></span><br><span class="line"><span class="keyword">\require</span>&#123;physics&#125;</span><br><span class="line"><span class="keyword">\abs</span>&#123;a&#125; <span class="keyword">\quad</span> <span class="keyword">\grad</span>&#123;x&#125; <span class="keyword">\quad</span> <span class="keyword">\order</span>&#123;1&#125; <span class="keyword">\quad</span> <span class="keyword">\cross</span></span><br><span class="line"><span class="built_in">$</span><span class="built_in">$</span></span><br></pre></td></tr></table></figure>
+
+<p>开启 Physics 宏之后渲染结果 <span class="math display">\[
+\require{physics}
+\abs{a} \quad \grad{x} \quad \order{1} \quad \cross
+\]</span> 如果加载失败，将会显示如下结果</p>
+<p><img data-src="/posts/caff/no-physics-error.svg" /></p>
+<p>不过感觉 <code>require&#123;&#125;</code> 功能在 mathjax
+中还有点问题，最好还是在设置中手动开启。</p>
+<h1 id="参考">参考</h1>
+<ol type="1">
+<li><a
+target="_blank" rel="noopener" href="https://en.wikibooks.org/wiki/LaTeX/Mathematics">LaTeX/Mathematics
+- Wikibooks, open books for an open world</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://en.wikibooks.org/wiki/LaTeX/Advanced_Mathematics">LaTeX/Advanced
+Mathematics - Wikibooks, open books for an open world</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://kapeli.com/cheat_sheets/LaTeX_Math_Symbols.docset/Contents/Resources/Documents/index">LaTeX
+Math Symbols Cheat Sheet - Kapeli</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://www.overleaf.com/learn/latex/Mathematical_expressions">Mathematical
+expressions - Overleaf, Online LaTeX Editor</a></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>PureWhiteVK
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://purewhitevk.github.io/posts/caff/" title="LaTex公式学习笔记">https://purewhitevk.github.io/posts/caff/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/dead.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/mathjax/" rel="tag"># mathjax</a>
+              <a href="/tags/LaTex/" rel="tag"># LaTex</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/96e0/" rel="prev" title="个人博客搭建记录">
+                  <i class="fa fa-chevron-left"></i> 个人博客搭建记录
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/9a20/" rel="next" title="hexo自定义插件">
+                  hexo自定义插件 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PureWhiteVK</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">23k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">1:23</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

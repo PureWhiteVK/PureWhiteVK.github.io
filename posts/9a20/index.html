@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"purewhitevk.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.14.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"default"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Hexo Plugin 参考官方文档，我们有两种创建插件方式  以脚本（Scripts）形式（单个文件） 以 npm package 形式创建（支持多文件）  对于一般的插件而言，如果代码并不复杂且依赖较少，可以直接写成脚本形式，放在 hexo 根目录下的 scripts 文件夹即可（不存在直接创建一个即可），在介绍插件具体写法之前，先看一个简单的例子： 文件：scripts&#x2F;t">
+<meta property="og:type" content="article">
+<meta property="og:title" content="hexo自定义插件">
+<meta property="og:url" content="https://purewhitevk.github.io/posts/9a20/">
+<meta property="og:site_name" content="PureWhite&#39;s Blog">
+<meta property="og:description" content="Hexo Plugin 参考官方文档，我们有两种创建插件方式  以脚本（Scripts）形式（单个文件） 以 npm package 形式创建（支持多文件）  对于一般的插件而言，如果代码并不复杂且依赖较少，可以直接写成脚本形式，放在 hexo 根目录下的 scripts 文件夹即可（不存在直接创建一个即可），在介绍插件具体写法之前，先看一个简单的例子： 文件：scripts&#x2F;t">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/9a20/image-20230116112529108.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/9a20/image-20230116113313750.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/9a20/image-20230116121200965.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/9a20/image-20230116134147690.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/9a20/image-20230116144123563.png">
+<meta property="article:published_time" content="2023-01-05T04:20:55.000Z">
+<meta property="article:modified_time" content="2023-01-05T04:20:55.000Z">
+<meta property="article:author" content="PureWhiteVK">
+<meta property="article:tag" content="hexo">
+<meta property="article:tag" content="pandoc">
+<meta property="article:tag" content="node.js">
+<meta property="article:tag" content="lua">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://purewhitevk.github.io/posts/9a20/image-20230116112529108.png">
+
+
+<link rel="canonical" href="https://purewhitevk.github.io/posts/9a20/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://purewhitevk.github.io/posts/9a20/","path":"posts/9a20/","title":"hexo自定义插件"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>hexo自定义插件 | PureWhite's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">PureWhite's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">11</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">1</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">5</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#hexo-plugin"><span class="nav-number">1.</span> <span class="nav-text">Hexo Plugin</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#plugin-%E5%86%99%E6%B3%95"><span class="nav-number">1.1.</span> <span class="nav-text">plugin 写法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%A8%A1%E6%9D%BF"><span class="nav-number">1.2.</span> <span class="nav-text">基本模板</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%A5%E5%BF%97%E8%BE%93%E5%87%BA"><span class="nav-number">1.3.</span> <span class="nav-text">日志输出</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#pandoc-renderer"><span class="nav-number">2.</span> <span class="nav-text">Pandoc Renderer</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%AE%E7%9A%84"><span class="nav-number">2.1.</span> <span class="nav-text">目的</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AE%E9%A2%98"><span class="nav-number">2.2.</span> <span class="nav-text">问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E6%80%9D%E8%B7%AF"><span class="nav-number">2.3.</span> <span class="nav-text">解决思路</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#plugin"><span class="nav-number">2.4.</span> <span class="nav-text">plugin</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pandoc-filter"><span class="nav-number">2.5.</span> <span class="nav-text">pandoc filter</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#hellolua-filter"><span class="nav-number">2.5.1.</span> <span class="nav-text">hello，lua filter</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#filter-%E5%86%99%E6%B3%95"><span class="nav-number">2.5.2.</span> <span class="nav-text">filter 写法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#final-filter"><span class="nav-number">2.6.</span> <span class="nav-text">final filter</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">4.</span> <span class="nav-text">参考</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="PureWhiteVK"
+      src="/images/Touma.Kazusa.256x256.png">
+  <p class="site-author-name" itemprop="name">PureWhiteVK</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">5</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/PureWhiteVK" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;PureWhiteVK" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:yl_xiao@outlook.com" title="E-Mail → mailto:yl_xiao@outlook.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/dead.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://purewhitevk.github.io/posts/9a20/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/Touma.Kazusa.256x256.png">
+      <meta itemprop="name" content="PureWhiteVK">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PureWhite's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="hexo自定义插件 | PureWhite's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          hexo自定义插件
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023/01/05 12:20:55" itemprop="dateCreated datePublished" datetime="2023-01-05T12:20:55+08:00">2023/01/05</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">学习笔记</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>5.3k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>19 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="hexo-plugin">Hexo Plugin</h1>
+<p>参考官方<a
+target="_blank" rel="noopener" href="https://hexo.io/zh-cn/docs/plugins">文档</a>，我们有两种创建插件方式</p>
+<ol type="1">
+<li>以脚本（Scripts）形式（单个文件）</li>
+<li>以 npm package 形式创建（支持多文件）</li>
+</ol>
+<p>对于一般的插件而言，如果代码并不复杂且依赖较少，可以直接写成脚本形式，放在
+hexo 根目录下的 <code>scripts</code>
+文件夹即可（不存在直接创建一个即可），在介绍插件具体写法之前，先看一个简单的例子：</p>
+<p>文件：<code>scripts/test.js</code></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">hexo.<span class="property">extend</span>.<span class="property">filter</span>.<span class="title function_">register</span>(<span class="string">&#x27;before_post_render&#x27;</span>, <span class="function">(<span class="params">data</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> &#123;log&#125; = hexo;</span><br><span class="line">  log.<span class="title function_">debug</span>(<span class="string">&quot;hello from test.js!!!&quot;</span>);</span><br><span class="line">  <span class="keyword">return</span> data;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>然后执行下列命令查看效果</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo clean &amp;&amp; hexo generate --debug</span><br></pre></td></tr></table></figure>
+
+<p>这一条命令包含两个子命令，<code>hexo clean</code>
+清除之前的生成文件，之后的 <code>hexo generate</code>
+用来生成静态页面文件。</p>
+<p>（<code>--debug</code> 标志会使 hexo 在终端显示调试信息，在所有的
+hexo-cli 命令中都可以使用）</p>
+<span id="more"></span>
+
+<p>输出结果</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">(base) PS D:\hexo-temp&gt; hexo clean &amp;&amp; hexo generate --debug</span><br><span class="line">INFO  Validating config</span><br><span class="line">INFO  Deleted database.</span><br><span class="line">INFO  Deleted public folder.</span><br><span class="line">03:05:12.393 DEBUG Writing database to D:\hexo-temp\db.json</span><br><span class="line">03:05:12.401 DEBUG Hexo version: 6.3.0</span><br><span class="line">...</span><br><span class="line">03:05:12.483 INFO  Validating config</span><br><span class="line">...</span><br><span class="line">03:05:12.651 DEBUG Script loaded: scripts\test.js</span><br><span class="line">03:05:12.652 INFO  Start processing</span><br><span class="line">...</span><br><span class="line">03:05:12.717 DEBUG hello from test.js!!!</span><br><span class="line">...</span><br><span class="line">03:05:12.742 INFO  Files loaded <span class="keyword">in</span> 90 ms</span><br><span class="line">...</span><br><span class="line">03:05:12.915 INFO  Generated: archives/2023/index.html</span><br><span class="line">...</span><br><span class="line">03:05:12.922 INFO  17 files generated <span class="keyword">in</span> 180 ms</span><br><span class="line">03:05:12.924 DEBUG Database saved</span><br></pre></td></tr></table></figure>
+
+<p>从输出中我们可以看到，在 <code>Validating config</code>
+过程中加载了我们创建的脚本，而在 <code>Start processing</code>
+后执行了我们的脚本，并通过 debug 输出了对应的语句。</p>
+<p>这样我们就实现了一个简单的 hexo
+插件（十分简单，没有对输入的数据做任何处理，打印一条语句后就退出了）。</p>
+<h2 id="plugin-写法">plugin 写法</h2>
+<p>参考官方<a
+target="_blank" rel="noopener" href="https://hexo.io/zh-cn/api">文档</a>的扩展部分，其给出了所有插件的种类</p>
+<p><img data-src="/posts/9a20/image-20230116112529108.png"
+style="zoom: 50%;" /></p>
+<p>例如我们之前写的 filter 插件，其<a
+target="_blank" rel="noopener" href="https://hexo.io/zh-cn/api/filter">文档</a>如下</p>
+<p><img data-src="/posts/9a20/image-20230116113313750.png"
+style="zoom:50%;" /></p>
+<p>所有的插件都可以采用类似的方式实现，通过
+<code>hexo.extend.xxx.register</code>
+来注册插件，指定好对应的处理函数即可。</p>
+<h2 id="基本模板">基本模板</h2>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">hexo.<span class="property">extend</span>.&lt;extend-type&gt;.<span class="title function_">register</span>(name,&lt;args&gt;,<span class="keyword">function</span>(<span class="params"></span>)&#123;</span><br><span class="line">	...</span><br><span class="line">&#125;,&lt;extend-args&gt;)</span><br></pre></td></tr></table></figure>
+
+<p>考虑到箭头函数和普通函数的区别，在函数内部我们获取 hexo
+变量的方式不一样，在箭头函数中没有 this 指针，我们需要通过一个全局 hexo
+变量进行访问即可，而普通函数会包含 this 指针，而 hexo
+在调用函数时会将自身绑定到 this 指针上，这样我们可以直接通过 this 访问
+hexo 相关变量。</p>
+<p>对应代码如下</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&#x27;use strict&#x27;</span></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">arrow_function1</span> = (<span class="params">data</span>) =&gt; &#123;</span><br><span class="line">  <span class="keyword">const</span> &#123;log&#125; = <span class="variable language_">this</span>;</span><br><span class="line">  log &amp;&amp; log.<span class="title function_">debug</span>(<span class="string">&quot;hello from arrow_function1!!!&quot;</span>);</span><br><span class="line">  <span class="keyword">return</span> data;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">arrow_function2</span> = (<span class="params">data</span>) =&gt; &#123;</span><br><span class="line">  <span class="keyword">const</span> &#123;log&#125; = hexo;</span><br><span class="line">  log &amp;&amp; log.<span class="title function_">debug</span>(<span class="string">&quot;hello from arrow_function2!!!&quot;</span>);</span><br><span class="line">  <span class="keyword">return</span> data;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> normal_function1 = <span class="keyword">function</span>(<span class="params">data</span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> &#123;log&#125; = <span class="variable language_">this</span>;</span><br><span class="line">  log &amp;&amp; log.<span class="title function_">debug</span>(<span class="string">&quot;hello from normal_function1!!!&quot;</span>);</span><br><span class="line">  <span class="keyword">return</span> data;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> normal_function2 = <span class="keyword">function</span>(<span class="params">data</span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> &#123;log&#125; = hexo;</span><br><span class="line">  log &amp;&amp; log.<span class="title function_">debug</span>(<span class="string">&quot;hello from normal_function2!!!&quot;</span>);</span><br><span class="line">  <span class="keyword">return</span> data;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">hexo.<span class="property">extend</span>.<span class="property">filter</span>.<span class="title function_">register</span>(<span class="string">&#x27;before_post_render&#x27;</span>, arrow_function1);</span><br><span class="line">hexo.<span class="property">extend</span>.<span class="property">filter</span>.<span class="title function_">register</span>(<span class="string">&#x27;before_post_render&#x27;</span>, arrow_function2);</span><br><span class="line">hexo.<span class="property">extend</span>.<span class="property">filter</span>.<span class="title function_">register</span>(<span class="string">&#x27;before_post_render&#x27;</span>, normal_function1);</span><br><span class="line">hexo.<span class="property">extend</span>.<span class="property">filter</span>.<span class="title function_">register</span>(<span class="string">&#x27;before_post_render&#x27;</span>, normal_function2);</span><br></pre></td></tr></table></figure>
+
+<p>对应执行结果（<code>hexo clean &amp;&amp; hexo generate --debug</code>
+)</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line"><span class="number">03</span>:<span class="number">55</span>:<span class="number">44.819</span> <span class="variable constant_">DEBUG</span> hello <span class="keyword">from</span> arrow_function2!!!</span><br><span class="line"><span class="number">03</span>:<span class="number">55</span>:<span class="number">44.819</span> <span class="variable constant_">DEBUG</span> hello <span class="keyword">from</span> vanilla_function1!!!</span><br><span class="line"><span class="number">03</span>:<span class="number">55</span>:<span class="number">44.820</span> <span class="variable constant_">DEBUG</span> hello <span class="keyword">from</span> vanilla_function2!!!</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p>从执行结果中可以看到，在箭头函数（arrow function）中不包含 this
+指针，我们无法通过 this 来访问 hexo 的变量，但是可以直接通过 hexo
+全局变量来访问，对于普通函数（normal function）而言，可以通过 this
+来访问 hexo，也可以直接通过全局变量 hexo 来访问。</p>
+<p>由于脚本模式实际上实在 js 中通过字符串形式执行的，最好在开头处添加
+<code>use strict</code> 来标识，确保插件能正常执行。</p>
+<p>注：导入包的时候我们只能使用 common js 的包，并不支持 es6
+模式的包，即我们不能通过一下模式导入包</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; unified &#125; <span class="keyword">from</span> <span class="string">&#x27;unified&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<p>(unified 是一个<a
+target="_blank" rel="noopener" href="https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c">纯
+es6 模块</a>，不支持 comman js 导入)</p>
+<p>而必须使用 common js 的导包方式</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> &#123; red &#125; = <span class="built_in">require</span>(<span class="string">&#x27;picocolors&#x27;</span>);</span><br></pre></td></tr></table></figure>
+
+<h2 id="日志输出">日志输出</h2>
+<p>通过 <code>hexo.log</code> 我们可以拿到 hexo
+的日志输出对象，其具体实现在 <a
+target="_blank" rel="noopener" href="https://github.com/hexojs/hexo-log">hexo-log</a>
+中，和普通的日志输出模块类似，其也支持不同级别的日志输出和颜色输出，具体通过
+<code>picocolors</code> 库来控制输出的颜色，示例如下</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&#x27;use strict&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> &#123;log&#125; = hexo;</span><br><span class="line"><span class="keyword">const</span> &#123;red,green,blue,magenta,cyan&#125; = <span class="built_in">require</span>(<span class="string">&#x27;picocolors&#x27;</span>);</span><br><span class="line"></span><br><span class="line">hexo.<span class="property">extend</span>.<span class="property">filter</span>.<span class="title function_">register</span>(<span class="string">&#x27;before_post_render&#x27;</span>, <span class="function">(<span class="params">data</span>) =&gt;</span> &#123;</span><br><span class="line">  log.<span class="title function_">trace</span>(<span class="string">&quot;this is a trace message&quot;</span>);</span><br><span class="line">  log.<span class="title function_">debug</span>(<span class="string">&quot;this is a debug message&quot;</span>);</span><br><span class="line">  log.<span class="title function_">info</span>(<span class="string">&quot;this is a info message&quot;</span>);</span><br><span class="line">  log.<span class="title function_">warn</span>(<span class="string">&quot;this is a warn message&quot;</span>);</span><br><span class="line">  log.<span class="title function_">error</span>(<span class="string">&quot;this is a error message&quot;</span>);</span><br><span class="line">  log.<span class="title function_">fatal</span>(<span class="string">&quot;this is a fatal message&quot;</span>);</span><br><span class="line">  </span><br><span class="line">  log.<span class="title function_">info</span>(<span class="string">&quot;this is a red&quot;</span>,<span class="title function_">red</span>(<span class="string">&quot;message&quot;</span>));</span><br><span class="line">  log.<span class="title function_">info</span>(<span class="string">&quot;this is a green&quot;</span>,<span class="title function_">green</span>(<span class="string">&quot;message&quot;</span>));</span><br><span class="line">  log.<span class="title function_">info</span>(<span class="string">&quot;this is a blue&quot;</span>,<span class="title function_">blue</span>(<span class="string">&quot;message&quot;</span>));</span><br><span class="line">  log.<span class="title function_">info</span>(<span class="string">&quot;this is a magenta&quot;</span>,<span class="title function_">magenta</span>(<span class="string">&quot;message&quot;</span>));</span><br><span class="line">  log.<span class="title function_">info</span>(<span class="string">&quot;this is a cyan&quot;</span>,<span class="title function_">cyan</span>(<span class="string">&quot;message&quot;</span>));</span><br><span class="line">  <span class="keyword">return</span> data;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>对应输出结果</p>
+<p><img data-src="/posts/9a20/image-20230116121200965.png"
+style="zoom:67%;" /></p>
+<h1 id="pandoc-renderer">Pandoc Renderer</h1>
+<h2 id="目的">目的</h2>
+<p>在前一篇文章中，我们配置好了 hexo
+的静态文件处理方式，将所有的图片都放置在了 <code>source/images</code>
+路径下，并通过设置 markdown 的 front matter 使得 typora
+可以正确显示图片。</p>
+<p>但是这种方法<strong>耦合性太强</strong>，所有图片都放在 images
+文件夹不说，如果我们换一个 markdown 编辑器，就无法实现正确的预览了。</p>
+<p>为此，我们需要调整 hexo 中图片资源管理方式，将 markdown
+文件中图片链接全部替换为相对路径。</p>
+<h2 id="问题">问题</h2>
+<p>首先我们需要对之前的配置进行一些调整，修改
+<code>_config.yaml</code>，开启资源文件后处理</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">post_asset_folder:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+
+<p>参考官方文档，其会在创建 post文件 的同时创建和 post文件
+同名的文件夹，用来存储资源文件，而后在生成站点时将图片拷贝到默认文件夹下。</p>
+<p>修改配置后，我们创建一个 post 来查看一下效果</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo new post <span class="string">&quot;c++学习笔记&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>（取这个名字还有一个就是文件名实际上和文章的标题不一定会对应，如果包含特殊的字符会进行调整）</p>
+<p>运行结果</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(base) PS D:\hexo-temp&gt; hexo new post <span class="string">&quot;c++学习笔记&quot;</span></span><br><span class="line">INFO  Validating config</span><br><span class="line">INFO  Created: D:\hexo-temp\<span class="built_in">source</span>\_posts\c-学习笔记.md</span><br></pre></td></tr></table></figure>
+
+<p>可以看到 markdown 文件名变成了 <code>c-学习笔记</code>，将
+<code>++</code> 替换成了 <code>-</code>，同时在当前目录下也创建了
+<code>c-学习笔记</code> 文件夹</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">(base) PS D:\hexo-temp\<span class="built_in">source</span>\_posts&gt; tree /F</span><br><span class="line">卷 Data 的文件夹 PATH 列表</span><br><span class="line">卷序列号为 4000-728D</span><br><span class="line">D:.</span><br><span class="line">│  c-学习笔记.md</span><br><span class="line">│  hello-world.md</span><br><span class="line">│</span><br><span class="line">└─c-学习笔记</span><br><span class="line">        hexo.png</span><br></pre></td></tr></table></figure>
+
+<p>（在 powershell 中也提供了 <code>tree</code> 命令，使用方式和 linux
+下的差别较大，传参居然是用 <code>/&lt;argument&gt;</code>
+的形式，怪怪的，查看帮助使用 <code>/?</code> 而不是 linux 中的
+<code>--help</code> 或 <code>-h</code>）</p>
+<p>此时我们在 markdown 文档中插入一张图片测试一下</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">---</span><br><span class="line">title: c++学习笔记</span><br><span class="line">date: 2023-01-16 13:30:31</span><br><span class="line"><span class="section">tags:</span></span><br><span class="line"><span class="section">---</span></span><br><span class="line"></span><br><span class="line">测试图片：</span><br><span class="line"></span><br><span class="line">![<span class="string">测试图片</span>](<span class="link">c-学习笔记/hexo.png</span>)</span><br></pre></td></tr></table></figure>
+
+<p>本地预览结果</p>
+<p><img data-src="/posts/9a20/image-20230116134147690.png"
+style="zoom:50%;" /></p>
+<p>生成静态页面</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo clean &amp;&amp; hexo generate</span><br></pre></td></tr></table></figure>
+
+<p>生成的文件位于根目录的 <code>public</code> 下</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">(base) PS D:\hexo-temp&gt; tree /F public</span><br><span class="line">卷 Data 的文件夹 PATH 列表</span><br><span class="line">卷序列号为 00000048 4000:728D</span><br><span class="line">D:\HEXO-TEMP\PUBLIC</span><br><span class="line">│  index.html</span><br><span class="line">│</span><br><span class="line">├─2023</span><br><span class="line">│  └─01</span><br><span class="line">│      ├─15</span><br><span class="line">│      │  └─hello-world</span><br><span class="line">│      │          index.html</span><br><span class="line">│      │</span><br><span class="line">│      └─16</span><br><span class="line">│          └─c-学习笔记</span><br><span class="line">│                  hexo.png</span><br><span class="line">│                  index.html</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p>可以看到，我们插入的图片也被拷贝到了 public
+下的同名文件中，但是在生成的 <code>index.html</code>
+中我们可以看到，图片链接不对，在网页中自然无法正确显示</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;e-content article-entry&quot;</span> <span class="attr">itemprop</span>=<span class="string">&quot;articleBody&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">p</span>&gt;</span>测试图片：<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">p</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">&quot;/c-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/hexo.png&quot;</span> <span class="attr">alt</span>=<span class="string">&quot;测试图片&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>其中 <code>%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0</code> 是中文
+<code>学习笔记</code> 进行 UTF-8 编码后的 URL 表示形式 (urlencode)</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">(base) PS D:\hexo-temp&gt; python</span><br><span class="line">Python 3.9.12 (main, Apr  4 2022, 05:22:27) [MSC v.1916 64 bit (AMD64)] :: Anaconda, Inc. on win32</span><br><span class="line">Type <span class="string">&quot;help&quot;</span>, <span class="string">&quot;copyright&quot;</span>, <span class="string">&quot;credits&quot;</span> or <span class="string">&quot;license&quot;</span> <span class="keyword">for</span> more information.</span><br><span class="line">&gt;&gt;&gt; s = <span class="string">&quot;学习笔记&quot;</span></span><br><span class="line">&gt;&gt;&gt; s.encode(<span class="string">&quot;utf-8&quot;</span>)</span><br><span class="line">b<span class="string">&#x27;\xe5\xad\xa6\xe4\xb9\xa0\xe7\xac\x94\xe8\xae\xb0&#x27;</span></span><br><span class="line">&gt;&gt;&gt; from urllib.parse import quote    </span><br><span class="line">&gt;&gt;&gt; quote(s)</span><br><span class="line"><span class="string">&#x27;%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>如果我们对文章采用了永久编码，例如 <code>hexo-abbrlink</code> 等，在
+public 下文章名就会对应变成永久链接名称。</p>
+<p>此时我们已经发现问题了，<strong>图片对应的URI应该是
+<code>&lt;post-perm-link&gt;/&lt;pic-name&gt;</code>，但是我们在
+markdown
+中填写的路径是<code>&lt;post-md-name&gt;/&lt;pic-name&gt;</code></strong>，如果直接转
+html 就会出现问题。</p>
+<p>特别的，在 typora 中，当我们调整过图片大小后，其会将原始的 markdown
+图片语法切换为 html 的 img 标签形式。</p>
+<p>hexo-renderer-marked 可以对 markdown 中图片链接进行转换，但是对于
+HTML 文档而言就无能为力了，毕竟 html 此时就相当于是纯文本了。</p>
+<p>要想完美实现图片链接的处理，就需要我们通过插件方式进行自行实现</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">---</span><br><span class="line">title: c++学习笔记</span><br><span class="line">date: 2023-01-16 13:30:31</span><br><span class="line"><span class="section">tag:</span></span><br><span class="line"><span class="section">---</span></span><br><span class="line"></span><br><span class="line">markdown 图片：</span><br><span class="line"></span><br><span class="line">![<span class="string">测试图片</span>](<span class="link">c-学习笔记/hexo.png</span>)</span><br><span class="line"></span><br><span class="line">html 图片</span><br><span class="line"></span><br><span class="line"><span class="language-xml"><span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">&quot;c-学习笔记/hexo.png&quot;</span> <span class="attr">alt</span>=<span class="string">&quot;测试图片&quot;</span> <span class="attr">style</span>=<span class="string">&quot;zoom:50%;&quot;</span> /&gt;</span></span></span><br></pre></td></tr></table></figure>
+
+<p>预览效果</p>
+<p><img data-src="/posts/9a20/image-20230116144123563.png"
+style="zoom: 50%;" /></p>
+<h2 id="解决思路">解决思路</h2>
+<p>搞清楚问题后，我们就可以考虑如何解决问题了，主要问题有两个</p>
+<ol type="1">
+<li>无法实现自动图片链接转换</li>
+<li>对于 img 标签形式的图片链接也需要进行转换</li>
+</ol>
+<p>此时通过正则表达式进行替换的方式实现起来太复杂，不够稳定。例如，对于
+markdown
+文本中的代码段，如果在代码段中也包含一段图片链接，采用文本替换的方式也会对这个链接进行替换，虽然95%情况下能用，但是还是有5%的不适用场景，个人不推荐这样实现。</p>
+<p>另一个比较好的解决思路就是通过<strong>语法分析</strong>获取到
+markdown 文档的抽象语法树，对于 html
+部分的图片链接也同样进行处理（毕竟我们最终目标是将 markdown 转换成
+html，对 html 文档进行解析生成抽象语法树也是一样的）。</p>
+<p>拿到抽象语法树之后，我们只需要调整 img 标签对应的 src
+属性即可，此时进行替换可以确保我们一定是替换的图片链接，而不会错误地替换代码段中的链接。</p>
+<p>这样我们的思路就很清楚了：</p>
+<ol type="1">
+<li>通过 markdown 语法分析器进行语法分析，生成抽象语法树</li>
+<li>遍历抽象语法树，调整 img 节点对应链接属性，修改为永久链接</li>
+<li>将抽象语法树转换成 html 文档</li>
+</ol>
+<p>目前有很多 js 实现的 markdown 分析器，但是根据我们的需求</p>
+<ol type="1">
+<li>能同时进行 markdown 和 html 文档的语法分析</li>
+<li>markdown 和 html 文件能具有统一的中间表示形式</li>
+</ol>
+<p>纯 js 的解决方案目前只找到 <a
+target="_blank" rel="noopener" href="https://github.com/remarkjs/remark">remark.js</a>
+一个，但是其仅支持 es6，在 hexo 中仅支持 common js 导入。</p>
+<p>最后查到 pandoc 支持通过 lua 脚本的形式进行后处理（也就是 pandoc
+filter），似乎完美契合我们需求，那么接下来只需要学习如何编写 pandoc
+filter 即可。</p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://pandoc.org/filters.html">Pandoc - Pandoc
+filters</a></p>
+<p>转换流程</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">INPUT -&gt; reader -&gt; AST -&gt; filter -&gt; AST -&gt; writer -&gt; OUTPUT</span><br></pre></td></tr></table></figure>
+
+</blockquote>
+<h2 id="plugin">plugin</h2>
+<p>在调用 filter 之前，我们首先将 pandoc 集成到 hexo
+中。幸运的是已经有大佬写了相关调用插件了（<a
+target="_blank" rel="noopener" href="https://github.com/wzpan/hexo-renderer-pandoc">hexo-renderer-pandoc</a>），其代码也很简单，不到200行，可以直接通过脚本集成到
+hexo 中。</p>
+<p>由于 pandoc 是一个单独的可执行文件，在 js 中实际上就是调用 pandoc
+可执行文件，并获取其输出。在 node.js 调用其他命令需要
+<code>child_process</code> 库的 <code>spawn</code>，<code>exec</code> 或
+<code>fork</code></p>
+<p>这三类都可以实现外部命令的执行，由于我们需要对 pandoc 提供 markdown
+文本输入并获取 html 输出，数据量较大，<code>spawn</code>
+是最符合我们需求的，为了满足跨平台要求，我们可以使用
+<code>cross-spawn</code>来执行命令。</p>
+<p><code>spawn</code>
+是一个异步函数，我们需要提供一系列回调函数来获取其执行状态，在 <a
+target="_blank" rel="noopener" href="https://github.com/hexojs/hexo-util">hexo-utils</a> 中也提供了
+<code>CacheStream</code>
+来辅助我们获取子命令的输出结果，具体用法如下：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&#x27;use strict&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> &#123; spawn &#125; = <span class="built_in">require</span>(<span class="string">&#x27;node:child_process&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> &#123; <span class="title class_">CacheStream</span> &#125; = <span class="built_in">require</span>(<span class="string">&#x27;hexo-util&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">get_cache</span> = (<span class="params">stream, encoding</span>) =&gt; &#123;</span><br><span class="line">  <span class="keyword">const</span> buf = stream.<span class="title function_">getCache</span>();</span><br><span class="line">  stream.<span class="title function_">destroy</span>();</span><br><span class="line">  <span class="keyword">if</span> (!encoding) <span class="keyword">return</span> buf;</span><br><span class="line">  <span class="keyword">return</span> buf.<span class="title function_">toString</span>(encoding);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">main</span> = <span class="keyword">async</span> (<span class="params"></span>) =&gt; &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> task = <span class="title function_">spawn</span>(<span class="string">&quot;pandoc&quot;</span>, [<span class="string">&quot;--version&quot;</span>], &#123;</span><br><span class="line">      <span class="attr">env</span>: process.<span class="property">env</span>,</span><br><span class="line">      <span class="attr">cwd</span>: process.<span class="title function_">cwd</span>()</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> encoding = <span class="string">&#x27;utf-8&#x27;</span>;</span><br><span class="line">    <span class="keyword">const</span> stdout_cache = <span class="keyword">new</span> <span class="title class_">CacheStream</span>();</span><br><span class="line">    <span class="keyword">const</span> stderr_cache = <span class="keyword">new</span> <span class="title class_">CacheStream</span>();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (task.<span class="property">stdout</span>) &#123;</span><br><span class="line">      task.<span class="property">stdout</span>.<span class="title function_">setEncoding</span>(encoding);</span><br><span class="line">      task.<span class="property">stdout</span>.<span class="title function_">pipe</span>(stdout_cache);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (task.<span class="property">stderr</span>) &#123;</span><br><span class="line">      task.<span class="property">stderr</span>.<span class="title function_">setEncoding</span>(encoding);</span><br><span class="line">      task.<span class="property">stderr</span>.<span class="title function_">pipe</span>(stderr_cache);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (task.<span class="property">stdin</span>) &#123;</span><br><span class="line">      task.<span class="property">stdin</span>.<span class="title function_">setEncoding</span>(encoding);</span><br><span class="line">      <span class="comment">// task.stdin.write(data.text);</span></span><br><span class="line">      task.<span class="property">stdin</span>.<span class="title function_">end</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    task.<span class="title function_">on</span>(<span class="string">&#x27;close&#x27;</span>, <span class="function"><span class="params">code</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">let</span> stderr_msg = <span class="title function_">get_cache</span>(stderr_cache, encoding);</span><br><span class="line">      <span class="keyword">if</span> (code) &#123;</span><br><span class="line">        <span class="keyword">const</span> e = <span class="keyword">new</span> <span class="title class_">Error</span>(<span class="string">`pandoc process exited with code <span class="subst">$&#123;code&#125;</span>.<span class="subst">$&#123;stderr_msg.length &gt; <span class="number">0</span> ? <span class="string">`\n<span class="subst">$&#123;stderr_msg&#125;</span>`</span> : <span class="string">&#x27;&#x27;</span>&#125;</span>`</span>);</span><br><span class="line">        e.<span class="property">code</span> = code;</span><br><span class="line">        <span class="keyword">return</span> <span class="title function_">reject</span>(e);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">if</span> (stderr_msg.<span class="property">length</span> &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (stderr_msg.<span class="title function_">endsWith</span>(<span class="string">&#x27;\n&#x27;</span>)) &#123;</span><br><span class="line">          stderr_msg = stderr_msg.<span class="title function_">slice</span>(<span class="number">0</span>, -<span class="number">1</span>)</span><br><span class="line">        &#125;</span><br><span class="line">        log.<span class="title function_">debug</span>(<span class="string">`Pandoc:\n%s`</span>, stderr_msg);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="title function_">resolve</span>(<span class="title function_">get_cache</span>(stdout_cache, encoding));</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title function_">main</span>().<span class="title function_">then</span>(<span class="function"><span class="params">output</span> =&gt;</span> <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`output from spawn:\n<span class="subst">$&#123;output&#125;</span>`</span>)).<span class="title function_">catch</span>(<span class="function"><span class="params">e</span> =&gt;</span> <span class="variable language_">console</span>.<span class="title function_">log</span>(e));</span><br></pre></td></tr></table></figure>
+
+<p>输出结果</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">(base) PS D:\hexo-temp&gt; node .\scripts\test.js</span><br><span class="line">output from pandoc:</span><br><span class="line">pandoc 2.19.2</span><br><span class="line">Compiled with pandoc-types 1.22.2.1, texmath 0.12.5.2, skylighting 0.13,</span><br><span class="line">citeproc 0.8.0.1, ipynb 0.2, hslua 2.2.1</span><br><span class="line">Scripting engine: Lua 5.4</span><br><span class="line">User data directory: C:\Users\xiao\AppData\Roaming\pandoc</span><br><span class="line">Copyright (C) 2006-2022 John MacFarlane. Web:  https://pandoc.org</span><br><span class="line">This is free software; see the <span class="built_in">source</span> <span class="keyword">for</span> copying conditions. There is no</span><br><span class="line">warranty, not even <span class="keyword">for</span> merchantability or fitness <span class="keyword">for</span> a particular purpose.</span><br></pre></td></tr></table></figure>
+
+<p>上面的代码实际上就是调用了 <code>pandoc --version</code> 命令，并通过
+CacheStream 获取到了调用命令后的输出结果，以便进行下一步的调用。</p>
+<p>如果我们需要向 pandoc 传输数据（例如待处理的 markdown
+文本流），我们可以直接在 <code>stdin</code>
+中直接写入，同时注意写入完成后<strong>记得关闭输入流</strong>，否则
+pandoc 进程会一直等待输入。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">task.<span class="property">stdin</span>.<span class="title function_">setEncoding</span>(encoding);</span><br><span class="line">task.<span class="property">stdin</span>.<span class="title function_">write</span>(&lt;some-data&gt;);</span><br><span class="line">task.<span class="property">stdin</span>.<span class="title function_">end</span>();</span><br></pre></td></tr></table></figure>
+
+<p>在 pandoc 进行 markdown 转换的命令如下</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pandoc --from=gfm --to=html5 --mathjax</span><br></pre></td></tr></table></figure>
+
+<p>其中：</p>
+<ol type="1">
+<li><code>--from</code> 表示输入格式</li>
+<li><code>--to</code> 表示输出格式</li>
+<li><code>--mathjax</code> 表示开启 mathjax 公式支持</li>
+</ol>
+<p>输入后 pandoc 就会等待 stdin 输入，输出到 stdout
+中，同时将错误信息输出到 stderr 中。</p>
+<p>例如我们写一个简单的 <code>h1</code> 标题，其 markdown 代码为
+<code># This is h1</code> ，对应 html 代码为
+<code>&lt;h1&gt;This is h1&lt;/h1&gt;</code></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> task = <span class="title function_">spawn</span>(<span class="string">&quot;pandoc&quot;</span>, [<span class="string">&quot;--from=gfm&quot;</span>,<span class="string">&quot;--to=html5&quot;</span>,<span class="string">&quot;--mathjax&quot;</span>], &#123;</span><br><span class="line">    <span class="attr">env</span>: process.<span class="property">env</span>,</span><br><span class="line">    <span class="attr">cwd</span>: process.<span class="title function_">cwd</span>()</span><br><span class="line">&#125;);</span><br><span class="line">...</span><br><span class="line">task.<span class="property">stdin</span>.<span class="title function_">write</span>(<span class="string">&quot;# This is h1&quot;</span>);</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p>执行结果</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(base) PS D:\hexo-temp&gt; node .\scripts\test.js</span><br><span class="line">output from spawn:</span><br><span class="line">&lt;h1 <span class="built_in">id</span>=<span class="string">&quot;this-is-h1&quot;</span>&gt;This is h1&lt;/h1&gt;</span><br></pre></td></tr></table></figure>
+
+<p>可以看到，通过 spawn 我们可以正确调用 pandoc 并实现从 markdown 到
+html 的转换。最后只需要编写 pandoc filter 就可以完成插件了。</p>
+<h2 id="pandoc-filter">pandoc filter</h2>
+<h3 id="hellolua-filter">hello，lua filter</h3>
+<p>在 <a target="_blank" rel="noopener" href="https://pandoc.org/lua-filters.html">Pandoc 官网</a>
+中给出了一个简单的示例</p>
+<p>文件：<code>smallcaps.lua</code></p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">return</span> &#123;</span><br><span class="line">  &#123;</span><br><span class="line">    Strong = <span class="function"><span class="keyword">function</span> <span class="params">(elem)</span></span></span><br><span class="line">      <span class="keyword">return</span> pandoc.SmallCaps(elem.c)</span><br><span class="line">    <span class="keyword">end</span>,</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其将所有的 Strong 标签（粗体，在 markdown 就是
+<code>**A**</code>，<strong>A</strong>）转换 Small Caps 形式，测试
+markdown 如下</p>
+<p>将其保存为 <code>test.md</code></p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="strong">**hello world!**</span></span><br></pre></td></tr></table></figure>
+
+<p>命令如下</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pandoc --lua-filter=smallcaps.lua -o test.html test.md</span><br></pre></td></tr></table></figure>
+
+<p>如果不指定输出格式，其默认使用 html 格式输出，对应输出结果如下</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">p</span>&gt;</span><span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">&quot;smallcaps&quot;</span>&gt;</span>hello world!<span class="tag">&lt;/<span class="name">span</span>&gt;</span><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>可以看到，在 html 中并不能原生支持 smallcaps 样式，但是 pandoc
+为其指定了一个 css 类名，通过类名这个我们可以手动实现 smallcaps
+效果。</p>
+<h3 id="filter-写法">filter 写法</h3>
+<p>上面的代码第一眼看上有点奇怪，怎么以来就是一个 <code>return</code>
+语句，返回的 <code>&#123;&#125;</code> 怎么直接套了一个
+<code>&#123;xxx = xxx&#125;</code></p>
+<p>首先解释后面一点，在 lua 中，列表和字典都使用 <code>&#123;&#125;</code>
+表示，那么最外层的就是一个列表，然后内层的是一个字典，我们可以看到其指定了一个键为
+<code>Strong</code> 的函数，表示对 <code>Strong</code>
+这个节点的处理函数。</p>
+<p>那么最开始的 <code>return</code>
+就表示这个脚本可以作为包被外部使用，就有点类似于 common js
+中模块写法</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">module</span>.<span class="property">export</span>.<span class="property">x</span> = [</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="title class_">Strong</span> = <span class="keyword">function</span>(<span class="params">elem</span>)&#123;...&#125;</span><br><span class="line">    &#125;</span><br><span class="line">];</span><br></pre></td></tr></table></figure>
+
+<p>然后在 pandoc 内部调用时，直接使用下面语句</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">local</span> f = <span class="built_in">require</span>(<span class="string">&quot;smallcaps&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>即可导入使用</p>
+<p>在 Pandoc 中定义了很多种抽象语法树的节点类型，例如
+Block、String、Inline等，对于每一个节点类型我们都可以编写对应的处理函数对其进行处理，同时根据列表的顺序还可以控制抽象语法树的遍历方式。</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">local</span> <span class="function"><span class="keyword">function</span> <span class="title">Meta</span><span class="params">(meta)</span></span> </span><br><span class="line">   <span class="built_in">print</span>(<span class="string">&quot;process meta&quot;</span>) </span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">local</span> <span class="function"><span class="keyword">function</span> <span class="title">Para</span><span class="params">(para)</span></span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;process para&quot;</span>)</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">local</span> <span class="function"><span class="keyword">function</span> <span class="title">Image</span><span class="params">(image)</span></span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;process image&quot;</span>)</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">return</span> &#123;</span><br><span class="line">    &#123;Meta = Meta&#125;,</span><br><span class="line">    &#123;Para = Para&#125;,</span><br><span class="line">    &#123;Image = Image&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>测试 markdown</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">---</span><br><span class="line"><span class="section">title: 测试 markdown</span></span><br><span class="line"><span class="section">---</span></span><br><span class="line"></span><br><span class="line">hello</span><br><span class="line"></span><br><span class="line">![<span class="string">test-image</span>](<span class="link">url-to-image</span>)</span><br></pre></td></tr></table></figure>
+
+<p>测试命令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pandoc --lua-filter test.lua -o test.html test.md</span><br></pre></td></tr></table></figure>
+
+<p>在控制台的输出如下</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">(base) PS D:\Code\Lua\pandoc-filter&gt; pandoc --lua-filter test.lua -o test.html test.md</span><br><span class="line">process meta</span><br><span class="line">process para</span><br><span class="line">process para</span><br><span class="line">process image</span><br></pre></td></tr></table></figure>
+
+<p>从输出结果上我们可以看到，首先处理的是 meta，之后是两个 para，最后是
+image，其对应的文档结构如下</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">meta</span>&gt;</span>...<span class="tag">&lt;/<span class="name">meta</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">p</span>&gt;</span>hello<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">p</span>&gt;</span><span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">&quot;url-to-image&quot;</span> <span class="attr">alt</span>=<span class="string">&quot;test-image&quot;</span>/&gt;</span><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>注：如果函数中没有返回任何值（或者返回
+nil），表示该函数不会对抽象语法树进行修改</p>
+<h2 id="final-filter">final filter</h2>
+<p>参考 pandoc 对于 <a
+target="_blank" rel="noopener" href="https://pandoc.org/lua-filters.html#type-image">image</a>
+节点的描述，通过 <code>src</code>
+字段可以读取到图片的链接信息，我们只需要修改 url
+值即可，根据之前的描述，我们可以编写一个简单的 filter</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">local url_prefix</span><br><span class="line"></span><br><span class="line">local function Meta(meta) </span><br><span class="line">  url_prefix = meta.url_prefix </span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">local function Image(image)</span><br><span class="line">   image.src = url_prefix ..&#x27;/&#x27;.. image.src</span><br><span class="line">   print(&quot;image.src: &quot;,image.src)</span><br><span class="line">   return image</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">return &#123;</span><br><span class="line">   &#123;Meta = Meta&#125;,</span><br><span class="line">   &#123;Image = Image&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>同时在命令行中通过 <code>--metadata=key:value</code>
+来指定元数据信息</p>
+<p>转换命令如下</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pandoc --metadata=url_prefix:<span class="built_in">test</span> --lua-filter test.lua -o test.html test.md</span><br></pre></td></tr></table></figure>
+
+<p>输出</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">image.src:      <span class="built_in">test</span>/test.jpg</span><br></pre></td></tr></table></figure>
+
+<p>转换后的 html 代码</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">p</span>&gt;</span>hello<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">figure</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">&quot;test/url-to-image&quot;</span> <span class="attr">alt</span>=<span class="string">&quot;test-image&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">figcaption</span> <span class="attr">aria-hidden</span>=<span class="string">&quot;true&quot;</span>&gt;</span>test-image<span class="tag">&lt;/<span class="name">figcaption</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">figure</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>可以看到 <code>src</code>
+部分已经替换成了我们需要的链接，并且其还对图片添加了 figcaption</p>
+<p>之前我们提到，在 markdown 文档中可能存在 html
+代码，对于这一部分我们也想要进行处理，默认 pandoc 会将其解析为
+RawBlock，即不做任何处理，但也可以使用 <code>pandoc.read</code>
+进行解析，生成抽象语法树，这样我们就可以对 html
+形式的图片进行解析了。</p>
+<p>完整代码如下</p>
+<p>文件：<code>image-asset.lua</code></p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">--[[</span></span><br><span class="line"><span class="comment">    Reference: </span></span><br><span class="line"><span class="comment">    [1] https://pandoc.org/lua-filters.html</span></span><br><span class="line"><span class="comment">    [2] http://www.lua.org/manual/5.4/</span></span><br><span class="line"><span class="comment">]]</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">local</span> logging = <span class="built_in">require</span>(<span class="string">&#x27;logging&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">local</span> new_path</span><br><span class="line"><span class="keyword">local</span> path_prefix</span><br><span class="line"></span><br><span class="line"><span class="keyword">local</span> <span class="function"><span class="keyword">function</span> <span class="title">Meta</span><span class="params">(meta)</span></span></span><br><span class="line">    <span class="comment">-- logging.temp(&#x27;Meta&#x27;,meta)</span></span><br><span class="line">    <span class="keyword">local</span> meta_path = meta[<span class="string">&#x27;path&#x27;</span>]</span><br><span class="line">    <span class="keyword">local</span> meta_title = meta[<span class="string">&#x27;title&#x27;</span>]</span><br><span class="line">    <span class="keyword">if</span> (meta_path == <span class="literal">nil</span> <span class="keyword">or</span> meta_title == <span class="literal">nil</span>) <span class="keyword">then</span></span><br><span class="line">        logging.temp(<span class="string">&#x27;Meta&#x27;</span>,<span class="string">&#x27;no meta data found, ignored.&#x27;</span>)</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    <span class="keyword">end</span>    </span><br><span class="line">    new_path = pandoc.utils.stringify(meta_path)</span><br><span class="line">    path_prefix = pandoc.utils.stringify(meta_title) .. <span class="string">&#x27;/&#x27;</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">local</span> <span class="function"><span class="keyword">function</span> <span class="title">Image</span><span class="params">(image)</span></span></span><br><span class="line">    <span class="keyword">if</span> (new_path == <span class="literal">nil</span> <span class="keyword">or</span> path_prefix == <span class="literal">nil</span>) <span class="keyword">then</span></span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">    <span class="keyword">local</span> length = pandoc.text.<span class="built_in">len</span>(path_prefix)</span><br><span class="line">    <span class="keyword">local</span> prefix = pandoc.text.<span class="built_in">sub</span>(image.src,<span class="number">1</span>,length)</span><br><span class="line">    <span class="keyword">local</span> postfix = pandoc.text.<span class="built_in">sub</span>(image.src,length+<span class="number">1</span>)</span><br><span class="line">    <span class="keyword">if</span> (prefix == path_prefix) <span class="keyword">then</span></span><br><span class="line">        image.src = new_path .. postfix</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">    <span class="keyword">return</span> image</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">local</span> <span class="function"><span class="keyword">function</span> <span class="title">RawBlock</span> <span class="params">(raw)</span></span></span><br><span class="line">    <span class="keyword">if</span> raw.<span class="built_in">format</span>:<span class="built_in">match</span>(<span class="string">&#x27;html&#x27;</span>) <span class="keyword">then</span></span><br><span class="line">        <span class="keyword">local</span> res = pandoc.<span class="built_in">read</span>(raw.text,<span class="string">&#x27;html&#x27;</span>)</span><br><span class="line">        <span class="comment">-- https://pandoc.org/lua-filters.html#type-blocks</span></span><br><span class="line">        <span class="keyword">if</span> ( #res.blocks == <span class="number">1</span> ) <span class="keyword">then</span></span><br><span class="line">            <span class="comment">-- convert Plain to Para</span></span><br><span class="line">            <span class="keyword">return</span> pandoc.Para(res.blocks[<span class="number">1</span>].content)</span><br><span class="line">        <span class="keyword">end</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="comment">-- function Pandoc(pandoc)</span></span><br><span class="line"><span class="comment">--     logging.temp(&#x27;Pandoc&#x27;,pandoc)</span></span><br><span class="line"><span class="comment">-- end</span></span><br><span class="line"></span><br><span class="line"><span class="comment">-- return in global scope (can be loaded via `require`)</span></span><br><span class="line"><span class="keyword">return</span> &#123;</span><br><span class="line">    &#123; RawBlock = RawBlock &#125;,</span><br><span class="line">    &#123; Meta = Meta &#125;,</span><br><span class="line">    &#123; Image = Image &#125;,</span><br><span class="line">    <span class="comment">-- &#123; Pandoc = Pandoc &#125;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>以及完整的插件代码</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// code modified from https://github.com/wzpan/hexo-renderer-pandoc/blob/master/index.js</span></span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">&#x27;use strict&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> spawn = <span class="built_in">require</span>(<span class="string">&#x27;cross-spawn&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> path = <span class="built_in">require</span>(<span class="string">&#x27;node:path&#x27;</span>)</span><br><span class="line"><span class="keyword">const</span> &#123; <span class="title class_">CacheStream</span> &#125; = <span class="built_in">require</span>(<span class="string">&#x27;hexo-util&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> assert = <span class="built_in">require</span>(<span class="string">&#x27;node:assert&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> &#123; yellow &#125; = <span class="built_in">require</span>(<span class="string">&#x27;picocolors&#x27;</span>);</span><br><span class="line"></span><br><span class="line">hexo.<span class="property">config</span>.<span class="property">pandoc</span> = <span class="title class_">Object</span>.<span class="title function_">assign</span>(&#123;</span><br><span class="line">    <span class="attr">pandoc_bin</span>: <span class="string">&#x27;pandoc&#x27;</span>,</span><br><span class="line">    <span class="attr">math_engine</span>: <span class="string">&#x27;mathjax&#x27;</span>,</span><br><span class="line">    <span class="attr">markdown_mode</span>: <span class="string">&#x27;gfm&#x27;</span>,</span><br><span class="line">    <span class="attr">filters</span>: [],</span><br><span class="line">    <span class="attr">lua_filters</span>: [],</span><br><span class="line">    <span class="attr">extra</span>: [],</span><br><span class="line">&#125;, hexo.<span class="property">config</span>.<span class="property">pandoc</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// must have the `?.lua` specified!</span></span><br><span class="line"><span class="keyword">const</span> pandoc_env = &#123; ...process.<span class="property">env</span>, <span class="attr">LUA_PATH</span>: path.<span class="title function_">join</span>(process.<span class="title function_">cwd</span>(), <span class="string">&#x27;lua&#x27;</span>, <span class="string">&#x27;?.lua&#x27;</span>) &#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">argument</span> = (<span class="params">name, value = <span class="literal">undefined</span></span>) =&gt; &#123;</span><br><span class="line">    <span class="keyword">if</span> (value) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">`--<span class="subst">$&#123;name&#125;</span>=<span class="subst">$&#123;value&#125;</span>`</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">`--<span class="subst">$&#123;name&#125;</span>`</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">is_string</span> = obj =&gt; <span class="keyword">typeof</span> (obj) === <span class="string">&#x27;string&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">is_array</span> = obj =&gt; <span class="title class_">Array</span>.<span class="title function_">isArray</span>(obj);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">is_object</span> = obj =&gt; <span class="keyword">typeof</span> (obj) === <span class="string">&#x27;object&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">get_cache</span> = (<span class="params">stream, encoding</span>) =&gt; &#123;</span><br><span class="line">    <span class="keyword">const</span> buf = stream.<span class="title function_">getCache</span>();</span><br><span class="line">    stream.<span class="title function_">destroy</span>();</span><br><span class="line">    <span class="keyword">if</span> (!encoding) <span class="keyword">return</span> buf;</span><br><span class="line">    <span class="keyword">return</span> buf.<span class="title function_">toString</span>(encoding);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">renderer</span> = (<span class="params">data, options</span>) =&gt; &#123;</span><br><span class="line">    <span class="keyword">const</span> &#123; log &#125; = hexo;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> config = hexo.<span class="property">config</span>.<span class="property">pandoc</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> filters = [];</span><br><span class="line">    <span class="keyword">const</span> lua_filters = [];</span><br><span class="line">    <span class="keyword">const</span> extra = [<span class="title function_">argument</span>(<span class="string">&#x27;metadata&#x27;</span>, <span class="string">&#x27;pagetitle:ignored&#x27;</span>)];</span><br><span class="line">    <span class="comment">// To satisfy pandoc&#x27;s requirement that html5 must have a title.</span></span><br><span class="line">    <span class="comment">// Since the markdown file is only rendered as body part,</span></span><br><span class="line">    <span class="comment">// the title is never used and thus does not matter</span></span><br><span class="line">    <span class="keyword">const</span> pandoc_bin = config.<span class="property">pandoc_bin</span>;</span><br><span class="line">    <span class="keyword">const</span> math_engine = <span class="title function_">argument</span>(config.<span class="property">math_engine</span>);</span><br><span class="line">    <span class="keyword">const</span> markdown_mode = config.<span class="property">markdown_mode</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!<span class="title function_">is_array</span>(config.<span class="property">filters</span>)) &#123;</span><br><span class="line">        config.<span class="property">filters</span> = [config.<span class="property">filters</span>];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!<span class="title function_">is_array</span>(config.<span class="property">lua_filters</span>)) &#123;</span><br><span class="line">        config.<span class="property">lua_filters</span> = [config.<span class="property">lua_filters</span>];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!<span class="title function_">is_array</span>(config.<span class="property">extra</span>)) &#123;</span><br><span class="line">        config.<span class="property">extra</span> = [config.<span class="property">extra</span>];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    config.<span class="property">filters</span>.<span class="title function_">forEach</span>(<span class="function">(<span class="params">filter</span>) =&gt;</span> &#123;</span><br><span class="line">        filters.<span class="title function_">push</span>(<span class="title function_">argument</span>(<span class="string">&#x27;filter&#x27;</span>, filter));</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    config.<span class="property">lua_filters</span>.<span class="title function_">forEach</span>(<span class="function">(<span class="params">filter</span>) =&gt;</span> &#123;</span><br><span class="line">        lua_filters.<span class="title function_">push</span>(<span class="title function_">argument</span>(<span class="string">&#x27;lua-filter&#x27;</span>, filter));</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    config.<span class="property">extra</span>.<span class="title function_">forEach</span>(<span class="function">(<span class="params">item</span>) =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="title function_">is_string</span>(item)) &#123;</span><br><span class="line">            extra.<span class="title function_">push</span>(<span class="title function_">argument</span>(item));</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="title function_">is_object</span>(item)) &#123;</span><br><span class="line">            <span class="title function_">assert</span>(<span class="title class_">Object</span>.<span class="title function_">keys</span>(item).<span class="property">length</span> === <span class="number">1</span>, <span class="string">`item in extra must be a key-value tuple or string`</span>);</span><br><span class="line">            <span class="keyword">const</span> [key, value] = <span class="title class_">Object</span>.<span class="title function_">entries</span>(item)[<span class="number">0</span>];</span><br><span class="line">            <span class="keyword">if</span> (<span class="title function_">is_array</span>(value)) &#123;</span><br><span class="line">                value.<span class="title function_">forEach</span>(<span class="function">(<span class="params">v</span>) =&gt;</span> &#123;</span><br><span class="line">                    extra.<span class="title function_">push</span>(<span class="title function_">argument</span>(key, v));</span><br><span class="line">                &#125;);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                extra.<span class="title function_">push</span>(<span class="title function_">argument</span>(key, value));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">TypeError</span>(<span class="string">`unknown extra config for pandoc: <span class="subst">$&#123;item&#125;</span>`</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> <span class="variable constant_">POST_MODEL</span> = hexo.<span class="title function_">model</span>(<span class="string">&#x27;Post&#x27;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> source = data.<span class="property">path</span>.<span class="title function_">substring</span>(hexo.<span class="property">source_dir</span>.<span class="property">length</span>).<span class="title function_">replace</span>(<span class="regexp">/\\/g</span>, <span class="string">&#x27;/&#x27;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> current_post = <span class="variable constant_">POST_MODEL</span>.<span class="title function_">findOne</span>(&#123; source &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (current_post) &#123;</span><br><span class="line">        <span class="comment">// manually add root path</span></span><br><span class="line">        <span class="keyword">const</span> post_path = <span class="string">`/<span class="subst">$&#123;current_post.path&#125;</span>`</span>;</span><br><span class="line">        <span class="comment">// the filename (xxx.md) may not correspond to title field in Markdown Front Matter</span></span><br><span class="line">        <span class="keyword">const</span> filename = path.<span class="title function_">basename</span>(data.<span class="property">path</span>, <span class="string">&#x27;.md&#x27;</span>);</span><br><span class="line">        log.<span class="title function_">debug</span>(<span class="string">&#x27;Filename: %s&#x27;</span>, <span class="title function_">yellow</span>(filename));</span><br><span class="line">        <span class="comment">// const title = current_post.title;</span></span><br><span class="line">        extra.<span class="title function_">push</span>(<span class="title function_">argument</span>(<span class="string">&#x27;metadata&#x27;</span>, <span class="string">`path:<span class="subst">$&#123;post_path&#125;</span>`</span>));</span><br><span class="line">        extra.<span class="title function_">push</span>(<span class="title function_">argument</span>(<span class="string">&#x27;metadata&#x27;</span>, <span class="string">`title:<span class="subst">$&#123;filename&#125;</span>`</span>));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// if we are rendering a post,</span></span><br><span class="line">    <span class="comment">// `data` has the key `path`</span></span><br><span class="line">    <span class="comment">// https://github.com/hexojs/hexo/blob/2ed17cd105768df379dad8bbbe4df30964fe8f2d/lib/hexo/post.js#L269</span></span><br><span class="line">    <span class="comment">// otherwise (e.g., rendering a tag),</span></span><br><span class="line">    <span class="comment">// `path` is not present in `data`.</span></span><br><span class="line">    <span class="comment">// https://github.com/hexojs/hexo/blob/2ed17cd105768df379dad8bbbe4df30964fe8f2d/lib/extend/tag.js#L173</span></span><br><span class="line">    <span class="comment">// https://github.com/hexojs/hexo/blob/a6dc0ea28dddad1b5f1bad7c6f86f1e0627b564a/lib/plugins/tag/blockquote.js#L64</span></span><br><span class="line">    <span class="comment">// are we rendering a standalone post?</span></span><br><span class="line">    <span class="keyword">if</span> (data.<span class="property">path</span>) &#123;</span><br><span class="line">        <span class="comment">// only apply template when rendering post, not tags</span></span><br><span class="line">        <span class="keyword">if</span> (config.<span class="property">template</span>) &#123;</span><br><span class="line">            extra.<span class="title function_">push</span>(<span class="title function_">argument</span>(<span class="string">&#x27;template&#x27;</span>, config.<span class="property">template</span>, <span class="literal">true</span>));</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// do not apply `--standalone`,</span></span><br><span class="line">        <span class="comment">// header/footer are to be added by Hexo</span></span><br><span class="line">        <span class="comment">// also set a metavariable to let concerned</span></span><br><span class="line">        <span class="comment">// pandoc filters know</span></span><br><span class="line">        extra.<span class="title function_">push</span>(<span class="title function_">argument</span>(<span class="string">&#x27;metadata&#x27;</span>, <span class="string">&#x27;standalone:true&#x27;</span>));</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// or some thing to be embedded in a post,</span></span><br><span class="line">        <span class="comment">// like tags?</span></span><br><span class="line">        extra.<span class="title function_">push</span>(<span class="title function_">argument</span>(<span class="string">&#x27;metadata&#x27;</span>, <span class="string">&#x27;standalone:false&#x27;</span>));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> args = [</span><br><span class="line">        <span class="title function_">argument</span>(<span class="string">&#x27;from&#x27;</span>, markdown_mode),</span><br><span class="line">        <span class="title function_">argument</span>(<span class="string">&#x27;to&#x27;</span>, <span class="string">&#x27;html5&#x27;</span>),</span><br><span class="line">        math_engine,</span><br><span class="line">        ...extra,</span><br><span class="line">        ...lua_filters,</span><br><span class="line">        ...filters,</span><br><span class="line">    ];</span><br><span class="line"></span><br><span class="line">    log.<span class="title function_">debug</span>(<span class="string">&#x27;Pandoc command: %s&#x27;</span>, <span class="title function_">yellow</span>(<span class="string">`<span class="subst">$&#123;pandoc_bin&#125;</span> <span class="subst">$&#123;args.join(<span class="string">&#x27; &#x27;</span>)&#125;</span>`</span>));</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">const</span> task = <span class="title function_">spawn</span>(pandoc_bin, args, &#123;</span><br><span class="line">            <span class="attr">env</span>: pandoc_env,</span><br><span class="line">            <span class="attr">cwd</span>: process.<span class="title function_">cwd</span>()</span><br><span class="line">        &#125;);</span><br><span class="line">        <span class="keyword">const</span> encoding = <span class="string">&#x27;utf-8&#x27;</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">const</span> stdout_cache = <span class="keyword">new</span> <span class="title class_">CacheStream</span>();</span><br><span class="line">        <span class="keyword">const</span> stderr_cache = <span class="keyword">new</span> <span class="title class_">CacheStream</span>();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (task.<span class="property">stdout</span>) &#123;</span><br><span class="line">            task.<span class="property">stdout</span>.<span class="title function_">setEncoding</span>(encoding);</span><br><span class="line">            task.<span class="property">stdout</span>.<span class="title function_">pipe</span>(stdout_cache);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (task.<span class="property">stderr</span>) &#123;</span><br><span class="line">            task.<span class="property">stderr</span>.<span class="title function_">setEncoding</span>(encoding);</span><br><span class="line">            task.<span class="property">stderr</span>.<span class="title function_">pipe</span>(stderr_cache);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (task.<span class="property">stdin</span>) &#123;</span><br><span class="line">            task.<span class="property">stdin</span>.<span class="title function_">setEncoding</span>(encoding);</span><br><span class="line">            task.<span class="property">stdin</span>.<span class="title function_">write</span>(data.<span class="property">text</span>);</span><br><span class="line">            task.<span class="property">stdin</span>.<span class="title function_">end</span>();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        task.<span class="title function_">on</span>(<span class="string">&#x27;close&#x27;</span>, <span class="function"><span class="params">code</span> =&gt;</span> &#123;</span><br><span class="line">            <span class="keyword">let</span> stderr_msg = <span class="title function_">get_cache</span>(stderr_cache, encoding);</span><br><span class="line">            <span class="keyword">if</span> (code) &#123;</span><br><span class="line">                <span class="keyword">const</span> e = <span class="keyword">new</span> <span class="title class_">Error</span>(<span class="string">`pandoc process exited with code <span class="subst">$&#123;code&#125;</span>.<span class="subst">$&#123;stderr_msg.length &gt; <span class="number">0</span> ? <span class="string">`\n<span class="subst">$&#123;stderr_msg&#125;</span>`</span> : <span class="string">&#x27;&#x27;</span>&#125;</span>`</span>);</span><br><span class="line">                e.<span class="property">code</span> = code;</span><br><span class="line">                <span class="keyword">return</span> <span class="title function_">reject</span>(e);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (stderr_msg.<span class="property">length</span> &gt; <span class="number">0</span>) &#123;</span><br><span class="line">                <span class="keyword">if</span> (stderr_msg.<span class="title function_">endsWith</span>(<span class="string">&#x27;\n&#x27;</span>)) &#123;</span><br><span class="line">                    stderr_msg = stderr_msg.<span class="title function_">slice</span>(<span class="number">0</span>, -<span class="number">1</span>)</span><br><span class="line">                &#125;</span><br><span class="line">                log.<span class="title function_">debug</span>(<span class="string">`Pandoc:\n%s`</span>, <span class="title function_">yellow</span>(stderr_msg));</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="title function_">resolve</span>(<span class="title function_">get_cache</span>(stdout_cache, encoding));</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">hexo.<span class="property">extend</span>.<span class="property">renderer</span>.<span class="title function_">register</span>(<span class="string">&#x27;md&#x27;</span>, <span class="string">&#x27;html&#x27;</span>, renderer, <span class="literal">true</span>);</span><br><span class="line">hexo.<span class="property">extend</span>.<span class="property">renderer</span>.<span class="title function_">register</span>(<span class="string">&#x27;markdown&#x27;</span>, <span class="string">&#x27;html&#x27;</span>, renderer, <span class="literal">true</span>);</span><br><span class="line">hexo.<span class="property">extend</span>.<span class="property">renderer</span>.<span class="title function_">register</span>(<span class="string">&#x27;mkd&#x27;</span>, <span class="string">&#x27;html&#x27;</span>, renderer, <span class="literal">true</span>);</span><br><span class="line">hexo.<span class="property">extend</span>.<span class="property">renderer</span>.<span class="title function_">register</span>(<span class="string">&#x27;mkdn&#x27;</span>, <span class="string">&#x27;html&#x27;</span>, renderer, <span class="literal">true</span>);</span><br><span class="line">hexo.<span class="property">extend</span>.<span class="property">renderer</span>.<span class="title function_">register</span>(<span class="string">&#x27;mdwn&#x27;</span>, <span class="string">&#x27;html&#x27;</span>, renderer, <span class="literal">true</span>);</span><br><span class="line">hexo.<span class="property">extend</span>.<span class="property">renderer</span>.<span class="title function_">register</span>(<span class="string">&#x27;mdtxt&#x27;</span>, <span class="string">&#x27;html&#x27;</span>, renderer, <span class="literal">true</span>);</span><br><span class="line">hexo.<span class="property">extend</span>.<span class="property">renderer</span>.<span class="title function_">register</span>(<span class="string">&#x27;mdtext&#x27;</span>, <span class="string">&#x27;html&#x27;</span>, renderer, <span class="literal">true</span>);</span><br></pre></td></tr></table></figure>
+
+<h1 id="总结">总结</h1>
+<p>写了很多，大概记录了一下 hexo
+自定义插件过程，还有很多没有详细介绍的，有兴趣的话参照下方的参考链接进行自行编写即可，弄清楚逻辑后代码写起来还是很快的。</p>
+<h1 id="参考">参考</h1>
+<ol type="1">
+<li><a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/docs/plugins">插件 | Hexo</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://github.com/wzpan/hexo-renderer-pandoc">wzpan/hexo-renderer-pandoc:
+A pandoc-markdown-flavor renderer for hexo. (github.com)</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://nodejs.org/docs/latest-v18.x/api/child_process.html#child_processspawncommand-args-options">Child
+process | Node.js v18.13.0 Documentation (nodejs.org)</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://github.com/moxystudio/node-cross-spawn">moxystudio/node-cross-spawn:
+A cross platform solution to node's spawn and spawnSync
+(github.com)</a></li>
+<li><a target="_blank" rel="noopener" href="https://pandoc.org/lua-filters.html">Pandoc - Pandoc Lua
+Filters</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://github.com/wlupton/pandoc-lua-logging">wlupton/pandoc-lua-logging:
+Pandoc lua filter logging support (github.com)</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.lua.org/manual/5.4/">Lua 5.4 Reference Manual -
+contents</a></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>PureWhiteVK
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://purewhitevk.github.io/posts/9a20/" title="hexo自定义插件">https://purewhitevk.github.io/posts/9a20/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/dead.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/hexo/" rel="tag"># hexo</a>
+              <a href="/tags/pandoc/" rel="tag"># pandoc</a>
+              <a href="/tags/node-js/" rel="tag"># node.js</a>
+              <a href="/tags/lua/" rel="tag"># lua</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/caff/" rel="prev" title="LaTex公式学习笔记">
+                  <i class="fa fa-chevron-left"></i> LaTex公式学习笔记
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/c4ef/" rel="next" title="字符串编码">
+                  字符串编码 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PureWhiteVK</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">23k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">1:23</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
