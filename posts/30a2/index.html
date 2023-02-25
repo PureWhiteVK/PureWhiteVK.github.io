@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"purewhitevk.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.14.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"default"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="命令行切换 MSVC 版本 在 WIndows 下跑 Python 深度学习代码时，需要编译 C++ 库（点名 Pytorch3d），但是使用最新版本的 MSVC 进行编译的时候会报错，去 Github 看 Issue 时有提到降级可能有效，我们可以通过添加组件的方式直接下载指定版本的 MSVC 编译器。然后手动修改进行切换。为了怕后面遇到类似问题时忘记怎么搞，还是简单记录一下吧，具体操作如下：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="命令行切换MSVC版本">
+<meta property="og:url" content="https://purewhitevk.github.io/posts/30a2/">
+<meta property="og:site_name" content="PureWhite&#39;s Blog">
+<meta property="og:description" content="命令行切换 MSVC 版本 在 WIndows 下跑 Python 深度学习代码时，需要编译 C++ 库（点名 Pytorch3d），但是使用最新版本的 MSVC 进行编译的时候会报错，去 Github 看 Issue 时有提到降级可能有效，我们可以通过添加组件的方式直接下载指定版本的 MSVC 编译器。然后手动修改进行切换。为了怕后面遇到类似问题时忘记怎么搞，还是简单记录一下吧，具体操作如下：">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/30a2/image-20230220223924979.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/30a2/image-20230220224128371.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/30a2/image-20230220224414127.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/30a2/image-20230220224544477.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/30a2/image-20230220225257590.png">
+<meta property="article:published_time" content="2023-02-20T14:10:49.000Z">
+<meta property="article:modified_time" content="2023-02-20T14:10:49.000Z">
+<meta property="article:author" content="PureWhiteVK">
+<meta property="article:tag" content="C++">
+<meta property="article:tag" content="MSVC">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://purewhitevk.github.io/posts/30a2/image-20230220223924979.png">
+
+
+<link rel="canonical" href="https://purewhitevk.github.io/posts/30a2/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://purewhitevk.github.io/posts/30a2/","path":"posts/30a2/","title":"命令行切换MSVC版本"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>命令行切换MSVC版本 | PureWhite's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">PureWhite's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">13</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">3</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">8</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%88%87%E6%8D%A2-msvc-%E7%89%88%E6%9C%AC"><span class="nav-number">1.</span> <span class="nav-text">命令行切换 MSVC 版本</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="PureWhiteVK"
+      src="/images/Touma.Kazusa.256x256.png">
+  <p class="site-author-name" itemprop="name">PureWhiteVK</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">8</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/PureWhiteVK" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;PureWhiteVK" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:yl_xiao@outlook.com" title="E-Mail → mailto:yl_xiao@outlook.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/dead.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://purewhitevk.github.io/posts/30a2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/Touma.Kazusa.256x256.png">
+      <meta itemprop="name" content="PureWhiteVK">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PureWhite's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="命令行切换MSVC版本 | PureWhite's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          命令行切换MSVC版本
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023/02/20 22:10:49" itemprop="dateCreated datePublished" datetime="2023-02-20T22:10:49+08:00">2023/02/20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">技术笔记</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>761</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>3 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="命令行切换-msvc-版本">命令行切换 MSVC 版本</h1>
+<p>在 WIndows 下跑 Python 深度学习代码时，需要编译 C++ 库（点名
+Pytorch3d），但是使用最新版本的 MSVC 进行编译的时候会报错，去 Github 看
+Issue 时有提到降级可能有效，我们可以通过添加组件的方式直接下载指定版本的
+MSVC
+编译器。然后手动修改进行切换。为了怕后面遇到类似问题时忘记怎么搞，还是简单记录一下吧，具体操作如下：</p>
+<ol type="1">
+<li><p>首先打开 Visual Studio Installer，点击 <code>修改</code> 按钮</p>
+<p><img data-src="/posts/30a2/image-20230220223924979.png" /></p>
+<span id="more"></span>
+</li>
+<li><p>在 <code>单个组件</code> 菜单中，找到指定版本的 MSVC</p>
+<p>注意编译器的名称是
+<code>MSVC v&lt;xxx&gt; - VS &lt;xxxx&gt; C++ x64/86 生成工具(v&lt;xx&gt;.&lt;xx&gt;)</code>，千万不要下错了</p>
+<p><img data-src="/posts/30a2/image-20230220224128371.png" /></p></li>
+<li><p>下载完成后，我们找到 Visual Studio 的安装目录， 其中
+<code>VC</code> 目录就包含了 MSVC 相关的文件</p>
+<p><img data-src="/posts/30a2/image-20230220224414127.png" /></p></li>
+<li><p>进入 <code>VC</code> 目录，在 <code>Tools\MSVC</code>
+我们就可以找到安装的所有 MSVC 编译器</p>
+<p><img data-src="/posts/30a2/image-20230220224544477.png" /></p></li>
+<li><p>我们可以进入一个子目录，进入 <code>bin\Hostx64\x64</code>
+文件夹，然后在这个文件夹下打开 Developer PowerShell，输入
+<code>.\cl.exe</code> 查看版本</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">(base) PS C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\bin\Hostx64\x64&gt; cl</span><br><span class="line">用于 x64 的 Microsoft (R) C/C++ 优化编译器 19.25.28614 版</span><br><span class="line">版权所有(C) Microsoft Corporation。保留所有权利。</span><br><span class="line"></span><br><span class="line">用法: cl [ 选项... ] 文件名... [ /link 链接选项... ]</span><br><span class="line">(base) PS C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\bin\Hostx64\x64&gt; .\cl.exe</span><br><span class="line">用于 x64 的 Microsoft (R) C/C++ 优化编译器 19.29.30147 版</span><br><span class="line">版权所有(C) Microsoft Corporation。保留所有权利。</span><br><span class="line"></span><br><span class="line">用法: cl [ 选项... ] 文件名... [ /link 链接选项... ]</span><br></pre></td></tr></table></figure>
+
+<p>可以看到，当我们直接输入 <code>cl</code> 时，调用的是环境变量中设置的
+MSVC 编译器，而输入 <code>.\cl.exe</code> 直接调用当前目录下的
+<code>cl.exe</code> 时就会调用当前目录的 MSVC 编译器</p></li>
+<li><p>最后我们只需要切换当前环境变量中使用的 <code>cl</code>
+就行，这里需要进入 <code>&lt;vs-path&gt;\VC\Auxiliary\Build</code>
+路径，在这个路径下面就制定了默认使用的 MSVC 版本</p></li>
+</ol>
+<p><img data-src="/posts/30a2/image-20230220225257590.png" /></p>
+<p>我们只需要修改其中的包含 <code>VCToolsVersion</code> 和
+<code>VCRedistVersion</code>
+字样的文件，将其中对应版本全部替换成我们需要的 MSVC 版本即可</p>
+<p><code>Microsoft.VCToolsVersion.default.props</code></p>
+   <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version = <span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;utf-8&quot;</span>?&gt;</span> </span><br><span class="line"><span class="tag">&lt;<span class="name">Project</span> <span class="attr">ToolsVersion</span> = <span class="string">&quot;4.0&quot;</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://schemas.microsoft.com/developer/msbuild/2003&quot;</span>&gt;</span> </span><br><span class="line">  <span class="tag">&lt;<span class="name">PropertyGroup</span>&gt;</span> </span><br><span class="line">    <span class="tag">&lt;<span class="name">VCToolsVersion</span> <span class="attr">Condition</span> = <span class="string">&quot;&#x27;$(VCToolsVersion)&#x27; == &#x27;&#x27;&quot;</span> &gt;</span>14.25.28610<span class="tag">&lt;/<span class="name">VCToolsVersion</span>&gt;</span> </span><br><span class="line">    <span class="tag">&lt;<span class="name">VCToolsRedistVersion</span> <span class="attr">Condition</span> = <span class="string">&quot;&#x27;$(VCToolsRedistVersion)&#x27; == &#x27;&#x27;&quot;</span> &gt;</span>14.25.28508<span class="tag">&lt;/<span class="name">VCToolsRedistVersion</span>&gt;</span> </span><br><span class="line">  <span class="tag">&lt;/<span class="name">PropertyGroup</span>&gt;</span>      </span><br><span class="line"><span class="tag">&lt;/<span class="name">Project</span>&gt;</span>     </span><br></pre></td></tr></table></figure>
+
+<p><code>Microsoft.VCToolsVersion.default.txt</code>（这个文件实际上就一个版本号，直接改掉就可以）</p>
+   <figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">14.25.28610</span><br></pre></td></tr></table></figure>
+
+<ol start="7" type="1">
+<li>切换完成后，我们再使用 Developer Powershell
+打开时就不会出问题了</li>
+</ol>
+<p>注：上面的更改仅适用于命令行，在 Visual Studio
+中可以直接手动更换，具体参考官方教程：<a
+target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/cpp/build/how-to-modify-the-target-framework-and-platform-toolset?view=msvc-170">How
+to: Modify the Target Framework and Platform Toolset | Microsoft
+Learn</a></p>
+<p>使用命令行是因为 Python 编译 C
+库需要从命令行调用，所以只能这样修改，而 cmake
+等编译工具实际上也只需要指定版本即可，具体可以参考官方文档：<a
+target="_blank" rel="noopener" href="https://cmake.org/cmake/help/latest/variable/MSVC_VERSION.html">MSVC_VERSION
+— CMake 3.26.0-rc4 Documentation</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>PureWhiteVK
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://purewhitevk.github.io/posts/30a2/" title="命令行切换MSVC版本">https://purewhitevk.github.io/posts/30a2/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/dead.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/C/" rel="tag"># C++</a>
+              <a href="/tags/MSVC/" rel="tag"># MSVC</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/764b/" rel="prev" title="C++ 易错点整理(一)">
+                  <i class="fa fa-chevron-left"></i> C++ 易错点整理(一)
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/f9ab/" rel="next" title="zerotier实现内网穿透">
+                  zerotier实现内网穿透 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PureWhiteVK</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">31k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">1:52</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
