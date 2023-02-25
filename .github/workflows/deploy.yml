@@ -18,21 +18,10 @@ jobs:
         with:
           pandoc-version: "3.0.1"
       - name: Use Node.js 18.12.1
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: "18.12.1"
-      - name: Get npm cache dir
-        id: npm-cache-dir
-        shell: bash
-        run: echo "dir=$(npm config get cache)" >> ${GITHUB_OUTPUT}
-      - name: Cache npm
-        uses: actions/cache@v3
-        id: npm-cache
-        with:
-          path: ${{ steps.npm-cache-dir.outputs.dir }}
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
+          cache: 'npm'
       - name: Install Dependencies
         run: npm install
       - name: Build
