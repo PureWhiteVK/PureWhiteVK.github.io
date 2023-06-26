@@ -3038,4 +3038,275 @@ ssh 直连）</p>
         <tag>内网穿透</tag>
       </tags>
   </entry>
+  <entry>
+    <title>nohup命令使用</title>
+    <url>/posts/80b6/</url>
+    <content><![CDATA[<h1 id="nohup-命令使用">nohup 命令使用</h1>
+<p>最近需要在服务器上跑模型，需要长时间运行，但是服务器是通过 ssh
+连接的，如果我们中途断开连接，正在跑的代码也会自动关闭。实在是有点整蛊，要想
+ssh 断开连接后代码还可以继续执行，需要使用 <code>nohup</code> 命令。</p>
+<p>使用 <code>nohup --help</code>，我们可以得到帮助信息</p>
+<figure class="highlight txt"><table><tr><td class="code"><pre><span class="line">(base) ➜  ~ nohup --help</span><br><span class="line">Usage: nohup COMMAND [ARG]...</span><br><span class="line">  or:  nohup OPTION</span><br><span class="line">Run COMMAND, ignoring hangup signals.</span><br><span class="line"></span><br><span class="line">      --help     display this help and exit</span><br><span class="line">      --version  output version information and exit</span><br><span class="line"></span><br><span class="line">If standard input is a terminal, redirect it from an unreadable file.</span><br><span class="line">If standard output is a terminal, append output to &#x27;nohup.out&#x27; if possible,</span><br><span class="line">&#x27;$HOME/nohup.out&#x27; otherwise.</span><br><span class="line">If standard error is a terminal, redirect it to standard output.</span><br><span class="line">To save output to FILE, use &#x27;nohup COMMAND &gt; FILE&#x27;.</span><br><span class="line"></span><br><span class="line">NOTE: your shell may have its own version of nohup, which usually supersedes</span><br><span class="line">the version described here.  Please refer to your shell&#x27;s documentation</span><br><span class="line">for details about the options it supports.</span><br><span class="line"></span><br><span class="line">GNU coreutils online help: &lt;https://www.gnu.org/software/coreutils/&gt;</span><br><span class="line">Report nohup translation bugs to &lt;https://translationproject.org/team/&gt;</span><br><span class="line">Full documentation at: &lt;https://www.gnu.org/software/coreutils/nohup&gt;</span><br><span class="line">or available locally via: info &#x27;(coreutils) nohup invocation&#x27;</span><br></pre></td></tr></table></figure>
+
+<p>其中第三行解释了 nohup 命令的作用</p>
+<blockquote>
+<p><em>Run COMMAND, ignoring hangup signals.</em></p>
+</blockquote>
+<p>从描述中我们可以看到，其作用其实很简单，就是忽略 <code>hup</code>
+信号。那么现在问题来了，<code>hup</code> 信号是什么？有什么作用？</p>
+<span id="more"></span>
+
+<h2 id="signal">SIGNAL</h2>
+<p>信号可以理解成一种操作系统和进程之间的交互方式（IPC），当用户进程接收到信号时，其需要对信号进行响应，例如停止运行等（因此也可以理解为软件中断）</p>
+<p>通过 <code>kill -l</code>
+命令，我们可以查询到当前系统支持的所有信号（前 15
+个信号为固定语义信号，后面的和具体实现有关，不同的 linux
+之间不一致。</p>
+<figure class="highlight txt"><table><tr><td class="code"><pre><span class="line">(base) ➜  test-nohup kill -l</span><br><span class="line">HUP INT QUIT ILL TRAP ABRT BUS FPE KILL USR1 SEGV USR2 PIPE ALRM TERM STKFLT CHLD CONT STOP TSTP TTIN TTOU URG XCPU XFSZ VTALRM PROF WINCH POLL PWR SYS</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>具体信号含义以及对应的数字值可以参考：</p>
+<p><a
+href="https://www.man7.org/linux/man-pages/man7/signal.7.html">signal(7)
+- Linux manual page (man7.org)</a> 中 Standard signals 部分</p>
+</blockquote>
+<p>也可以使用 <code>kill</code> 命令向进程发送信号，例如
+<code>kill -9 &lt;PID&gt; </code> 就表示强制杀死进程号为
+<code>PID</code> 的进程</p>
+<p>下面展示几个比较常用的信号</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">signal name</th>
+<th style="text-align: center;">signal number</th>
+<th style="text-align: left;">description</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">SIGHUP</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: left;">Hangup detected on controlling terminal or
+death of controlling process</td>
+<td>检测到控制程序或命令行挂起</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">SIGINT</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: left;">Interrupt from keyboard</td>
+<td>键盘中断（<kbd>Ctrl</kbd> + <kbd>C</kbd>）</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">SIGKILL</td>
+<td style="text-align: center;">9</td>
+<td style="text-align: left;">Kill signal</td>
+<td>杀死信号</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">SIGSEGV</td>
+<td style="text-align: center;">11</td>
+<td style="text-align: left;">Invalid memory reference</td>
+<td>无效的内存引用（访问）</td>
+</tr>
+</tbody>
+</table>
+<p>在 python 中，我们可以使用 <code>signal</code>
+库来响应信号（也可以用来忽略信号，但是跨平台就难做了）</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> asyncio</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> signal</span><br><span class="line"><span class="keyword">from</span> datetime <span class="keyword">import</span> datetime</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">main</span>():</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1000</span>):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&#x27;[<span class="subst">&#123;datetime.now().strftime(<span class="string">&quot;%Y-%m-%d %H:%M:%S.%f&quot;</span>)&#125;</span>] write <span class="subst">&#123;i:03d&#125;</span> to stdout&#x27;</span>,file=sys.stdout)</span><br><span class="line">        <span class="keyword">await</span> asyncio.sleep(<span class="number">0.5</span>)</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&#x27;[<span class="subst">&#123;datetime.now().strftime(<span class="string">&quot;%Y-%m-%d %H:%M:%S.%f&quot;</span>)&#125;</span>] write <span class="subst">&#123;i:03d&#125;</span> to stderr&#x27;</span>,file=sys.stderr)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">on_signal</span>(<span class="params">signum:<span class="built_in">int</span>,frame</span>):</span><br><span class="line">    _signal = signal.Signals(signum)</span><br><span class="line">    e = OSError()</span><br><span class="line">    e.errno = <span class="number">0</span></span><br><span class="line">    e.strerror = <span class="string">f&#x27;[<span class="subst">&#123;datetime.now().strftime(<span class="string">&quot;%Y-%m-%d %H:%M:%S.%f&quot;</span>)&#125;</span>] received signal: <span class="subst">&#123;_signal.name&#125;</span>(<span class="subst">&#123;_signal.value&#125;</span>)&#x27;</span></span><br><span class="line">    <span class="keyword">raise</span> e</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    signal.signal(signal.SIGINT,on_signal)</span><br><span class="line">    asyncio.run(main())</span><br></pre></td></tr></table></figure>
+
+<p>通过 <code>python main.py</code> 运行后，再通过键盘输入
+<kbd>Ctrl</kbd> +
+<kbd>C</kbd>，就可以看到响应输出，同时程序也结束了（手动抛出了一个异常）</p>
+<p><img data-src="/posts/80b6/image-20230312232908661.png"
+style="zoom: 67%;" /></p>
+<p>对于 SIGHUP
+信号，我们也可以同样进行测试，<strong>通过终端运行代码，然后关闭终端</strong>，就可以在输出中看到结果。稍微修改一下代码，将
+stdout 和 stderr 重定向到文件中便于查看</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> asyncio</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> signal</span><br><span class="line"><span class="keyword">from</span> datetime <span class="keyword">import</span> datetime</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">main</span>():</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">50</span>):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&#x27;[<span class="subst">&#123;datetime.now().strftime(<span class="string">&quot;%Y-%m-%d %H:%M:%S.%f&quot;</span>)&#125;</span>] write <span class="subst">&#123;i:03d&#125;</span> to stdout&#x27;</span>,file=sys.stdout)</span><br><span class="line">        <span class="keyword">await</span> asyncio.sleep(<span class="number">0.5</span>)</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&#x27;[<span class="subst">&#123;datetime.now().strftime(<span class="string">&quot;%Y-%m-%d %H:%M:%S.%f&quot;</span>)&#125;</span>] write <span class="subst">&#123;i:03d&#125;</span> to stderr&#x27;</span>,file=sys.stderr)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">on_signal</span>(<span class="params">signum:<span class="built_in">int</span>,frame</span>):</span><br><span class="line">    _signal = signal.Signals(signum)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&#x27;[<span class="subst">&#123;datetime.now().strftime(<span class="string">&quot;%Y-%m-%d %H:%M:%S.%f&quot;</span>)&#125;</span>] received signal: <span class="subst">&#123;_signal.name&#125;</span>(<span class="subst">&#123;_signal.value&#125;</span>)&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    signal.signal(signal.SIGHUP,on_signal)</span><br><span class="line">    <span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&#x27;output.log&#x27;</span>,<span class="string">&#x27;w&#x27;</span>) <span class="keyword">as</span> f:</span><br><span class="line">        sys.stdout = f</span><br><span class="line">        sys.stderr = f</span><br><span class="line">        asyncio.run(main())</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;exit&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>运行结果如下</p>
+<p><img data-src="/posts/80b6/image-20230312233524825.png"
+style="zoom:50%;" /></p>
+<p>我们的代码只是接受信号并输出一句话，并没有看到预期的
+exit，说明程序被操作系统关闭了，如果需要命令在终端关闭后还能继续执行，就需要通过
+<code>nohup</code> 命令来确保进程能在后台继续执行。</p>
+<h2 id="nohup-简单使用">nohup 简单使用</h2>
+<p><code>nohuo</code> 命令使用起来很简单，在待执行的命令之前添加一个
+<code>nohup</code> 即可</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">nohup</span> &lt;your-command&gt;</span><br></pre></td></tr></table></figure>
+
+<p>示例如下，还是之前的 python 代码，但是我们通过 <code>nohup</code>
+来执行，然后关闭终端，测试运行效果</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">nohup</span> python main.py</span><br></pre></td></tr></table></figure>
+
+<p>运行后终端会提示一句话</p>
+<p><img data-src="/posts/80b6/image-20230312235648581.png"
+style="zoom:67%;" /></p>
+<p>同时我们会在当前目录下看到 <code>nohup.out</code>
+文件，虽然里面没有任何东西（因为我们将 python 的输出重定向到了
+<code>output.log</code>）</p>
+<p><img data-src="/posts/80b6/image-20230312235934838.png"
+style="zoom:50%;" /></p>
+<p>我们可以看到程序是执行完循环后主动退出的，而不是由操作系统关闭，说明
+<code>nohup</code> 命令起作用了。</p>
+<p>为了更清楚的看到 <code>nohup</code> 的作用，我们将 python
+代码中的输出重定向去掉</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> asyncio</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> signal</span><br><span class="line"><span class="keyword">from</span> datetime <span class="keyword">import</span> datetime</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">main</span>():</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">50</span>):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&#x27;[<span class="subst">&#123;datetime.now().strftime(<span class="string">&quot;%Y-%m-%d %H:%M:%S.%f&quot;</span>)&#125;</span>] write <span class="subst">&#123;i:03d&#125;</span> to stdout&#x27;</span>,file=sys.stdout)</span><br><span class="line">        <span class="keyword">await</span> asyncio.sleep(<span class="number">0.5</span>)</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&#x27;[<span class="subst">&#123;datetime.now().strftime(<span class="string">&quot;%Y-%m-%d %H:%M:%S.%f&quot;</span>)&#125;</span>] write <span class="subst">&#123;i:03d&#125;</span> to stderr&#x27;</span>,file=sys.stderr)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">on_signal</span>(<span class="params">signum:<span class="built_in">int</span>,frame</span>):</span><br><span class="line">    _signal = signal.Signals(signum)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&#x27;[<span class="subst">&#123;datetime.now().strftime(<span class="string">&quot;%Y-%m-%d %H:%M:%S.%f&quot;</span>)&#125;</span>] received signal: <span class="subst">&#123;_signal.name&#125;</span>(<span class="subst">&#123;_signal.value&#125;</span>)&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    signal.signal(signal.SIGHUP,on_signal)</span><br><span class="line">    <span class="comment"># with open(&#x27;output.log&#x27;,&#x27;w&#x27;) as f:</span></span><br><span class="line">    <span class="comment">#     sys.stdout = f</span></span><br><span class="line">    <span class="comment">#     sys.stderr = f</span></span><br><span class="line">    asyncio.run(main())</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;exit&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>然后再次执行，并关闭命令行</p>
+<p>命令行输出如下</p>
+<p><img data-src="/posts/80b6/image-20230313000446837.png"
+style="zoom: 67%;" /></p>
+<p>但是程序本身的输出并没有出现在这里，查看
+<code>nohup.out</code>，我们可以在 <code>nohup.out</code>
+中看到完整的输出结果</p>
+<p><img data-src="/posts/80b6/image-20230313225021012.png"
+style="zoom:50%;" /></p>
+<p>可以看到程序最后输出了
+<code>exit</code>，表示程序正常退出，但我们同样接受到了
+<code>SIGHUP</code> 信号，此时却没有被系统杀死，这就是
+<code>nohup</code> 在起作用了。</p>
+<h2 id="后台运行程序">后台运行程序</h2>
+<p>当我们通过 <code>nohup</code>
+执行应用程序时，当前终端并不能进行交互，但是我们也看不到进程的任何输出（因为
+<code>nohup</code> 将其重定向到 <code>nohup.out</code>
+里了），与其让终端等待进程执行完，不如将进程放在后台执行，然后使用终端进行其他操作。</p>
+<p>后台执行程序也十分简单，只需要在命令后添加一个 <code>&amp;</code>
+即可，然后在终端中就会输出后台执行命令的 <code>PID</code></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> asyncio</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> signal</span><br><span class="line"><span class="keyword">from</span> datetime <span class="keyword">import</span> datetime</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">main</span>():</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">50</span>):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&#x27;[<span class="subst">&#123;datetime.now().strftime(<span class="string">&quot;%Y-%m-%d %H:%M:%S.%f&quot;</span>)&#125;</span>] write <span class="subst">&#123;i:03d&#125;</span> to stdout&#x27;</span>,file=sys.stdout)</span><br><span class="line">        <span class="keyword">await</span> asyncio.sleep(<span class="number">0.5</span>)</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&#x27;[<span class="subst">&#123;datetime.now().strftime(<span class="string">&quot;%Y-%m-%d %H:%M:%S.%f&quot;</span>)&#125;</span>] write <span class="subst">&#123;i:03d&#125;</span> to stderr&#x27;</span>,file=sys.stderr)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">on_signal</span>(<span class="params">signum:<span class="built_in">int</span>,frame</span>):</span><br><span class="line">    _signal = signal.Signals(signum)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&#x27;[<span class="subst">&#123;datetime.now().strftime(<span class="string">&quot;%Y-%m-%d %H:%M:%S.%f&quot;</span>)&#125;</span>] received signal: <span class="subst">&#123;_signal.name&#125;</span>(<span class="subst">&#123;_signal.value&#125;</span>)&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    signal.signal(signal.SIGHUP,on_signal)</span><br><span class="line">    <span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&#x27;output.log&#x27;</span>,<span class="string">&#x27;w&#x27;</span>) <span class="keyword">as</span> f:</span><br><span class="line">        sys.stdout = f</span><br><span class="line">        sys.stderr = f</span><br><span class="line">        asyncio.run(main())</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;exit&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>运行结果</p>
+<p><img data-src="/posts/80b6/image-20230313225834031.png"
+style="zoom:67%;" /></p>
+<p>此时终端就可以不等待进程执行完，立即返回了，<strong>但是如果进程有输出的话，还是会继续输出到命令行中，让我们无法进行交互，因此后台执行的进程最好将输出都给重定向一下</strong></p>
+<p>我们也可以对其进行测试</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> asyncio</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> signal</span><br><span class="line"><span class="keyword">from</span> datetime <span class="keyword">import</span> datetime</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">main</span>():</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">50</span>):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&#x27;[<span class="subst">&#123;datetime.now().strftime(<span class="string">&quot;%Y-%m-%d %H:%M:%S.%f&quot;</span>)&#125;</span>] write <span class="subst">&#123;i:03d&#125;</span> to stdout&#x27;</span>,file=sys.stdout)</span><br><span class="line">        <span class="keyword">await</span> asyncio.sleep(<span class="number">0.5</span>)</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&#x27;[<span class="subst">&#123;datetime.now().strftime(<span class="string">&quot;%Y-%m-%d %H:%M:%S.%f&quot;</span>)&#125;</span>] write <span class="subst">&#123;i:03d&#125;</span> to stderr&#x27;</span>,file=sys.stderr)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">on_signal</span>(<span class="params">signum:<span class="built_in">int</span>,frame</span>):</span><br><span class="line">    _signal = signal.Signals(signum)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&#x27;[<span class="subst">&#123;datetime.now().strftime(<span class="string">&quot;%Y-%m-%d %H:%M:%S.%f&quot;</span>)&#125;</span>] received signal: <span class="subst">&#123;_signal.name&#125;</span>(<span class="subst">&#123;_signal.value&#125;</span>)&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    signal.signal(signal.SIGHUP,on_signal)</span><br><span class="line">    <span class="comment"># with open(&#x27;output.log&#x27;,&#x27;w&#x27;) as f:</span></span><br><span class="line">    <span class="comment">#     sys.stdout = f</span></span><br><span class="line">    <span class="comment">#     sys.stderr = f</span></span><br><span class="line">    asyncio.run(main())</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;exit&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>运行结果</p>
+<p><img data-src="/posts/80b6/image-20230313230232701.png"
+style="zoom:67%;" /></p>
+<p>此时我们按什么都没用，因为我们无法直接和进程交互，可以通过
+<code>kill</code> 方式向进程发送信号，然后停止进程（由于 stdout
+一直有输出，命令行交互的体验极差，让人想直接把他 kill 掉）</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">kill</span> -HUP 1688</span><br></pre></td></tr></table></figure>
+
+<p><img data-src="/posts/80b6/image-20230313230446035.png"
+style="zoom:67%;" /></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">kill</span> -9 1850</span><br></pre></td></tr></table></figure>
+
+<p><img data-src="/posts/80b6/image-20230313230618924.png"
+style="zoom:67%;" /></p>
+<p>此时我们可以发现，<code>nohup</code>
+命令和后台运行简直是绝配，既可以将输出重定向到文件，且可以保证终端关闭后代码也能继续执行，完整代码就是</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">nohup</span> &lt;your-command&gt; &amp;</span><br></pre></td></tr></table></figure>
+
+<h2 id="输出重定向pipe操作">输出重定向（pipe操作）</h2>
+<p><code>nohup</code>
+命令自动帮我们配置好了输出重定向，有时候我们也想将输出保存到文件，从而便于我们观察输出结果（尤其是
+gcc 编译结果，一报错出特别多，stdout
+溢出了也看不到结果），此时我们就需要手动进行输入输出的重定向了。</p>
+<p>在代码中，有三个特殊的文件，分别是
+<code>stdin</code>、<code>stdout</code> 以及 <code>stderr</code>，在
+python 中可以使用 <code>sys.stdin</code> 以及 <code>sys.stdout</code> 和
+<code>sys.stderr</code> (之前的代码中也有使用，我们分别向 stderr 和
+stdout 中输出了结果)</p>
+<p>由于这三个是特殊的文件，自然也可以使用其他文件来代替，此时就是重定向了，而在
+unix 环境下（其实 powershell
+目前也支持了）可以在操作系统层面进行重定向，这样我们就不需要修改代码了。</p>
+<p>下面列举了常用的重定向操作符</p>
+<table>
+<thead>
+<tr class="header">
+<th>operator</th>
+<th>name</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>[a]&gt;[b]</code></td>
+<td>output to</td>
+<td>将 a 的内容输出到 b 中</td>
+</tr>
+<tr class="even">
+<td><code>[a]&gt;&gt;[b]</code></td>
+<td>append to</td>
+<td>将 a 的内容追加到 b 中</td>
+</tr>
+<tr class="odd">
+<td><code>[a]&lt;[b]</code></td>
+<td>read from</td>
+<td>将 b 的内容读取到 a 中</td>
+</tr>
+<tr class="even">
+<td>`[a]</td>
+<td>[b]`</td>
+<td>pipeing</td>
+</tr>
+</tbody>
+</table>
+<p>实例如下</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;hello to stdout&#x27;</span>,file=sys.stdout)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;hello to stderr&#x27;</span>,file=sys.stderr)</span><br></pre></td></tr></table></figure>
+
+<p>执行命令</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">python main.py &gt; stdout.log</span><br></pre></td></tr></table></figure>
+
+<p>如果不加上任何符号，则默认将 stdout 重定向到 stdout.log 中，但是
+stderr 还是会在终端中输出</p>
+<p>运行结果</p>
+<p><img data-src="/posts/80b6/image-20230313232650321.png"
+style="zoom:67%;" /></p>
+<p>同时 <code>stdout.log</code> 结果</p>
+<p><img data-src="/posts/80b6/image-20230313232709124.png"
+style="zoom:67%;" /></p>
+<p>和我们的预期结果一样</p>
+<p>要想指定输入输出流的文件，我们可以使用数字来代指（可以理解为指针），其中
+<code>0</code> 表示 <code>stdin</code>， <code>1</code> 表示
+<code>stdout</code>，<code>2</code> 表示 <code>stderr</code></p>
+<p>还是上面的代码，但是我们调整一下调用命令</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">python main.py 1&gt;stdout.log 2&gt;stderr.log</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>注意： 数字和符号之间没有空格，即
+<code>1&gt;</code>，<code>0&lt;</code> 的形式</p>
+</blockquote>
+<p>运行结果</p>
+<p><img data-src="/posts/80b6/image-20230313233059684.png"
+style="zoom:67%;" /></p>
+<p>两个文件结果</p>
+<p><img data-src="/posts/80b6/image-20230313233205333.png" /></p>
+<p>最后，我们可以将 stderr 重定向到
+stdout，不过写法稍微特殊一点，可以理解为 C
+语言的取地址（<code>&amp;1</code> 相当于是拿到 stdout 实际输出地址）</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">python main.py &gt; stdout.log 2&gt;&amp;1</span><br></pre></td></tr></table></figure>
+
+<p>这样 stdout 和 stderr 的结果就都会出现在 stdout.log 里面了</p>
+<p><img data-src="/posts/80b6/image-20230313233726388.png"
+style="zoom: 67%;" /></p>
+<p>而对于 <code>|</code> ，一个很常用的例子就是检索（通过
+<code>grep</code> 实现），例如我们想查询当前 python 环境中是否安装
+<code>numpy</code>，可以使用一下命令进行查看</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">python -m pip list | grep numpy</span><br></pre></td></tr></table></figure>
+
+<p>运行结果</p>
+<p><img data-src="/posts/80b6/image-20230313233446900.png" /></p>
+<p>还有很多高级用法，但是基本使用就介绍到这里</p>
+<blockquote>
+<p>注：为什么要有两个输出 <code>stdout</code> 和
+<code>stderr</code>？</p>
+<p>例如 pandoc 程序 ，其可以接受一个 md 文档并将其转换成
+html，如果我们只是使用 pandoc
+做其中一步操作，还需要后续操作的话，我们就可以使用 stdout
+读取其输出结果，而通过 stderr
+拿到其日志输出、警告的信息。这也是为什么即使我们优先输出到
+stdout，然后再输出到 stderr，最终仍然是 stderr 的结果优先输出，因为
+stderr 是<strong>无缓冲的</strong>，有结果就直接输出了。</p>
+</blockquote>
+]]></content>
+      <tags>
+        <tag>Linux</tag>
+        <tag>nohup</tag>
+      </tags>
+  </entry>
 </search>
