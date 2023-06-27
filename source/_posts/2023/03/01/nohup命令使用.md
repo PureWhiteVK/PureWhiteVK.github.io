@@ -6,7 +6,7 @@ tags:
   - Linux
   - nohup
 date: 2023-03-01 23:09:12
-category:
+category: Linux学习
 ---
 
 
