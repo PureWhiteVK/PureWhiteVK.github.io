@@ -3304,9 +3304,271 @@ stdout，然后再输出到 stderr，最终仍然是 stderr 的结果优先输�
 stderr 是<strong>无缓冲的</strong>，有结果就直接输出了。</p>
 </blockquote>
 ]]></content>
+      <categories>
+        <category>Linux学习</category>
+      </categories>
       <tags>
         <tag>Linux</tag>
         <tag>nohup</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Dockerfile常见环境使用</title>
+    <url>/posts/4a2b/</url>
+    <content><![CDATA[<h1 id="dockerfile常见环境使用">Dockerfile常见环境使用</h1>
+<h2 id="ubuntu国内镜像">ubuntu(国内镜像)</h2>
+<p>由于网内网络环境的问题，ubuntu不换源的话基本没法用，我们首先参考普通
+ubuntu 系统如何换源，然后将其转换成命令形式，便于应用于 dockerfile
+中。</p>
+<p>随便在网上搜
+"ubuntu换源"，可以搜出一大堆教程，这里我们直接参考阿里云开源镜像站的<a
+href="https://developer.aliyun.com/mirror/ubuntu">官方教程</a>，官方教程中给出了操作办法，就是手动将所有的源地址替换为阿里云的镜像地址：</p>
+<p><img data-src="/posts/4a2b/image-20230626220459741.png"
+style="zoom:67%;" /></p>
+<p>首先我们使用 docker 跑一个 ubuntu 的镜像看下基本情况：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker run -it --<span class="built_in">rm</span> ubuntu:20.04 /bin/bash</span><br></pre></td></tr></table></figure>
+
+<p>注：后面也会出写一个笔记记录常用的 docker 命令。</p>
+<p>在 ubuntu 下使用 <code>sudo apt-get install xxx</code> 安装软件，所有
+<code>apt</code> 相关的配置项存储在 <code>/etc/apt</code>
+文件夹下，其内容如下</p>
+<p><img data-src="/posts/4a2b/image-20230626215508213.png"
+style="zoom:67%;" /></p>
+<span id="more"></span>
+
+<p>其中 <code>sources.list</code> 以及 <code>sources.list.d</code>
+就涉及软件源的配置信息，<code>sources.list</code>
+用来存储默认的软件源信息（或者说官方源），而 <code>sources.list.d</code>
+则用来存储第三方软件源，例如 docker 软件源、nvidia
+驱动源等，一般安装软件我们只需要配置 <code>sources.list</code>
+即可，第三方源的配置和官方源的配置差不太多。</p>
+<p>使用 <code>cat</code> 命令查看 <code>sources.list</code>
+文件内容（较长，可能显示不全）</p>
+<figure class="highlight txt"><table><tr><td class="code"><pre><span class="line">root@302e32342092:/etc/apt# cat sources.list</span><br><span class="line"># See http://help.ubuntu.com/community/UpgradeNotes for how to upgrade to</span><br><span class="line"># newer versions of the distribution.</span><br><span class="line">deb http://archive.ubuntu.com/ubuntu/ focal main restricted</span><br><span class="line"># deb-src http://archive.ubuntu.com/ubuntu/ focal main restricted</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">deb http://security.ubuntu.com/ubuntu/ focal-security main restricted</span><br><span class="line"># deb-src http://security.ubuntu.com/ubuntu/ focal-security main restricted</span><br><span class="line">deb http://security.ubuntu.com/ubuntu/ focal-security universe</span><br><span class="line"># deb-src http://security.ubuntu.com/ubuntu/ focal-security universe</span><br><span class="line">deb http://security.ubuntu.com/ubuntu/ focal-security multiverse</span><br><span class="line"># deb-src http://security.ubuntu.com/ubuntu/ focal-security multiverse</span><br></pre></td></tr></table></figure>
+
+<p>我们可以看到其软件源就是通过以下格式指定的</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">deb &lt;apt source&gt;</span><br></pre></td></tr></table></figure>
+
+<p>从源的URL链接中不难发现，这些链接实际上都是同一个域名底下的，我们换源是可以只更换前面的域名（即最后一个<code>/</code>之前的所有即可）。</p>
+<p>既然都是替换了，那么肯定不能使用文本编辑器一个一个替换，最好的办法就是通过
+<code>sed</code> 命令进行替换</p>
+<blockquote>
+<p><code>sed</code> 命令的简单介绍（from <a
+href="https://www.gnu.org/software/sed/">GNU sed - GNU Project - Free
+Software Foundation</a>）</p>
+<p>sed (stream editor) is a non-interactive command-line text
+editor.</p>
+<p>其功能十分强大，目前我们只用到了其 <code>s</code> 命令</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">s/regexp/replacement/[flags]</span><br><span class="line">(substitute) Match the regular-expression against the content of the pattern space. If found, replace matched string with replacement.</span><br></pre></td></tr></table></figure>
+
+<p>例如将文本中所所有的<code>foo</code>替换成<code>bar</code>就可以使用如命令</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sed -i s/foo/bar/g test.txt</span><br></pre></td></tr></table></figure>
+
+<p>测试如下</p>
+<p><img data-src="/posts/4a2b/image-20230626225050330.png" /></p>
+<p>其中 <code>-i</code> 表示 inplace，即直接在当前文件中替换文本</p>
+<p>还有一个好处是可以随意指定分隔符，只需要确保一致即可，其格式如下所示</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">s&lt;delimiter&gt;regexp&lt;delimiter&gt;replacement&lt;delimiter&gt;[flags]</span><br></pre></td></tr></table></figure>
+
+<p>例如我们需要替换文本中所有的 <code>a/b/c</code> 为
+<code>e/f/g</code>，就可以使用如下命令：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sed -i s@a/f/g@e/f/g@g test.txt</span><br></pre></td></tr></table></figure>
+
+<p>测试如下</p>
+<p><img data-src="/posts/4a2b/image-20230626225349769.png" /></p>
+</blockquote>
+<p>我们通过文本替换就可以实现，命令如下</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sed -i s/archive.ubuntu.com/mirrors.aliyun.com/g /etc/apt/sources.list</span><br></pre></td></tr></table></figure>
+
+<p>这条命令将所有的 <code>archive.ubuntu.com</code> 替换为
+<code>mirrors.aliyun.com</code>，对于<code>security.ubuntu.com</code>也是一样，虽然我们并不会对容器中的
+ubuntu
+进行安全更新，但是<code>security.ubuntu.com</code>会严重影响我们的更新速度，因此也需要一同替换掉，最终完整的换源命令如下：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sed -i s/archive.ubuntu.com/mirrors.aliyun.com/g /etc/apt/sources.list &amp;&amp; \</span><br><span class="line">sed -i s/security.ubuntu.com/mirrors.aliyun.com/g /etc/apt/sources.list</span><br></pre></td></tr></table></figure>
+
+<p>通过 <code>&amp;&amp;</code> 将两条命令合并成一条执行，最后通过
+<code>apt-get update</code> 更新软件源即可</p>
+<p><img data-src="/posts/4a2b/image-20230626230105000.png"
+style="zoom: 67%;" /></p>
+<p>此时可以看到软件源更新速度就很快了。</p>
+<h2 id="ssh-服务器">ssh 服务器</h2>
+<p>启动 docker
+容器后，有可能需要连接到容器中修改代码什么的（一般用于深度学习模型训练环境，部署代码的话最好不要这么做），最朴素的办法就是安装一个命令行的文本编辑器，例如
+vi，vim，nano 等，命令用熟了还是很轻松的，但是学习成本太高了，后面发现
+vscode 的 Remote SSH 插件可以通过 SSH
+连接到主机，之后就像本地代码一样进行调试运行等，简直不要太方便（实际上还有更好的办法，直接通过
+vscode 的 Dev Containers 插件直接连接到容器中），不过设置 SSH
+通用性更高，例如搭建 hadoop 等环境进行测试时就可以使用。</p>
+<p><img data-src="/posts/4a2b/image-20230626232514059.png"
+style="zoom:50%;" /></p>
+<p><img data-src="/posts/4a2b/image-20230626232428553.png"
+style="zoom:50%;" /></p>
+<p>在配置脚本安装之前，我们首先看看手动如何安装 ssh
+服务器（openssh-server），直接通过apt安装即可，运行如下命令</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">apt-get install openssh-server</span><br></pre></td></tr></table></figure>
+
+<p>之后提示我们具体需要安装哪些包，以及是否确定安装</p>
+<p><img data-src="/posts/4a2b/image-20230626232955966.png"
+style="zoom: 67%;" /></p>
+<p>但是我们可以看到，建议安装了一堆包，实际上有些包我们可以不装的，可以通过参数
+<code>--no-install-recommends</code> 来取消安装这些包，运行命令</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">apt-get install openssh-server --no-install-recommends</span><br></pre></td></tr></table></figure>
+
+<p>结果如下</p>
+<p><img data-src="/posts/4a2b/image-20230626233651500.png"
+style="zoom: 67%;" /></p>
+<p>相比之前我们所需要安装的依赖就少多了</p>
+<p>但是还有一个问题，安装过程中有一个
+<code>Do you want to continue? [Y/n]</code>
+，提示我们是否确定，但是我们需要用命令完成自动化安装过程，安装过程中是完全无交互的，因此需要默认安装，可以通过
+<code>-y</code> 来进行默认安装（具体可以参考 apt-get 的 <a
+href="https://linux.die.net/man/8/apt-get">man 页面</a>）</p>
+<p><img data-src="/posts/4a2b/image-20230626233919076.png"
+style="zoom:67%;" /></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">apt-get install openssh-server --no-install-recommends -y</span><br></pre></td></tr></table></figure>
+
+<p>这样当我们输入命令后就会自动安装了。</p>
+<p>可以编写一个完整的安装 ssh 的 Dockerfile</p>
+<figure class="highlight dockerfile"><table><tr><td class="code"><pre><span class="line"><span class="keyword">FROM</span> ubuntu:<span class="number">20.04</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> sed -i s/archive.ubuntu.com/mirrors.aliyun.com/g /etc/apt/sources.list &amp;&amp; \</span></span><br><span class="line"><span class="language-bash">    sed -i s/security.ubuntu.com/mirrors.aliyun.com/g /etc/apt/sources.list &amp;&amp; \</span></span><br><span class="line"><span class="language-bash">    apt-get clean &amp;&amp; apt-get update &amp;&amp; \</span></span><br><span class="line"><span class="language-bash">    apt-get install --no-install-recommends -y -q \</span></span><br><span class="line"><span class="language-bash">    openssh-server &amp;&amp; \</span></span><br><span class="line"><span class="language-bash">    <span class="built_in">rm</span> -rf /var/lib/apt/lists/*</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">EXPOSE</span> <span class="number">22</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">CMD</span><span class="language-bash"> [ <span class="string">&quot;service&quot;</span>,<span class="string">&quot;ssh&quot;</span>,<span class="string">&quot;start&quot;</span>,<span class="string">&quot;-D&quot;</span> ]</span></span><br></pre></td></tr></table></figure>
+
+<p>其暴露一个端口 22（SSH的默认端口），而且使用
+<code>service ssh start -D</code>
+来确保命令前台运行（保证容器不会被杀死）</p>
+<p>我们先尝试能否成功构建镜像，使用命令</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker build -t openssh-server:ubuntu20.04 .</span><br></pre></td></tr></table></figure>
+
+<p>进行构建，然后通过以下命令创建容器</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker run -d --<span class="built_in">rm</span> -p 54132:22 openssh-server:ubuntu20.04</span><br></pre></td></tr></table></figure>
+
+<p>其中 <code>-d</code> 表示 detach，将容器列入后台运行，由于我们在
+<code>CMD</code>
+中已经指定了一个前台应用，容器不会立刻被docker杀死，<code>--rm</code>
+表示容器运行结束后会被直接删除（常用于测试场景），<code>-p 54132:22</code>
+表示将宿主机的54132端口绑定到容器的22端口（即SSH端口上，这样我们就可以通过
+54132端口连接到容器的SSH服务了）。</p>
+<p><img data-src="/posts/4a2b/image-20230626235528936.png"
+style="zoom:80%;" /></p>
+<p>最后我们使用 ssh 连接命令尝试连接到容器中</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ssh -p 54132 root@localhost</span><br></pre></td></tr></table></figure>
+
+<p>首先会提示我们是否需要建立连接（这一步可以说明SSH端口是通的）</p>
+<p><img data-src="/posts/4a2b/image-20230626235851436.png"
+style="zoom:80%;" /></p>
+<p>但是此时直接提示我们输入密码，但是我们似乎并没有设置过 root
+账户的密码，这就意味着我们永远无法连接到容器</p>
+<p><img data-src="/posts/4a2b/image-20230627000040652.png"
+style="zoom:80%;" /></p>
+<p>我们可以通过一下命令连接到容器进行修改</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">docker exec -it &lt;container-id&gt; /bin/bash</span><br></pre></td></tr></table></figure>
+
+<p>然后输入一下命令设置明文密码</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">echo &quot;root:123&quot; | chpasswd</span><br></pre></td></tr></table></figure>
+
+<p>之后我们再尝试通过 SSH 进行连接，结果如下</p>
+<p><img data-src="/posts/4a2b/image-20230627000800488.png"
+style="zoom: 67%;" /></p>
+<p>提示我们 Permission denied，这是因为 SSH 默认是不允许 root
+用户通过密码登录的，我们需要修改 <code>/etc/ssh/sshd_config</code></p>
+<p>通过 <code>cat /etc/ssh/sshd_config</code> 可以看到这一点</p>
+<p><img data-src="/posts/4a2b/image-20230627085934013.png"
+style="zoom:67%;" /></p>
+<p>再查看 sshd_config 的相关配置选项（查看其相关的 <a
+href="https://man7.org/linux/man-pages/man5/sshd_config.5.html">man
+页面</a> 即可，注意查看版本，我们使用的 ubuntu
+版本比较新，老的配置文档不一定适用）</p>
+<p><img data-src="/posts/4a2b/image-20230627091111102.png"
+style="zoom:67%;" /></p>
+<p>可以看到 <code>PermitRootLogin</code>
+的可选参数有四个：<code>yes</code>，<code>prohibit-password</code>，<code>forced-commands-only</code>，<code>no</code></p>
+<blockquote>
+<p>注：其中 <code>yes</code>，<code>prohibit-password</code>以及
+<code>no</code> 的含义比较直观，但是 <code>forced-commands-only</code>
+还不太理解，其限定 <code>root</code>
+用户通过秘钥进行登录，但是只能执行特定的 <code>command</code> ，这个
+<code>command</code> 实际上需要在 ssh 登录的时候指定，即
+<code>authorized_keys</code> 中指定，例如</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">command=”/bin/ps” ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAt0BETg9J6hZb5Kqxy+yfNtKHfwxUELz7PqGtGiM5eNb8DHC8kj02SCFoql5rpaecMGybWRiSK8/k+EsK7TMgd4O+p6WkNyLD3WZrmVzUEPaxAdYf1eeCQooTJ+B1TKXDNlF9t8xTVsHd67HmPWYU6i3+kaDSX7cbrz2ds2zUGSozj1UQ8AJDJMbGOqpjs3nVh2EpSDgY7znqmUDnygVPiM4c3OfEzs5iCxVd4ggpPhH8d0bwy8RmPsooxJYUY4rE1C5iWCvB7P810yUFB0OilxiX9AfZa9shC3n5bqaX0ioY1eC44hFFPL602fJyKMj6w/zxN5aIeFO03Sl9+FU4YQ== root@iZ23wan41azZ</span><br></pre></td></tr></table></figure>
+
+<p>就限定通过 <code>root</code> 私钥登录的时候只能执行
+<code>/bin/ps</code>，无法执行其他命令，在运维场景下较为实用</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="string">&quot;PermitRootLogin yes&quot;</span> &gt;&gt; /etc/ssh/sshd_config</span><br></pre></td></tr></table></figure>
+
+<p><img data-src="/posts/4a2b/image-20230627091955121.png"
+style="zoom:67%;" /></p>
+<p>然后重启一下 ssh 服务</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">service ssh restart</span><br></pre></td></tr></table></figure>
+
+<p>（此处重启时由于没有前台应用，容器会被 docker
+给杀死，再重启一下容器即可）</p>
+<p>再尝试登录的时候就可以成功了，提示我们输入密码</p>
+<p><img data-src="/posts/4a2b/image-20230627093607706.png"
+style="zoom:67%;" /></p>
+<p>每次登录都输入密码还是有点麻烦（可以通过 <code>sshd_config</code>
+设置密码可为空来绕过，但是还会提示用户进行交互，无法实现自动化远程登录），为此我们需要配置远程登录，首先通过
+<code>ssh-keygen</code> 创建一对秘钥</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ssh-keygen -t rsa -f ~/key -N <span class="string">&quot;&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p><img data-src="/posts/4a2b/image-20230627094530454.png"
+style="zoom:67%;" /></p>
+<p>其中 <code>-t rsa</code> 指定加密算法为 rsa，输出私钥路径为
+<code>~/key</code> ，公钥路径会在私钥后添加 <code>.pub</code>，即
+<code>~/key.pub</code></p>
+<p>（此处创建的秘钥是可以复用的）</p>
+<p>然后将公钥信息拷贝到 <code>~/.ssh/authorized_keys</code> 里即可</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">mkdir</span> ~/.ssh</span><br><span class="line"><span class="built_in">cat</span> ~/key.pub &gt;&gt; ~/.ssh/authorized_keys</span><br></pre></td></tr></table></figure>
+
+<p>然后再重启一下 ssh，最终使用私钥登录测试</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ssh -p 54132 -i key root@localhost</span><br></pre></td></tr></table></figure>
+
+<p>结果</p>
+<p><img data-src="/posts/4a2b/image-20230627100723208.png"
+style="zoom:67%;" /></p>
+<p>提示我们权限不对，需要调整 key 的权限，按照下面的方式调整权限即可</p>
+<p><img data-src="/posts/4a2b/modify-windows-privilege.png" /></p>
+<p>再尝试登录的时候就可以登陆了</p>
+<p><img data-src="/posts/4a2b/image-20230627101433963.png"
+style="zoom:67%;" /></p>
+<p>最后给出一个完整的 Dockerfile</p>
+<figure class="highlight dockerfile"><table><tr><td class="code"><pre><span class="line"><span class="keyword">FROM</span> ubuntu:<span class="number">20.04</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 配置 ubuntu 软件源</span></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> sed -i s/archive.ubuntu.com/mirrors.aliyun.com/g /etc/apt/sources.list &amp;&amp; \</span></span><br><span class="line"><span class="language-bash">    sed -i s/security.ubuntu.com/mirrors.aliyun.com/g /etc/apt/sources.list &amp;&amp; \</span></span><br><span class="line"><span class="language-bash">    apt-get clean &amp;&amp; apt-get update &amp;&amp; \</span></span><br><span class="line"><span class="language-bash">    apt-get install --no-install-recommends -y \</span></span><br><span class="line"><span class="language-bash">    openssh-server &amp;&amp; \</span></span><br><span class="line"><span class="language-bash">    <span class="built_in">rm</span> -rf /var/lib/apt/lists/*</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 拷贝公钥和私钥，便于后续使用</span></span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> public-key.pem /root/public-key.pem</span></span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> private-key.pem /root/private-key.pem</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 将公钥拷贝到 authorized_keys 中，其中设置权限是必须的</span></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> <span class="built_in">mkdir</span> /root/.ssh &amp;&amp; \</span></span><br><span class="line"><span class="language-bash">    <span class="built_in">touch</span> /root/.ssh/authorized_keys &amp;&amp; \</span></span><br><span class="line"><span class="language-bash">    <span class="built_in">chmod</span> 700 /root/.ssh &amp;&amp; \</span></span><br><span class="line"><span class="language-bash">    <span class="built_in">chmod</span> 600 /root/.ssh/authorized_keys &amp;&amp; \</span></span><br><span class="line"><span class="language-bash">    <span class="built_in">cat</span> /root/public-key.pem &gt;&gt; /root/.ssh/authorized_keys</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">EXPOSE</span> <span class="number">22</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">CMD</span><span class="language-bash"> [ <span class="string">&quot;service&quot;</span>,<span class="string">&quot;ssh&quot;</span>,<span class="string">&quot;start&quot;</span>,<span class="string">&quot;-D&quot;</span> ]</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="minicondapython">miniconda(python)</h2>
+<p>&lt;待续&gt;</p>
+<h2 id="cmake">cmake</h2>
+<p>&lt;待续&gt;</p>
+<h2 id="总结">总结</h2>
+<p>个人理解 dockerfile
+实际上就是运维脚本的另外一种形式，关键还是在于脚本语言的熟悉程度，linux
+命令较为熟悉的话就可以很轻松的构建出合适的镜像。</p>
+<p>参考资料</p>
+<ol type="1">
+<li><a
+href="https://developer.aliyun.com/mirror/ubuntu?spm=a2c6h.13651102.0.0.3e221b11uhvFDQ">ubuntu镜像_ubuntu下载地址_ubuntu安装教程-阿里巴巴开源镜像站
+(aliyun.com)</a></li>
+<li><a href="https://linux.die.net/man/8/apt-get">apt-get(8) - Linux man
+page (die.net)</a></li>
+<li><a
+href="https://www.man7.org/linux/man-pages/man5/sshd_config.5.html">sshd_config(5)
+- Linux manual page (man7.org)</a></li>
+<li><a
+href="https://blog.csdn.net/huigher/article/details/52972013">sshd_config
+中 PermitRootLogin 的探讨_huigher的博客-CSDN博客</a></li>
+<li><a
+href="https://blog.csdn.net/u011095110/article/details/81020839">Linux下service
+xxx start/stop/restart启动服务、关闭服务、重启服务深入理解@_service
+start_King-Long的博客-CSDN博客</a></li>
+<li><a
+href="https://blog.csdn.net/weixin_40415591/article/details/121661857">windows
+ssh Permissions for “xxx“ are too
+open错误详细解决方案_菜到不知所措的博客-CSDN博客</a></li>
+</ol>
+]]></content>
+      <categories>
+        <category>Linux学习</category>
+      </categories>
+      <tags>
+        <tag>Linux</tag>
+        <tag>Docker</tag>
       </tags>
   </entry>
 </search>

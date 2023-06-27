@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"purewhitevk.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.14.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"default"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Dockerfile常见环境使用 ubuntu(国内镜像) 由于网内网络环境的问题，ubuntu不换源的话基本没法用，我们首先参考普通 ubuntu 系统如何换源，然后将其转换成命令形式，便于应用于 dockerfile 中。 随便在网上搜 &quot;ubuntu换源&quot;，可以搜出一大堆教程，这里我们直接参考阿里云开源镜像站的官方教程，官方教程中给出了操作办法，就是手动将所有的源地址替换为阿里云的镜像地址：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Dockerfile常见环境使用">
+<meta property="og:url" content="https://purewhitevk.github.io/posts/4a2b/">
+<meta property="og:site_name" content="PureWhite&#39;s Blog">
+<meta property="og:description" content="Dockerfile常见环境使用 ubuntu(国内镜像) 由于网内网络环境的问题，ubuntu不换源的话基本没法用，我们首先参考普通 ubuntu 系统如何换源，然后将其转换成命令形式，便于应用于 dockerfile 中。 随便在网上搜 &quot;ubuntu换源&quot;，可以搜出一大堆教程，这里我们直接参考阿里云开源镜像站的官方教程，官方教程中给出了操作办法，就是手动将所有的源地址替换为阿里云的镜像地址：">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/4a2b/image-20230626220459741.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/4a2b/image-20230626215508213.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/4a2b/image-20230626225050330.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/4a2b/image-20230626225349769.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/4a2b/image-20230626230105000.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/4a2b/image-20230626232514059.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/4a2b/image-20230626232428553.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/4a2b/image-20230626232955966.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/4a2b/image-20230626233651500.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/4a2b/image-20230626233919076.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/4a2b/image-20230626235528936.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/4a2b/image-20230626235851436.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/4a2b/image-20230627000040652.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/4a2b/image-20230627000800488.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/4a2b/image-20230627085934013.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/4a2b/image-20230627091111102.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/4a2b/image-20230627091955121.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/4a2b/image-20230627093607706.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/4a2b/image-20230627094530454.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/4a2b/image-20230627100723208.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/4a2b/modify-windows-privilege.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/4a2b/image-20230627101433963.png">
+<meta property="article:published_time" content="2023-06-26T13:32:06.000Z">
+<meta property="article:modified_time" content="2023-06-26T13:32:06.000Z">
+<meta property="article:author" content="PureWhiteVK">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="Docker">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://purewhitevk.github.io/posts/4a2b/image-20230626220459741.png">
+
+
+<link rel="canonical" href="https://purewhitevk.github.io/posts/4a2b/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://purewhitevk.github.io/posts/4a2b/","path":"posts/4a2b/","title":"Dockerfile常见环境使用"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Dockerfile常见环境使用 | PureWhite's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">PureWhite's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">16</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">4</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">10</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#dockerfile%E5%B8%B8%E8%A7%81%E7%8E%AF%E5%A2%83%E4%BD%BF%E7%94%A8"><span class="nav-number">1.</span> <span class="nav-text">Dockerfile常见环境使用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ubuntu%E5%9B%BD%E5%86%85%E9%95%9C%E5%83%8F"><span class="nav-number">1.1.</span> <span class="nav-text">ubuntu(国内镜像)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ssh-%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="nav-number">1.2.</span> <span class="nav-text">ssh 服务器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#minicondapython"><span class="nav-number">1.3.</span> <span class="nav-text">miniconda(python)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cmake"><span class="nav-number">1.4.</span> <span class="nav-text">cmake</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">1.5.</span> <span class="nav-text">总结</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="PureWhiteVK"
+      src="/images/Touma.Kazusa.256x256.png">
+  <p class="site-author-name" itemprop="name">PureWhiteVK</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">10</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/PureWhiteVK" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;PureWhiteVK" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:yl_xiao@outlook.com" title="E-Mail → mailto:yl_xiao@outlook.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/dead.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://purewhitevk.github.io/posts/4a2b/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/Touma.Kazusa.256x256.png">
+      <meta itemprop="name" content="PureWhiteVK">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PureWhite's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Dockerfile常见环境使用 | PureWhite's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Dockerfile常见环境使用
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023/06/26 21:32:06" itemprop="dateCreated datePublished" datetime="2023-06-26T21:32:06+08:00">2023/06/26</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Linux%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">Linux学习</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>3k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>11 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="dockerfile常见环境使用">Dockerfile常见环境使用</h1>
+<h2 id="ubuntu国内镜像">ubuntu(国内镜像)</h2>
+<p>由于网内网络环境的问题，ubuntu不换源的话基本没法用，我们首先参考普通
+ubuntu 系统如何换源，然后将其转换成命令形式，便于应用于 dockerfile
+中。</p>
+<p>随便在网上搜
+"ubuntu换源"，可以搜出一大堆教程，这里我们直接参考阿里云开源镜像站的<a
+target="_blank" rel="noopener" href="https://developer.aliyun.com/mirror/ubuntu">官方教程</a>，官方教程中给出了操作办法，就是手动将所有的源地址替换为阿里云的镜像地址：</p>
+<p><img data-src="/posts/4a2b/image-20230626220459741.png"
+style="zoom:67%;" /></p>
+<p>首先我们使用 docker 跑一个 ubuntu 的镜像看下基本情况：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -it --<span class="built_in">rm</span> ubuntu:20.04 /bin/bash</span><br></pre></td></tr></table></figure>
+
+<p>注：后面也会出写一个笔记记录常用的 docker 命令。</p>
+<p>在 ubuntu 下使用 <code>sudo apt-get install xxx</code> 安装软件，所有
+<code>apt</code> 相关的配置项存储在 <code>/etc/apt</code>
+文件夹下，其内容如下</p>
+<p><img data-src="/posts/4a2b/image-20230626215508213.png"
+style="zoom:67%;" /></p>
+<span id="more"></span>
+
+<p>其中 <code>sources.list</code> 以及 <code>sources.list.d</code>
+就涉及软件源的配置信息，<code>sources.list</code>
+用来存储默认的软件源信息（或者说官方源），而 <code>sources.list.d</code>
+则用来存储第三方软件源，例如 docker 软件源、nvidia
+驱动源等，一般安装软件我们只需要配置 <code>sources.list</code>
+即可，第三方源的配置和官方源的配置差不太多。</p>
+<p>使用 <code>cat</code> 命令查看 <code>sources.list</code>
+文件内容（较长，可能显示不全）</p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">root@302e32342092:/etc/apt# cat sources.list</span><br><span class="line"># See http://help.ubuntu.com/community/UpgradeNotes for how to upgrade to</span><br><span class="line"># newer versions of the distribution.</span><br><span class="line">deb http://archive.ubuntu.com/ubuntu/ focal main restricted</span><br><span class="line"># deb-src http://archive.ubuntu.com/ubuntu/ focal main restricted</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">deb http://security.ubuntu.com/ubuntu/ focal-security main restricted</span><br><span class="line"># deb-src http://security.ubuntu.com/ubuntu/ focal-security main restricted</span><br><span class="line">deb http://security.ubuntu.com/ubuntu/ focal-security universe</span><br><span class="line"># deb-src http://security.ubuntu.com/ubuntu/ focal-security universe</span><br><span class="line">deb http://security.ubuntu.com/ubuntu/ focal-security multiverse</span><br><span class="line"># deb-src http://security.ubuntu.com/ubuntu/ focal-security multiverse</span><br></pre></td></tr></table></figure>
+
+<p>我们可以看到其软件源就是通过以下格式指定的</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">deb &lt;apt source&gt;</span><br></pre></td></tr></table></figure>
+
+<p>从源的URL链接中不难发现，这些链接实际上都是同一个域名底下的，我们换源是可以只更换前面的域名（即最后一个<code>/</code>之前的所有即可）。</p>
+<p>既然都是替换了，那么肯定不能使用文本编辑器一个一个替换，最好的办法就是通过
+<code>sed</code> 命令进行替换</p>
+<blockquote>
+<p><code>sed</code> 命令的简单介绍（from <a
+target="_blank" rel="noopener" href="https://www.gnu.org/software/sed/">GNU sed - GNU Project - Free
+Software Foundation</a>）</p>
+<p>sed (stream editor) is a non-interactive command-line text
+editor.</p>
+<p>其功能十分强大，目前我们只用到了其 <code>s</code> 命令</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">s/regexp/replacement/[flags]</span><br><span class="line">(substitute) Match the regular-expression against the content of the pattern space. If found, replace matched string with replacement.</span><br></pre></td></tr></table></figure>
+
+<p>例如将文本中所所有的<code>foo</code>替换成<code>bar</code>就可以使用如命令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sed -i s/foo/bar/g test.txt</span><br></pre></td></tr></table></figure>
+
+<p>测试如下</p>
+<p><img data-src="/posts/4a2b/image-20230626225050330.png" /></p>
+<p>其中 <code>-i</code> 表示 inplace，即直接在当前文件中替换文本</p>
+<p>还有一个好处是可以随意指定分隔符，只需要确保一致即可，其格式如下所示</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">s&lt;delimiter&gt;regexp&lt;delimiter&gt;replacement&lt;delimiter&gt;[flags]</span><br></pre></td></tr></table></figure>
+
+<p>例如我们需要替换文本中所有的 <code>a/b/c</code> 为
+<code>e/f/g</code>，就可以使用如下命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sed -i s@a/f/g@e/f/g@g test.txt</span><br></pre></td></tr></table></figure>
+
+<p>测试如下</p>
+<p><img data-src="/posts/4a2b/image-20230626225349769.png" /></p>
+</blockquote>
+<p>我们通过文本替换就可以实现，命令如下</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sed -i s/archive.ubuntu.com/mirrors.aliyun.com/g /etc/apt/sources.list</span><br></pre></td></tr></table></figure>
+
+<p>这条命令将所有的 <code>archive.ubuntu.com</code> 替换为
+<code>mirrors.aliyun.com</code>，对于<code>security.ubuntu.com</code>也是一样，虽然我们并不会对容器中的
+ubuntu
+进行安全更新，但是<code>security.ubuntu.com</code>会严重影响我们的更新速度，因此也需要一同替换掉，最终完整的换源命令如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sed -i s/archive.ubuntu.com/mirrors.aliyun.com/g /etc/apt/sources.list &amp;&amp; \</span><br><span class="line">sed -i s/security.ubuntu.com/mirrors.aliyun.com/g /etc/apt/sources.list</span><br></pre></td></tr></table></figure>
+
+<p>通过 <code>&amp;&amp;</code> 将两条命令合并成一条执行，最后通过
+<code>apt-get update</code> 更新软件源即可</p>
+<p><img data-src="/posts/4a2b/image-20230626230105000.png"
+style="zoom: 67%;" /></p>
+<p>此时可以看到软件源更新速度就很快了。</p>
+<h2 id="ssh-服务器">ssh 服务器</h2>
+<p>启动 docker
+容器后，有可能需要连接到容器中修改代码什么的（一般用于深度学习模型训练环境，部署代码的话最好不要这么做），最朴素的办法就是安装一个命令行的文本编辑器，例如
+vi，vim，nano 等，命令用熟了还是很轻松的，但是学习成本太高了，后面发现
+vscode 的 Remote SSH 插件可以通过 SSH
+连接到主机，之后就像本地代码一样进行调试运行等，简直不要太方便（实际上还有更好的办法，直接通过
+vscode 的 Dev Containers 插件直接连接到容器中），不过设置 SSH
+通用性更高，例如搭建 hadoop 等环境进行测试时就可以使用。</p>
+<p><img data-src="/posts/4a2b/image-20230626232514059.png"
+style="zoom:50%;" /></p>
+<p><img data-src="/posts/4a2b/image-20230626232428553.png"
+style="zoom:50%;" /></p>
+<p>在配置脚本安装之前，我们首先看看手动如何安装 ssh
+服务器（openssh-server），直接通过apt安装即可，运行如下命令</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt-get install openssh-server</span><br></pre></td></tr></table></figure>
+
+<p>之后提示我们具体需要安装哪些包，以及是否确定安装</p>
+<p><img data-src="/posts/4a2b/image-20230626232955966.png"
+style="zoom: 67%;" /></p>
+<p>但是我们可以看到，建议安装了一堆包，实际上有些包我们可以不装的，可以通过参数
+<code>--no-install-recommends</code> 来取消安装这些包，运行命令</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt-get install openssh-server --no-install-recommends</span><br></pre></td></tr></table></figure>
+
+<p>结果如下</p>
+<p><img data-src="/posts/4a2b/image-20230626233651500.png"
+style="zoom: 67%;" /></p>
+<p>相比之前我们所需要安装的依赖就少多了</p>
+<p>但是还有一个问题，安装过程中有一个
+<code>Do you want to continue? [Y/n]</code>
+，提示我们是否确定，但是我们需要用命令完成自动化安装过程，安装过程中是完全无交互的，因此需要默认安装，可以通过
+<code>-y</code> 来进行默认安装（具体可以参考 apt-get 的 <a
+target="_blank" rel="noopener" href="https://linux.die.net/man/8/apt-get">man 页面</a>）</p>
+<p><img data-src="/posts/4a2b/image-20230626233919076.png"
+style="zoom:67%;" /></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt-get install openssh-server --no-install-recommends -y</span><br></pre></td></tr></table></figure>
+
+<p>这样当我们输入命令后就会自动安装了。</p>
+<p>可以编写一个完整的安装 ssh 的 Dockerfile</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">FROM</span> ubuntu:<span class="number">20.04</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> sed -i s/archive.ubuntu.com/mirrors.aliyun.com/g /etc/apt/sources.list &amp;&amp; \</span></span><br><span class="line"><span class="language-bash">    sed -i s/security.ubuntu.com/mirrors.aliyun.com/g /etc/apt/sources.list &amp;&amp; \</span></span><br><span class="line"><span class="language-bash">    apt-get clean &amp;&amp; apt-get update &amp;&amp; \</span></span><br><span class="line"><span class="language-bash">    apt-get install --no-install-recommends -y -q \</span></span><br><span class="line"><span class="language-bash">    openssh-server &amp;&amp; \</span></span><br><span class="line"><span class="language-bash">    <span class="built_in">rm</span> -rf /var/lib/apt/lists/*</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">EXPOSE</span> <span class="number">22</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">CMD</span><span class="language-bash"> [ <span class="string">&quot;service&quot;</span>,<span class="string">&quot;ssh&quot;</span>,<span class="string">&quot;start&quot;</span>,<span class="string">&quot;-D&quot;</span> ]</span></span><br></pre></td></tr></table></figure>
+
+<p>其暴露一个端口 22（SSH的默认端口），而且使用
+<code>service ssh start -D</code>
+来确保命令前台运行（保证容器不会被杀死）</p>
+<p>我们先尝试能否成功构建镜像，使用命令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker build -t openssh-server:ubuntu20.04 .</span><br></pre></td></tr></table></figure>
+
+<p>进行构建，然后通过以下命令创建容器</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -d --<span class="built_in">rm</span> -p 54132:22 openssh-server:ubuntu20.04</span><br></pre></td></tr></table></figure>
+
+<p>其中 <code>-d</code> 表示 detach，将容器列入后台运行，由于我们在
+<code>CMD</code>
+中已经指定了一个前台应用，容器不会立刻被docker杀死，<code>--rm</code>
+表示容器运行结束后会被直接删除（常用于测试场景），<code>-p 54132:22</code>
+表示将宿主机的54132端口绑定到容器的22端口（即SSH端口上，这样我们就可以通过
+54132端口连接到容器的SSH服务了）。</p>
+<p><img data-src="/posts/4a2b/image-20230626235528936.png"
+style="zoom:80%;" /></p>
+<p>最后我们使用 ssh 连接命令尝试连接到容器中</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh -p 54132 root@localhost</span><br></pre></td></tr></table></figure>
+
+<p>首先会提示我们是否需要建立连接（这一步可以说明SSH端口是通的）</p>
+<p><img data-src="/posts/4a2b/image-20230626235851436.png"
+style="zoom:80%;" /></p>
+<p>但是此时直接提示我们输入密码，但是我们似乎并没有设置过 root
+账户的密码，这就意味着我们永远无法连接到容器</p>
+<p><img data-src="/posts/4a2b/image-20230627000040652.png"
+style="zoom:80%;" /></p>
+<p>我们可以通过一下命令连接到容器进行修改</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker exec -it &lt;container-id&gt; /bin/bash</span><br></pre></td></tr></table></figure>
+
+<p>然后输入一下命令设置明文密码</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;root:123&quot; | chpasswd</span><br></pre></td></tr></table></figure>
+
+<p>之后我们再尝试通过 SSH 进行连接，结果如下</p>
+<p><img data-src="/posts/4a2b/image-20230627000800488.png"
+style="zoom: 67%;" /></p>
+<p>提示我们 Permission denied，这是因为 SSH 默认是不允许 root
+用户通过密码登录的，我们需要修改 <code>/etc/ssh/sshd_config</code></p>
+<p>通过 <code>cat /etc/ssh/sshd_config</code> 可以看到这一点</p>
+<p><img data-src="/posts/4a2b/image-20230627085934013.png"
+style="zoom:67%;" /></p>
+<p>再查看 sshd_config 的相关配置选项（查看其相关的 <a
+target="_blank" rel="noopener" href="https://man7.org/linux/man-pages/man5/sshd_config.5.html">man
+页面</a> 即可，注意查看版本，我们使用的 ubuntu
+版本比较新，老的配置文档不一定适用）</p>
+<p><img data-src="/posts/4a2b/image-20230627091111102.png"
+style="zoom:67%;" /></p>
+<p>可以看到 <code>PermitRootLogin</code>
+的可选参数有四个：<code>yes</code>，<code>prohibit-password</code>，<code>forced-commands-only</code>，<code>no</code></p>
+<blockquote>
+<p>注：其中 <code>yes</code>，<code>prohibit-password</code>以及
+<code>no</code> 的含义比较直观，但是 <code>forced-commands-only</code>
+还不太理解，其限定 <code>root</code>
+用户通过秘钥进行登录，但是只能执行特定的 <code>command</code> ，这个
+<code>command</code> 实际上需要在 ssh 登录的时候指定，即
+<code>authorized_keys</code> 中指定，例如</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">command=”/bin/ps” ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAt0BETg9J6hZb5Kqxy+yfNtKHfwxUELz7PqGtGiM5eNb8DHC8kj02SCFoql5rpaecMGybWRiSK8/k+EsK7TMgd4O+p6WkNyLD3WZrmVzUEPaxAdYf1eeCQooTJ+B1TKXDNlF9t8xTVsHd67HmPWYU6i3+kaDSX7cbrz2ds2zUGSozj1UQ8AJDJMbGOqpjs3nVh2EpSDgY7znqmUDnygVPiM4c3OfEzs5iCxVd4ggpPhH8d0bwy8RmPsooxJYUY4rE1C5iWCvB7P810yUFB0OilxiX9AfZa9shC3n5bqaX0ioY1eC44hFFPL602fJyKMj6w/zxN5aIeFO03Sl9+FU4YQ== root@iZ23wan41azZ</span><br></pre></td></tr></table></figure>
+
+<p>就限定通过 <code>root</code> 私钥登录的时候只能执行
+<code>/bin/ps</code>，无法执行其他命令，在运维场景下较为实用</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="string">&quot;PermitRootLogin yes&quot;</span> &gt;&gt; /etc/ssh/sshd_config</span><br></pre></td></tr></table></figure>
+
+<p><img data-src="/posts/4a2b/image-20230627091955121.png"
+style="zoom:67%;" /></p>
+<p>然后重启一下 ssh 服务</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">service ssh restart</span><br></pre></td></tr></table></figure>
+
+<p>（此处重启时由于没有前台应用，容器会被 docker
+给杀死，再重启一下容器即可）</p>
+<p>再尝试登录的时候就可以成功了，提示我们输入密码</p>
+<p><img data-src="/posts/4a2b/image-20230627093607706.png"
+style="zoom:67%;" /></p>
+<p>每次登录都输入密码还是有点麻烦（可以通过 <code>sshd_config</code>
+设置密码可为空来绕过，但是还会提示用户进行交互，无法实现自动化远程登录），为此我们需要配置远程登录，首先通过
+<code>ssh-keygen</code> 创建一对秘钥</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen -t rsa -f ~/key -N <span class="string">&quot;&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p><img data-src="/posts/4a2b/image-20230627094530454.png"
+style="zoom:67%;" /></p>
+<p>其中 <code>-t rsa</code> 指定加密算法为 rsa，输出私钥路径为
+<code>~/key</code> ，公钥路径会在私钥后添加 <code>.pub</code>，即
+<code>~/key.pub</code></p>
+<p>（此处创建的秘钥是可以复用的）</p>
+<p>然后将公钥信息拷贝到 <code>~/.ssh/authorized_keys</code> 里即可</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">mkdir</span> ~/.ssh</span><br><span class="line"><span class="built_in">cat</span> ~/key.pub &gt;&gt; ~/.ssh/authorized_keys</span><br></pre></td></tr></table></figure>
+
+<p>然后再重启一下 ssh，最终使用私钥登录测试</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh -p 54132 -i key root@localhost</span><br></pre></td></tr></table></figure>
+
+<p>结果</p>
+<p><img data-src="/posts/4a2b/image-20230627100723208.png"
+style="zoom:67%;" /></p>
+<p>提示我们权限不对，需要调整 key 的权限，按照下面的方式调整权限即可</p>
+<p><img data-src="/posts/4a2b/modify-windows-privilege.png" /></p>
+<p>再尝试登录的时候就可以登陆了</p>
+<p><img data-src="/posts/4a2b/image-20230627101433963.png"
+style="zoom:67%;" /></p>
+<p>最后给出一个完整的 Dockerfile</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">FROM</span> ubuntu:<span class="number">20.04</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 配置 ubuntu 软件源</span></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> sed -i s/archive.ubuntu.com/mirrors.aliyun.com/g /etc/apt/sources.list &amp;&amp; \</span></span><br><span class="line"><span class="language-bash">    sed -i s/security.ubuntu.com/mirrors.aliyun.com/g /etc/apt/sources.list &amp;&amp; \</span></span><br><span class="line"><span class="language-bash">    apt-get clean &amp;&amp; apt-get update &amp;&amp; \</span></span><br><span class="line"><span class="language-bash">    apt-get install --no-install-recommends -y \</span></span><br><span class="line"><span class="language-bash">    openssh-server &amp;&amp; \</span></span><br><span class="line"><span class="language-bash">    <span class="built_in">rm</span> -rf /var/lib/apt/lists/*</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 拷贝公钥和私钥，便于后续使用</span></span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> public-key.pem /root/public-key.pem</span></span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> private-key.pem /root/private-key.pem</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 将公钥拷贝到 authorized_keys 中，其中设置权限是必须的</span></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> <span class="built_in">mkdir</span> /root/.ssh &amp;&amp; \</span></span><br><span class="line"><span class="language-bash">    <span class="built_in">touch</span> /root/.ssh/authorized_keys &amp;&amp; \</span></span><br><span class="line"><span class="language-bash">    <span class="built_in">chmod</span> 700 /root/.ssh &amp;&amp; \</span></span><br><span class="line"><span class="language-bash">    <span class="built_in">chmod</span> 600 /root/.ssh/authorized_keys &amp;&amp; \</span></span><br><span class="line"><span class="language-bash">    <span class="built_in">cat</span> /root/public-key.pem &gt;&gt; /root/.ssh/authorized_keys</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">EXPOSE</span> <span class="number">22</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">CMD</span><span class="language-bash"> [ <span class="string">&quot;service&quot;</span>,<span class="string">&quot;ssh&quot;</span>,<span class="string">&quot;start&quot;</span>,<span class="string">&quot;-D&quot;</span> ]</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="minicondapython">miniconda(python)</h2>
+<p>&lt;待续&gt;</p>
+<h2 id="cmake">cmake</h2>
+<p>&lt;待续&gt;</p>
+<h2 id="总结">总结</h2>
+<p>个人理解 dockerfile
+实际上就是运维脚本的另外一种形式，关键还是在于脚本语言的熟悉程度，linux
+命令较为熟悉的话就可以很轻松的构建出合适的镜像。</p>
+<p>参考资料</p>
+<ol type="1">
+<li><a
+target="_blank" rel="noopener" href="https://developer.aliyun.com/mirror/ubuntu?spm=a2c6h.13651102.0.0.3e221b11uhvFDQ">ubuntu镜像_ubuntu下载地址_ubuntu安装教程-阿里巴巴开源镜像站
+(aliyun.com)</a></li>
+<li><a target="_blank" rel="noopener" href="https://linux.die.net/man/8/apt-get">apt-get(8) - Linux man
+page (die.net)</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://www.man7.org/linux/man-pages/man5/sshd_config.5.html">sshd_config(5)
+- Linux manual page (man7.org)</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://blog.csdn.net/huigher/article/details/52972013">sshd_config
+中 PermitRootLogin 的探讨_huigher的博客-CSDN博客</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://blog.csdn.net/u011095110/article/details/81020839">Linux下service
+xxx start/stop/restart启动服务、关闭服务、重启服务深入理解@_service
+start_King-Long的博客-CSDN博客</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_40415591/article/details/121661857">windows
+ssh Permissions for “xxx“ are too
+open错误详细解决方案_菜到不知所措的博客-CSDN博客</a></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>PureWhiteVK
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://purewhitevk.github.io/posts/4a2b/" title="Dockerfile常见环境使用">https://purewhitevk.github.io/posts/4a2b/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/dead.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/Linux/" rel="tag"># Linux</a>
+              <a href="/tags/Docker/" rel="tag"># Docker</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/80b6/" rel="prev" title="nohup命令使用">
+                  <i class="fa fa-chevron-left"></i> nohup命令使用
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PureWhiteVK</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">37k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">2:13</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
