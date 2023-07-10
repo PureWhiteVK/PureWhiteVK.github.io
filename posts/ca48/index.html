@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"purewhitevk.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.14.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"default"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="743. 网络延迟时间 有 n 个网络节点，标记为 1 到 n。 给你一个列表 times，表示信号经过 有向 边的传递时间。 times[i] &#x3D; (ui, vi, wi)，其中 ui 是源节点，vi 是目标节点， wi 是一个信号从源节点传递到目标节点的时间。 现在，从某个节点 K 发出一个信号。需要多久才能使所有节点都收到信号？如果不能使所有节点收到信号，返回 -1 。  链接：https:">
+<meta property="og:type" content="article">
+<meta property="og:title" content="743. 网络延迟时间">
+<meta property="og:url" content="https://purewhitevk.github.io/posts/ca48/">
+<meta property="og:site_name" content="PureWhiteVK&#39;s Blog">
+<meta property="og:description" content="743. 网络延迟时间 有 n 个网络节点，标记为 1 到 n。 给你一个列表 times，表示信号经过 有向 边的传递时间。 times[i] &#x3D; (ui, vi, wi)，其中 ui 是源节点，vi 是目标节点， wi 是一个信号从源节点传递到目标节点的时间。 现在，从某个节点 K 发出一个信号。需要多久才能使所有节点都收到信号？如果不能使所有节点收到信号，返回 -1 。  链接：https:">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/ca48/Image/dijkstra.png">
+<meta property="article:published_time" content="2023-07-10T15:05:50.268Z">
+<meta property="article:modified_time" content="2023-07-10T15:05:50.268Z">
+<meta property="article:author" content="PureWhiteVK">
+<meta property="article:tag" content="算法">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://purewhitevk.github.io/posts/ca48/Image/dijkstra.png">
+
+
+<link rel="canonical" href="https://purewhitevk.github.io/posts/ca48/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://purewhitevk.github.io/posts/ca48/","path":"posts/ca48/","title":"743. 网络延迟时间"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>743. 网络延迟时间 | PureWhiteVK's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">PureWhiteVK's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">17</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">5</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">161</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#743-%E7%BD%91%E7%BB%9C%E5%BB%B6%E8%BF%9F%E6%97%B6%E9%97%B4"><span class="nav-number">1.</span> <span class="nav-text">743. 网络延迟时间</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%95%E6%BA%90%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84dijkastra"><span class="nav-number">1.1.</span> <span class="nav-text">单源最短路径（Dijkastra）</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="PureWhiteVK"
+      src="/images/Touma.Kazusa.256x256.png">
+  <p class="site-author-name" itemprop="name">PureWhiteVK</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">161</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/PureWhiteVK" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;PureWhiteVK" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:yl_xiao@outlook.com" title="E-Mail → mailto:yl_xiao@outlook.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/dead.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://purewhitevk.github.io/posts/ca48/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/Touma.Kazusa.256x256.png">
+      <meta itemprop="name" content="PureWhiteVK">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PureWhiteVK's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="743. 网络延迟时间 | PureWhiteVK's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          743. 网络延迟时间
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023/07/10 23:05:50" itemprop="dateCreated datePublished" datetime="2023-07-10T23:05:50+08:00">2023/07/10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/LeetCode%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/" itemprop="url" rel="index"><span itemprop="name">LeetCode刷题记录</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>1.5k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>5 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="743-网络延迟时间">743. 网络延迟时间</h1>
+<p>有 n 个网络节点，标记为 1 到 n。</p>
+<p>给你一个列表 times，表示信号经过 有向 边的传递时间。 times[i] = (ui,
+vi, wi)，其中 ui 是源节点，vi 是目标节点， wi
+是一个信号从源节点传递到目标节点的时间。</p>
+<p>现在，从某个节点 K
+发出一个信号。需要多久才能使所有节点都收到信号？如果不能使所有节点收到信号，返回
+-1 。</p>
+<blockquote>
+<p>链接：<a
+target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/network-delay-time">https://leetcode-cn.com/problems/network-delay-time</a></p>
+</blockquote>
+<span id="more"></span>
+
+<h2 id="单源最短路径dijkastra">单源最短路径（Dijkastra）</h2>
+<p>这个题是一个很经典的单源最短路径题，主要考察Dijkstra算法（本质贪心）</p>
+<p>简要介绍Dijkstra算法：</p>
+<blockquote>
+<p>当图中各边的权（本题中指的是节点之间的网络时延）不相等时，用固定的顺序对定点进行处理。把顶点依次记为v0到vn-1，并记s=v0.当处理顶点v1时，取连接顶点v0和顶点v1的边。当处理顶点v2时，考虑从顶点v0到顶点v2的最短距离，并把它与从顶点v0到顶点v1再到顶点v2的最短距离进行比较，取较小者为顶点v0到顶点v2之间的最短路径长度。当处理顶点vi时，利用已经处理过的从顶点v0到顶点vi-1的最短路径长度。但是这样可能会产生问题：也许从v0到vi的真正最短路径会经过顶点vj，而j&gt;i使用这个算法会遗漏这种路径。不过，如果以从顶点S出发所到达的顶点的距离（递增）为顺序对各个节点进行处理，就能避免这个问题了。现在假设已经处理了从顶点S出发所到达的距离最小的前i-1个顶点，称这些顶点的集合为集合S。现在准备按照这个顺序处理第i个顶点，称之为顶点X，则从顶点S到顶点X的最短路径中的倒数第二个顶点一定在集合S中。因此有
+<span class="math display">\[
+d(S,X) = min(d(S,U)+w(U,X))
+\]</span>
+也就是说，从顶点S到顶点X的最短路径长度为：从集合S中任取顶点U，都有一条从顶点S到顶点U的路径，在从顶点U到顶点X的边，计算从所有顶点U产生的路径中的最小值。</p>
+<p>这个方法通常称为Dijkstra算法。它的技巧在于为V中所有的顶点X维护一个路径长度估计值D(X)。D中的元素初始化为INF，并且按照从顶点S出发所到达顶点的距离（递增顺序）处理各个顶点。每当处理一个顶点V时，它的任意一个相邻顶点X的D(X)值都可能随之改变。</p>
+</blockquote>
+<p>文字上的描述有点抽象，下面拿一个例子来展示Dijkstra算法过程</p>
+<p><img data-src="Image/dijkstra.png" /></p>
+<p>如上图所示，求节点1到其他的节点的最短路径</p>
+<p>首先初始化距离数组d = [0,INF,INF,INF,INF,INF,INF]</p>
+<p>其次初始化访问标记数组visited =
+[false,false,false,false,false,false]</p>
+<p>step1：找到从节点1可直接到达的节点，并记录其距离数组d</p>
+<p>可以发现，从1节点可以直达的节点有[2,3,4]</p>
+<p>更新距离数组d</p>
+<p>[0,2,3,6,INF,INF]</p>
+<p>visited[0] = true</p>
+<p>step2：选择距离1节点最近的节点2开始计算，同时更新距离值</p>
+<p>从节点2可以直达的节点有[1,5,6]，由于节点1已经访问过了，就不需要重新访问了</p>
+<p>更新距离数组d</p>
+<p>[0,2,3,6,6,8]</p>
+<p>visited[1] = true</p>
+<p>step3：选择未访问过且距离节点1最小的节点作为下一个访问节点（节点3），更新距离值</p>
+<p>更新距离数组d</p>
+<p>可以观察到，通过节点3到达节点4的距离会比直接到达节点4要短（2+3&lt;6)</p>
+<p>[0,2,3,5,6,8]</p>
+<p>visited[2] = true</p>
+<p>step4：选择节点4进行更新</p>
+<p>距离数组</p>
+<p>[0,2,3,5,6,8]</p>
+<p>visited[3] = true</p>
+<p>step5：选择节点5进行更新</p>
+<p>距离数组</p>
+<p>[0,2,3,5,6,8]</p>
+<p>visited[4] = true</p>
+<p>step6：选择节点6进行更新</p>
+<p>距离数组</p>
+<p>[0,2,3,5,6,8]</p>
+<p>visited[5] = true</p>
+<p>至此所有节点都已经遍历完成，从节点1到达所有节点的最短路径也求解完成</p>
+<p>代码实现（遍历）</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="variable">INF</span> <span class="operator">=</span> Integer.MAX_VALUE / <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">networkDelayTime</span><span class="params">(<span class="type">int</span>[][] times, <span class="type">int</span> n, <span class="type">int</span> k)</span> &#123;</span><br><span class="line">        <span class="type">int</span>[][] matrix = <span class="keyword">new</span> <span class="title class_">int</span>[n][n];</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;n;++i)&#123;</span><br><span class="line">            Arrays.fill(matrix[i],INF);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span>[] t:times)&#123;</span><br><span class="line">            matrix[t[<span class="number">0</span>]-<span class="number">1</span>][t[<span class="number">1</span>]-<span class="number">1</span>] = t[<span class="number">2</span>];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="type">boolean</span>[] visited = <span class="keyword">new</span> <span class="title class_">boolean</span>[n];</span><br><span class="line">        <span class="comment">// 单源最短路径</span></span><br><span class="line">        <span class="type">int</span>[] d = <span class="keyword">new</span> <span class="title class_">int</span>[n];</span><br><span class="line">        Arrays.fill(d,INF);</span><br><span class="line">        d[k-<span class="number">1</span>] = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;n;++i)&#123;</span><br><span class="line">            <span class="comment">// 找到未访问节点中距离最短的</span></span><br><span class="line">            <span class="type">int</span> <span class="variable">minIndex</span> <span class="operator">=</span> -<span class="number">1</span>;</span><br><span class="line">            <span class="keyword">for</span>(<span class="type">int</span> j=<span class="number">0</span>;j&lt;n;++j)&#123;</span><br><span class="line">                <span class="keyword">if</span>(!visited[j] &amp;&amp; (minIndex == -<span class="number">1</span> || d[minIndex] &gt; d[j]))&#123;</span><br><span class="line">                    minIndex = j;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            visited[minIndex] = <span class="literal">true</span>;</span><br><span class="line">            <span class="comment">// 更新</span></span><br><span class="line">            <span class="keyword">for</span>(<span class="type">int</span> j=<span class="number">0</span>;j&lt;n;++j)&#123;</span><br><span class="line">                d[j] = Math.min(d[j],d[minIndex] + matrix[minIndex][j]);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 遍历找最大</span></span><br><span class="line">        <span class="type">int</span> <span class="variable">maxD</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i:d)&#123;</span><br><span class="line">            maxD = Math.max(i,maxD);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> maxD == INF ? -<span class="number">1</span> : maxD;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>从求解过程中可以看到，每一步都需要遍历距离数组D找到距离当前节点最近的节点进行更新，实际上可以使用优先队列进行优化</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">networkDelayTime</span><span class="params">(<span class="type">int</span>[][] times, <span class="type">int</span> n, <span class="type">int</span> k)</span> &#123;</span><br><span class="line">        <span class="keyword">final</span> <span class="type">int</span> <span class="variable">INF</span> <span class="operator">=</span> Integer.MAX_VALUE / <span class="number">2</span>;</span><br><span class="line">        List&lt;<span class="type">int</span>[]&gt;[] g = <span class="keyword">new</span> <span class="title class_">List</span>[n];</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; n; ++i) &#123;</span><br><span class="line">            g[i] = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;<span class="type">int</span>[]&gt;();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 临接表</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span>[] t : times) &#123;</span><br><span class="line">            <span class="type">int</span> <span class="variable">x</span> <span class="operator">=</span> t[<span class="number">0</span>] - <span class="number">1</span>, y = t[<span class="number">1</span>] - <span class="number">1</span>;</span><br><span class="line">            g[x].add(<span class="keyword">new</span> <span class="title class_">int</span>[]&#123;y, t[<span class="number">2</span>]&#125;);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="type">int</span>[] dist = <span class="keyword">new</span> <span class="title class_">int</span>[n];</span><br><span class="line">        Arrays.fill(dist, INF);</span><br><span class="line">        dist[k - <span class="number">1</span>] = <span class="number">0</span>;</span><br><span class="line">        PriorityQueue&lt;<span class="type">int</span>[]&gt; pq = <span class="keyword">new</span> <span class="title class_">PriorityQueue</span>&lt;<span class="type">int</span>[]&gt;((a, b) -&gt; a[<span class="number">0</span>] != b[<span class="number">0</span>] ? a[<span class="number">0</span>] - b[<span class="number">0</span>] : a[<span class="number">1</span>] - b[<span class="number">1</span>]);</span><br><span class="line">        pq.offer(<span class="keyword">new</span> <span class="title class_">int</span>[]&#123;<span class="number">0</span>, k - <span class="number">1</span>&#125;);</span><br><span class="line">        <span class="keyword">while</span> (!pq.isEmpty()) &#123;</span><br><span class="line">            <span class="type">int</span>[] p = pq.poll();</span><br><span class="line">            <span class="type">int</span> <span class="variable">time</span> <span class="operator">=</span> p[<span class="number">0</span>], x = p[<span class="number">1</span>];</span><br><span class="line">            <span class="keyword">if</span> (dist[x] &lt; time) &#123;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// g[x]代表从x直接相邻的节点</span></span><br><span class="line">            <span class="keyword">for</span> (<span class="type">int</span>[] e : g[x]) &#123;</span><br><span class="line">                <span class="type">int</span> <span class="variable">y</span> <span class="operator">=</span> e[<span class="number">0</span>], d = dist[x] + e[<span class="number">1</span>];</span><br><span class="line">                <span class="keyword">if</span> (d &lt; dist[y]) &#123;</span><br><span class="line">                    dist[y] = d;</span><br><span class="line">                    pq.offer(<span class="keyword">new</span> <span class="title class_">int</span>[]&#123;d, y&#125;);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="type">int</span> <span class="variable">res</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i:dist)&#123;</span><br><span class="line">            res = Math.max(res,i);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> res == INF ? -<span class="number">1</span> : res;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>PureWhiteVK
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://purewhitevk.github.io/posts/ca48/" title="743. 网络延迟时间">https://purewhitevk.github.io/posts/ca48/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/dead.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E7%AE%97%E6%B3%95/" rel="tag"># 算法</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/c1bb/" rel="prev" title="89. 格雷编码">
+                  <i class="fa fa-chevron-left"></i> 89. 格雷编码
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/efc8/" rel="next" title="390. 消除游戏">
+                  390. 消除游戏 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PureWhiteVK</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">148k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">8:59</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

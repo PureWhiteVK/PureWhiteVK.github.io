@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"purewhitevk.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.14.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"default"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="446. 等差数列划分 II - 子序列 给你一个整数数组 nums ，返回 nums 中所有 等差子序列 的数目。 如果一个序列中 至少有三个元素 ，并且任意两个相邻元素之差相同，则称该序列为等差序列。 例如，[1, 3, 5, 7, 9]、[7, 7, 7, 7] 和 [3, -1, -5, -9] 都是等差序列。 再例如，[1, 1, 2, 5, 7] 不是等差序列。 数组中的子序列是从数组">
+<meta property="og:type" content="article">
+<meta property="og:title" content="446. 等差数列划分 II - 子序列">
+<meta property="og:url" content="https://purewhitevk.github.io/posts/f020/">
+<meta property="og:site_name" content="PureWhiteVK&#39;s Blog">
+<meta property="og:description" content="446. 等差数列划分 II - 子序列 给你一个整数数组 nums ，返回 nums 中所有 等差子序列 的数目。 如果一个序列中 至少有三个元素 ，并且任意两个相邻元素之差相同，则称该序列为等差序列。 例如，[1, 3, 5, 7, 9]、[7, 7, 7, 7] 和 [3, -1, -5, -9] 都是等差序列。 再例如，[1, 1, 2, 5, 7] 不是等差序列。 数组中的子序列是从数组">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-07-10T15:05:50.260Z">
+<meta property="article:modified_time" content="2023-07-10T15:05:50.260Z">
+<meta property="article:author" content="PureWhiteVK">
+<meta property="article:tag" content="算法">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://purewhitevk.github.io/posts/f020/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://purewhitevk.github.io/posts/f020/","path":"posts/f020/","title":"446. 等差数列划分 II - 子序列"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>446. 等差数列划分 II - 子序列 | PureWhiteVK's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">PureWhiteVK's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">17</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">5</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">161</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#446-%E7%AD%89%E5%B7%AE%E6%95%B0%E5%88%97%E5%88%92%E5%88%86-ii---%E5%AD%90%E5%BA%8F%E5%88%97"><span class="nav-number">1.</span> <span class="nav-text">446. 等差数列划分 II - 子序列</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92%E5%93%88%E5%B8%8C%E8%A1%A8"><span class="nav-number">1.1.</span> <span class="nav-text">动态规划+哈希表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BA%8F%E5%88%97dp%E8%A7%A3%E9%A2%98%E6%80%9D%E8%B7%AF"><span class="nav-number">1.2.</span> <span class="nav-text">序列DP解题思路</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="PureWhiteVK"
+      src="/images/Touma.Kazusa.256x256.png">
+  <p class="site-author-name" itemprop="name">PureWhiteVK</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">161</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/PureWhiteVK" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;PureWhiteVK" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:yl_xiao@outlook.com" title="E-Mail → mailto:yl_xiao@outlook.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/dead.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://purewhitevk.github.io/posts/f020/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/Touma.Kazusa.256x256.png">
+      <meta itemprop="name" content="PureWhiteVK">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PureWhiteVK's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="446. 等差数列划分 II - 子序列 | PureWhiteVK's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          446. 等差数列划分 II - 子序列
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023/07/10 23:05:50" itemprop="dateCreated datePublished" datetime="2023-07-10T23:05:50+08:00">2023/07/10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/LeetCode%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/" itemprop="url" rel="index"><span itemprop="name">LeetCode刷题记录</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>1.5k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>6 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="446-等差数列划分-ii---子序列">446. 等差数列划分 II - 子序列</h1>
+<p>给你一个整数数组 nums ，返回 nums 中所有 等差子序列 的数目。</p>
+<p>如果一个序列中 至少有三个元素
+，并且任意两个相邻元素之差相同，则称该序列为等差序列。</p>
+<p>例如，[1, 3, 5, 7, 9]、[7, 7, 7, 7] 和 [3, -1, -5, -9] 都是等差序列。
+再例如，[1, 1, 2, 5, 7] 不是等差序列。
+数组中的子序列是从数组中删除一些元素（也可能不删除）得到的一个序列。</p>
+<p>例如，[2,5,10] 是 [1,2,1,2,4,1,5,10] 的一个子序列。
+题目数据保证答案是一个 32-bit 整数。</p>
+<blockquote>
+<p>链接：<a
+target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/arithmetic-slices-ii-subsequence">https://leetcode-cn.com/problems/arithmetic-slices-ii-subsequence</a></p>
+</blockquote>
+<span id="more"></span>
+
+<h2 id="动态规划哈希表">动态规划+哈希表</h2>
+<p>这一题相比前一题 <strong>413. 等差数列划分</strong>
+难度更大，需要找到数列子序列（可以不连续）为等差数列</p>
+<p>而一个数列的子序列个数为2^n个，显然暴力是不行的，可以用dp[i,k]表示以数字nums[i]结尾的，公差为k的弱等差数列的个数（弱等差数列：数列长度至少为2的等差数列），这样状态转移公式为
+<span class="math display">\[
+dp[i,k] = \sum_{j&lt;i}{dp[j,k]+1}
+\]</span> 其中j需要满足 nums[i]-nums[j] == k</p>
+<p>也就是说，对于所有的以nums[j]结尾，公差为k的弱等差数列，都可以将nums[i]插入到该弱等差数列末尾，同时nums[i],nums[j]构成了一个新的弱等差数列</p>
+<p>而求得弱等差数列个数后，转换为等差数列个数就很简单了，注意到，等差数列个数是弱等差数列中长度大于等于3的，而将nums[i]插入到以nums[j]结尾的弱等差数列时，该弱等差数列的长度一定是大于等于3的，因此只需要统计这一部分的值就行</p>
+<p>说上去好像很复杂，下面举例解释</p>
+<p>nums = [2,4,5,6,7,8,10]</p>
+<p>初始化：</p>
+<p>dp是一个二维数组，但由于公差取值范围太大，使用Map存储</p>
+<p>step1：以 nums[1] 即 4 结尾的弱等差数列</p>
+<p>dp[1,2] = 1，此时代表数列{2,4}</p>
+<p>step2：以 nums[2] 即 5 结尾的弱等差数列</p>
+<p>dp[2,3] = 1，此时代表数列{2,5}</p>
+<p>dp[2,1] = 1，此时代表数列{4,5}</p>
+<p>step3：以 nums[3] 即 6 结尾的弱等差数列</p>
+<p>dp[3,4] = 1，此时代表数列{2,6}</p>
+<p>dp[3,2] = dp[1,2] + 1 = 2，此时代表数列{2,4,6}、{4,6}</p>
+<p>由于向数列{2,4}中添加元素6，组成了等差数列，更新res=1</p>
+<p>dp[3,1] = dp[2,1] + 1 = 2，此时代表数列{4,5,6} 、{5,6}</p>
+<p>由于向数列{4,5}中添加元素6，组成了等差数列，更新res=2</p>
+<p>step4：以 nums[4] 即 7 结尾的弱等差数列</p>
+<p>dp[4,5] = 1，此时代表数列{2,7}</p>
+<p>dp[4,3] = 1，此时代表数列{4,7}</p>
+<p>dp[4,2] = 1，此时代表数列{5,7}</p>
+<p>dp[4,1] = dp[3,1] + 1 = 3，此时代表数列{4,5,6,7}、{5,6,7}、{6,7}</p>
+<p>由于向数列{4,5,6}、{5,6}中添加了元素7，组成了等差数列，更新res=4</p>
+<p>step5：以 nums[5] 即 8 结尾的弱等差数列</p>
+<p>dp[5,6] = 1，此时代表数列{2,8}</p>
+<p>dp[5,4] = 1，此时代表数列{4,8}</p>
+<p>dp[5,3] = 1，此时代表数列{5,8}</p>
+<p>dp[5,2] = dp[3,2] + 1 = 3，此时代表数列{2,4,6,8}、{4,6,8}、{6,8}</p>
+<p>由于向数列{2,4,6}、{4,6}添加了元素8，组成了等差数列，更新res=6</p>
+<p>dp[5,1] = dp[4,1] + 1 =
+4，此时代表数列{4,5,6,7,8}、{5,6,7,8}、{6,7,8}、{7,8}</p>
+<p>由于向数列{4,5,6,7}、{5,6,7}、{6,7}中添加了元素8，组成了等差数列，更新res=9</p>
+<p>step6：以 nums[6] 即 10 结尾的弱等差数列</p>
+<p>dp[6,8] = 1，此时代表数列{2,10}</p>
+<p>dp[6,6] = 1，此时代表数列{4,10}</p>
+<p>dp[6,5] = 1，此时代表数列{5,10}</p>
+<p>dp[6,4] = 1，此时代表数列{6,10}</p>
+<p>dp[6,3] = dp[4,3] + 1 = 2，此时代表数列{4,7,10}、{7,10}</p>
+<p>由于向数列{4,7}中添加了元素10，组成了等差数列，更新res=10</p>
+<p>dp[6,2] = dp[5,2]+1 =
+4，此时代表数列{2,4,6,8,10}、{4,6,8,10}、{6,8,10}、{8,10}</p>
+<p>由于向数列{2,4,6,8}、{4,6,8}、{6,8}中添加了元素10，组成了等差数列，更新res=13</p>
+<p>遍历结束，最终返回res=13，分别是</p>
+<p>{2,4,6}、{4,5,6}、{4,5,6,7}、{5,6,7}、{2,4,6,8}、{4,6,8}、{4,5,6,7,8}、{5,6,7,8}、{6,7,8}、{4,7,10}、{2,4,6,8,10}、{4,6,8,10}、{6,8,10}</p>
+<p>代码实现</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">numberOfArithmeticSlices</span><span class="params">(<span class="type">int</span>[] nums)</span> &#123;</span><br><span class="line">        <span class="comment">// 使用dp[i][k]表示公差为k的等差数列，以nums[i]结尾的弱等差数列（包含两个元素）个数</span></span><br><span class="line">        <span class="comment">// 由于dp[i][k]表示的是弱等差数列，因此将i插入到j后面，此时就构成了三个元素，可以算成等差数列</span></span><br><span class="line">        <span class="comment">// 因此可以有状态转移公式 if(nums[i] - nums[j] == k) dp[i][k] = dp[j][k]+1;</span></span><br><span class="line">        <span class="comment">// 第一次进行状态更新的时候构成的时弱等差，但第二次时就是一个包含三个元素的等差数列了，因此可以在统计弱等差数列的时候稍加处理就可以求解等差数列</span></span><br><span class="line">        <span class="type">int</span> <span class="variable">length</span> <span class="operator">=</span> nums.length;</span><br><span class="line">        Map&lt;Long,Integer&gt;[] dp = <span class="keyword">new</span> <span class="title class_">Map</span>[length];</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;length;++i)&#123;</span><br><span class="line">            dp[i] = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;&gt;();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="type">int</span> <span class="variable">res</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;length;++i)&#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="type">int</span> j=<span class="number">0</span>;j&lt;i;++j)&#123;</span><br><span class="line">                <span class="type">long</span> <span class="variable">d</span> <span class="operator">=</span> (<span class="type">long</span>) nums[i]-nums[j];</span><br><span class="line">                <span class="type">int</span> <span class="variable">cnt</span> <span class="operator">=</span> dp[j].getOrDefault(d,<span class="number">0</span>);</span><br><span class="line">                res += cnt;</span><br><span class="line">                dp[i].put(d,dp[i].getOrDefault(d,<span class="number">0</span>)+cnt+<span class="number">1</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// for(int i=0;i&lt;length;++i)&#123;</span></span><br><span class="line">        <span class="comment">//     for(long k:dp[i].keySet())&#123;</span></span><br><span class="line">        <span class="comment">//         System.out.println(&quot;dp[&quot;+i+&quot;][&quot;+k+&quot;]=&quot;+dp[i].get(k));</span></span><br><span class="line">        <span class="comment">//     &#125;</span></span><br><span class="line">        <span class="comment">// &#125;</span></span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="序列dp解题思路">序列DP解题思路</h2>
+<blockquote>
+<p><a
+target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/arithmetic-slices-ii-subsequence/solution/gong-shui-san-xie-xiang-jie-ru-he-fen-xi-ykvk/">【宫水三叶】详解如何分析「序列
+DP」问题（附序列 DP 问题目录） - 等差数列划分 II - 子序列 -
+力扣（LeetCode） (leetcode-cn.com)</a></p>
+</blockquote>
+<p>序列DP类的题目一般描述是，对于一个给定的序列，需要找出满足某个条件的所有子序列</p>
+<p>对这种类型的题目，最基本的思路使用dp[i]表示满足给定条件的，以nums[i]结尾的子序列，然后枚举0～i-1的所有数，观察是否满足条件，进行状态更新</p>
+<blockquote>
+<p><strong>枚举当前位置前面的所有位置的目的，是为了找到当前位置的数，能够接在哪一个位置的后面，形成序列。</strong></p>
+</blockquote>
+<p>*此处dp[i]不一定就是一个数，也可能是其他数据结构，需要结合具体问题思考</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>PureWhiteVK
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://purewhitevk.github.io/posts/f020/" title="446. 等差数列划分 II - 子序列">https://purewhitevk.github.io/posts/f020/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/dead.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E7%AE%97%E6%B3%95/" rel="tag"># 算法</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/2308/" rel="prev" title="457. 环形数组是否存在循环">
+                  <i class="fa fa-chevron-left"></i> 457. 环形数组是否存在循环
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/96e0/" rel="next" title="个人博客搭建记录">
+                  个人博客搭建记录 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PureWhiteVK</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">148k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">8:59</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"purewhitevk.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.14.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"default"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="剑指 Offer II 017. 含所有字符的最短字符串 给定两个字符串 s 和 t 。返回 s 中包含 t 的所有字符的最短子字符串。如果 s 中不存在符合条件的子字符串，则返回空字符串 &quot;&quot; 。 如果 s 中存在多个符合条件的子字符串，返回任意一个。 注意： 对于 t 中重复字符，我们寻找的子字符串中该字符数量必须不少于 t 中该字符数量。  链接：https:&#x2F;&#x2F;leetcode-cn.co">
+<meta property="og:type" content="article">
+<meta property="og:title" content="剑指 Offer II 017. 含所有字符的最短字符串">
+<meta property="og:url" content="https://purewhitevk.github.io/posts/49ad/">
+<meta property="og:site_name" content="PureWhiteVK&#39;s Blog">
+<meta property="og:description" content="剑指 Offer II 017. 含所有字符的最短字符串 给定两个字符串 s 和 t 。返回 s 中包含 t 的所有字符的最短子字符串。如果 s 中不存在符合条件的子字符串，则返回空字符串 &quot;&quot; 。 如果 s 中存在多个符合条件的子字符串，返回任意一个。 注意： 对于 t 中重复字符，我们寻找的子字符串中该字符数量必须不少于 t 中该字符数量。  链接：https:&#x2F;&#x2F;leetcode-cn.co">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-07-10T15:05:50.264Z">
+<meta property="article:modified_time" content="2023-07-10T15:05:50.264Z">
+<meta property="article:author" content="PureWhiteVK">
+<meta property="article:tag" content="算法">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://purewhitevk.github.io/posts/49ad/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://purewhitevk.github.io/posts/49ad/","path":"posts/49ad/","title":"剑指 Offer II 017. 含所有字符的最短字符串"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>剑指 Offer II 017. 含所有字符的最短字符串 | PureWhiteVK's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">PureWhiteVK's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">17</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">5</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">161</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%91%E6%8C%87-offer-ii-017-%E5%90%AB%E6%89%80%E6%9C%89%E5%AD%97%E7%AC%A6%E7%9A%84%E6%9C%80%E7%9F%AD%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="nav-number">1.</span> <span class="nav-text">剑指 Offer II 017.
+含所有字符的最短字符串</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3"><span class="nav-number">1.1.</span> <span class="nav-text">滑动窗口</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9A%B4%E5%8A%9B"><span class="nav-number">1.1.1.</span> <span class="nav-text">暴力</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%98%E5%8C%96"><span class="nav-number">1.1.2.</span> <span class="nav-text">优化</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="PureWhiteVK"
+      src="/images/Touma.Kazusa.256x256.png">
+  <p class="site-author-name" itemprop="name">PureWhiteVK</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">161</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/PureWhiteVK" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;PureWhiteVK" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:yl_xiao@outlook.com" title="E-Mail → mailto:yl_xiao@outlook.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/dead.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://purewhitevk.github.io/posts/49ad/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/Touma.Kazusa.256x256.png">
+      <meta itemprop="name" content="PureWhiteVK">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PureWhiteVK's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="剑指 Offer II 017. 含所有字符的最短字符串 | PureWhiteVK's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          剑指 Offer II 017. 含所有字符的最短字符串
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023/07/10 23:05:50" itemprop="dateCreated datePublished" datetime="2023-07-10T23:05:50+08:00">2023/07/10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/LeetCode%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/" itemprop="url" rel="index"><span itemprop="name">LeetCode刷题记录</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>1.8k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>6 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="剑指-offer-ii-017-含所有字符的最短字符串">剑指 Offer II 017.
+含所有字符的最短字符串</h1>
+<p>给定两个字符串 s 和 t 。返回 s 中包含 t
+的所有字符的最短子字符串。如果 s
+中不存在符合条件的子字符串，则返回空字符串 "" 。</p>
+<p>如果 s 中存在多个符合条件的子字符串，返回任意一个。</p>
+<p>注意： 对于 t 中重复字符，我们寻找的子字符串中该字符数量必须不少于 t
+中该字符数量。</p>
+<blockquote>
+<p>链接：<a
+target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/M1oyTv">https://leetcode-cn.com/problems/M1oyTv</a></p>
+</blockquote>
+<span id="more"></span>
+
+<h2 id="滑动窗口">滑动窗口</h2>
+<h3 id="暴力">暴力</h3>
+<p>很明显，可以将初始窗口大小设置为t的长度，之后逐个进行判断，并不断增加窗口的大小，最终遍历s所有长度在
+[t.length(),s.length()]内的子串</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">minWindow</span><span class="params">(String s, String t)</span> &#123;</span><br><span class="line">        <span class="comment">// 思路1，直接暴力，从长度为t的窗口开始遍历？</span></span><br><span class="line">        Map&lt;Character,Integer&gt; tMap = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;&gt;();</span><br><span class="line">        <span class="type">int</span> <span class="variable">tLength</span> <span class="operator">=</span> t.length(),sLength = s.length();</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;tLength;++i)&#123;</span><br><span class="line">            <span class="type">char</span> <span class="variable">t1</span> <span class="operator">=</span> t.charAt(i);</span><br><span class="line">            tMap.put(t1,tMap.getOrDefault(t1,<span class="number">0</span>)+<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">l</span> <span class="operator">=</span> tLength;l&lt;=sLength;++l)&#123;</span><br><span class="line">          	<span class="comment">// 从长度为tLength的子串一直到长度为sLength的子串</span></span><br><span class="line">            <span class="type">int</span> <span class="variable">left</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">            <span class="type">int</span> <span class="variable">right</span> <span class="operator">=</span> l;</span><br><span class="line">            <span class="comment">// 初始化窗口</span></span><br><span class="line">            Map&lt;Character,Integer&gt; sMap = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;&gt;();</span><br><span class="line">            <span class="keyword">for</span>(<span class="type">int</span> i=left;i&lt;right;++i)&#123;</span><br><span class="line">                <span class="type">char</span> <span class="variable">s1</span> <span class="operator">=</span> s.charAt(i);</span><br><span class="line">                sMap.put(s1,sMap.getOrDefault(s1,<span class="number">0</span>)+<span class="number">1</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span>(check(tMap,sMap)) <span class="keyword">return</span> s.substring(left,right);</span><br><span class="line">            <span class="keyword">while</span>(right &lt; sLength)&#123;</span><br><span class="line">                <span class="type">char</span> <span class="variable">leftChar</span> <span class="operator">=</span> s.charAt(left);</span><br><span class="line">                <span class="type">char</span> <span class="variable">rightChar</span> <span class="operator">=</span> s.charAt(right);</span><br><span class="line">                sMap.put(leftChar,sMap.get(leftChar)-<span class="number">1</span>);</span><br><span class="line">                sMap.put(rightChar,sMap.getOrDefault(rightChar,<span class="number">0</span>)+<span class="number">1</span>);</span><br><span class="line">                ++left;</span><br><span class="line">                ++right;</span><br><span class="line">                <span class="keyword">if</span>(check(tMap,sMap)) <span class="keyword">return</span> s.substring(left,right);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 遍历完所有的都没找到，直接返回空</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="type">boolean</span> <span class="title function_">check</span><span class="params">(Map&lt;Character,Integer&gt; map1,Map&lt;Character,Integer&gt; map2)</span>&#123;</span><br><span class="line">        <span class="keyword">for</span>(Character ch:map1.keySet())&#123;</span><br><span class="line">            <span class="keyword">if</span>(map2.getOrDefault(ch,<span class="number">0</span>) &lt; map1.get(ch)) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>很明显，在计算过程中需要不断遍历s，初始化窗口，然后开始滑动，这一个过程太耗时间，实际上只需要初始化一次窗口即可</p>
+<p>时间复杂度：o(n^2)</p>
+<h3 id="优化">优化</h3>
+<p>由于暴力解法中遍历了所有的子串，且每次都需要重新初始化窗口，实际上可以在一次遍历中不断调整窗口大小，同时记录满足条件的最小值即可</p>
+<p>下面以 s = "ADOBECODEBANC" 和 t = "ABC" 来介绍计算过程</p>
+<p>初始化：</p>
+<p>tMap = {A:1,B:1,C:1}</p>
+<p>left = 0, right = 0, cnt = 0</p>
+<p><strong>step1:</strong></p>
+<p>窗口为 [0,0] 代表s的子串 A</p>
+<p>sMap = {A:1}，而A在t内，cnt=1, right=1</p>
+<p><strong>step2：</strong></p>
+<p>窗口为 [0,1] 代表s的子串 AD</p>
+<p>sMap = {A:1,D:1}，D并不在t内，cnt保持不变，right=2</p>
+<p><strong>step3：</strong></p>
+<p>窗口为 [0,2] 代表s的子串 ADO</p>
+<p>sMap = {A:1,D:1,O:1}，O并不在t内，cnt保持不变，right=3</p>
+<p><strong>step4：</strong></p>
+<p>窗口为 [0,3] 代表s的子串 ADOB</p>
+<p>sMap = {A:1,B:1,D:1,O:1}，B在t内，cnt=2，right=4</p>
+<p><strong>step5：</strong></p>
+<p>窗口为 [0,4] 代表s的子串 ADOBE</p>
+<p>sMap = {A:1,B:1,D:1,E:1,O:1}，E并不在t内，cnt保持不变，right=5</p>
+<p><strong>step6：</strong></p>
+<p>窗口为 [0,5] 代表s的子串 ADOBEC，C在t内，cnt=3，right=6</p>
+<p>cnt == tMap.size()，说明ADOBEC已经包含了ABC的所有字符，更新res =
+ADOBEC</p>
+<p><strong>step7:</strong></p>
+<p>窗口为 [0,6] 代表s的子串 ADOBECO</p>
+<p>sMap =
+{A:1,B:1,C;1,D:1,E:1,O:2}，O并不在t内，cnt保持不变，right=7</p>
+<p><strong>step8:</strong></p>
+<p>窗口为 [0,7] 代表s的子串 ADOBECOD</p>
+<p>sMap =
+{A:1,B:1,C:1,D:2,E:1,O:2}，D并不在t内，cnt保持不变，right=8</p>
+<p><strong>step9:</strong></p>
+<p>窗口为 [0,8] 代表s的子串 ADOBECODE</p>
+<p>sMap =
+{A:1,B:1,C:1,D:2,E:2,O:2}，E并不在t内，cnt保持不变，right=9</p>
+<p><strong>step10:</strong></p>
+<p>窗口为 [0,9] 代表s的子串 ADOBECODEB</p>
+<p>sMap =
+{A:1,B:2,C:1,D:2,E:2,O:2}，B在t内，但已经满足条件，cnt保持不变，right=10</p>
+<p><strong>step11:</strong></p>
+<p>窗口为 [0,10] 代表s的子串 ADOBECODEB</p>
+<p>sMap =
+{A:1,B:2,C:1,D:2,E:2,O:2}，B在t内，但已经满足条件，cnt保持不变，right=11</p>
+<p><strong>step12:</strong></p>
+<p>窗口为 [0,11] 代表s的子串 ADOBECODEBA</p>
+<p>sMap = {A:2,B:2,C:1,D:2,E:2,O:2}，A在t内，</p>
+<p>此时s.charAt(0) = 'A'，且t只需要一个
+'A'，此时子字符串中已经包含了两个'A'，收缩窗口，更新sMap</p>
+<p>sMap = {A:1,B:2,C:1,D:2,E:2,O:2}</p>
+<p>left = 1，窗口为 [1,11] 代表s的子串 DOBECODEBA，</p>
+<p>此时s.charAt(1) = 'D'，且t不需要 'D'，收缩窗口，更新sMap</p>
+<p>sMap = {A:1,B:2,C:1,D:1,E:2,O:2}</p>
+<p>left = 2，窗口为 [2,11] 代表s的子串 OBECODEBA</p>
+<p>此时s.charAt(2) = 'O'，且t不需要 'O'，收缩窗口，更新sMap</p>
+<p>sMap = {A:1,B:2,C:1,D:1,E:2,O:1}</p>
+<p>left = 3，窗口为 [3,11] 代表s的子串 BECODEBA</p>
+<p>此时s.charAt(3) = 'B'，且t只需要一个
+'B'，此时子字符串中已经包含了两个'B'，收缩窗口，更新sMap</p>
+<p>sMap = {A:1,B:1,C:1,D:1,E:2,O:1}</p>
+<p>left = 4，窗口为 [4,11] 代表s的子串 ECODEBA</p>
+<p>此时s.charAt(4) = 'E'，且t不需要 'E'，收缩窗口，更新sMap</p>
+<p>sMap = {A:1,B:1,C:1,D:1,E:1,O:1}</p>
+<p>left = 5，窗口为 [5,11] 代表s的子串 CODEBA</p>
+<p>此时s.charAt(5) = 'C'
+，且t需要一个'C'，s仅包含一个'C'，无法继续收缩窗口，继续扩展窗口，right=12</p>
+<p><strong>step13:</strong></p>
+<p>窗口为 [5,12] 代表s的子串 CODEBAN</p>
+<p>sMap =
+{A:1,B:1,C:1,D:1,E:1,N:1,O:1}，N不在t内，cnt保持不变，right=13</p>
+<p><strong>step14</strong></p>
+<p>窗口为 [5,13] 代表s的子串
+CODEBANC，C在t内，但是s已经包含过一个C，可以收缩窗口，更新sMap</p>
+<p>sMap = {A:1,B:1,C:1,D:1,E:1,N:1,O:1}</p>
+<p>left=6，窗口为 [6,13] 代表s的子串 ODEBANC</p>
+<p>此时s.charAt(6) = 'O'，t不包含'O'，收缩窗口，更新sMap</p>
+<p>sMap = {A:1,B:1,C:1,D:1,E:1,N:1}</p>
+<p>left=7，窗口为 [7,13] 代表s的子串 DEBANC</p>
+<p>此时s.charAt(7) = 'D'，t不包含 'D'，收缩窗口，更新sMap</p>
+<p>sMap = {A:1,B:1,C:1,E:1,N:1}</p>
+<p>left=8，窗口为 [8,13] 代表s的子串 EBANC</p>
+<p>此时s.charAt(8) = 'E'，t不包含 'E'，收缩窗口，更新sMap</p>
+<p>sMap = {A:1,B:1,C:1,N:1}</p>
+<p>left=9，窗口为 [9,13] 代表s的子串 BANC</p>
+<p>此时s.charAt(9) =
+'B'，t需要一个'B'，此时子串也仅包含一个B，无法进行收缩，更新res</p>
+<p>res = BANC</p>
+<p>此时遍历结束，返回最小窗口为BANC</p>
+<p>从这个过程中，可以很清楚的看到，在遍历s的过程中，不断判断是否可以收缩窗口，从而在仅遍历一次s的情况下得到结果</p>
+<p>时间复杂度o(n)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">minWindow</span><span class="params">(String s, String t)</span> &#123;</span><br><span class="line">        <span class="comment">// 思路1，直接暴力，从长度为t的窗口开始遍历？</span></span><br><span class="line">        <span class="comment">// 超时，卡在最后一个样例</span></span><br><span class="line">        Map&lt;Character,Integer&gt; tMap = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;&gt;(),sMap = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;&gt;();</span><br><span class="line">        <span class="type">int</span> <span class="variable">tLength</span> <span class="operator">=</span> t.length(),sLength = s.length();</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;tLength;++i)&#123;</span><br><span class="line">            <span class="type">char</span> <span class="variable">t1</span> <span class="operator">=</span> t.charAt(i);</span><br><span class="line">            tMap.put(t1,tMap.getOrDefault(t1,<span class="number">0</span>)+<span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 仅遍历一次s，在遍历过程中更新左右指针，</span></span><br><span class="line">        <span class="type">int</span> <span class="variable">tUniqueChars</span> <span class="operator">=</span> tMap.size();</span><br><span class="line">        <span class="type">int</span> <span class="variable">left</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">        <span class="type">int</span> <span class="variable">cnt</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">        <span class="type">String</span> <span class="variable">res</span> <span class="operator">=</span> <span class="string">&quot;&quot;</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">right</span> <span class="operator">=</span> <span class="number">0</span>;right &lt; sLength;++right)&#123;</span><br><span class="line">            <span class="type">char</span> <span class="variable">s1</span> <span class="operator">=</span> s.charAt(right);</span><br><span class="line">            sMap.put(s1,sMap.getOrDefault(s1,<span class="number">0</span>)+<span class="number">1</span>);</span><br><span class="line">            <span class="comment">// 遍历过程中不断判断当前是否满足条件</span></span><br><span class="line">            <span class="keyword">if</span>(tMap.containsKey(s1) &amp;&amp; sMap.get(s1).equals(tMap.get(s1))) ++cnt;</span><br><span class="line">            <span class="keyword">while</span>(left &lt;= right)&#123;</span><br><span class="line">                <span class="type">char</span> <span class="variable">s2</span> <span class="operator">=</span> s.charAt(left);</span><br><span class="line">                <span class="comment">// 当最左端的字符没用时，收缩窗口</span></span><br><span class="line">                <span class="keyword">if</span>(sMap.get(s2) &gt; tMap.getOrDefault(s2,<span class="number">0</span>))&#123;</span><br><span class="line">                    sMap.put(s2,sMap.get(s2)-<span class="number">1</span>);</span><br><span class="line">                    <span class="keyword">if</span>(tMap.containsKey(s2) &amp;&amp; tMap.get(s2) &gt; sMap.get(s2)) --cnt;</span><br><span class="line">                    ++left;</span><br><span class="line">                &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span>(cnt == tUniqueChars &amp;&amp; (res.equals(<span class="string">&quot;&quot;</span>) || res.length() &gt; right + <span class="number">1</span> -left))&#123;</span><br><span class="line">                res = s.substring(left,right+<span class="number">1</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>PureWhiteVK
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://purewhitevk.github.io/posts/49ad/" title="剑指 Offer II 017. 含所有字符的最短字符串">https://purewhitevk.github.io/posts/49ad/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/dead.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E7%AE%97%E6%B3%95/" rel="tag"># 算法</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/1deb/" rel="prev" title="剑指 Offer II 020. 回文子字符串的个数">
+                  <i class="fa fa-chevron-left"></i> 剑指 Offer II 020. 回文子字符串的个数
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/859a/" rel="next" title="剑指 Offer II 011. 0和1个数相同的子数组">
+                  剑指 Offer II 011. 0和1个数相同的子数组 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PureWhiteVK</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">148k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">8:59</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
