@@ -20,14 +20,17 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"purewhitevk.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.14.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"default"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta property="og:type" content="article">
-<meta property="og:title" content="CMake项目结构模版">
+    <meta name="description" content="318. 最大单词长度乘积 给定一个字符串数组 words，找到 length(word[i]) * length(word[j]) 的最大值，并且这两个单词不含有公共字母。你可以认为每个单词只包含小写字母。如果不存在这样的两个单词，返回 0。  链接：https:&#x2F;&#x2F;leetcode-cn.com&#x2F;problems&#x2F;maximum-product-of-word-lengths">
+<meta property="og:type" content="article">
+<meta property="og:title" content="318. 最大单词长度乘积">
 <meta property="og:url" content="https://purewhitevk.github.io/posts/d235/">
 <meta property="og:site_name" content="PureWhiteVK&#39;s Blog">
+<meta property="og:description" content="318. 最大单词长度乘积 给定一个字符串数组 words，找到 length(word[i]) * length(word[j]) 的最大值，并且这两个单词不含有公共字母。你可以认为每个单词只包含小写字母。如果不存在这样的两个单词，返回 0。  链接：https:&#x2F;&#x2F;leetcode-cn.com&#x2F;problems&#x2F;maximum-product-of-word-lengths">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2023-07-06T12:35:20.000Z">
-<meta property="article:modified_time" content="2023-07-06T12:35:20.000Z">
+<meta property="article:published_time" content="2021-11-16T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-11-16T16:00:00.000Z">
 <meta property="article:author" content="PureWhiteVK">
+<meta property="article:tag" content="算法">
 <meta name="twitter:card" content="summary">
 
 
@@ -35,10 +38,10 @@
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://purewhitevk.github.io/posts/d235/","path":"posts/d235/","title":"CMake项目结构模版"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://purewhitevk.github.io/posts/d235/","path":"posts/d235/","title":"318. 最大单词长度乘积"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>CMake项目结构模版 | PureWhiteVK's Blog</title>
+<title>318. 最大单词长度乘积 | PureWhiteVK's Blog</title>
   
 
 
@@ -124,7 +127,7 @@
   
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-overview-active">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           文章目录
@@ -137,6 +140,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#318-%E6%9C%80%E5%A4%A7%E5%8D%95%E8%AF%8D%E9%95%BF%E5%BA%A6%E4%B9%98%E7%A7%AF"><span class="nav-number">1.</span> <span class="nav-text">318. 最大单词长度乘积</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%8D%E8%BF%90%E7%AE%97"><span class="nav-number">1.1.</span> <span class="nav-text">位运算</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -213,12 +217,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="CMake项目结构模版 | PureWhiteVK's Blog">
+      <meta itemprop="name" content="318. 最大单词长度乘积 | PureWhiteVK's Blog">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          CMake项目结构模版
+          318. 最大单词长度乘积
         </h1>
 
         <div class="post-meta-container">
@@ -229,7 +233,16 @@
       </span>
       <span class="post-meta-item-text">发表于</span>
 
-      <time title="创建时间：2023/07/06 20:35:20" itemprop="dateCreated datePublished" datetime="2023-07-06T20:35:20+08:00">2023/07/06</time>
+      <time title="创建时间：2021/11/17 00:00:00" itemprop="dateCreated datePublished" datetime="2021-11-17T00:00:00+08:00">2021/11/17</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/LeetCode%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/" itemprop="url" rel="index"><span itemprop="name">LeetCode刷题记录</span></a>
+        </span>
     </span>
 
   
@@ -239,7 +252,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>1</span>
+      <span>333</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -257,7 +270,21 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <span id="more"></span>
+        <h1 id="318-最大单词长度乘积">318. 最大单词长度乘积</h1>
+<p>给定一个字符串数组 words，找到 length(word[i]) * length(word[j])
+的最大值，并且这两个单词不含有公共字母。你可以认为每个单词只包含小写字母。如果不存在这样的两个单词，返回
+0。</p>
+<blockquote>
+<p>链接：<a
+target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/maximum-product-of-word-lengths">https://leetcode-cn.com/problems/maximum-product-of-word-lengths</a></p>
+</blockquote>
+<span id="more"></span>
+
+<h2 id="位运算">位运算</h2>
+<p>看到判断两个只包含26个字母的字符串，下意识想到使用位运算存储每一个字符的使用情况，然后使用与运算，就可以在o(1)时间内判断两个单词是否存在公共字母，之后遍历一遍即可</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">maxProduct</span><span class="params">(String[] words)</span> &#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">l</span> <span class="operator">=</span> words.length;</span><br><span class="line">        <span class="type">int</span>[] bitmaps = <span class="keyword">new</span> <span class="title class_">int</span>[l];</span><br><span class="line">        <span class="type">int</span> <span class="variable">res</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;l;++i)&#123;</span><br><span class="line">            bitmaps[i] = getBitmap(words[i]);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;l;++i)&#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="type">int</span> j=i+<span class="number">1</span>;j&lt;l;++j)&#123;</span><br><span class="line">                <span class="comment">// 无论如何都需要进行两两比较吧</span></span><br><span class="line">                <span class="keyword">if</span>((bitmaps[i] &amp; bitmaps[j]) == <span class="number">0</span>)&#123;</span><br><span class="line">                    <span class="comment">// 不是重复单词</span></span><br><span class="line">                    res = Math.max(res,words[i].length()*words[j].length());</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> <span class="title function_">getBitmap</span><span class="params">(String word)</span>&#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">res</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">char</span> ch:word.toCharArray())&#123;</span><br><span class="line">            res |= (<span class="number">1</span>&lt;&lt;(ch-<span class="string">&#x27;a&#x27;</span>));</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>一个稍微优化一点的地方在于：对于掩码相同的字符串，我们只需要保存其最大长度即可，这样可以稍微减少一点比较次数，使用Map存储掩码和对应长度即可</p>
 
     </div>
 
@@ -275,7 +302,7 @@
   </li>
   <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="https://purewhitevk.github.io/posts/d235/" title="CMake项目结构模版">https://purewhitevk.github.io/posts/d235/</a>
+      <a href="https://purewhitevk.github.io/posts/d235/" title="318. 最大单词长度乘积">https://purewhitevk.github.io/posts/d235/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/dead.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -283,18 +310,21 @@
 </ul>
 </div>
 
+          <div class="post-tags">
+              <a href="/tags/%E7%AE%97%E6%B3%95/" rel="tag"># 算法</a>
+          </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/posts/4a2b/" rel="prev" title="Dockerfile常见环境使用">
-                  <i class="fa fa-chevron-left"></i> Dockerfile常见环境使用
+                <a href="/posts/c664/" rel="prev" title="677. 键值映射">
+                  <i class="fa fa-chevron-left"></i> 677. 键值映射
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/posts/495a/" rel="next" title="剑指 Offer 32. 二叉搜索树的后序遍历序列">
-                  剑指 Offer 32. 二叉搜索树的后序遍历序列 <i class="fa fa-chevron-right"></i>
+                <a href="/posts/f3f9/" rel="next" title="397. 整数替换">
+                  397. 整数替换 <i class="fa fa-chevron-right"></i>
                 </a>
             </div>
           </div>
@@ -381,7 +411,7 @@
 
   
 
-  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
 <script src="/js/third-party/math/mathjax.js"></script>
 
 

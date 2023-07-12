@@ -197,7 +197,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://purewhitevk.github.io/posts/80b6/">
+    <link itemprop="mainEntityOfPage" href="https://purewhitevk.github.io/posts/63b1/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/Touma.Kazusa.256x256.png">
@@ -215,7 +215,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/posts/80b6/" class="post-title-link" itemprop="url">nohup命令使用</a>
+          <a href="/posts/63b1/" class="post-title-link" itemprop="url">1877. 数组中最大数对和的最小值</a>
         </h2>
 
         <div class="post-meta-container">
@@ -226,1033 +226,7 @@
       </span>
       <span class="post-meta-item-text">发表于</span>
 
-      <time title="创建时间：2023/03/01 23:09:12" itemprop="dateCreated datePublished" datetime="2023-03-01T23:09:12+08:00">2023/03/01</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Linux%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">Linux学习</span></a>
-        </span>
-    </span>
-
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>3k</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>11 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="nohup-命令使用">nohup 命令使用</h1>
-<p>最近需要在服务器上跑模型，需要长时间运行，但是服务器是通过 ssh
-连接的，如果我们中途断开连接，正在跑的代码也会自动关闭。实在是有点整蛊，要想
-ssh 断开连接后代码还可以继续执行，需要使用 <code>nohup</code> 命令。</p>
-<p>使用 <code>nohup --help</code>，我们可以得到帮助信息</p>
-<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">(base) ➜  ~ nohup --help</span><br><span class="line">Usage: nohup COMMAND [ARG]...</span><br><span class="line">  or:  nohup OPTION</span><br><span class="line">Run COMMAND, ignoring hangup signals.</span><br><span class="line"></span><br><span class="line">      --help     display this help and exit</span><br><span class="line">      --version  output version information and exit</span><br><span class="line"></span><br><span class="line">If standard input is a terminal, redirect it from an unreadable file.</span><br><span class="line">If standard output is a terminal, append output to &#x27;nohup.out&#x27; if possible,</span><br><span class="line">&#x27;$HOME/nohup.out&#x27; otherwise.</span><br><span class="line">If standard error is a terminal, redirect it to standard output.</span><br><span class="line">To save output to FILE, use &#x27;nohup COMMAND &gt; FILE&#x27;.</span><br><span class="line"></span><br><span class="line">NOTE: your shell may have its own version of nohup, which usually supersedes</span><br><span class="line">the version described here.  Please refer to your shell&#x27;s documentation</span><br><span class="line">for details about the options it supports.</span><br><span class="line"></span><br><span class="line">GNU coreutils online help: &lt;https://www.gnu.org/software/coreutils/&gt;</span><br><span class="line">Report nohup translation bugs to &lt;https://translationproject.org/team/&gt;</span><br><span class="line">Full documentation at: &lt;https://www.gnu.org/software/coreutils/nohup&gt;</span><br><span class="line">or available locally via: info &#x27;(coreutils) nohup invocation&#x27;</span><br></pre></td></tr></table></figure>
-
-<p>其中第三行解释了 nohup 命令的作用</p>
-<blockquote>
-<p><em>Run COMMAND, ignoring hangup signals.</em></p>
-</blockquote>
-<p>从描述中我们可以看到，其作用其实很简单，就是忽略 <code>hup</code>
-信号。那么现在问题来了，<code>hup</code> 信号是什么？有什么作用？</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/posts/80b6/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://purewhitevk.github.io/posts/f9ab/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/Touma.Kazusa.256x256.png">
-      <meta itemprop="name" content="PureWhiteVK">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="PureWhiteVK's Blog">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | PureWhiteVK's Blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/posts/f9ab/" class="post-title-link" itemprop="url">zerotier实现内网穿透</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2023/02/25 14:34:03" itemprop="dateCreated datePublished" datetime="2023-02-25T14:34:03+08:00">2023/02/25</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">技术笔记</span></a>
-        </span>
-    </span>
-
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>2.2k</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>8 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="zerotier-实现内网穿透">zerotier 实现内网穿透</h1>
-<p>zerotier
-可以将不同局域网下的主机连接到同一个虚拟局域网内（即内网穿透），使用之前需要注册一个
-zerotier账号，所有对虚拟网络的操作（设备管理、ip设置等）都需要在 web
-端进行。官方网址：<a
-target="_blank" rel="noopener" href="https://www.zerotier.com/">https://www.zerotier.com/</a></p>
-<h2 id="注册-zerotier-账号">注册 Zerotier 账号</h2>
-<blockquote>
-<p>注：zerotier 服务器在国外，访问的时候可能需要挂梯子。</p>
-</blockquote>
-<p>进入<a target="_blank" rel="noopener" href="https://www.zerotier.com/">官网</a></p>
-<p><img data-src="/posts/f9ab/zerotier-website.jpg" style="zoom:50%;" /></p>
-<p>点击右上角的 Sign Up 按钮就可以进入注册页面</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/posts/f9ab/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://purewhitevk.github.io/posts/30a2/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/Touma.Kazusa.256x256.png">
-      <meta itemprop="name" content="PureWhiteVK">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="PureWhiteVK's Blog">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | PureWhiteVK's Blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/posts/30a2/" class="post-title-link" itemprop="url">命令行切换MSVC版本</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2023/02/20 22:10:49" itemprop="dateCreated datePublished" datetime="2023-02-20T22:10:49+08:00">2023/02/20</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">技术笔记</span></a>
-        </span>
-    </span>
-
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>761</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>3 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="命令行切换-msvc-版本">命令行切换 MSVC 版本</h1>
-<p>在 WIndows 下跑 Python 深度学习代码时，需要编译 C++ 库（点名
-Pytorch3d），但是使用最新版本的 MSVC 进行编译的时候会报错，去 Github 看
-Issue 时有提到降级可能有效，我们可以通过添加组件的方式直接下载指定版本的
-MSVC
-编译器。然后手动修改进行切换。为了怕后面遇到类似问题时忘记怎么搞，还是简单记录一下吧，具体操作如下：</p>
-<ol type="1">
-<li><p>首先打开 Visual Studio Installer，点击 <code>修改</code> 按钮</p>
-<p><img data-src="/posts/30a2/image-20230220223924979.png" /></p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/posts/30a2/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://purewhitevk.github.io/posts/764b/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/Touma.Kazusa.256x256.png">
-      <meta itemprop="name" content="PureWhiteVK">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="PureWhiteVK's Blog">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | PureWhiteVK's Blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/posts/764b/" class="post-title-link" itemprop="url">C++ 易错点整理(一)</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2023/02/09 19:53:46" itemprop="dateCreated datePublished" datetime="2023-02-09T19:53:46+08:00">2023/02/09</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/C-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">C++学习笔记</span></a>
-        </span>
-    </span>
-
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>4.8k</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>17 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="c-易错点整理一">C++ 易错点整理（一）</h1>
-<p>最近刷牛客的 C++ 语言专项练习（选择题），本来以为 C++
-掌握的还不错吧，一做题就全露馅了，细节太多了（ C++ 本身的
-<strong>未定义行为 undefined behavior</strong> 以及
-C++这么多年来的更新带来的包袱太多了）</p>
-<p>基本上所有的问题都可以在 <a
-target="_blank" rel="noopener" href="https://en.cppreference.com/w/">cppreference.com</a>
-上面找到答案，还有样例，比较权威，然后实现相关的可以使用 <a
-target="_blank" rel="noopener" href="https://godbolt.org/">Compiler Explorer (godbolt.org)</a>
-查看编译细节。</p>
-<h2 id="c-语法细节">C++ 语法细节</h2>
-<h3 id="自增自减运算符的重载">自增/自减运算符的重载</h3>
-<p><em><strong>题1</strong></em>：如果定义了一个类myclass,
-则为myclass类对象以成员函数形式重载 <strong>后 ++ 运算符</strong>
-的声明应该是：</p>
-<p>A. <code>myclass operator++()</code></p>
-<p>B. <code>myclass operator++(int)</code></p>
-<p>C. <code>myclass &amp;operator++()</code></p>
-<p>D. <code>myclass &amp;operator(int)</code></p>
-<p><em><strong>答案</strong></em>：B</p>
-<p><em><strong>解析</strong></em>：这题纯纯考察自增/自减的重载，没什么难点，单纯是不记得这个写法了</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/posts/764b/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://purewhitevk.github.io/posts/55c5/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/Touma.Kazusa.256x256.png">
-      <meta itemprop="name" content="PureWhiteVK">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="PureWhiteVK's Blog">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | PureWhiteVK's Blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/posts/55c5/" class="post-title-link" itemprop="url">虚函数执行原理理解</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2023/01/31 22:25:30" itemprop="dateCreated datePublished" datetime="2023-01-31T22:25:30+08:00">2023/01/31</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/C-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">C++学习笔记</span></a>
-        </span>
-    </span>
-
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>3.7k</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>14 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="虚函数执行原理理解">虚函数执行原理理解</h1>
-<p>刷牛客时经常能刷到面向对象相关的题目，多态作为面向对象中的一个重要特性（封装，继承和多态），在八股中经常考察其实现原理。为了方便理解，我们给出一个简单的多态样例</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">A</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="function"><span class="keyword">virtual</span> <span class="type">int</span> <span class="title">func1</span><span class="params">(<span class="type">int</span> v)</span> </span>&#123; <span class="keyword">return</span> value + v; &#125;</span><br><span class="line">  <span class="function"><span class="keyword">virtual</span> <span class="type">int</span> <span class="title">func2</span><span class="params">(<span class="type">int</span> v)</span> </span>&#123; <span class="keyword">return</span> value - v; &#125;</span><br><span class="line">  <span class="function"><span class="type">int</span> <span class="title">func3</span><span class="params">(<span class="type">int</span> v)</span> </span>&#123; <span class="keyword">return</span> value * v; &#125;</span><br><span class="line">  <span class="function"><span class="type">static</span> <span class="type">int</span> <span class="title">func4</span><span class="params">(<span class="type">int</span> v)</span> </span>&#123; <span class="keyword">return</span> v * <span class="number">2</span>; &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="type">int</span> value&#123;<span class="number">0xfeff</span>&#125;;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">B</span> : <span class="keyword">public</span> A &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="function"><span class="type">int</span> <span class="title">func1</span><span class="params">(<span class="type">int</span> v)</span> <span class="keyword">override</span> </span>&#123; <span class="keyword">return</span> value + <span class="number">2</span> * v; &#125;</span><br><span class="line">  <span class="function"><span class="type">int</span> <span class="title">func3</span><span class="params">(<span class="type">int</span> v)</span> </span>&#123; <span class="keyword">return</span> value * <span class="number">2</span> * v; &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="type">int</span> value&#123;<span class="number">0xfffd</span>&#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p>接下来就是经典调用函数写输出</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span> **argv)</span> </span>&#123;</span><br><span class="line">  B b;</span><br><span class="line">  b.value = <span class="number">2</span>;</span><br><span class="line">  A *a = &amp;b;</span><br><span class="line">  a-&gt;value = <span class="number">4</span>;</span><br><span class="line">  <span class="type">int</span> v = <span class="number">20</span>;</span><br><span class="line">  fmt::<span class="built_in">print</span>(<span class="string">&quot;b.A::value=&#123;&#125;\nb.B::value=&#123;&#125;\n&quot;</span>, b.A::value, b.B::value);</span><br><span class="line">  fmt::<span class="built_in">print</span>(<span class="string">&quot;a-&gt;func1(&#123;&#125;) = &#123;&#125;\n&quot;</span>, v, a-&gt;<span class="built_in">func1</span>(v));</span><br><span class="line">  fmt::<span class="built_in">print</span>(<span class="string">&quot;a-&gt;func2(&#123;&#125;) = &#123;&#125;\n&quot;</span>, v, a-&gt;<span class="built_in">func2</span>(v));</span><br><span class="line">  fmt::<span class="built_in">print</span>(<span class="string">&quot;a-&gt;func3(&#123;&#125;) = &#123;&#125;\n&quot;</span>, v, a-&gt;<span class="built_in">func3</span>(v));</span><br><span class="line">  fmt::<span class="built_in">print</span>(<span class="string">&quot;a-&gt;func4(&#123;&#125;) = &#123;&#125;\n&quot;</span>, v, a-&gt;<span class="built_in">func4</span>(v));</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/posts/55c5/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://purewhitevk.github.io/posts/c4ef/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/Touma.Kazusa.256x256.png">
-      <meta itemprop="name" content="PureWhiteVK">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="PureWhiteVK's Blog">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | PureWhiteVK's Blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/posts/c4ef/" class="post-title-link" itemprop="url">字符串编码</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2023/01/08 16:16:20" itemprop="dateCreated datePublished" datetime="2023-01-08T16:16:20+08:00">2023/01/08</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/C-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">C++学习笔记</span></a>
-        </span>
-    </span>
-
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>6.4k</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>23 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="字符串编码">字符串编码</h1>
-<p><em><strong>Encodings should be known, not divined.</strong></em></p>
-<h2 id="问题描述">问题描述</h2>
-<p>在前一篇我们使用 pandoc 的 lua filter 解决了 markdown 转 html
-中链接问题，但是在调试代码的过程中发现了一个问题，在不同的 shell 中执行
-lua
-脚本时，输出中文有时会乱码，有时又不会乱码，搞得有点烦，本篇就针对字符串问题做一个探究，搞清楚乱码的源头以及解决方案。</p>
-<p>首先看一个简单的示例，下面是一段简单的 c 语言 hello world</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">int</span> argc,<span class="type">char</span>** argv)</span> &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;你好，世界！😉&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>文件保存格式为：<code>UTF-8</code>（注意看 vscode 的右下角，写着
-UTF-8）</p>
-<p><img data-src="/posts/c4ef/image-20230117150536045.png"
-style="zoom:50%;" /></p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/posts/c4ef/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://purewhitevk.github.io/posts/9a20/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/Touma.Kazusa.256x256.png">
-      <meta itemprop="name" content="PureWhiteVK">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="PureWhiteVK's Blog">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | PureWhiteVK's Blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/posts/9a20/" class="post-title-link" itemprop="url">hexo自定义插件</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2023/01/05 12:20:55" itemprop="dateCreated datePublished" datetime="2023-01-05T12:20:55+08:00">2023/01/05</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Hexo%E4%BD%BF%E7%94%A8%E8%AE%B0%E5%BD%95/" itemprop="url" rel="index"><span itemprop="name">Hexo使用记录</span></a>
-        </span>
-    </span>
-
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>5.3k</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>19 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="hexo-plugin">Hexo Plugin</h1>
-<p>参考官方<a
-target="_blank" rel="noopener" href="https://hexo.io/zh-cn/docs/plugins">文档</a>，我们有两种创建插件方式</p>
-<ol type="1">
-<li>以脚本（Scripts）形式（单个文件）</li>
-<li>以 npm package 形式创建（支持多文件）</li>
-</ol>
-<p>对于一般的插件而言，如果代码并不复杂且依赖较少，可以直接写成脚本形式，放在
-hexo 根目录下的 <code>scripts</code>
-文件夹即可（不存在直接创建一个即可），在介绍插件具体写法之前，先看一个简单的例子：</p>
-<p>文件：<code>scripts/test.js</code></p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">hexo.<span class="property">extend</span>.<span class="property">filter</span>.<span class="title function_">register</span>(<span class="string">&#x27;before_post_render&#x27;</span>, <span class="function">(<span class="params">data</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> &#123;log&#125; = hexo;</span><br><span class="line">  log.<span class="title function_">debug</span>(<span class="string">&quot;hello from test.js!!!&quot;</span>);</span><br><span class="line">  <span class="keyword">return</span> data;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-<p>然后执行下列命令查看效果</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo clean &amp;&amp; hexo generate --debug</span><br></pre></td></tr></table></figure>
-
-<p>这一条命令包含两个子命令，<code>hexo clean</code>
-清除之前的生成文件，之后的 <code>hexo generate</code>
-用来生成静态页面文件。</p>
-<p>（<code>--debug</code> 标志会使 hexo 在终端显示调试信息，在所有的
-hexo-cli 命令中都可以使用）</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/posts/9a20/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://purewhitevk.github.io/posts/caff/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/Touma.Kazusa.256x256.png">
-      <meta itemprop="name" content="PureWhiteVK">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="PureWhiteVK's Blog">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | PureWhiteVK's Blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/posts/caff/" class="post-title-link" itemprop="url">LaTex公式学习笔记</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2023/01/03 14:09:39" itemprop="dateCreated datePublished" datetime="2023-01-03T14:09:39+08:00">2023/01/03</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Hexo%E4%BD%BF%E7%94%A8%E8%AE%B0%E5%BD%95/" itemprop="url" rel="index"><span itemprop="name">Hexo使用记录</span></a>
-        </span>
-    </span>
-
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>4.3k</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>16 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>之前我们已经配置好了 hexo 对 LaTex 公式的支持（在 markdown 的 Front
-Matter 中添加 <code>mathjax: true</code> 开启 LaTex
-公式渲染支持），支持两种形式的公式输入</p>
-<ul>
-<li><p>内联公式（inline），通过 <code>$...$</code>
-进行包裹（必须在同一行）</p>
-<p>例：markdown 代码 <code>$\phi = 30$</code> 对应内联公式渲染结果 <span
-class="math inline">\(\phi = 30\)</span></p>
-<p>在 <code>$</code>
-和公式之间不能存在空格，也就是说，对于<code>$ \phi = 30 $</code>
-并不能得到正确的渲染结果</p></li>
-<li><p>块公式（block），通过 <code>$$...$$</code>
-进行包裹（两个<code>$$</code>必须在不同行）</p>
-<p>例：markdown 代码</p>
-<figure class="highlight latex"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">$</span><span class="built_in">$</span></span><br><span class="line"><span class="keyword">\int</span> <span class="built_in">_</span>0 <span class="built_in">^</span><span class="keyword">\pi</span> <span class="keyword">\sin</span>(x) = 2</span><br><span class="line"><span class="built_in">$</span><span class="built_in">$</span></span><br></pre></td></tr></table></figure>
-
-<p>对应块渲染结果 <span class="math display">\[
-\int _0 ^ \pi \sin x = 2
-\]</span></p></li>
-</ul>
-<p>现在我们可以在 markdown
-文档中添加并渲染公式了，那么下一步就是如何正确书写公式，以及一些常用公式符号。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/posts/caff/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://purewhitevk.github.io/posts/96e0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/Touma.Kazusa.256x256.png">
-      <meta itemprop="name" content="PureWhiteVK">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="PureWhiteVK's Blog">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | PureWhiteVK's Blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/posts/96e0/" class="post-title-link" itemprop="url">个人博客搭建记录</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2023/01/02 14:42:04" itemprop="dateCreated datePublished" datetime="2023-01-02T14:42:04+08:00">2023/01/02</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Hexo%E4%BD%BF%E7%94%A8%E8%AE%B0%E5%BD%95/" itemprop="url" rel="index"><span itemprop="name">Hexo使用记录</span></a>
-        </span>
-    </span>
-
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>3.2k</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>12 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>之前都是在知乎上写博客，这样看的人也多，方便讨论，但是知乎的 markdown
-编辑器不是很好用，本地写完后还需要一张一张上传图片，太麻烦了，就自己搭一个博客，又不想进行域名备案啥的，服务器也要出钱
-:( 。最后搜到 Github 有提供免费的静态页面部署功能，这样写完 markdown
-笔记可以直接上传到
-Github，还可以通过网页访问，nice！(白嫖的感觉真好)</p>
-<h1 id="github-pages">Github Pages</h1>
-<h2 id="创建主页仓库">创建主页仓库</h2>
-<p>通过 <a target="_blank" rel="noopener" href="https://pages.github.com/">Github Pages</a>，我们可以将
-markdown
-撰写的笔记转换成静态网页，并进行部署。其创建流程也十分简单，只需要创建一个名为
-<code>&lt;username&gt;.github.io</code> 的仓库，如下图所示</p>
-<p><img data-src="/posts/96e0/image-20230102151015131.png"
-style="zoom:50%;" /></p>
-<p>此处我们选择的是 Private
-仓库，只有我们能进行修改，但是主页是公开访问的，这样可以保证笔记源文件安全
-:) 。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/posts/96e0/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://purewhitevk.github.io/posts/c7a8/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/Touma.Kazusa.256x256.png">
-      <meta itemprop="name" content="PureWhiteVK">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="PureWhiteVK's Blog">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | PureWhiteVK's Blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/posts/c7a8/" class="post-title-link" itemprop="url">剑指 Offer 03. 数组中重复的数字</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2021/07/10 10:58:04" itemprop="dateCreated datePublished" datetime="2021-07-10T10:58:04+08:00">2021/07/10</time>
+      <time title="创建时间：2021/07/25 00:00:00" itemprop="dateCreated datePublished" datetime="2021-07-25T00:00:00+08:00">2021/07/25</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1271,7 +245,234 @@ style="zoom:50%;" /></p>
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>426</span>
+      <span>953</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>3 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="1877-数组中最大数对和的最小值">1877.
+数组中最大数对和的最小值</h1>
+<p>一个数对 (a,b) 的 <strong>数对和</strong> 等于 a + b
+。<strong>最大数对和</strong> 是一个数对数组中最大的
+<strong>数对和</strong> 。</p>
+<p>比方说，如果我们有数对 (1,5) ，(2,3) 和
+(4,4)，<strong>最大数对和</strong> 为 max(1+5, 2+3, 4+4) = max(6, 5, 8)
+= 8 。 给你一个长度为 <strong>偶数</strong> n 的数组 nums ，请你将 nums
+中的元素分成 n / 2 个数对，使得：</p>
+<p>nums 中每个元素 <strong>恰好</strong> 在 一个 数对中，且
+<strong>最大数对和</strong> 的值 <strong>最小</strong> 。
+请你在最优数对划分的方案下，返回最小的 <strong>最大数对和</strong>
+。</p>
+<blockquote>
+<p>链接：<a
+target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/minimize-maximum-pair-sum-in-array">https://leetcode-cn.com/problems/minimize-maximum-pair-sum-in-array</a></p>
+</blockquote>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/posts/63b1/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://purewhitevk.github.io/posts/2828/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/Touma.Kazusa.256x256.png">
+      <meta itemprop="name" content="PureWhiteVK">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PureWhiteVK's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | PureWhiteVK's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/posts/2828/" class="post-title-link" itemprop="url">1893. 检查是否区域内所有整数都被覆盖</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021/07/23 00:00:00" itemprop="dateCreated datePublished" datetime="2021-07-23T00:00:00+08:00">2021/07/23</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/LeetCode%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/" itemprop="url" rel="index"><span itemprop="name">LeetCode刷题记录</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>919</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>3 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="1893-检查是否区域内所有整数都被覆盖">1893.
+检查是否区域内所有整数都被覆盖</h1>
+<p>给你一个二维整数数组 ranges 和两个整数 left 和 right 。每个 ranges[i]
+= [starti, endi] 表示一个从 starti 到 endi 的 闭区间 。</p>
+<p>如果闭区间 [left, right] 内每个整数都被 ranges 中 至少一个
+区间覆盖，那么请你返回 true ，否则返回 false 。</p>
+<p>已知区间 ranges[i] = [starti, endi] ，如果整数 x 满足 starti &lt;= x
+&lt;= endi ，那么我们称整数x 被覆盖了。</p>
+<blockquote>
+<p>链接：<a
+target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/check-if-all-the-integers-in-a-range-are-covered">https://leetcode-cn.com/problems/check-if-all-the-integers-in-a-range-are-covered</a></p>
+</blockquote>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/posts/2828/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://purewhitevk.github.io/posts/6fad/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/Touma.Kazusa.256x256.png">
+      <meta itemprop="name" content="PureWhiteVK">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PureWhiteVK's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | PureWhiteVK's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/posts/6fad/" class="post-title-link" itemprop="url">138. 复制带随机指针的链表</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021/07/22 00:00:00" itemprop="dateCreated datePublished" datetime="2021-07-22T00:00:00+08:00">2021/07/22</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/LeetCode%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/" itemprop="url" rel="index"><span itemprop="name">LeetCode刷题记录</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>654</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -1289,18 +490,802 @@ style="zoom:50%;" /></p>
     
     
     <div class="post-body" itemprop="articleBody">
-          <h1 id="剑指-offer-03-数组中重复的数字">剑指 Offer 03.
-数组中重复的数字</h1>
-<p>找出数组中重复的数字。</p>
-<p><strong>在一个长度为 n 的数组 nums 里的所有数字都在 0～n-1
-的范围内</strong>。数组中某些数字是重复的，但不知道有几个数字重复了，也不知道每个数字重复了几次。请找出数组中任意一个重复的数字。</p>
+          <h1 id="138-复制带随机指针的链表">138. 复制带随机指针的链表</h1>
+<p>给你一个长度为 n 的链表，每个节点包含一个额外增加的随机指针 random
+，该指针可以指向链表中的任何节点或空节点。</p>
+<p>构造这个链表的 <strong>深拷贝</strong>。 深拷贝应该正好由 n 个
+<strong>全新</strong>
+节点组成，其中每个新节点的值都设为其对应的原节点的值。新节点的 next
+指针和 random
+指针也都应指向复制链表中的新节点，并使原链表和复制链表中的这些指针能够表示相同的链表状态。<strong>复制链表中的指针都不应指向原链表中的节点</strong>
+。</p>
+<p>例如，如果原链表中有 X 和 Y 两个节点，其中 X.random --&gt; Y
+。那么在复制链表中对应的两个节点 x 和 y ，同样有 x.random --&gt; y
+。</p>
+<p>返回复制链表的头节点。</p>
+<p>用一个由 n 个节点组成的链表来表示输入/输出中的链表。每个节点用一个
+[val, random_index] 表示：</p>
+<p>val：一个表示 Node.val 的整数。
+random_index：随机指针指向的节点索引（范围从 0 到
+n-1）；如果不指向任何节点，则为 null 。 你的代码 只 接受原链表的头节点
+head 作为传入参数。</p>
 <blockquote>
 <p>链接：<a
-target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/shu-zu-zhong-zhong-fu-de-shu-zi-lcof">https://leetcode-cn.com/problems/shu-zu-zhong-zhong-fu-de-shu-zi-lcof</a></p>
+target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/copy-list-with-random-pointer">https://leetcode-cn.com/problems/copy-list-with-random-pointer</a></p>
 </blockquote>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/posts/c7a8/#more" rel="contents">
+              <a class="btn" href="/posts/6fad/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://purewhitevk.github.io/posts/f7a3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/Touma.Kazusa.256x256.png">
+      <meta itemprop="name" content="PureWhiteVK">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PureWhiteVK's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | PureWhiteVK's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/posts/f7a3/" class="post-title-link" itemprop="url">剑指 Offer 52. 两个链表的第一个公共节点</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021/07/21 00:00:00" itemprop="dateCreated datePublished" datetime="2021-07-21T00:00:00+08:00">2021/07/21</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/LeetCode%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/" itemprop="url" rel="index"><span itemprop="name">LeetCode刷题记录</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>590</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>2 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="剑指-offer-52-两个链表的第一个公共节点">剑指 Offer 52.
+两个链表的第一个公共节点</h1>
+<p>输入两个链表，找出它们的第一个公共节点</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/posts/f7a3/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://purewhitevk.github.io/posts/fac5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/Touma.Kazusa.256x256.png">
+      <meta itemprop="name" content="PureWhiteVK">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PureWhiteVK's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | PureWhiteVK's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/posts/fac5/" class="post-title-link" itemprop="url">1838. 最高频元素的频数</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021/07/19 00:00:00" itemprop="dateCreated datePublished" datetime="2021-07-19T00:00:00+08:00">2021/07/19</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/LeetCode%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/" itemprop="url" rel="index"><span itemprop="name">LeetCode刷题记录</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>646</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>2 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="1838-最高频元素的频数">1838. 最高频元素的频数</h1>
+<p>元素的 <strong>频数</strong> 是该元素在一个数组中出现的次数。</p>
+<p>给你一个整数数组 nums 和一个整数 k 。在一步操作中，你可以选择 nums
+的一个下标，并将该下标对应元素的值增加 1 。</p>
+<p>执行最多 k 次操作后，返回数组中最高频元素的
+<strong>最大可能频数</strong> 。</p>
+<blockquote>
+<p>链接：<a
+target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/frequency-of-the-most-frequent-element">https://leetcode-cn.com/problems/frequency-of-the-most-frequent-element</a></p>
+</blockquote>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/posts/fac5/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://purewhitevk.github.io/posts/1aa2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/Touma.Kazusa.256x256.png">
+      <meta itemprop="name" content="PureWhiteVK">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PureWhiteVK's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | PureWhiteVK's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/posts/1aa2/" class="post-title-link" itemprop="url">274. H指数 & 275. H指数 II</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021/07/17 00:00:00" itemprop="dateCreated datePublished" datetime="2021-07-17T00:00:00+08:00">2021/07/17</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/LeetCode%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/" itemprop="url" rel="index"><span itemprop="name">LeetCode刷题记录</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>1.4k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>5 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="274-h指数">274. H指数</h1>
+<p>给定一位研究者论文被引用次数的数组（被引用次数是非负整数）。编写一个方法，计算出研究者的
+h 指数。</p>
+<p>h 指数的定义：h 代表“高引用次数”（high citations），一名科研人员的 h
+指数是指他（她）的 （N 篇论文中）总共有 h 篇论文分别被引用了至少 h
+次。且其余的 N - h 篇论文每篇被引用次数 不超过 h 次。</p>
+<p>例如：某人的 h 指数是 20，这表示他已发表的论文中，每篇被引用了至少 20
+次的论文总共有 20 篇。</p>
+<blockquote>
+<p>链接：<a
+target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/h-index">https://leetcode-cn.com/problems/h-index</a></p>
+</blockquote>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/posts/1aa2/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://purewhitevk.github.io/posts/2fdd/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/Touma.Kazusa.256x256.png">
+      <meta itemprop="name" content="PureWhiteVK">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PureWhiteVK's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | PureWhiteVK's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/posts/2fdd/" class="post-title-link" itemprop="url">剑指 Offer 38. 字符串的排列</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021/07/17 00:00:00" itemprop="dateCreated datePublished" datetime="2021-07-17T00:00:00+08:00">2021/07/17</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/LeetCode%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/" itemprop="url" rel="index"><span itemprop="name">LeetCode刷题记录</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>619</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>2 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="剑指-offer-38-字符串的排列">剑指 Offer 38. 字符串的排列</h1>
+<p>题意：</p>
+<p>输入一个字符串，打印出该字符串中字符的所有排列。</p>
+<p>你可以以任意顺序返回这个字符串数组，但里面不能有重复元素。</p>
+<p>思路：</p>
+<p>这题是个很常规的题目，面试时也会经常问道，对于排列组合类的题目，首先想到的思路就是DFS，通过回溯找到所有的解。这一题除了输出所有的排列外，还给出了一个新的要求，不能包含重复元素</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/posts/2fdd/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://purewhitevk.github.io/posts/a314/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/Touma.Kazusa.256x256.png">
+      <meta itemprop="name" content="PureWhiteVK">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PureWhiteVK's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | PureWhiteVK's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/posts/a314/" class="post-title-link" itemprop="url">剑指 Offer 42. 连续子数组的最大和</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021/07/17 00:00:00" itemprop="dateCreated datePublished" datetime="2021-07-17T00:00:00+08:00">2021/07/17</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/LeetCode%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/" itemprop="url" rel="index"><span itemprop="name">LeetCode刷题记录</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>511</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>2 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="剑指-offer-42-连续子数组的最大和">剑指 Offer 42.
+连续子数组的最大和</h1>
+<p>输入一个整型数组，数组中的一个或连续多个整数组成一个子数组。求所有子数组的和的最大值。</p>
+<p>要求时间复杂度为O(n)。</p>
+<blockquote>
+<p>链接：<a
+target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/lian-xu-zi-shu-zu-de-zui-da-he-lcof/">https://leetcode-cn.com/problems/lian-xu-zi-shu-zu-de-zui-da-he-lcof/</a></p>
+</blockquote>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/posts/a314/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://purewhitevk.github.io/posts/f720/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/Touma.Kazusa.256x256.png">
+      <meta itemprop="name" content="PureWhiteVK">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PureWhiteVK's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | PureWhiteVK's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/posts/f720/" class="post-title-link" itemprop="url">218. 天际线问题</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021/07/13 00:00:00" itemprop="dateCreated datePublished" datetime="2021-07-13T00:00:00+08:00">2021/07/13</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/LeetCode%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/" itemprop="url" rel="index"><span itemprop="name">LeetCode刷题记录</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>1.3k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>5 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="218-天际线问题">218. 天际线问题</h1>
+<p>城市的天际线是从远处观看该城市中所有建筑物形成的轮廓的外部轮廓。给你所有建筑物的位置和高度，请返回由这些建筑物形成的
+<strong>天际线</strong> 。</p>
+<p>每个建筑物的几何信息由数组 buildings 表示，其中三元组 buildings[i] =
+[lefti, righti, heighti] 表示：</p>
+<ul>
+<li><p>lefti 是第 i 座建筑物左边缘的 x 坐标。</p></li>
+<li><p>righti 是第 i 座建筑物右边缘的 x 坐标。</p></li>
+<li><p>heighti 是第 i 座建筑物的高度。</p></li>
+</ul>
+<p><strong>天际线</strong> 应该表示为由 “关键点” 组成的列表，格式
+[[x1,y1],[x2,y2],...] ，并按 <strong>x 坐标</strong> 进行
+<strong>排序</strong>
+。<strong>关键点是水平线段的左端点</strong>。列表中最后一个点是最右侧建筑物的终点，y
+坐标始终为 0
+，仅用于标记天际线的终点。此外，任何两个相邻建筑物之间的地面都应被视为天际线轮廓的一部分。</p>
+<p><strong>注意</strong>：输出天际线中不得有连续的相同高度的水平线。例如
+[...[2 3], [4 5], [7 5], [11 5], [12 7]...] 是不正确的答案；三条高度为 5
+的线应该在最终输出中合并为一个：[...[2 3], [4 5], [12 7], ...]</p>
+<blockquote>
+<p>链接：<a
+target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/the-skyline-problem">https://leetcode-cn.com/problems/the-skyline-problem</a></p>
+<p>解题思路参考：<a
+target="_blank" rel="noopener" href="https://briangordon.github.io/2014/08/the-skyline-problem.html">https://briangordon.github.io/2014/08/the-skyline-problem.html</a></p>
+<p>作者为了讲解方便，进行图形化展示，便于理解</p>
+</blockquote>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/posts/f720/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://purewhitevk.github.io/posts/f171/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/Touma.Kazusa.256x256.png">
+      <meta itemprop="name" content="PureWhiteVK">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PureWhiteVK's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | PureWhiteVK's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/posts/f171/" class="post-title-link" itemprop="url">并查集</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021/07/10 00:00:00" itemprop="dateCreated datePublished" datetime="2021-07-10T00:00:00+08:00">2021/07/10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/LeetCode%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/" itemprop="url" rel="index"><span itemprop="name">LeetCode刷题记录</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>792</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>3 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="并查集">并查集</h1>
+<blockquote>
+<p>父指针表示法</p>
+<p>或许实现树的最简单方法就是对每个结点只保存一个指针域，指向其父节点，这种实现方法称为父指针（parent
+pointer）表示法。很明显，这种实现方法并非处于一般性的目的，因为它对诸如找到一个结点的最左子节点或右兄弟节点这样的重要操作是不够的。那么用这种方法来实现树看来没有什么价值。然而，父指针表示法精确地保存了用于解答下面这个有用问题所需要的信息：“给出两个节点，它们是否在同一棵树中？”为了解答这个问题，只需要顺着节点的父指针链一直追溯到相应的根节点。如果两个节点到达同一个根节点，它们一定在同一棵树中。如果找到的根节点不同，那么这两个节点就不在同一棵树中。</p>
+</blockquote>
+<h2 id="并查集基本操作">并查集基本操作</h2>
+<ul>
+<li>合并（UNION）</li>
+<li>查找根节点（FIND）</li>
+<li>判断是否在同一个集合中（differ）</li>
+</ul>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/posts/f171/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
