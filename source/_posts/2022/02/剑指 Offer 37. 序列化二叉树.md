@@ -5,6 +5,7 @@ tags:
   - 算法
 category: LeetCode刷题记录
 abbrlink: bef
+date: 2022-02-12
 ---
 # 剑指 Offer 37. 序列化二叉树
 

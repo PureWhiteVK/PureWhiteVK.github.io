@@ -5,6 +5,7 @@ tags:
   - 算法
 category: LeetCode刷题记录
 abbrlink: 1a91
+date: 2021-07-30
 ---
 # LCP 07. 传递信息
 

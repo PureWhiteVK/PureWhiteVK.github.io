@@ -5,6 +5,7 @@ tags:
   - 算法
 category: LeetCode刷题记录
 abbrlink: 5f77
+date: 2021-08-07
 ---
 # 剑指 Offer 31. 栈的压入、弹出序列
 
