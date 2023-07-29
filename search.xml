@@ -11159,5 +11159,398 @@ shm_Adenialzz的博客-CSDN博客</a></li>
     <url>/posts/d235/</url>
     <content><![CDATA[<span id="more"></span>
 ]]></content>
+      <categories>
+        <category>C++学习笔记</category>
+      </categories>
+      <tags>
+        <tag>C++</tag>
+        <tag>CMake</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>WebRTC实践</title>
+    <url>/posts/ac0d/</url>
+    <content><![CDATA[<h1 id="webrtc实践">WebRTC实践</h1>
+<p><a href="https://webrtc.org/">WebRTC</a></p>
+<p>WebRTC 表示 Web <strong>R</strong>eal-<strong>T</strong>ime
+<strong>C</strong>ommunication，通过建立端到端的P2P连接，实现高效的数据传输</p>
+<p>由于两个客户端并不能直接连通，需要借助一个服务器来完成建立连接的工作，下面展示了一个最简单的WebRTC交互模型，包含两个客户端以及一个服务端</p>
+<ul>
+<li><p>Client1</p></li>
+<li><p>Client2</p></li>
+<li><p>Signalling Server</p>
+<p>establish p2p connection</p>
+<p>hand shaking</p></li>
+</ul>
+<blockquote>
+<p>both clients need to provide an ICE Server configuration. This is
+either a STUN or a TURN-server, and their role is to provide ICE
+candidates to each client which is then transferred to the remote peer.
+This transferring of ICE candidates is commonly called signaling.</p>
+<p>ICE Server stands for <strong>I</strong>nternet
+<strong>C</strong>onnectivity <strong>E</strong>stablishment
+Server（中文翻译就是用于建立互联网连接的服务器）</p>
+<p>Passing SDP objects to remote peers is called signaling and is not
+covered by the WebRTC specification.</p>
+</blockquote>
+<p>名词解释</p>
+<ul>
+<li>WebRTC</li>
+<li>P2P</li>
+<li>ICE</li>
+<li>STUN</li>
+<li>TURN</li>
+<li>SDP</li>
+<li>NAT</li>
+</ul>
+<blockquote>
+<p>Before two peers can communitcate using WebRTC, they need to exchange
+connectivity information. Since the network conditions can vary
+depending on a number of factors, an external service is usually used
+for discovering the possible candidates for connecting to a peer. This
+service is called ICE and is using either a STUN or a TURN server.
+<em><strong>STUN stands for Session Traversal Utilities for NAT, and is
+usually used indirectly in most WebRTC applications.</strong></em></p>
+<p><em><strong>TURN (Traversal Using Relay NAT) is the more advanced
+solution that incorporates the STUN protocols and most commercial WebRTC
+based services use a TURN server for establishing connections between
+peers.</strong></em> The WebRTC API supports both STUN and TURN
+directly, and it is gathered under the more complete term Internet
+Connectivity Establishment. When creating a WebRTC connection, we
+usually provide one or several ICE servers in the configuration for the
+<code>RTCPeerConnection</code> object.</p>
+</blockquote>
+<span id="more"></span>
+
+<p>client1 -&gt; TURN -&gt; client2 (fake p2p, relay)</p>
+<p>client1 -&gt; client2 (real p2p)</p>
+<blockquote>
+<p>But sometimes this would not be sufficient because there are
+possibilities where some users might face connectivity issues because of
+different IP networks where Firewalls and NATs (Network Address
+Translators) could include specific network policies that will not allow
+RTC communications.</p>
+<p>In order to solve this kind of network connection scenario, we need
+to use ICE (Interactive Connectivity Establishment) protocol and it
+defines a systematic way of finding possible communication options
+between a peer and the Video Gateway (WebRTC).</p>
+<p>ICE (INTERACTIVE CONNECTIVITY ESTABLISHMENT) is a protocol used to
+generate media traversal candidates that can be used in WebRTC
+applications, and it can be successfully sent and received through
+Network Address Translation (NAT)s using STUN and TURN.</p>
+</blockquote>
+<h2 id="基本概念">基本概念</h2>
+<h2 id="年轻人的第一个-webrtc-应用">年轻人的第一个 WebRTC 应用</h2>
+<h2 id="其他应用场景">其他应用场景</h2>
+<p>通过 webrtc 可以是两个应用端之间的p2p
+交互（这也是为什么腾讯会议在两个人的时候不限时，而在超过两个人的时候限时了，两个人的时候用的是
+p2p
+连接，腾讯会议的服务器只需要建立p2p连接就行，其他不管，但是多人情况下可能需要服务端进行推流，需要消耗大量服务器资源，因此要收费）</p>
+<p>也可以实现前端后后端的交互（例如深度学习应用的部署）</p>
+]]></content>
+      <categories>
+        <category>技术笔记</category>
+      </categories>
+      <tags>
+        <tag>WebRTC</tag>
+        <tag>Web</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Python 易错点整理</title>
+    <url>/posts/17bc/</url>
+    <content><![CDATA[<h1 id="python-易错点整理">Python 易错点整理</h1>
+<h2 id="魔法方法和内置属性">魔法方法和内置属性</h2>
+<h3 id="容器类型">容器类型</h3>
+<blockquote>
+<p>链接：<a
+href="https://www.nowcoder.com/questionTerminal/c2380f6992814490b7f5b6e446b72ed7">https://www.nowcoder.com/questionTerminal/c2380f6992814490b7f5b6e446b72ed7</a>
+来源：牛客网</p>
+</blockquote>
+<p>根据以下程序，下列选项中，说法正确的是（）</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Foo</span>(): </span><br><span class="line">	<span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self</span>): </span><br><span class="line">        <span class="keyword">pass</span> </span><br><span class="line">	<span class="keyword">def</span> <span class="title function_">__getitem__</span>(<span class="params">self,pos</span>): </span><br><span class="line">		<span class="keyword">return</span> <span class="built_in">range</span>(<span class="number">0</span>,<span class="number">30</span>,<span class="number">10</span>)[pos] </span><br><span class="line">foo = Foo() </span><br></pre></td></tr></table></figure>
+
+<ol type="1">
+<li><code>foo</code> 对象表现得像个序列</li>
+<li>可以使用 <code>len(foo)</code> 来查看对象 <code>foo</code>
+的元素个数</li>
+<li>可以使用 <code>for i in foo:print(i)</code> 来遍历 <code>foo</code>
+的元素</li>
+<li>不能使用 <code>foo[0]</code> 来访问对象 <code>foo</code>
+的第一个元素</li>
+</ol>
+<p>对于第一个选项，<a
+href="https://docs.python.org/3.9/glossary.html#term-sequence">Python文档</a>中定义序列必须实现两个方法，`__getitem__`
+以及 `__len__`，即支持通过整数的索引以及返回序列的长度，而
+<code>Foo</code> 仅实现了整数索引功能，因此不是序列。</p>
+<p>对于第二个选项，<code>len(foo)</code> 实际上会调用
+<code>__len__</code> 方法来获取序列长度，类没实现该方法故不行</p>
+<p>对于第三个选项，<code>for</code> 语句支持两种，一种为通过
+<code>__iter__</code> 进行调用，另一种则为
+<code>__getitem__</code>，因此<strong>正确</strong></p>
+<p>对于第四个选项，由于我们定义了 <code>__getitem__</code>
+方法，我们是可以通过 <code>foo[0]</code> 来访问 <code>foo</code>
+的第一个元素的</p>
+<span id="more"></span>
+
+<h2 id="__slots__"><code>__slots__</code></h2>
+<blockquote>
+<p><a
+href="https://docs.python.org/3.9/reference/datamodel.html?highlight=__slots__#slots">3.
+Data model — Python 3.9.17 documentation #_<em>slots</em></a>_</p>
+</blockquote>
+<p><code>__slots__</code>
+属性用来<strong>显式指定对象所包含的属性</strong>，相比
+<code>__dict__</code> 效率更高，但是使用上有很多细节需要注意</p>
+<p>只有 <code>__slots__</code>
+中指定的属性可以被赋值，其他的会报错，示例如下</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Foo</span>:</span><br><span class="line">    __slots__ = [<span class="string">&#x27;foo&#x27;</span>,<span class="string">&#x27;bar&#x27;</span>]</span><br><span class="line">    </span><br><span class="line">f = Foo()</span><br><span class="line">f.foo = <span class="string">&#x27;foo&#x27;</span>   <span class="comment"># ✓</span></span><br><span class="line">f.bar = <span class="string">&#x27;bar&#x27;</span>   <span class="comment"># ✓</span></span><br><span class="line">f.fooo = <span class="string">&#x27;fooo&#x27;</span> <span class="comment"># ✗</span></span><br></pre></td></tr></table></figure>
+
+<p><img data-src="/posts/null/image-20230729210618254.png"
+style="zoom:50%;" /></p>
+<h2 id="__init__-和-__new__"><code>__init__</code> 和
+<code>__new__</code></h2>
+<blockquote>
+<p><a
+href="https://docs.python.org/3.9/reference/datamodel.html?highlight=__new__#basic-customization">3.
+Data model — Python 3.9.17 documentation #basic-customization</a></p>
+</blockquote>
+<p>在 Python 中，对象的创建和初始化是两个分开的过程，</p>
+<ul>
+<li><code>__new__</code>
+负责对象的创建，为类的<strong>静态方法</strong>，其返回一个类实例对象</li>
+<li><code>__init__</code>
+负责对象的初始化，<strong>其不需要返回任何值</strong>，当存在继承时，不会自动调用父类的
+<code>__init__</code>，需要手动通过
+<code>super()__init__([args...])</code> 进行调用</li>
+</ul>
+<h2 id="列表生成式和-">列表生成式和 <code>*</code></h2>
+<blockquote>
+<p>链接：<a
+href="https://www.nowcoder.com/questionTerminal/26cc96e5eb1f40dca9b1987a0944eff1">https://www.nowcoder.com/questionTerminal/26cc96e5eb1f40dca9b1987a0944eff1</a>
+来源：牛客网</p>
+</blockquote>
+<p>执行以下程序，输出结果为？</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">a = [[<span class="string">&#x27;1&#x27;</span>,<span class="string">&#x27;2&#x27;</span>] <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">2</span>)]</span><br><span class="line">b = [[<span class="string">&#x27;1&#x27;</span>,<span class="string">&#x27;2&#x27;</span>]] * <span class="number">2</span></span><br><span class="line">a[<span class="number">0</span>][<span class="number">1</span>] = <span class="string">&#x27;3&#x27;</span></span><br><span class="line">b[<span class="number">0</span>][<span class="number">0</span>] = <span class="string">&#x27;4&#x27;</span></span><br><span class="line"><span class="built_in">print</span>(a,b) </span><br></pre></td></tr></table></figure>
+
+<p>乍一看两个都可完成列表的重复，但关键在于复制的<strong>深浅</strong>，具体可以参考官方文档对于
+<a
+href="https://docs.python.org/3.9/tutorial/datastructures.html?highlight=list">list
+的介绍</a></p>
+<ul>
+<li>使用列表生成式（Generator
+Statement）创建列表式会创建多个对象，使用时更灵活</li>
+<li>使用 <code>*</code>
+来重复对象时将<strong>指向同一个内存地址</strong></li>
+</ul>
+<p>我们可以测试 <code>*</code> 的效果</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> v <span class="keyword">in</span> [[<span class="string">&#x27;1&#x27;</span>,<span class="string">&#x27;2&#x27;</span>]] * <span class="number">4</span>:</span><br><span class="line">    <span class="built_in">print</span>(<span class="built_in">id</span>(v))</span><br></pre></td></tr></table></figure>
+
+<p>输出结果</p>
+<p><img data-src="/posts/null/image-20230729201613453.png"
+style="zoom:50%;" /></p>
+<p>因此上面的结果就显而易见了</p>
+<p><code>a[0][1]</code> 就仅会修改列表第一个元素，而
+<code>b[0][0]</code>
+由于两个元素实际上指向同一个内存地址，会同步进行修改</p>
+<p>最终结果为
+<code>[['1', '3'], ['1', '2']] [['4', '2'], ['4', '2']]</code></p>
+<h2 id="切片">切片</h2>
+<h3 id="元组和列表">元组<code>[:]</code>和列表<code>[:]</code></h3>
+<p>这个有点细节了，<strong>由于元组是不可变的（immutable）</strong>，其切片就是其本身，而列表可变，其切片将会复制一个列表</p>
+<p><img data-src="/posts/null/image-20230729205320321.png"
+style="zoom:50%;" /></p>
+<p>可以通过<code>id</code>来观察内存地址，其中元组切片内存地址不变，列表切片会复制一个，内存地址发生变化</p>
+<h2 id="类与继承">类与继承</h2>
+<h2 id="字符串操作">字符串操作</h2>
+<h3 id="strip">strip</h3>
+<p><em>str.strip([chars])</em>：删除字符串首尾所有在 <code>chars</code>
+中的字符，例如 <code>'abbacabb'.strip('ab')</code> 就会删除首尾的
+<code>a</code> 和 <code>b</code> 最终就只剩下 <code>c</code> 了</p>
+<h3 id="split">split</h3>
+<p><em>str.split(sep=None, maxsplit=-1)</em>：使用 <code>sep</code>
+中指定的字符串分割字符串，<code>maxsplit</code>
+用来限制分割字符串的数目</p>
+<p>这个函数有点坑的在于首尾出现 <code>sep</code> 时，例如
+<code>'&lt;&gt;A&lt;&gt;B&lt;&gt;C&lt;&gt;'.split('&lt;&gt;')</code>，其结果为
+<code>['','A','B','C','']</code></p>
+<p>不过这么输出也合理，因为 <code>sep</code> 需要用来分割两个字符串</p>
+<h2 id="布尔判断">布尔判断</h2>
+<p>除了显式的 <code>bool</code>
+类型外，以下三种情况应用于条件判断语句时也为 <code>False</code></p>
+<blockquote>
+<p><a
+href="https://docs.python.org/3.9/library/stdtypes.html?highlight=strip#truth-value-testing">Truth
+Value Testing</a></p>
+</blockquote>
+<ul>
+<li><p>值为 <code>None</code></p></li>
+<li><p>任意一种数值类型的0：<code>0</code>，<code>0.0</code>，<code>0j</code>（复数），<code>Decimal(0)</code>，<code>Fraction(0,1)</code></p></li>
+<li><p>空序列/容器：<code>''</code>（空字符串），<code>()</code>（空元组），<code>[]</code>（空列表），<code>&#123;&#125;</code>（空字典），<code>set()</code>（空集合），<code>range(0)</code>（空范围）</p></li>
+</ul>
+<p>这个还是值得注意的，下面表达式就是等价的，可以让代码看起来不那么冗余</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> Obj &lt;==&gt; <span class="keyword">if</span> Obj <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span></span><br><span class="line"><span class="keyword">if</span> <span class="type">List</span> &lt;==&gt; <span class="keyword">if</span> <span class="built_in">len</span>(<span class="type">List</span>) != <span class="number">0</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="运算符优先级">运算符优先级</h2>
+<h2 id="作用域">作用域</h2>
+<h2 id="nonlocal-和-global">nonlocal 和 global</h2>
+<p>当我们需要<strong>修改全局或者外部作用域的变量</strong>时，就需要使用
+<code>global</code> 或 <code>nonlocal</code>
+关键字来说明，否则就会报错，例如</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">global_v = <span class="number">100</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">foo</span>():</span><br><span class="line">    global_v += <span class="number">10</span></span><br><span class="line"></span><br><span class="line">foo()</span><br><span class="line"><span class="built_in">print</span>(global_v)</span><br></pre></td></tr></table></figure>
+
+<p><img data-src="/posts/null/image-20230729212519574.png"
+style="zoom:50%;" /></p>
+<h2 id="lambda-和函数闭包">lambda 和函数闭包</h2>
+<p>可以通过函数闭包的方式实现静态变量（也可以使用<code>hasattr</code>、<code>setattr</code>
+和 <code>getattr</code> 来设置），例如实现一个计数器（这个实际上有点像
+<code>JavaScript</code> 的写法，函数式编程）</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">counter</span>():</span><br><span class="line">    count = <span class="number">0</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">increment</span>():</span><br><span class="line">        <span class="keyword">nonlocal</span> count</span><br><span class="line">        count += <span class="number">1</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">count_value</span>():</span><br><span class="line">        <span class="keyword">return</span> count</span><br><span class="line">    <span class="keyword">return</span> increment, count_value</span><br></pre></td></tr></table></figure>
+
+<p>在函数内使用外部变量是以<strong>引用方式</strong>读取（C++中的lambda可以指定不同变量捕获方式，比较灵活），因此会在<strong>执行函数才会读取变量的值。</strong></p>
+<h2 id="函数默认参数">函数默认参数</h2>
+<blockquote>
+<p>链接：<a
+href="https://www.nowcoder.com/questionTerminal/0f7fb713fb8f46548f38177c3b3d47ba">https://www.nowcoder.com/questionTerminal/0f7fb713fb8f46548f38177c3b3d47ba</a>
+来源：牛客网</p>
+</blockquote>
+<p>执行下列程序，输出结果为？</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">fun</span>(<span class="params">a=(<span class="params"></span>),b=[]</span>):</span><br><span class="line">    a += (<span class="number">1</span>,)</span><br><span class="line">    b.append(<span class="number">1</span>)</span><br><span class="line">    <span class="keyword">return</span> a,b</span><br><span class="line"></span><br><span class="line">fun()</span><br><span class="line"><span class="built_in">print</span>(fun())</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><a
+href="https://docs.python.org/3/reference/compound_stmts.html#function">8.
+Compound statements — Python 3.11.4 documentation</a></p>
+<p>参考官方文档：<strong>Default parameter values are evaluated from
+left to right when the function definition is executed.</strong> This
+means that the expression is evaluated once, when the function is
+defined, and that the same “pre-computed” value is used for each call.
+<strong>This is especially important to understand when a default
+parameter value is a mutable object</strong>, such as a list or a
+dictionary: if the function modifies the object (e.g. by appending an
+item to a list), the default parameter value is in effect modified. This
+is generally not what was intended. A way around this is to use
+<code>None</code> as the default, and explicitly test for it in the body
+of the function.</p>
+<p>函数默认参数将在函数定义时就初始完成，然后在后续的调用中一直使用这个”预计算好的“默认值，这就会带来很多坑</p>
+</blockquote>
+<p>对于不可变的对象，例如元组和字符串而言，<strong>在函数中的修改并不会修改默认值</strong>，因为他们的值是不可变的（immutable），但是对于列表和字典这样的可变对象而言，<strong>就相当于全局变量一样会一直更新</strong>。</p>
+<p>虽然 <code>a</code> 为一个元组，但是 <code>a += (1,)</code> 等价于
+<code>a = a + (1,)</code> 即我们对 a
+重新设置了一个值（其实对b重新赋值的话也不会有影响，但是 append
+是直接修改 b 的元素）</p>
+<p>因此最终输出为
+<code>((1,), [1, 1])</code>（函数多个返回值会合并为一个元组统一输出）</p>
+<h2 id="装饰器">装饰器</h2>
+<blockquote>
+<p><a
+href="https://docs.python.org/3/glossary.html#term-decorator">Glossary —
+Python 3.11.4 documentation #term-decorator</a></p>
+<p>Decorator expressions are evaluated when the function is defined, in
+the scope that contains the function definition.</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="meta">@f1(<span class="params">arg</span>)</span></span><br><span class="line"><span class="meta">@f2</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">func</span>(): <span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
+
+<p>等价于</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">func</span>(): <span class="keyword">pass</span></span><br><span class="line">func = f1(arg)(f2(func))</span><br></pre></td></tr></table></figure>
+
+<p>上面例子可能有点抽象，举个实际一点的例子，计时器以及重复执行（带参数的装饰器如何实现）</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> time <span class="keyword">import</span> perf_counter_ns</span><br><span class="line"><span class="keyword">from</span> functools <span class="keyword">import</span> wraps</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">Timer</span>(<span class="params">func</span>):</span><br><span class="line"><span class="meta">    @wraps(<span class="params">func</span>)</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">wrapper</span>(<span class="params">*args,**kwargs</span>):</span><br><span class="line">        <span class="comment"># 统计函数的运行时间</span></span><br><span class="line">        start = perf_counter_ns()</span><br><span class="line">        func(*args,**kwargs)</span><br><span class="line">        end = perf_counter_ns()</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&#x27;cost: <span class="subst">&#123;(end-start)/<span class="number">1e6</span>:<span class="number">03.3</span>f&#125;</span> ms&#x27;</span>)</span><br><span class="line">    <span class="keyword">return</span> wrapper</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">Repeat</span>(<span class="params">count</span>):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">inner</span>(<span class="params">func</span>):</span><br><span class="line"><span class="meta">        @wraps(<span class="params">func</span>)</span></span><br><span class="line">        <span class="keyword">def</span> <span class="title function_">wrapper</span>(<span class="params">*args,**kwargs</span>):</span><br><span class="line">            <span class="comment"># 将函数执行 count 次</span></span><br><span class="line">            <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(count):</span><br><span class="line">                func(*args,**kwargs)</span><br><span class="line">        <span class="keyword">return</span> wrapper</span><br><span class="line">    <span class="keyword">return</span> inner</span><br><span class="line">            </span><br><span class="line"><span class="meta">@Timer</span></span><br><span class="line"><span class="meta">@Repeat(<span class="params">count=<span class="number">5</span></span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">test_func1</span>():</span><br><span class="line">    <span class="keyword">from</span> time <span class="keyword">import</span> sleep</span><br><span class="line">    sleep(<span class="number">0.25</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;hello&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">test_func2</span>():</span><br><span class="line">    <span class="keyword">from</span> time <span class="keyword">import</span> sleep</span><br><span class="line">    sleep(<span class="number">0.25</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;hello&#x27;</span>)</span><br><span class="line"></span><br><span class="line">test_func1()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 等价于</span></span><br><span class="line">test_func2 = Timer(Repeat(count=<span class="number">5</span>)(test_func2))</span><br><span class="line">test_func2()</span><br></pre></td></tr></table></figure>
+
+<p>运行结果</p>
+<p><img data-src="/posts/null/image-20230729215357790.png"
+style="zoom:50%;" /></p>
+<h2 id="else-语句">else 语句</h2>
+<p>这里的 else 语句并不是 <code>if ... else ...</code> 的 else，其为
+<code>while ...</code>、<code>try ... except ...</code>
+、<code>for ...</code> 语句的 else 语句</p>
+<p>示例如下</p>
+<p>对于 <code>while</code> 和 <code>for</code>
+两个循环而言，<code>else</code> 语句将会在循环顺利执行完后调用（即不碰到
+<code>break</code>，<code>return</code>就更不用说了）</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">4</span>):</span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;for(without break) done&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">5</span>):</span><br><span class="line">    <span class="keyword">if</span> j == <span class="number">4</span>:</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;for(with break) done&#x27;</span>)</span><br><span class="line">    </span><br><span class="line">i = <span class="number">5</span></span><br><span class="line"><span class="keyword">while</span> i &gt; <span class="number">0</span>:</span><br><span class="line">    i-=<span class="number">1</span></span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;while(without break) done&#x27;</span>)</span><br><span class="line">    </span><br><span class="line">i = <span class="number">5</span></span><br><span class="line"><span class="keyword">while</span> i &gt; <span class="number">0</span>:</span><br><span class="line">    i-=<span class="number">1</span></span><br><span class="line">    <span class="keyword">if</span> i == <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;while(with break) done&#x27;</span>)    </span><br></pre></td></tr></table></figure>
+
+<p>输出结果</p>
+<p><img data-src="/posts/null/image-20230729221242531.png"
+style="zoom:50%;" /></p>
+<p>对于 <code>try ... except ...</code> 语句而言，else
+语句会在没有任何异常时执行</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">func_with_exception</span>():</span><br><span class="line">    a = <span class="number">1</span>/<span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">func_without_exception</span>():</span><br><span class="line">    a = <span class="number">0</span> / <span class="number">1</span></span><br><span class="line">    </span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    func_with_exception()</span><br><span class="line"><span class="keyword">except</span>:</span><br><span class="line">    <span class="keyword">import</span> traceback</span><br><span class="line">    traceback.print_exc()</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;execute safely!&#x27;</span>)   </span><br><span class="line"></span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    func_without_exception()</span><br><span class="line"><span class="keyword">except</span>:</span><br><span class="line">    <span class="keyword">import</span> traceback</span><br><span class="line">    traceback.print_exc()</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;execute safely!&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>运行结果（第一个抛出异常，第二没有异常顺利执行）</p>
+<p><img data-src="/posts/null/image-20230729222813033.png"
+style="zoom:50%;" /></p>
+<h2 id="finally-作用"><code>finally</code> 作用</h2>
+<p><strong>无论什么情况都会执行！</strong></p>
+<blockquote>
+<p>If a <a
+href="https://docs.python.org/3/reference/compound_stmts.html#finally"><code>finally</code></a>
+clause is present, the <code>finally</code> clause will execute as the
+last task <strong>before</strong> the <a
+href="https://docs.python.org/3/reference/compound_stmts.html#try"><code>try</code></a>
+statement completes. The <code>finally</code> clause runs whether or not
+the <code>try</code> statement produces an exception. The following
+points discuss more complex cases when an exception occurs:</p>
+<ul>
+<li>If an exception occurs during execution of the <code>try</code>
+clause, the exception may be handled by an <a
+href="https://docs.python.org/3/reference/compound_stmts.html#except"><code>except</code></a>
+clause. <strong>If the exception is not handled by an
+<code>except</code> clause, the exception is re-raised after the
+<code>finally</code> clause has been executed.</strong></li>
+<li>An exception could occur during execution of an <code>except</code>
+or <code>else</code> clause. <strong>Again, the exception is re-raised
+after the <code>finally</code> clause has been executed.</strong></li>
+<li>If the <code>finally</code> clause executes a <a
+href="https://docs.python.org/3/reference/simple_stmts.html#break"><code>break</code></a>,
+<a
+href="https://docs.python.org/3/reference/simple_stmts.html#continue"><code>continue</code></a>
+or <a
+href="https://docs.python.org/3/reference/simple_stmts.html#return"><code>return</code></a>
+statement, exceptions are not re-raised.</li>
+<li>If the <code>try</code> statement reaches a <a
+href="https://docs.python.org/3/reference/simple_stmts.html#break"><code>break</code></a>,
+<a
+href="https://docs.python.org/3/reference/simple_stmts.html#continue"><code>continue</code></a>
+or <a
+href="https://docs.python.org/3/reference/simple_stmts.html#return"><code>return</code></a>
+statement, <strong>the <code>finally</code> clause will execute just
+prior to the <code>break</code>, <code>continue</code> or
+<code>return</code> statement’s execution.</strong></li>
+<li>If a <code>finally</code> clause includes a <code>return</code>
+statement, <strong>the returned value will be the one from the
+<code>finally</code> clause’s <code>return</code> statement</strong>,
+not the value from the <code>try</code> clause’s <code>return</code>
+statement.</li>
+</ul>
+</blockquote>
+<p>引入 <code>finally</code>
+后函数的执行流比较复杂，不熟情况少用，容易整蛊感觉</p>
+<h2 id="正则表达式">正则表达式</h2>
+]]></content>
+      <categories>
+        <category>Python</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>遍历二叉树的n种方式</title>
+    <url>/posts/7a74/</url>
+    <content><![CDATA[<span id="more"></span>
+
+<h1 id="遍历二叉树的n种方式">遍历二叉树的n种方式</h1>
+<h2 id="递归">递归</h2>
+<h2 id="迭代">迭代</h2>
+<h2 id="莫里斯遍历">🐮莫里斯遍历</h2>
+<h2 id="序列化和反序列化">序列化和反序列化</h2>
+]]></content>
+      <categories>
+        <category>算法模版</category>
+      </categories>
+      <tags>
+        <tag>算法</tag>
+      </tags>
   </entry>
 </search>

@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"purewhitevk.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.14.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"default"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Python 易错点整理 魔法方法和内置属性 容器类型  链接：https:&#x2F;&#x2F;www.nowcoder.com&#x2F;questionTerminal&#x2F;c2380f6992814490b7f5b6e446b72ed7 来源：牛客网  根据以下程序，下列选项中，说法正确的是（） 123456class Foo(): 	def __init__(self):         pass 	def __get">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python 易错点整理">
+<meta property="og:url" content="https://purewhitevk.github.io/posts/17bc/">
+<meta property="og:site_name" content="PureWhiteVK&#39;s Blog">
+<meta property="og:description" content="Python 易错点整理 魔法方法和内置属性 容器类型  链接：https:&#x2F;&#x2F;www.nowcoder.com&#x2F;questionTerminal&#x2F;c2380f6992814490b7f5b6e446b72ed7 来源：牛客网  根据以下程序，下列选项中，说法正确的是（） 123456class Foo(): 	def __init__(self):         pass 	def __get">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/null/image-20230729210618254.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/null/image-20230729201613453.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/null/image-20230729205320321.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/null/image-20230729212519574.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/null/image-20230729215357790.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/null/image-20230729221242531.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/null/image-20230729222813033.png">
+<meta property="article:published_time" content="2023-07-28T07:44:56.000Z">
+<meta property="article:modified_time" content="2023-07-28T07:44:56.000Z">
+<meta property="article:author" content="PureWhiteVK">
+<meta property="article:tag" content="Python">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://purewhitevk.github.io/posts/null/image-20230729210618254.png">
+
+
+<link rel="canonical" href="https://purewhitevk.github.io/posts/17bc/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://purewhitevk.github.io/posts/17bc/","path":"posts/17bc/","title":"Python 易错点整理"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Python 易错点整理 | PureWhiteVK's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">PureWhiteVK's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">21</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">7</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">164</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#python-%E6%98%93%E9%94%99%E7%82%B9%E6%95%B4%E7%90%86"><span class="nav-number">1.</span> <span class="nav-text">Python 易错点整理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%AD%94%E6%B3%95%E6%96%B9%E6%B3%95%E5%92%8C%E5%86%85%E7%BD%AE%E5%B1%9E%E6%80%A7"><span class="nav-number">1.1.</span> <span class="nav-text">魔法方法和内置属性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%B9%E5%99%A8%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.1.1.</span> <span class="nav-text">容器类型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#__slots__"><span class="nav-number">1.2.</span> <span class="nav-text">__slots__</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#__init__-%E5%92%8C-__new__"><span class="nav-number">1.3.</span> <span class="nav-text">__init__ 和
+__new__</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%97%E8%A1%A8%E7%94%9F%E6%88%90%E5%BC%8F%E5%92%8C-"><span class="nav-number">1.4.</span> <span class="nav-text">列表生成式和 *</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%87%E7%89%87"><span class="nav-number">1.5.</span> <span class="nav-text">切片</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%83%E7%BB%84%E5%92%8C%E5%88%97%E8%A1%A8"><span class="nav-number">1.5.1.</span> <span class="nav-text">元组[:]和列表[:]</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B1%BB%E4%B8%8E%E7%BB%A7%E6%89%BF"><span class="nav-number">1.6.</span> <span class="nav-text">类与继承</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%93%8D%E4%BD%9C"><span class="nav-number">1.7.</span> <span class="nav-text">字符串操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#strip"><span class="nav-number">1.7.1.</span> <span class="nav-text">strip</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#split"><span class="nav-number">1.7.2.</span> <span class="nav-text">split</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%83%E5%B0%94%E5%88%A4%E6%96%AD"><span class="nav-number">1.8.</span> <span class="nav-text">布尔判断</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%90%E7%AE%97%E7%AC%A6%E4%BC%98%E5%85%88%E7%BA%A7"><span class="nav-number">1.9.</span> <span class="nav-text">运算符优先级</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%9C%E7%94%A8%E5%9F%9F"><span class="nav-number">1.10.</span> <span class="nav-text">作用域</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#nonlocal-%E5%92%8C-global"><span class="nav-number">1.11.</span> <span class="nav-text">nonlocal 和 global</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lambda-%E5%92%8C%E5%87%BD%E6%95%B0%E9%97%AD%E5%8C%85"><span class="nav-number">1.12.</span> <span class="nav-text">lambda 和函数闭包</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E9%BB%98%E8%AE%A4%E5%8F%82%E6%95%B0"><span class="nav-number">1.13.</span> <span class="nav-text">函数默认参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A3%85%E9%A5%B0%E5%99%A8"><span class="nav-number">1.14.</span> <span class="nav-text">装饰器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#else-%E8%AF%AD%E5%8F%A5"><span class="nav-number">1.15.</span> <span class="nav-text">else 语句</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#finally-%E4%BD%9C%E7%94%A8"><span class="nav-number">1.16.</span> <span class="nav-text">finally 作用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="nav-number">1.17.</span> <span class="nav-text">正则表达式</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="PureWhiteVK"
+      src="/images/Touma.Kazusa.256x256.png">
+  <p class="site-author-name" itemprop="name">PureWhiteVK</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">164</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/PureWhiteVK" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;PureWhiteVK" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:yl_xiao@outlook.com" title="E-Mail → mailto:yl_xiao@outlook.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/dead.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://purewhitevk.github.io/posts/17bc/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/Touma.Kazusa.256x256.png">
+      <meta itemprop="name" content="PureWhiteVK">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PureWhiteVK's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Python 易错点整理 | PureWhiteVK's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Python 易错点整理
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023/07/28 15:44:56" itemprop="dateCreated datePublished" datetime="2023-07-28T15:44:56+08:00">2023/07/28</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Python/" itemprop="url" rel="index"><span itemprop="name">Python</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>2.4k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>9 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="python-易错点整理">Python 易错点整理</h1>
+<h2 id="魔法方法和内置属性">魔法方法和内置属性</h2>
+<h3 id="容器类型">容器类型</h3>
+<blockquote>
+<p>链接：<a
+target="_blank" rel="noopener" href="https://www.nowcoder.com/questionTerminal/c2380f6992814490b7f5b6e446b72ed7">https://www.nowcoder.com/questionTerminal/c2380f6992814490b7f5b6e446b72ed7</a>
+来源：牛客网</p>
+</blockquote>
+<p>根据以下程序，下列选项中，说法正确的是（）</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Foo</span>(): </span><br><span class="line">	<span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self</span>): </span><br><span class="line">        <span class="keyword">pass</span> </span><br><span class="line">	<span class="keyword">def</span> <span class="title function_">__getitem__</span>(<span class="params">self,pos</span>): </span><br><span class="line">		<span class="keyword">return</span> <span class="built_in">range</span>(<span class="number">0</span>,<span class="number">30</span>,<span class="number">10</span>)[pos] </span><br><span class="line">foo = Foo() </span><br></pre></td></tr></table></figure>
+
+<ol type="1">
+<li><code>foo</code> 对象表现得像个序列</li>
+<li>可以使用 <code>len(foo)</code> 来查看对象 <code>foo</code>
+的元素个数</li>
+<li>可以使用 <code>for i in foo:print(i)</code> 来遍历 <code>foo</code>
+的元素</li>
+<li>不能使用 <code>foo[0]</code> 来访问对象 <code>foo</code>
+的第一个元素</li>
+</ol>
+<p>对于第一个选项，<a
+target="_blank" rel="noopener" href="https://docs.python.org/3.9/glossary.html#term-sequence">Python文档</a>中定义序列必须实现两个方法，`__getitem__`
+以及 `__len__`，即支持通过整数的索引以及返回序列的长度，而
+<code>Foo</code> 仅实现了整数索引功能，因此不是序列。</p>
+<p>对于第二个选项，<code>len(foo)</code> 实际上会调用
+<code>__len__</code> 方法来获取序列长度，类没实现该方法故不行</p>
+<p>对于第三个选项，<code>for</code> 语句支持两种，一种为通过
+<code>__iter__</code> 进行调用，另一种则为
+<code>__getitem__</code>，因此<strong>正确</strong></p>
+<p>对于第四个选项，由于我们定义了 <code>__getitem__</code>
+方法，我们是可以通过 <code>foo[0]</code> 来访问 <code>foo</code>
+的第一个元素的</p>
+<span id="more"></span>
+
+<h2 id="__slots__"><code>__slots__</code></h2>
+<blockquote>
+<p><a
+target="_blank" rel="noopener" href="https://docs.python.org/3.9/reference/datamodel.html?highlight=__slots__#slots">3.
+Data model — Python 3.9.17 documentation #_<em>slots</em></a>_</p>
+</blockquote>
+<p><code>__slots__</code>
+属性用来<strong>显式指定对象所包含的属性</strong>，相比
+<code>__dict__</code> 效率更高，但是使用上有很多细节需要注意</p>
+<p>只有 <code>__slots__</code>
+中指定的属性可以被赋值，其他的会报错，示例如下</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Foo</span>:</span><br><span class="line">    __slots__ = [<span class="string">&#x27;foo&#x27;</span>,<span class="string">&#x27;bar&#x27;</span>]</span><br><span class="line">    </span><br><span class="line">f = Foo()</span><br><span class="line">f.foo = <span class="string">&#x27;foo&#x27;</span>   <span class="comment"># ✓</span></span><br><span class="line">f.bar = <span class="string">&#x27;bar&#x27;</span>   <span class="comment"># ✓</span></span><br><span class="line">f.fooo = <span class="string">&#x27;fooo&#x27;</span> <span class="comment"># ✗</span></span><br></pre></td></tr></table></figure>
+
+<p><img data-src="/posts/null/image-20230729210618254.png"
+style="zoom:50%;" /></p>
+<h2 id="__init__-和-__new__"><code>__init__</code> 和
+<code>__new__</code></h2>
+<blockquote>
+<p><a
+target="_blank" rel="noopener" href="https://docs.python.org/3.9/reference/datamodel.html?highlight=__new__#basic-customization">3.
+Data model — Python 3.9.17 documentation #basic-customization</a></p>
+</blockquote>
+<p>在 Python 中，对象的创建和初始化是两个分开的过程，</p>
+<ul>
+<li><code>__new__</code>
+负责对象的创建，为类的<strong>静态方法</strong>，其返回一个类实例对象</li>
+<li><code>__init__</code>
+负责对象的初始化，<strong>其不需要返回任何值</strong>，当存在继承时，不会自动调用父类的
+<code>__init__</code>，需要手动通过
+<code>super()__init__([args...])</code> 进行调用</li>
+</ul>
+<h2 id="列表生成式和-">列表生成式和 <code>*</code></h2>
+<blockquote>
+<p>链接：<a
+target="_blank" rel="noopener" href="https://www.nowcoder.com/questionTerminal/26cc96e5eb1f40dca9b1987a0944eff1">https://www.nowcoder.com/questionTerminal/26cc96e5eb1f40dca9b1987a0944eff1</a>
+来源：牛客网</p>
+</blockquote>
+<p>执行以下程序，输出结果为？</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">a = [[<span class="string">&#x27;1&#x27;</span>,<span class="string">&#x27;2&#x27;</span>] <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">2</span>)]</span><br><span class="line">b = [[<span class="string">&#x27;1&#x27;</span>,<span class="string">&#x27;2&#x27;</span>]] * <span class="number">2</span></span><br><span class="line">a[<span class="number">0</span>][<span class="number">1</span>] = <span class="string">&#x27;3&#x27;</span></span><br><span class="line">b[<span class="number">0</span>][<span class="number">0</span>] = <span class="string">&#x27;4&#x27;</span></span><br><span class="line"><span class="built_in">print</span>(a,b) </span><br></pre></td></tr></table></figure>
+
+<p>乍一看两个都可完成列表的重复，但关键在于复制的<strong>深浅</strong>，具体可以参考官方文档对于
+<a
+target="_blank" rel="noopener" href="https://docs.python.org/3.9/tutorial/datastructures.html?highlight=list">list
+的介绍</a></p>
+<ul>
+<li>使用列表生成式（Generator
+Statement）创建列表式会创建多个对象，使用时更灵活</li>
+<li>使用 <code>*</code>
+来重复对象时将<strong>指向同一个内存地址</strong></li>
+</ul>
+<p>我们可以测试 <code>*</code> 的效果</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> v <span class="keyword">in</span> [[<span class="string">&#x27;1&#x27;</span>,<span class="string">&#x27;2&#x27;</span>]] * <span class="number">4</span>:</span><br><span class="line">    <span class="built_in">print</span>(<span class="built_in">id</span>(v))</span><br></pre></td></tr></table></figure>
+
+<p>输出结果</p>
+<p><img data-src="/posts/null/image-20230729201613453.png"
+style="zoom:50%;" /></p>
+<p>因此上面的结果就显而易见了</p>
+<p><code>a[0][1]</code> 就仅会修改列表第一个元素，而
+<code>b[0][0]</code>
+由于两个元素实际上指向同一个内存地址，会同步进行修改</p>
+<p>最终结果为
+<code>[['1', '3'], ['1', '2']] [['4', '2'], ['4', '2']]</code></p>
+<h2 id="切片">切片</h2>
+<h3 id="元组和列表">元组<code>[:]</code>和列表<code>[:]</code></h3>
+<p>这个有点细节了，<strong>由于元组是不可变的（immutable）</strong>，其切片就是其本身，而列表可变，其切片将会复制一个列表</p>
+<p><img data-src="/posts/null/image-20230729205320321.png"
+style="zoom:50%;" /></p>
+<p>可以通过<code>id</code>来观察内存地址，其中元组切片内存地址不变，列表切片会复制一个，内存地址发生变化</p>
+<h2 id="类与继承">类与继承</h2>
+<h2 id="字符串操作">字符串操作</h2>
+<h3 id="strip">strip</h3>
+<p><em>str.strip([chars])</em>：删除字符串首尾所有在 <code>chars</code>
+中的字符，例如 <code>'abbacabb'.strip('ab')</code> 就会删除首尾的
+<code>a</code> 和 <code>b</code> 最终就只剩下 <code>c</code> 了</p>
+<h3 id="split">split</h3>
+<p><em>str.split(sep=None, maxsplit=-1)</em>：使用 <code>sep</code>
+中指定的字符串分割字符串，<code>maxsplit</code>
+用来限制分割字符串的数目</p>
+<p>这个函数有点坑的在于首尾出现 <code>sep</code> 时，例如
+<code>'&lt;&gt;A&lt;&gt;B&lt;&gt;C&lt;&gt;'.split('&lt;&gt;')</code>，其结果为
+<code>['','A','B','C','']</code></p>
+<p>不过这么输出也合理，因为 <code>sep</code> 需要用来分割两个字符串</p>
+<h2 id="布尔判断">布尔判断</h2>
+<p>除了显式的 <code>bool</code>
+类型外，以下三种情况应用于条件判断语句时也为 <code>False</code></p>
+<blockquote>
+<p><a
+target="_blank" rel="noopener" href="https://docs.python.org/3.9/library/stdtypes.html?highlight=strip#truth-value-testing">Truth
+Value Testing</a></p>
+</blockquote>
+<ul>
+<li><p>值为 <code>None</code></p></li>
+<li><p>任意一种数值类型的0：<code>0</code>，<code>0.0</code>，<code>0j</code>（复数），<code>Decimal(0)</code>，<code>Fraction(0,1)</code></p></li>
+<li><p>空序列/容器：<code>''</code>（空字符串），<code>()</code>（空元组），<code>[]</code>（空列表），<code>&#123;&#125;</code>（空字典），<code>set()</code>（空集合），<code>range(0)</code>（空范围）</p></li>
+</ul>
+<p>这个还是值得注意的，下面表达式就是等价的，可以让代码看起来不那么冗余</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> Obj &lt;==&gt; <span class="keyword">if</span> Obj <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span></span><br><span class="line"><span class="keyword">if</span> <span class="type">List</span> &lt;==&gt; <span class="keyword">if</span> <span class="built_in">len</span>(<span class="type">List</span>) != <span class="number">0</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="运算符优先级">运算符优先级</h2>
+<h2 id="作用域">作用域</h2>
+<h2 id="nonlocal-和-global">nonlocal 和 global</h2>
+<p>当我们需要<strong>修改全局或者外部作用域的变量</strong>时，就需要使用
+<code>global</code> 或 <code>nonlocal</code>
+关键字来说明，否则就会报错，例如</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">global_v = <span class="number">100</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">foo</span>():</span><br><span class="line">    global_v += <span class="number">10</span></span><br><span class="line"></span><br><span class="line">foo()</span><br><span class="line"><span class="built_in">print</span>(global_v)</span><br></pre></td></tr></table></figure>
+
+<p><img data-src="/posts/null/image-20230729212519574.png"
+style="zoom:50%;" /></p>
+<h2 id="lambda-和函数闭包">lambda 和函数闭包</h2>
+<p>可以通过函数闭包的方式实现静态变量（也可以使用<code>hasattr</code>、<code>setattr</code>
+和 <code>getattr</code> 来设置），例如实现一个计数器（这个实际上有点像
+<code>JavaScript</code> 的写法，函数式编程）</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">counter</span>():</span><br><span class="line">    count = <span class="number">0</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">increment</span>():</span><br><span class="line">        <span class="keyword">nonlocal</span> count</span><br><span class="line">        count += <span class="number">1</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">count_value</span>():</span><br><span class="line">        <span class="keyword">return</span> count</span><br><span class="line">    <span class="keyword">return</span> increment, count_value</span><br></pre></td></tr></table></figure>
+
+<p>在函数内使用外部变量是以<strong>引用方式</strong>读取（C++中的lambda可以指定不同变量捕获方式，比较灵活），因此会在<strong>执行函数才会读取变量的值。</strong></p>
+<h2 id="函数默认参数">函数默认参数</h2>
+<blockquote>
+<p>链接：<a
+target="_blank" rel="noopener" href="https://www.nowcoder.com/questionTerminal/0f7fb713fb8f46548f38177c3b3d47ba">https://www.nowcoder.com/questionTerminal/0f7fb713fb8f46548f38177c3b3d47ba</a>
+来源：牛客网</p>
+</blockquote>
+<p>执行下列程序，输出结果为？</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">fun</span>(<span class="params">a=(<span class="params"></span>),b=[]</span>):</span><br><span class="line">    a += (<span class="number">1</span>,)</span><br><span class="line">    b.append(<span class="number">1</span>)</span><br><span class="line">    <span class="keyword">return</span> a,b</span><br><span class="line"></span><br><span class="line">fun()</span><br><span class="line"><span class="built_in">print</span>(fun())</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><a
+target="_blank" rel="noopener" href="https://docs.python.org/3/reference/compound_stmts.html#function">8.
+Compound statements — Python 3.11.4 documentation</a></p>
+<p>参考官方文档：<strong>Default parameter values are evaluated from
+left to right when the function definition is executed.</strong> This
+means that the expression is evaluated once, when the function is
+defined, and that the same “pre-computed” value is used for each call.
+<strong>This is especially important to understand when a default
+parameter value is a mutable object</strong>, such as a list or a
+dictionary: if the function modifies the object (e.g. by appending an
+item to a list), the default parameter value is in effect modified. This
+is generally not what was intended. A way around this is to use
+<code>None</code> as the default, and explicitly test for it in the body
+of the function.</p>
+<p>函数默认参数将在函数定义时就初始完成，然后在后续的调用中一直使用这个”预计算好的“默认值，这就会带来很多坑</p>
+</blockquote>
+<p>对于不可变的对象，例如元组和字符串而言，<strong>在函数中的修改并不会修改默认值</strong>，因为他们的值是不可变的（immutable），但是对于列表和字典这样的可变对象而言，<strong>就相当于全局变量一样会一直更新</strong>。</p>
+<p>虽然 <code>a</code> 为一个元组，但是 <code>a += (1,)</code> 等价于
+<code>a = a + (1,)</code> 即我们对 a
+重新设置了一个值（其实对b重新赋值的话也不会有影响，但是 append
+是直接修改 b 的元素）</p>
+<p>因此最终输出为
+<code>((1,), [1, 1])</code>（函数多个返回值会合并为一个元组统一输出）</p>
+<h2 id="装饰器">装饰器</h2>
+<blockquote>
+<p><a
+target="_blank" rel="noopener" href="https://docs.python.org/3/glossary.html#term-decorator">Glossary —
+Python 3.11.4 documentation #term-decorator</a></p>
+<p>Decorator expressions are evaluated when the function is defined, in
+the scope that contains the function definition.</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@f1(<span class="params">arg</span>)</span></span><br><span class="line"><span class="meta">@f2</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">func</span>(): <span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
+
+<p>等价于</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">func</span>(): <span class="keyword">pass</span></span><br><span class="line">func = f1(arg)(f2(func))</span><br></pre></td></tr></table></figure>
+
+<p>上面例子可能有点抽象，举个实际一点的例子，计时器以及重复执行（带参数的装饰器如何实现）</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> time <span class="keyword">import</span> perf_counter_ns</span><br><span class="line"><span class="keyword">from</span> functools <span class="keyword">import</span> wraps</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">Timer</span>(<span class="params">func</span>):</span><br><span class="line"><span class="meta">    @wraps(<span class="params">func</span>)</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">wrapper</span>(<span class="params">*args,**kwargs</span>):</span><br><span class="line">        <span class="comment"># 统计函数的运行时间</span></span><br><span class="line">        start = perf_counter_ns()</span><br><span class="line">        func(*args,**kwargs)</span><br><span class="line">        end = perf_counter_ns()</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&#x27;cost: <span class="subst">&#123;(end-start)/<span class="number">1e6</span>:<span class="number">03.3</span>f&#125;</span> ms&#x27;</span>)</span><br><span class="line">    <span class="keyword">return</span> wrapper</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">Repeat</span>(<span class="params">count</span>):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">inner</span>(<span class="params">func</span>):</span><br><span class="line"><span class="meta">        @wraps(<span class="params">func</span>)</span></span><br><span class="line">        <span class="keyword">def</span> <span class="title function_">wrapper</span>(<span class="params">*args,**kwargs</span>):</span><br><span class="line">            <span class="comment"># 将函数执行 count 次</span></span><br><span class="line">            <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(count):</span><br><span class="line">                func(*args,**kwargs)</span><br><span class="line">        <span class="keyword">return</span> wrapper</span><br><span class="line">    <span class="keyword">return</span> inner</span><br><span class="line">            </span><br><span class="line"><span class="meta">@Timer</span></span><br><span class="line"><span class="meta">@Repeat(<span class="params">count=<span class="number">5</span></span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">test_func1</span>():</span><br><span class="line">    <span class="keyword">from</span> time <span class="keyword">import</span> sleep</span><br><span class="line">    sleep(<span class="number">0.25</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;hello&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">test_func2</span>():</span><br><span class="line">    <span class="keyword">from</span> time <span class="keyword">import</span> sleep</span><br><span class="line">    sleep(<span class="number">0.25</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;hello&#x27;</span>)</span><br><span class="line"></span><br><span class="line">test_func1()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 等价于</span></span><br><span class="line">test_func2 = Timer(Repeat(count=<span class="number">5</span>)(test_func2))</span><br><span class="line">test_func2()</span><br></pre></td></tr></table></figure>
+
+<p>运行结果</p>
+<p><img data-src="/posts/null/image-20230729215357790.png"
+style="zoom:50%;" /></p>
+<h2 id="else-语句">else 语句</h2>
+<p>这里的 else 语句并不是 <code>if ... else ...</code> 的 else，其为
+<code>while ...</code>、<code>try ... except ...</code>
+、<code>for ...</code> 语句的 else 语句</p>
+<p>示例如下</p>
+<p>对于 <code>while</code> 和 <code>for</code>
+两个循环而言，<code>else</code> 语句将会在循环顺利执行完后调用（即不碰到
+<code>break</code>，<code>return</code>就更不用说了）</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">4</span>):</span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;for(without break) done&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">5</span>):</span><br><span class="line">    <span class="keyword">if</span> j == <span class="number">4</span>:</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;for(with break) done&#x27;</span>)</span><br><span class="line">    </span><br><span class="line">i = <span class="number">5</span></span><br><span class="line"><span class="keyword">while</span> i &gt; <span class="number">0</span>:</span><br><span class="line">    i-=<span class="number">1</span></span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;while(without break) done&#x27;</span>)</span><br><span class="line">    </span><br><span class="line">i = <span class="number">5</span></span><br><span class="line"><span class="keyword">while</span> i &gt; <span class="number">0</span>:</span><br><span class="line">    i-=<span class="number">1</span></span><br><span class="line">    <span class="keyword">if</span> i == <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;while(with break) done&#x27;</span>)    </span><br></pre></td></tr></table></figure>
+
+<p>输出结果</p>
+<p><img data-src="/posts/null/image-20230729221242531.png"
+style="zoom:50%;" /></p>
+<p>对于 <code>try ... except ...</code> 语句而言，else
+语句会在没有任何异常时执行</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">func_with_exception</span>():</span><br><span class="line">    a = <span class="number">1</span>/<span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">func_without_exception</span>():</span><br><span class="line">    a = <span class="number">0</span> / <span class="number">1</span></span><br><span class="line">    </span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    func_with_exception()</span><br><span class="line"><span class="keyword">except</span>:</span><br><span class="line">    <span class="keyword">import</span> traceback</span><br><span class="line">    traceback.print_exc()</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;execute safely!&#x27;</span>)   </span><br><span class="line"></span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    func_without_exception()</span><br><span class="line"><span class="keyword">except</span>:</span><br><span class="line">    <span class="keyword">import</span> traceback</span><br><span class="line">    traceback.print_exc()</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;execute safely!&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>运行结果（第一个抛出异常，第二没有异常顺利执行）</p>
+<p><img data-src="/posts/null/image-20230729222813033.png"
+style="zoom:50%;" /></p>
+<h2 id="finally-作用"><code>finally</code> 作用</h2>
+<p><strong>无论什么情况都会执行！</strong></p>
+<blockquote>
+<p>If a <a
+target="_blank" rel="noopener" href="https://docs.python.org/3/reference/compound_stmts.html#finally"><code>finally</code></a>
+clause is present, the <code>finally</code> clause will execute as the
+last task <strong>before</strong> the <a
+target="_blank" rel="noopener" href="https://docs.python.org/3/reference/compound_stmts.html#try"><code>try</code></a>
+statement completes. The <code>finally</code> clause runs whether or not
+the <code>try</code> statement produces an exception. The following
+points discuss more complex cases when an exception occurs:</p>
+<ul>
+<li>If an exception occurs during execution of the <code>try</code>
+clause, the exception may be handled by an <a
+target="_blank" rel="noopener" href="https://docs.python.org/3/reference/compound_stmts.html#except"><code>except</code></a>
+clause. <strong>If the exception is not handled by an
+<code>except</code> clause, the exception is re-raised after the
+<code>finally</code> clause has been executed.</strong></li>
+<li>An exception could occur during execution of an <code>except</code>
+or <code>else</code> clause. <strong>Again, the exception is re-raised
+after the <code>finally</code> clause has been executed.</strong></li>
+<li>If the <code>finally</code> clause executes a <a
+target="_blank" rel="noopener" href="https://docs.python.org/3/reference/simple_stmts.html#break"><code>break</code></a>,
+<a
+target="_blank" rel="noopener" href="https://docs.python.org/3/reference/simple_stmts.html#continue"><code>continue</code></a>
+or <a
+target="_blank" rel="noopener" href="https://docs.python.org/3/reference/simple_stmts.html#return"><code>return</code></a>
+statement, exceptions are not re-raised.</li>
+<li>If the <code>try</code> statement reaches a <a
+target="_blank" rel="noopener" href="https://docs.python.org/3/reference/simple_stmts.html#break"><code>break</code></a>,
+<a
+target="_blank" rel="noopener" href="https://docs.python.org/3/reference/simple_stmts.html#continue"><code>continue</code></a>
+or <a
+target="_blank" rel="noopener" href="https://docs.python.org/3/reference/simple_stmts.html#return"><code>return</code></a>
+statement, <strong>the <code>finally</code> clause will execute just
+prior to the <code>break</code>, <code>continue</code> or
+<code>return</code> statement’s execution.</strong></li>
+<li>If a <code>finally</code> clause includes a <code>return</code>
+statement, <strong>the returned value will be the one from the
+<code>finally</code> clause’s <code>return</code> statement</strong>,
+not the value from the <code>try</code> clause’s <code>return</code>
+statement.</li>
+</ul>
+</blockquote>
+<p>引入 <code>finally</code>
+后函数的执行流比较复杂，不熟情况少用，容易整蛊感觉</p>
+<h2 id="正则表达式">正则表达式</h2>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>PureWhiteVK
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://purewhitevk.github.io/posts/17bc/" title="Python 易错点整理">https://purewhitevk.github.io/posts/17bc/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/dead.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/Python/" rel="tag"># Python</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/ac0d/" rel="prev" title="WebRTC实践">
+                  <i class="fa fa-chevron-left"></i> WebRTC实践
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/7a74/" rel="next" title="遍历二叉树的n种方式">
+                  遍历二叉树的n种方式 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PureWhiteVK</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">151k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">9:10</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
