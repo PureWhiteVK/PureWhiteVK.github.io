@@ -234,7 +234,7 @@
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E7%AE%97%E6%B3%95%E6%A8%A1%E7%89%88/" itemprop="url" rel="index"><span itemprop="name">算法模版</span></a>
+          <a href="/categories/%E7%AE%97%E6%B3%95/" itemprop="url" rel="index"><span itemprop="name">算法</span></a>
         </span>
     </span>
 
@@ -245,14 +245,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>28</span>
+      <span>2.7k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>1 分钟</span>
+      <span>10 分钟</span>
     </span>
 </div>
 
@@ -263,14 +263,22 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <span id="more"></span>
+          <h1 id="二叉树实现">二叉树实现</h1>
+<p>不同语言实现起来都差不多，给出 C++ 版本的模版实现</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt; <span class="keyword">struct</span> <span class="title class_">TreeNode</span> &#123;</span><br><span class="line">  <span class="keyword">using</span> value_type = T;</span><br><span class="line">  <span class="keyword">using</span> ptr_type = TreeNode&lt;T&gt; *;</span><br><span class="line"></span><br><span class="line">  value_type val&#123;&#125;;</span><br><span class="line">  ptr_type left&#123;<span class="literal">nullptr</span>&#125;;</span><br><span class="line">  ptr_type right&#123;<span class="literal">nullptr</span>&#125;;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line">std::ostream &amp;<span class="keyword">operator</span>&lt;&lt;(std::ostream &amp;os, <span class="type">const</span> TreeNode&lt;T&gt; &amp;node) &#123;</span><br><span class="line">  <span class="keyword">return</span> os &lt;&lt; node.val;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h1 id="遍历二叉树的n种方式">遍历二叉树的n种方式</h1>
-<h2 id="递归">递归</h2>
-<h2 id="迭代">迭代</h2>
-<h2 id="莫里斯遍历">🐮莫里斯遍历</h2>
-<h2 id="序列化和反序列化">序列化和反序列化</h2>
-
+<h1 id="递归遍历">递归遍历</h1>
+<p>由于二叉树本身的递归特性，通过递归函数可以很简单的遍历二叉树，根据访问根节点顺序不同可以分为前序、中序和后序，对应代码如下</p>
+<p>首先定义访问函数以及递归遍历函数</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt; <span class="function"><span class="type">void</span> <span class="title">visit</span><span class="params">(TreeNode&lt;T&gt; *node)</span> </span>&#123;</span><br><span class="line">  std::cout &lt;&lt; <span class="string">&quot;visit: &quot;</span> &lt;&lt; *node &lt;&lt; std::endl;</span><br><span class="line">&#125;</span><br><span class="line">std::function&lt;<span class="type">void</span>(node_ptr)&gt; recursive;</span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/posts/7a74/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -344,14 +352,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>2.4k</span>
+      <span>3.9k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>9 分钟</span>
+      <span>14 分钟</span>
     </span>
 </div>
 
@@ -362,14 +370,8 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h1 id="python-易错点整理">Python 易错点整理</h1>
-<h2 id="魔法方法和内置属性">魔法方法和内置属性</h2>
-<h3 id="容器类型">容器类型</h3>
-<blockquote>
-<p>链接：<a
-target="_blank" rel="noopener" href="https://www.nowcoder.com/questionTerminal/c2380f6992814490b7f5b6e446b72ed7">https://www.nowcoder.com/questionTerminal/c2380f6992814490b7f5b6e446b72ed7</a>
-来源：牛客网</p>
-</blockquote>
+          <h1 id="魔法方法和内置属性">魔法方法和内置属性</h1>
+<h2 id="容器类型">容器类型</h2>
 <p>根据以下程序，下列选项中，说法正确的是（）</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Foo</span>(): </span><br><span class="line">	<span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self</span>): </span><br><span class="line">        <span class="keyword">pass</span> </span><br><span class="line">	<span class="keyword">def</span> <span class="title function_">__getitem__</span>(<span class="params">self,pos</span>): </span><br><span class="line">		<span class="keyword">return</span> <span class="built_in">range</span>(<span class="number">0</span>,<span class="number">30</span>,<span class="number">10</span>)[pos] </span><br><span class="line">foo = Foo() </span><br></pre></td></tr></table></figure>
 
@@ -382,9 +384,11 @@ target="_blank" rel="noopener" href="https://www.nowcoder.com/questionTerminal/c
 <li>不能使用 <code>foo[0]</code> 来访问对象 <code>foo</code>
 的第一个元素</li>
 </ol>
-<p>对于第一个选项，<a
-target="_blank" rel="noopener" href="https://docs.python.org/3.9/glossary.html#term-sequence">Python文档</a>中定义序列必须实现两个方法，`__getitem__`
-以及 `__len__`，即支持通过整数的索引以及返回序列的长度，而
+<blockquote>
+<p><a
+target="_blank" rel="noopener" href="https://docs.python.org/3.9/glossary.html#term-sequence">https://docs.python.org/3.9/glossary.html#term-sequence</a></p>
+</blockquote>
+<p>对于第一个选项，Python文档中定义序列(sequence)必须实现两个方法，<code>__getitem__</code>以及<code>__len__</code>，即支持通过整数的索引以及返回序列的长度，而
 <code>Foo</code> 仅实现了整数索引功能，因此不是序列。</p>
 <p>对于第二个选项，<code>len(foo)</code> 实际上会调用
 <code>__len__</code> 方法来获取序列长度，类没实现该方法故不行</p>
@@ -1360,13 +1364,13 @@ target="_blank" rel="noopener" href="https://godbolt.org/">Compiler Explorer (go
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">151k</span>
+    <span title="站点总字数">156k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">9:10</span>
+    <span title="站点阅读时长">9:25</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
@@ -1414,7 +1418,7 @@ target="_blank" rel="noopener" href="https://godbolt.org/">Compiler Explorer (go
 
   
 
-  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
 <script src="/js/third-party/math/mathjax.js"></script>
 
 
