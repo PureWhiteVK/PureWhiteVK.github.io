@@ -11158,6 +11158,90 @@ shm_Adenialzz的博客-CSDN博客</a></li>
     <title>CMake项目结构模版</title>
     <url>/posts/d235/</url>
     <content><![CDATA[<span id="more"></span>
+
+<h1 id="整体结构">整体结构</h1>
+<figure class="highlight txt"><table><tr><td class="code"><pre><span class="line">.</span><br><span class="line">├── .gitignore</span><br><span class="line">├── .gitmodules</span><br><span class="line">├── CMakeLists.txt</span><br><span class="line">├── LICENSE</span><br><span class="line">├── README.md</span><br><span class="line">├── build</span><br><span class="line">├── cmake</span><br><span class="line">│   ├── CMakeLists.txt</span><br><span class="line">│   └── ...</span><br><span class="line">├── data</span><br><span class="line">│   ├── .gitkeep</span><br><span class="line">│   └── ...</span><br><span class="line">├── extern</span><br><span class="line">│   ├── CMakeLists.txt</span><br><span class="line">│   └── ...</span><br><span class="line">├── src</span><br><span class="line">│   ├── CMakeLists.txt</span><br><span class="line">│   ├── glad</span><br><span class="line">│   ├── lumos</span><br><span class="line">│   └── stb</span><br><span class="line">└── test</span><br><span class="line">    ├── CMakeLists.txt</span><br><span class="line">    ├── test_gl.cpp</span><br><span class="line">    ├── test_imageio.cpp</span><br><span class="line">    ├── test_imgui.cpp</span><br><span class="line">    ├── test_pcg.cpp</span><br><span class="line">    ├── test_random_permutation.cpp</span><br><span class="line">    └── test_viewer.cpp</span><br></pre></td></tr></table></figure>
+
+<p>含义：</p>
+<ul>
+<li><p><code>CMakeLists.txt</code>：组织项目的源代码，不会包含具体的编译细节，仅包含项目的声明、跨平台控制等，示例如下：</p>
+<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line"><span class="keyword">cmake_minimum_required</span>(VERSION <span class="number">3.20</span>.<span class="number">0</span>)</span><br><span class="line"><span class="keyword">project</span>(Lumos)</span><br><span class="line"></span><br><span class="line"><span class="comment"># used with command `cmake -DENABLE_TESTING=ON -B build -S .`</span></span><br><span class="line"><span class="comment"># Define an option with default value OFF (disabled)</span></span><br><span class="line"><span class="keyword">option</span>(<span class="keyword">ENABLE_TESTING</span> <span class="string">&quot;Enable testing&quot;</span> <span class="keyword">OFF</span>)</span><br><span class="line"></span><br><span class="line">cmake_path(<span class="keyword">SET</span> DATA_PATH NORMALIZE <span class="variable">$&#123;PROJECT_SOURCE_DIR&#125;</span>/data)</span><br><span class="line"></span><br><span class="line"><span class="keyword">add_subdirectory</span>(cmake)</span><br><span class="line"><span class="keyword">add_subdirectory</span>(extern)</span><br><span class="line"><span class="keyword">add_subdirectory</span>(src)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">ENABLE_TESTING</span>)</span><br><span class="line">  <span class="keyword">enable_testing</span>()</span><br><span class="line">  <span class="keyword">add_subdirectory</span>(<span class="keyword">test</span>)</span><br><span class="line"><span class="keyword">endif</span>()</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>src</code>、<code>test</code>、<code>extern</code>
+分别代表源代码、测试代码以及第三方依赖库，每一个都会包含各自的
+<code>CMakeLists.txt</code>，用来管理代码，对于 <code>src</code>
+中的库代码（自定义的
+library），个人推荐将头文件（<code>.h</code>）和源代码文件
+（<code>.cpp</code>） 分开放，同时 include
+目录时设定好文件夹层级，示例如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">.</span><br><span class="line">├── CMakeLists.txt</span><br><span class="line">├── core</span><br><span class="line">│   ├── CMakeLists.txt</span><br><span class="line">│   ├── include</span><br><span class="line">│   │   └── lumos</span><br><span class="line">│   │       └── core</span><br><span class="line">│   └── src</span><br><span class="line">└── gui</span><br><span class="line">    ├── CMakeLists.txt</span><br><span class="line">    ├── include</span><br><span class="line">    │   └── lumos</span><br><span class="line">    │       └── gui</span><br><span class="line">    └── src</span><br></pre></td></tr></table></figure>
+
+<p>这样做稍微有点繁琐，但是代码的组织逻辑比较清晰</p>
+<p>对于 <code>extern</code> 文件夹，其用来添加第三方依赖，推荐使用
+<code>git submodule</code> 来管理版本，下载时使用
+<code>git clone --recursive &lt;repo-url&gt;</code> 即可。</p></li>
+</ul>
+<h1 id="依赖管理">依赖管理</h1>
+<h2 id="添加-submodule">添加 submodule</h2>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule add &lt;repo-url&gt; &lt;local-submodule-path&gt;</span><br></pre></td></tr></table></figure>
+
+<p>例如</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule add https://github.com/ocornut/imgui.git extern/imgui</span><br></pre></td></tr></table></figure>
+
+<h2 id="使用指定-commit">使用指定 commit</h2>
+<p>为确保代码稳定性，我们可能需要使用特定版本的代码，例如 imgui
+中我们想使用 tag 为 <code>v1.89.7-docking</code>，我们需要进入 submodule
+目录手动切换一下</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cd</span> extern/imgui</span><br><span class="line">git checkout v1.89.7-docking</span><br></pre></td></tr></table></figure>
+
+<p>当我们提交后 github 就会默认链接到该 repo 对应的 commit 了</p>
+<h2 id="删除-submodule">删除 submodule</h2>
+<p>在 git 中删除 submodule
+较为繁琐，没有一个直接删除的方法，参考网上的操作大概有以下5个步骤：</p>
+<ol type="1">
+<li><p>删除子模块目录</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">rm</span> -rf extern/imgui</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>删除 <code>.git</code> 的缓存</p>
+ <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git <span class="built_in">rm</span> --cached extern/imgui</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>删除 <code>.gitmodules</code> 中对应的子模块</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[submodule &quot;extern/imgui&quot;]</span><br><span class="line">	path = extern/imgui</span><br><span class="line">	url = https://github.com/ocornut/imgui.git</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>删除 <code>.git/config</code> 中相应条目</p>
+ <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">    [core]</span><br><span class="line">        repositoryformatversion = 0</span><br><span class="line">        filemode = <span class="literal">true</span></span><br><span class="line">        bare = <span class="literal">false</span></span><br><span class="line">        logallrefupdates = <span class="literal">true</span></span><br><span class="line">        ignorecase = <span class="literal">true</span></span><br><span class="line">        precomposeunicode = <span class="literal">true</span></span><br><span class="line">    ...</span><br><span class="line">[submodule <span class="string">&quot;extern/imgui&quot;</span>]</span><br><span class="line">	url = https://github.com/ocornut/imgui.git</span><br><span class="line">...</span><br><span class="line">5. 删除 `.git` 中子模块目录</span><br><span class="line"></span><br><span class="line">    ```bash</span><br><span class="line">    <span class="built_in">rm</span> -rf .git/modules/extern/imgui</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h1 id="个人偏好命名方式">个人偏好命名方式</h1>
+<p>命名方式有很多，选择自己喜欢的就行，关键在于<strong>统一</strong></p>
+<p><strong>文件名</strong></p>
+<p>小写下划线，例如
+<code>image_utils.h</code>，<code>imgae_utils.cpp</code></p>
+<p><strong>命名空间</strong></p>
+<p>小写（尽量不要添加下划线，使用子命名空间即可），例如
+<code>lumos::xxx</code>，<code>lumos::core::xxx</code></p>
+<p><strong>类名</strong></p>
+<p>首字母大写驼峰命名，对于全部大写的当成单词仅首字母大写，例如
+<code>HTML</code> 写成 <code>Html</code>，<code>RGBA</code> 写成
+<code>Rgba</code></p>
+<p>函数</p>
+<p><strong>类函数名</strong></p>
+<p>对于 <code>public / protected</code>
+方法而言使用首字母大写驼峰命名，例如 <code>Initialize</code>，对于
+<code>private</code> 方法使用首字母小写驼峰命名，例如
+<code>createContext</code></p>
+<p><strong>类变量</strong></p>
+<p>全部以 <code>m_</code> 开头，小写下划线，例如
+<code>m_handle</code></p>
+<p><strong>变量名</strong></p>
+<p>小写下划线，例如 <code>image_data</code></p>
+<p><strong>常量</strong></p>
+<p>全部大写，例如 <code>BUFFER_SIZE</code></p>
+<p><strong>cmake文件名</strong></p>
+<p>以 <code>-</code> 连接，例如 <code>add-imgui.cmake</code></p>
+<p><strong>cmake函数名</strong></p>
+<p>小写下划线（类似于 cmake 的函数命名方式），例如
+<code>add_imgui</code></p>
 ]]></content>
       <categories>
         <category>C++学习笔记</category>
@@ -11165,95 +11249,6 @@ shm_Adenialzz的博客-CSDN博客</a></li>
       <tags>
         <tag>C++</tag>
         <tag>CMake</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>WebRTC实践</title>
-    <url>/posts/ac0d/</url>
-    <content><![CDATA[<h1 id="webrtc实践">WebRTC实践</h1>
-<p><a href="https://webrtc.org/">WebRTC</a></p>
-<p>WebRTC 表示 Web <strong>R</strong>eal-<strong>T</strong>ime
-<strong>C</strong>ommunication，通过建立端到端的P2P连接，实现高效的数据传输</p>
-<p>由于两个客户端并不能直接连通，需要借助一个服务器来完成建立连接的工作，下面展示了一个最简单的WebRTC交互模型，包含两个客户端以及一个服务端</p>
-<ul>
-<li><p>Client1</p></li>
-<li><p>Client2</p></li>
-<li><p>Signalling Server</p>
-<p>establish p2p connection</p>
-<p>hand shaking</p></li>
-</ul>
-<blockquote>
-<p>both clients need to provide an ICE Server configuration. This is
-either a STUN or a TURN-server, and their role is to provide ICE
-candidates to each client which is then transferred to the remote peer.
-This transferring of ICE candidates is commonly called signaling.</p>
-<p>ICE Server stands for <strong>I</strong>nternet
-<strong>C</strong>onnectivity <strong>E</strong>stablishment
-Server（中文翻译就是用于建立互联网连接的服务器）</p>
-<p>Passing SDP objects to remote peers is called signaling and is not
-covered by the WebRTC specification.</p>
-</blockquote>
-<p>名词解释</p>
-<ul>
-<li>WebRTC</li>
-<li>P2P</li>
-<li>ICE</li>
-<li>STUN</li>
-<li>TURN</li>
-<li>SDP</li>
-<li>NAT</li>
-</ul>
-<blockquote>
-<p>Before two peers can communitcate using WebRTC, they need to exchange
-connectivity information. Since the network conditions can vary
-depending on a number of factors, an external service is usually used
-for discovering the possible candidates for connecting to a peer. This
-service is called ICE and is using either a STUN or a TURN server.
-<em><strong>STUN stands for Session Traversal Utilities for NAT, and is
-usually used indirectly in most WebRTC applications.</strong></em></p>
-<p><em><strong>TURN (Traversal Using Relay NAT) is the more advanced
-solution that incorporates the STUN protocols and most commercial WebRTC
-based services use a TURN server for establishing connections between
-peers.</strong></em> The WebRTC API supports both STUN and TURN
-directly, and it is gathered under the more complete term Internet
-Connectivity Establishment. When creating a WebRTC connection, we
-usually provide one or several ICE servers in the configuration for the
-<code>RTCPeerConnection</code> object.</p>
-</blockquote>
-<span id="more"></span>
-
-<p>client1 -&gt; TURN -&gt; client2 (fake p2p, relay)</p>
-<p>client1 -&gt; client2 (real p2p)</p>
-<blockquote>
-<p>But sometimes this would not be sufficient because there are
-possibilities where some users might face connectivity issues because of
-different IP networks where Firewalls and NATs (Network Address
-Translators) could include specific network policies that will not allow
-RTC communications.</p>
-<p>In order to solve this kind of network connection scenario, we need
-to use ICE (Interactive Connectivity Establishment) protocol and it
-defines a systematic way of finding possible communication options
-between a peer and the Video Gateway (WebRTC).</p>
-<p>ICE (INTERACTIVE CONNECTIVITY ESTABLISHMENT) is a protocol used to
-generate media traversal candidates that can be used in WebRTC
-applications, and it can be successfully sent and received through
-Network Address Translation (NAT)s using STUN and TURN.</p>
-</blockquote>
-<h2 id="基本概念">基本概念</h2>
-<h2 id="年轻人的第一个-webrtc-应用">年轻人的第一个 WebRTC 应用</h2>
-<h2 id="其他应用场景">其他应用场景</h2>
-<p>通过 webrtc 可以是两个应用端之间的p2p
-交互（这也是为什么腾讯会议在两个人的时候不限时，而在超过两个人的时候限时了，两个人的时候用的是
-p2p
-连接，腾讯会议的服务器只需要建立p2p连接就行，其他不管，但是多人情况下可能需要服务端进行推流，需要消耗大量服务器资源，因此要收费）</p>
-<p>也可以实现前端后后端的交互（例如深度学习应用的部署）</p>
-]]></content>
-      <categories>
-        <category>技术笔记</category>
-      </categories>
-      <tags>
-        <tag>WebRTC</tag>
-        <tag>Web</tag>
       </tags>
   </entry>
   <entry>
@@ -11813,6 +11808,103 @@ class="math inline">\(\mathcal{O}(1)\)</span>，使用链表反转的后序遍�
 <p>代码最后单独添加了一个 <code>add_path(root)</code>
 是因为莫里斯遍历完成后实际上还有根节点的输出没完成，需要遍历一遍添加这个输出。</p>
 <p>（还有一种解决方案就是再添加一个根节点，将原来的根节点作为新根节点的左节点，这样就可以在一个循环内输出所有的结果了）</p>
+]]></content>
+      <categories>
+        <category>算法</category>
+      </categories>
+      <tags>
+        <tag>算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>生成排列和组合</title>
+    <url>/posts/454a/</url>
+    <content><![CDATA[<span id="more"></span>
+
+<h1 id="所有排列">所有排列</h1>
+<p>由于排列本身的递归形式，可以通过回溯不断生成所有的排列。例如序列为
+<code>[1,2,3,4]</code>，当我们确定第一个位置为 <code>1</code>
+后，剩下三个位置，此时有效的排列就变成了 剩下三个数 <code>[2,3,4]</code>
+在剩下三个位置上的全排列了，这样我们就从求 <code>[1,2,3,4]</code>
+的全排列变成了求 <code>[2,3,4]</code> 全排列，当序列长度为 1
+时其排列就为其本身，递归终止。</p>
+<p>根据这个思路我们就可以写出所有的全排列了</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">permutations</span><span class="params">(<span class="type">const</span> std::vector&lt;<span class="type">int</span>&gt;&amp; numbers,</span></span></span><br><span class="line"><span class="params"><span class="function">                  std::vector&lt;<span class="type">int</span>&gt;&amp; curr,</span></span></span><br><span class="line"><span class="params"><span class="function">                  std::vector&lt;<span class="type">int</span>&gt;&amp; visited,</span></span></span><br><span class="line"><span class="params"><span class="function">                  <span class="type">const</span> std::vector&lt;std::vector&lt;<span class="type">int</span>&gt;&gt;&amp; output)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(curr.<span class="built_in">size</span>() == <span class="built_in">numbers</span>().<span class="built_in">size</span>()) &#123;</span><br><span class="line">        output.<span class="built_in">emplece_back</span>(curr);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;numbers.<span class="built_in">size</span>();i++) &#123;</span><br><span class="line">        <span class="keyword">if</span>(visited[i]) &#123;</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        visited[i] = <span class="literal">true</span>;</span><br><span class="line">        curr.<span class="built_in">emplace_back</span>(numbers[i]);</span><br><span class="line">        <span class="built_in">permutations</span>(numbers,curr,visited,output);</span><br><span class="line">        curr.<span class="built_in">pop_back</span>();</span><br><span class="line">        visited[i] = <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="无重复元素的所有排列">无重复元素的所有排列</h1>
+<p>如果所提供的序列中包含重复元素，我们通过上面的算法就可能生成重复结果，最简单的办法就是使用
+<code>set</code>
+去重了，但是这不是我们想要的，是否可以直接生成不包含重复元素的全排列呢？从原理进行分析：</p>
+<p>例如序列 <code>[1,2,2,4]</code>，为便于展示，我们将两个 2
+标上下标，根据前面的算法，我们首先确定位置1的元素 <span
+class="math display">\[
+[2_{a},]
+\]</span> 此时我们确定了编号为 a 的 2，此时还剩下三个元素 <span
+class="math inline">\([2_{b},1,4]\)</span>，其结果就应该是剩下三个的全排列。</p>
+<p>如果我们确定位置1的元素为 <span class="math display">\[
+[2_{b},]
+\]</span> 此时剩下 <span class="math inline">\([2_{a},1,4]\)</span>
+三个元素全排列，但是这个部分生成的结果和 <span
+class="math inline">\(2_a\)</span>
+生成的完全一致，因此我们可以全部跳过。</p>
+<p>因此，<strong>如果我们知道当前位置该值已经设置过，就可以直接跳过了</strong>，从而确保每次生成都是不一样的，我们可以使用一个
+map
+来进行计数，这样我们遍历每一个位置的时候都会使用不一样的元素，从而杜绝了重复元素。</p>
+<p>代码如下：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">permutations</span><span class="params">(<span class="type">const</span> std::vector&lt;<span class="type">int</span>&gt;&amp; numbers</span></span></span><br><span class="line"><span class="params"><span class="function">                  std::vector&lt;std::vector&lt;<span class="type">int</span>&gt;&gt;&amp; output)</span> </span>&#123;</span><br><span class="line">    std::unordered_map&lt;<span class="type">int</span>,<span class="type">int</span>&gt; count;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i : numbers) &#123;</span><br><span class="line">        <span class="keyword">if</span>(count.<span class="built_in">find</span>(i) == count.<span class="built_in">end</span>()) &#123;</span><br><span class="line">            count[i] = <span class="number">1</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            count[i] ++;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    std::vector&lt;<span class="type">int</span>&gt; curr;</span><br><span class="line">    std::function&lt;<span class="type">void</span>()&gt; recursion;</span><br><span class="line">    recursion = [&amp;]()&#123;</span><br><span class="line">        <span class="keyword">if</span>(curr.<span class="built_in">size</span>() == numbers.<span class="built_in">size</span>()) &#123;</span><br><span class="line">            output.<span class="built_in">emplace_back</span>(curr);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">const</span> <span class="keyword">auto</span>&amp; [key, value] : count) &#123;</span><br><span class="line">            <span class="keyword">if</span>(value == <span class="number">0</span>) &#123;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            count[key]--;</span><br><span class="line">            curr.<span class="built_in">emplace_back</span>(key);</span><br><span class="line">            <span class="built_in">recursion</span>();</span><br><span class="line">            curr.<span class="built_in">pop_back</span>();</span><br><span class="line">            count[key]++;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="built_in">recursion</span>();</span><br><span class="line">    <span class="keyword">return</span> output;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="所有组合">所有组合</h1>
+<p>从给定候选序列 <code>nums</code>(不包含重复元素) 中生成长度为
+<code>k</code>
+的组合序列，其生成过程十分类似于排列，区别就是组合中没有顺序信息，例如候选序列为
+<code>[1,2,3,4]</code>，<code>k</code>等于2，<code>[1,2]</code> 和
+<code>[2,1]</code> 实际上表示的是同一个组合，因此仅使用
+<code>visited</code>
+数组并不够用，还需要确保同一个组合仅生成一次，实现起来也很简单，我们只需要确保遍历时前面已经访问过的后面不再访问即可。例如
+<code>[1,2,3,4]</code>，我们从 1 开始，所有的组合为</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[1,2],[1,3],[1,4]</span><br></pre></td></tr></table></figure>
+
+<p>当从2开始的时候，可选范围为 [2,3,4]</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[2,3],[2,4]</span><br></pre></td></tr></table></figure>
+
+<p>当从3开始的时候，可选范围为 [3,4]</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[3,4]</span><br></pre></td></tr></table></figure>
+
+<p>相比于排列，越往后候选元素的个数越少，而排列在循环过程中候选元素个数不变。</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">combination</span><span class="params">(<span class="type">const</span> std::vector&lt;<span class="type">int</span>&gt;&amp; nums,</span></span></span><br><span class="line"><span class="params"><span class="function">                 std::vector&lt;std::vector&lt;<span class="type">int</span>&gt;&gt;&amp; output)</span> </span>&#123;</span><br><span class="line">    std::vector&lt;<span class="type">int</span>&gt; curr;</span><br><span class="line">    std::function&lt;<span class="type">void</span>(<span class="type">int</span>)&gt; recursion;</span><br><span class="line">    recursion = [&amp;](<span class="type">int</span> s)&#123;</span><br><span class="line">        <span class="keyword">if</span>(curr.<span class="built_in">size</span>() == nums.<span class="built_in">size</span>()) &#123;</span><br><span class="line">            output.<span class="built_in">emplace_back</span>(curr);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i=s;i&lt;nums.<span class="built_in">size</span>();i++) &#123;</span><br><span class="line">            curr.<span class="built_in">emplace_back</span>(nums[i]);</span><br><span class="line">            <span class="built_in">recursion</span>(i+<span class="number">1</span>);</span><br><span class="line">            curr.<span class="built_in">pop_back</span>();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="built_in">recursion</span>(<span class="number">1</span>);</span><br><span class="line">    <span class="keyword">return</span> output;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="下一个排列">下一个排列</h1>
+<p>这个实际上是 C++ STL 中的 <code>next_permutation</code>
+原理，对于一个支持比较（operator&lt;）的序列，可以通过该函数得到下一个排列结果</p>
+<p>例如
+<code>[1,2,3,4]</code>，不断执行<code>next_permutation</code>的输出结果如下：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string&gt;</span></span></span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    std::string s = <span class="string">&quot;123&quot;</span>;</span><br><span class="line">    <span class="keyword">do</span> std::cout &lt;&lt; s &lt;&lt; <span class="string">&#x27;\n&#x27;</span>;</span><br><span class="line">    <span class="keyword">while</span> (std::<span class="built_in">next_permutation</span>(s.<span class="built_in">begin</span>(), s.<span class="built_in">end</span>()));</span><br><span class="line">    std::cout &lt;&lt; s &lt;&lt; <span class="string">&#x27;\n&#x27;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>输出结果为</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">123</span><br><span class="line">132</span><br><span class="line">213</span><br><span class="line">231</span><br><span class="line">312</span><br><span class="line">321</span><br></pre></td></tr></table></figure>
+
+<p>其关键在于：<strong>所有的排列中，升序序列为最小，降序序列为最大</strong>，</p>
+<p>我们可以从 123 的排列中看出来，123最小，321最大</p>
+<p>对于任意一个序列，我们从后向前找到最大的升序序列（最大），位置从
+<code>[j,n-1]</code>，然后从升序序列中找到第一个大于
+<code>nums[j-1]</code> 的元素
+<code>nums[k]</code>，交换两元素，再将升序序列反转即可。</p>
+<p>下图展示了序列 <code>1432765</code> 的下一排列生成图示，其对应序列为
+<code>1435267</code></p>
+<p><img data-src="/posts/null/image-20230809172245015.png" /></p>
+<p>按照这三个步骤，我们可以很简单的写出代码：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">next_permutation</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; nums)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 1. 找到 nums 的升序序列 </span></span><br><span class="line">    <span class="type">int</span> i = nums.<span class="built_in">size</span>() - <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span>(i &gt; <span class="number">0</span> &amp;&amp; nums[i] &lt;= nums[i<span class="number">-1</span>]) &#123;</span><br><span class="line">        i--;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 已经是最大，返回最小（重新开始）</span></span><br><span class="line">    <span class="keyword">if</span>(i == <span class="number">0</span>) &#123;</span><br><span class="line">        std::<span class="built_in">reverse</span>(nums.<span class="built_in">begin</span>(),nums.<span class="built_in">end</span>());</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 2. 找到稍微大一点的</span></span><br><span class="line">    <span class="type">int</span> j = i - <span class="number">1</span>;</span><br><span class="line">    i = nums.<span class="built_in">size</span>() - <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span>(i &gt; j &amp;&amp; nums[i] &lt;= nums[j]) &#123;</span><br><span class="line">        i--;</span><br><span class="line">    &#125;</span><br><span class="line">    std::<span class="built_in">swap</span>(nums[i],nums[j]);</span><br><span class="line">    <span class="comment">// 3. 升序序列转降序序列</span></span><br><span class="line">    std::<span class="built_in">reverse</span>(nums.<span class="built_in">begin</span>() + j + <span class="number">1</span>,nums.<span class="built_in">end</span>());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="随机排列">随机排列</h1>
+<p>随机排列同样是一个递归问题，当我们确定位置1的元素后，剩下的结果就是后续元素的排列，一直递归下去就可以拿到结果。由于序列的序号是连续且有序的，我们可以使用二分法逐步确定。</p>
+<p>通过随机数生成一个 <code>[0,nums.size()-1]</code> 范围的数
+<code>m</code> 后，我们剩下两个方向，<code>[0,m-1]</code> 以及
+<code>[m+1,nums.size()-1]</code>，之后分别在左右两侧生成，直到结束。</p>
+<p>代码如下</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">random_permutation</span><span class="params">(<span class="type">const</span> std::vector&lt;<span class="type">int</span>&gt;&amp; nums,</span></span></span><br><span class="line"><span class="params"><span class="function">                        std::vector&lt;<span class="type">int</span>&gt;&amp; output)</span> </span>&#123;</span><br><span class="line">    std::function&lt;<span class="type">void</span>(<span class="type">int</span>,<span class="type">int</span>)&gt; recursion;</span><br><span class="line">    recursion = [&amp;](<span class="type">int</span> l,<span class="type">int</span> r) &#123;</span><br><span class="line">        <span class="keyword">if</span>(l &gt; r) &#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="type">int</span> m = <span class="built_in">uniform_sample</span>(l,r);</span><br><span class="line">        output.<span class="built_in">emplace_back</span>(nums[m]);</span><br><span class="line">        <span class="built_in">recursion</span>(l,m<span class="number">-1</span>);</span><br><span class="line">        <span class="built_in">recursion</span>(m+<span class="number">1</span>,r);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">recursion</span>(<span class="number">0</span>,nums.<span class="built_in">size</span>()<span class="number">-1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>对应 uniform_sample 的实现可自行百度，只要可以实现 <code>[l,r]</code>
+区间的均匀采样即可。</p>
 ]]></content>
       <categories>
         <category>算法</category>

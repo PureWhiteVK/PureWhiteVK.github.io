@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"purewhitevk.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.14.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"default"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="所有排列 由于排列本身的递归形式，可以通过回溯不断生成所有的排列。例如序列为 [1,2,3,4]，当我们确定第一个位置为 1 后，剩下三个位置，此时有效的排列就变成了 剩下三个数 [2,3,4] 在剩下三个位置上的全排列了，这样我们就从求 [1,2,3,4] 的全排列变成了求 [2,3,4] 全排列，当序列长度为 1 时其排列就为其本身，递归终止。 根据这个思路我们就可以写出所有的全排列了 1">
+<meta property="og:type" content="article">
+<meta property="og:title" content="生成排列和组合">
+<meta property="og:url" content="https://purewhitevk.github.io/posts/454a/">
+<meta property="og:site_name" content="PureWhiteVK&#39;s Blog">
+<meta property="og:description" content="所有排列 由于排列本身的递归形式，可以通过回溯不断生成所有的排列。例如序列为 [1,2,3,4]，当我们确定第一个位置为 1 后，剩下三个位置，此时有效的排列就变成了 剩下三个数 [2,3,4] 在剩下三个位置上的全排列了，这样我们就从求 [1,2,3,4] 的全排列变成了求 [2,3,4] 全排列，当序列长度为 1 时其排列就为其本身，递归终止。 根据这个思路我们就可以写出所有的全排列了 1">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/null/image-20230809172245015.png">
+<meta property="article:published_time" content="2023-08-06T15:05:58.000Z">
+<meta property="article:modified_time" content="2023-08-06T15:05:58.000Z">
+<meta property="article:author" content="PureWhiteVK">
+<meta property="article:tag" content="算法">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://purewhitevk.github.io/posts/null/image-20230809172245015.png">
+
+
+<link rel="canonical" href="https://purewhitevk.github.io/posts/454a/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://purewhitevk.github.io/posts/454a/","path":"posts/454a/","title":"生成排列和组合"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>生成排列和组合 | PureWhiteVK's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">PureWhiteVK's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">19</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">7</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">164</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%89%80%E6%9C%89%E6%8E%92%E5%88%97"><span class="nav-number">1.</span> <span class="nav-text">所有排列</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%97%A0%E9%87%8D%E5%A4%8D%E5%85%83%E7%B4%A0%E7%9A%84%E6%89%80%E6%9C%89%E6%8E%92%E5%88%97"><span class="nav-number">2.</span> <span class="nav-text">无重复元素的所有排列</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%89%80%E6%9C%89%E7%BB%84%E5%90%88"><span class="nav-number">3.</span> <span class="nav-text">所有组合</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%8B%E4%B8%80%E4%B8%AA%E6%8E%92%E5%88%97"><span class="nav-number">4.</span> <span class="nav-text">下一个排列</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%9A%8F%E6%9C%BA%E6%8E%92%E5%88%97"><span class="nav-number">5.</span> <span class="nav-text">随机排列</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="PureWhiteVK"
+      src="/images/Touma.Kazusa.256x256.png">
+  <p class="site-author-name" itemprop="name">PureWhiteVK</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">164</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/PureWhiteVK" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;PureWhiteVK" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:yl_xiao@outlook.com" title="E-Mail → mailto:yl_xiao@outlook.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/dead.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://purewhitevk.github.io/posts/454a/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/Touma.Kazusa.256x256.png">
+      <meta itemprop="name" content="PureWhiteVK">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PureWhiteVK's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="生成排列和组合 | PureWhiteVK's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          生成排列和组合
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023/08/06 23:05:58" itemprop="dateCreated datePublished" datetime="2023-08-06T23:05:58+08:00">2023/08/06</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E7%AE%97%E6%B3%95/" itemprop="url" rel="index"><span itemprop="name">算法</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>1.4k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>5 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <span id="more"></span>
+
+<h1 id="所有排列">所有排列</h1>
+<p>由于排列本身的递归形式，可以通过回溯不断生成所有的排列。例如序列为
+<code>[1,2,3,4]</code>，当我们确定第一个位置为 <code>1</code>
+后，剩下三个位置，此时有效的排列就变成了 剩下三个数 <code>[2,3,4]</code>
+在剩下三个位置上的全排列了，这样我们就从求 <code>[1,2,3,4]</code>
+的全排列变成了求 <code>[2,3,4]</code> 全排列，当序列长度为 1
+时其排列就为其本身，递归终止。</p>
+<p>根据这个思路我们就可以写出所有的全排列了</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">permutations</span><span class="params">(<span class="type">const</span> std::vector&lt;<span class="type">int</span>&gt;&amp; numbers,</span></span></span><br><span class="line"><span class="params"><span class="function">                  std::vector&lt;<span class="type">int</span>&gt;&amp; curr,</span></span></span><br><span class="line"><span class="params"><span class="function">                  std::vector&lt;<span class="type">int</span>&gt;&amp; visited,</span></span></span><br><span class="line"><span class="params"><span class="function">                  <span class="type">const</span> std::vector&lt;std::vector&lt;<span class="type">int</span>&gt;&gt;&amp; output)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(curr.<span class="built_in">size</span>() == <span class="built_in">numbers</span>().<span class="built_in">size</span>()) &#123;</span><br><span class="line">        output.<span class="built_in">emplece_back</span>(curr);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;numbers.<span class="built_in">size</span>();i++) &#123;</span><br><span class="line">        <span class="keyword">if</span>(visited[i]) &#123;</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        visited[i] = <span class="literal">true</span>;</span><br><span class="line">        curr.<span class="built_in">emplace_back</span>(numbers[i]);</span><br><span class="line">        <span class="built_in">permutations</span>(numbers,curr,visited,output);</span><br><span class="line">        curr.<span class="built_in">pop_back</span>();</span><br><span class="line">        visited[i] = <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="无重复元素的所有排列">无重复元素的所有排列</h1>
+<p>如果所提供的序列中包含重复元素，我们通过上面的算法就可能生成重复结果，最简单的办法就是使用
+<code>set</code>
+去重了，但是这不是我们想要的，是否可以直接生成不包含重复元素的全排列呢？从原理进行分析：</p>
+<p>例如序列 <code>[1,2,2,4]</code>，为便于展示，我们将两个 2
+标上下标，根据前面的算法，我们首先确定位置1的元素 <span
+class="math display">\[
+[2_{a},]
+\]</span> 此时我们确定了编号为 a 的 2，此时还剩下三个元素 <span
+class="math inline">\([2_{b},1,4]\)</span>，其结果就应该是剩下三个的全排列。</p>
+<p>如果我们确定位置1的元素为 <span class="math display">\[
+[2_{b},]
+\]</span> 此时剩下 <span class="math inline">\([2_{a},1,4]\)</span>
+三个元素全排列，但是这个部分生成的结果和 <span
+class="math inline">\(2_a\)</span>
+生成的完全一致，因此我们可以全部跳过。</p>
+<p>因此，<strong>如果我们知道当前位置该值已经设置过，就可以直接跳过了</strong>，从而确保每次生成都是不一样的，我们可以使用一个
+map
+来进行计数，这样我们遍历每一个位置的时候都会使用不一样的元素，从而杜绝了重复元素。</p>
+<p>代码如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">permutations</span><span class="params">(<span class="type">const</span> std::vector&lt;<span class="type">int</span>&gt;&amp; numbers</span></span></span><br><span class="line"><span class="params"><span class="function">                  std::vector&lt;std::vector&lt;<span class="type">int</span>&gt;&gt;&amp; output)</span> </span>&#123;</span><br><span class="line">    std::unordered_map&lt;<span class="type">int</span>,<span class="type">int</span>&gt; count;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i : numbers) &#123;</span><br><span class="line">        <span class="keyword">if</span>(count.<span class="built_in">find</span>(i) == count.<span class="built_in">end</span>()) &#123;</span><br><span class="line">            count[i] = <span class="number">1</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            count[i] ++;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    std::vector&lt;<span class="type">int</span>&gt; curr;</span><br><span class="line">    std::function&lt;<span class="type">void</span>()&gt; recursion;</span><br><span class="line">    recursion = [&amp;]()&#123;</span><br><span class="line">        <span class="keyword">if</span>(curr.<span class="built_in">size</span>() == numbers.<span class="built_in">size</span>()) &#123;</span><br><span class="line">            output.<span class="built_in">emplace_back</span>(curr);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">const</span> <span class="keyword">auto</span>&amp; [key, value] : count) &#123;</span><br><span class="line">            <span class="keyword">if</span>(value == <span class="number">0</span>) &#123;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            count[key]--;</span><br><span class="line">            curr.<span class="built_in">emplace_back</span>(key);</span><br><span class="line">            <span class="built_in">recursion</span>();</span><br><span class="line">            curr.<span class="built_in">pop_back</span>();</span><br><span class="line">            count[key]++;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="built_in">recursion</span>();</span><br><span class="line">    <span class="keyword">return</span> output;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="所有组合">所有组合</h1>
+<p>从给定候选序列 <code>nums</code>(不包含重复元素) 中生成长度为
+<code>k</code>
+的组合序列，其生成过程十分类似于排列，区别就是组合中没有顺序信息，例如候选序列为
+<code>[1,2,3,4]</code>，<code>k</code>等于2，<code>[1,2]</code> 和
+<code>[2,1]</code> 实际上表示的是同一个组合，因此仅使用
+<code>visited</code>
+数组并不够用，还需要确保同一个组合仅生成一次，实现起来也很简单，我们只需要确保遍历时前面已经访问过的后面不再访问即可。例如
+<code>[1,2,3,4]</code>，我们从 1 开始，所有的组合为</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[1,2],[1,3],[1,4]</span><br></pre></td></tr></table></figure>
+
+<p>当从2开始的时候，可选范围为 [2,3,4]</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[2,3],[2,4]</span><br></pre></td></tr></table></figure>
+
+<p>当从3开始的时候，可选范围为 [3,4]</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[3,4]</span><br></pre></td></tr></table></figure>
+
+<p>相比于排列，越往后候选元素的个数越少，而排列在循环过程中候选元素个数不变。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">combination</span><span class="params">(<span class="type">const</span> std::vector&lt;<span class="type">int</span>&gt;&amp; nums,</span></span></span><br><span class="line"><span class="params"><span class="function">                 std::vector&lt;std::vector&lt;<span class="type">int</span>&gt;&gt;&amp; output)</span> </span>&#123;</span><br><span class="line">    std::vector&lt;<span class="type">int</span>&gt; curr;</span><br><span class="line">    std::function&lt;<span class="type">void</span>(<span class="type">int</span>)&gt; recursion;</span><br><span class="line">    recursion = [&amp;](<span class="type">int</span> s)&#123;</span><br><span class="line">        <span class="keyword">if</span>(curr.<span class="built_in">size</span>() == nums.<span class="built_in">size</span>()) &#123;</span><br><span class="line">            output.<span class="built_in">emplace_back</span>(curr);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i=s;i&lt;nums.<span class="built_in">size</span>();i++) &#123;</span><br><span class="line">            curr.<span class="built_in">emplace_back</span>(nums[i]);</span><br><span class="line">            <span class="built_in">recursion</span>(i+<span class="number">1</span>);</span><br><span class="line">            curr.<span class="built_in">pop_back</span>();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="built_in">recursion</span>(<span class="number">1</span>);</span><br><span class="line">    <span class="keyword">return</span> output;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="下一个排列">下一个排列</h1>
+<p>这个实际上是 C++ STL 中的 <code>next_permutation</code>
+原理，对于一个支持比较（operator&lt;）的序列，可以通过该函数得到下一个排列结果</p>
+<p>例如
+<code>[1,2,3,4]</code>，不断执行<code>next_permutation</code>的输出结果如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string&gt;</span></span></span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    std::string s = <span class="string">&quot;123&quot;</span>;</span><br><span class="line">    <span class="keyword">do</span> std::cout &lt;&lt; s &lt;&lt; <span class="string">&#x27;\n&#x27;</span>;</span><br><span class="line">    <span class="keyword">while</span> (std::<span class="built_in">next_permutation</span>(s.<span class="built_in">begin</span>(), s.<span class="built_in">end</span>()));</span><br><span class="line">    std::cout &lt;&lt; s &lt;&lt; <span class="string">&#x27;\n&#x27;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>输出结果为</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">123</span><br><span class="line">132</span><br><span class="line">213</span><br><span class="line">231</span><br><span class="line">312</span><br><span class="line">321</span><br></pre></td></tr></table></figure>
+
+<p>其关键在于：<strong>所有的排列中，升序序列为最小，降序序列为最大</strong>，</p>
+<p>我们可以从 123 的排列中看出来，123最小，321最大</p>
+<p>对于任意一个序列，我们从后向前找到最大的升序序列（最大），位置从
+<code>[j,n-1]</code>，然后从升序序列中找到第一个大于
+<code>nums[j-1]</code> 的元素
+<code>nums[k]</code>，交换两元素，再将升序序列反转即可。</p>
+<p>下图展示了序列 <code>1432765</code> 的下一排列生成图示，其对应序列为
+<code>1435267</code></p>
+<p><img data-src="/posts/null/image-20230809172245015.png" /></p>
+<p>按照这三个步骤，我们可以很简单的写出代码：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">next_permutation</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; nums)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 1. 找到 nums 的升序序列 </span></span><br><span class="line">    <span class="type">int</span> i = nums.<span class="built_in">size</span>() - <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span>(i &gt; <span class="number">0</span> &amp;&amp; nums[i] &lt;= nums[i<span class="number">-1</span>]) &#123;</span><br><span class="line">        i--;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 已经是最大，返回最小（重新开始）</span></span><br><span class="line">    <span class="keyword">if</span>(i == <span class="number">0</span>) &#123;</span><br><span class="line">        std::<span class="built_in">reverse</span>(nums.<span class="built_in">begin</span>(),nums.<span class="built_in">end</span>());</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 2. 找到稍微大一点的</span></span><br><span class="line">    <span class="type">int</span> j = i - <span class="number">1</span>;</span><br><span class="line">    i = nums.<span class="built_in">size</span>() - <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span>(i &gt; j &amp;&amp; nums[i] &lt;= nums[j]) &#123;</span><br><span class="line">        i--;</span><br><span class="line">    &#125;</span><br><span class="line">    std::<span class="built_in">swap</span>(nums[i],nums[j]);</span><br><span class="line">    <span class="comment">// 3. 升序序列转降序序列</span></span><br><span class="line">    std::<span class="built_in">reverse</span>(nums.<span class="built_in">begin</span>() + j + <span class="number">1</span>,nums.<span class="built_in">end</span>());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="随机排列">随机排列</h1>
+<p>随机排列同样是一个递归问题，当我们确定位置1的元素后，剩下的结果就是后续元素的排列，一直递归下去就可以拿到结果。由于序列的序号是连续且有序的，我们可以使用二分法逐步确定。</p>
+<p>通过随机数生成一个 <code>[0,nums.size()-1]</code> 范围的数
+<code>m</code> 后，我们剩下两个方向，<code>[0,m-1]</code> 以及
+<code>[m+1,nums.size()-1]</code>，之后分别在左右两侧生成，直到结束。</p>
+<p>代码如下</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">random_permutation</span><span class="params">(<span class="type">const</span> std::vector&lt;<span class="type">int</span>&gt;&amp; nums,</span></span></span><br><span class="line"><span class="params"><span class="function">                        std::vector&lt;<span class="type">int</span>&gt;&amp; output)</span> </span>&#123;</span><br><span class="line">    std::function&lt;<span class="type">void</span>(<span class="type">int</span>,<span class="type">int</span>)&gt; recursion;</span><br><span class="line">    recursion = [&amp;](<span class="type">int</span> l,<span class="type">int</span> r) &#123;</span><br><span class="line">        <span class="keyword">if</span>(l &gt; r) &#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="type">int</span> m = <span class="built_in">uniform_sample</span>(l,r);</span><br><span class="line">        output.<span class="built_in">emplace_back</span>(nums[m]);</span><br><span class="line">        <span class="built_in">recursion</span>(l,m<span class="number">-1</span>);</span><br><span class="line">        <span class="built_in">recursion</span>(m+<span class="number">1</span>,r);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">recursion</span>(<span class="number">0</span>,nums.<span class="built_in">size</span>()<span class="number">-1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>对应 uniform_sample 的实现可自行百度，只要可以实现 <code>[l,r]</code>
+区间的均匀采样即可。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>PureWhiteVK
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://purewhitevk.github.io/posts/454a/" title="生成排列和组合">https://purewhitevk.github.io/posts/454a/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/dead.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E7%AE%97%E6%B3%95/" rel="tag"># 算法</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/7a74/" rel="prev" title="遍历二叉树的n种方式">
+                  <i class="fa fa-chevron-left"></i> 遍历二叉树的n种方式
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PureWhiteVK</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">157k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">9:31</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
