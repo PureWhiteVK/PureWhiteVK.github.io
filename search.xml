@@ -11157,10 +11157,10 @@ shm_Adenialzz的博客-CSDN博客</a></li>
   <entry>
     <title>CMake项目结构模版</title>
     <url>/posts/d235/</url>
-    <content><![CDATA[<span id="more"></span>
-
-<h1 id="整体结构">整体结构</h1>
+    <content><![CDATA[<h1 id="整体结构">整体结构</h1>
 <figure class="highlight txt"><table><tr><td class="code"><pre><span class="line">.</span><br><span class="line">├── .gitignore</span><br><span class="line">├── .gitmodules</span><br><span class="line">├── CMakeLists.txt</span><br><span class="line">├── LICENSE</span><br><span class="line">├── README.md</span><br><span class="line">├── build</span><br><span class="line">├── cmake</span><br><span class="line">│   ├── CMakeLists.txt</span><br><span class="line">│   └── ...</span><br><span class="line">├── data</span><br><span class="line">│   ├── .gitkeep</span><br><span class="line">│   └── ...</span><br><span class="line">├── extern</span><br><span class="line">│   ├── CMakeLists.txt</span><br><span class="line">│   └── ...</span><br><span class="line">├── src</span><br><span class="line">│   ├── CMakeLists.txt</span><br><span class="line">│   ├── glad</span><br><span class="line">│   ├── lumos</span><br><span class="line">│   └── stb</span><br><span class="line">└── test</span><br><span class="line">    ├── CMakeLists.txt</span><br><span class="line">    ├── test_gl.cpp</span><br><span class="line">    ├── test_imageio.cpp</span><br><span class="line">    ├── test_imgui.cpp</span><br><span class="line">    ├── test_pcg.cpp</span><br><span class="line">    ├── test_random_permutation.cpp</span><br><span class="line">    └── test_viewer.cpp</span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
 
 <p>含义：</p>
 <ul>
@@ -11819,9 +11819,7 @@ class="math inline">\(\mathcal{O}(1)\)</span>，使用链表反转的后序遍�
   <entry>
     <title>生成排列和组合</title>
     <url>/posts/454a/</url>
-    <content><![CDATA[<span id="more"></span>
-
-<h1 id="所有排列">所有排列</h1>
+    <content><![CDATA[<h1 id="所有排列">所有排列</h1>
 <p>由于排列本身的递归形式，可以通过回溯不断生成所有的排列。例如序列为
 <code>[1,2,3,4]</code>，当我们确定第一个位置为 <code>1</code>
 后，剩下三个位置，此时有效的排列就变成了 剩下三个数 <code>[2,3,4]</code>
@@ -11830,6 +11828,8 @@ class="math inline">\(\mathcal{O}(1)\)</span>，使用链表反转的后序遍�
 时其排列就为其本身，递归终止。</p>
 <p>根据这个思路我们就可以写出所有的全排列了</p>
 <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">permutations</span><span class="params">(<span class="type">const</span> std::vector&lt;<span class="type">int</span>&gt;&amp; numbers,</span></span></span><br><span class="line"><span class="params"><span class="function">                  std::vector&lt;<span class="type">int</span>&gt;&amp; curr,</span></span></span><br><span class="line"><span class="params"><span class="function">                  std::vector&lt;<span class="type">int</span>&gt;&amp; visited,</span></span></span><br><span class="line"><span class="params"><span class="function">                  <span class="type">const</span> std::vector&lt;std::vector&lt;<span class="type">int</span>&gt;&gt;&amp; output)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(curr.<span class="built_in">size</span>() == <span class="built_in">numbers</span>().<span class="built_in">size</span>()) &#123;</span><br><span class="line">        output.<span class="built_in">emplece_back</span>(curr);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;numbers.<span class="built_in">size</span>();i++) &#123;</span><br><span class="line">        <span class="keyword">if</span>(visited[i]) &#123;</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        visited[i] = <span class="literal">true</span>;</span><br><span class="line">        curr.<span class="built_in">emplace_back</span>(numbers[i]);</span><br><span class="line">        <span class="built_in">permutations</span>(numbers,curr,visited,output);</span><br><span class="line">        curr.<span class="built_in">pop_back</span>();</span><br><span class="line">        visited[i] = <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
 
 <h1 id="无重复元素的所有排列">无重复元素的所有排列</h1>
 <p>如果所提供的序列中包含重复元素，我们通过上面的算法就可能生成重复结果，最简单的办法就是使用
@@ -11891,7 +11891,7 @@ map
 <code>nums[k]</code>，交换两元素，再将升序序列反转即可。</p>
 <p>下图展示了序列 <code>1432765</code> 的下一排列生成图示，其对应序列为
 <code>1435267</code></p>
-<p><img data-src="/posts/null/image-20230809172245015.png" /></p>
+<p><img data-src="/posts/454a/image-20230809172245015.png" /></p>
 <p>按照这三个步骤，我们可以很简单的写出代码：</p>
 <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">next_permutation</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; nums)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 1. 找到 nums 的升序序列 </span></span><br><span class="line">    <span class="type">int</span> i = nums.<span class="built_in">size</span>() - <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span>(i &gt; <span class="number">0</span> &amp;&amp; nums[i] &lt;= nums[i<span class="number">-1</span>]) &#123;</span><br><span class="line">        i--;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 已经是最大，返回最小（重新开始）</span></span><br><span class="line">    <span class="keyword">if</span>(i == <span class="number">0</span>) &#123;</span><br><span class="line">        std::<span class="built_in">reverse</span>(nums.<span class="built_in">begin</span>(),nums.<span class="built_in">end</span>());</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 2. 找到稍微大一点的</span></span><br><span class="line">    <span class="type">int</span> j = i - <span class="number">1</span>;</span><br><span class="line">    i = nums.<span class="built_in">size</span>() - <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span>(i &gt; j &amp;&amp; nums[i] &lt;= nums[j]) &#123;</span><br><span class="line">        i--;</span><br><span class="line">    &#125;</span><br><span class="line">    std::<span class="built_in">swap</span>(nums[i],nums[j]);</span><br><span class="line">    <span class="comment">// 3. 升序序列转降序序列</span></span><br><span class="line">    std::<span class="built_in">reverse</span>(nums.<span class="built_in">begin</span>() + j + <span class="number">1</span>,nums.<span class="built_in">end</span>());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -11911,6 +11911,147 @@ map
       </categories>
       <tags>
         <tag>算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>CMake依赖管理</title>
+    <url>/posts/dbe7/</url>
+    <content><![CDATA[<h1 id="git-submodule-管理依赖">Git submodule 管理依赖</h1>
+<p>由于 C++
+自身的特殊性，要想实现跨平台代码，只能使用源码分发（也有类似于 Conan 的
+C++ 依赖解决方案，但是对于一些冷门的库可能就不支持，还是得自己写）。</p>
+<p>最简单的办法就是通过 git
+的子模块将其添加到项目中，这种依赖管理方式确保可以访问到源代码，其缺点也很明显，我们在下载库的时候需要通过下载依赖库（也就是子模块），如果子模块较大可能下载起来比较耗时。</p>
+<p>前面一个笔记中也提到了，要想删除添加的 git submodule
+十分麻烦，没有一个简单的命令可以直接删除，需要手动调整需要文件才能删除干净。</p>
+<h1 id="fetchcontent-模块添加依赖">FetchContent 模块添加依赖</h1>
+<p>而 FetchContent 是 CMake 提供的一种新式依赖管理方案（在 3.11
+版本首次出现），其在 CMake
+的配置过程中自动下载依赖项并配置（或者由用户自行配置）。这样可以保持我们的代码库整洁。</p>
+<span id="more"></span>
+
+<p>使用时首先引入这个模块</p>
+<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line"><span class="keyword">include</span>(FetchContent)</span><br></pre></td></tr></table></figure>
+
+<p>主要包含下面三个函数</p>
+<ul>
+<li><p><code>FetchContent_Declare</code>：用来指定依赖库的下载路径（git
+仓库地址或者 URL 链接，其会自动解压缩）</p></li>
+<li><p><code>FetchContent_MakeAvailable</code>：自动配置依赖库（相当于调用了
+<code>add_subdirectory</code>）</p></li>
+<li><p><code>FetchContent_Populate</code>：手动配置依赖库，这个函数会帮我们配置好一系列变量，然后由使用者自行管理如何编译）</p>
+<p>其会设置一些常用的变量</p>
+<ul>
+<li><code>&lt;lowercaseName&gt;_SOURCE_DIR</code>，指定的库源代码地址</li>
+<li><code>&lt;lowercaseName&gt;_BINARY_DIR</code>，指定库的编译输出地址</li>
+</ul>
+<p>当我们使用的时候就可以通过 <code>add_subdirectory</code>
+进行添加，也可以手写 <code>CMakeLists.txt</code> 来手动添加库</p></li>
+</ul>
+<p>其中有点需要注意的就是 <code>FetchContent_MakeAvailable</code>
+需要在所有的 <code>FetchContent_Declare</code>
+声明完成后再写，这样可以确保我们依赖加载完全了，因为一个依赖有可能使用
+<code>FetchContent</code> 添加另外一个依赖（隐式依赖）</p>
+<blockquote>
+<p><a
+href="https://cmake.org/cmake/help/latest/module/FetchContent.html#fetchcontent">FetchContent
+— CMake 3.27.4 Documentation</a></p>
+<p>Projects should aim to declare the details of all dependencies they
+might use before they call <code>FetchContent_MakeAvailable()</code> for
+any of them. This ensures that if any of the dependencies are also
+sub-dependencies of one or more of the others, the main project still
+controls the details that will be used (because it will declare them
+first before the dependencies get a chance to).</p>
+</blockquote>
+<h1 id="实际使用">实际使用</h1>
+<p>下面给出一个实际案例：</p>
+<p>我们需要添加四个依赖：<code>fmt</code>，<code>glfw</code>，<code>imgui</code>，<code>glad</code></p>
+<p>对于前三个，我们都可以使用 <code>FetchContent</code> 来添加，由于
+<code>glad</code>
+是使用网站生成的，我们需要手动将其将其添加到源代码库中。</p>
+<p><code>fmt</code> 库的添加代码</p>
+<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line">FetchContent_Declare(</span><br><span class="line">    fmt</span><br><span class="line">    GIT_REPOSITORY https://github.com/fmtlib/fmt.git</span><br><span class="line">    GIT_TAG <span class="number">10.1</span>.<span class="number">0</span></span><br><span class="line">    GIT_SHALLOW <span class="keyword">ON</span></span><br><span class="line">)</span><br><span class="line">FetchContent_MakeAvailable(fmt)</span><br></pre></td></tr></table></figure>
+
+<p>这里我们通过 <code>GIT_REPOSITORY</code> 指定了待下载库的 git
+仓库连接，同时通过 <code>GIT_TAG</code> 指定我们需要的版本（也可使用
+commit 号），最后的 <code>GIT_SHALLOW</code> 表示我们在
+<code>git clone</code> 时设置
+<code>--depth 1</code>，这样可以确保我们仅下载需要的部分，而不下载完整的
+git 仓库，减少下载时间。</p>
+<p>由于 <code>fmt</code> 库本身比较简单，且是一个 header-only
+的库，我们直接通过 <code>FetchContent_MakeAvailable</code>
+将其添加到代码中即可，当我们需要使用该库时直接链接即可，例如</p>
+<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line"><span class="keyword">add_executable</span>(test_fmt main.cpp)</span><br><span class="line"><span class="keyword">target_link_libraries</span>(test_fmt PRIVATE fmt::fmt)</span><br></pre></td></tr></table></figure>
+
+<p><code>glfw</code> 库的添加代码</p>
+<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line">FetchContent_Declare(</span><br><span class="line">    glfw</span><br><span class="line">    GIT_REPOSITORY https://github.com/glfw/glfw</span><br><span class="line">    GIT_TAG <span class="number">3.3</span>.<span class="number">8</span></span><br><span class="line">    GIT_SHALLOW <span class="keyword">ON</span></span><br><span class="line">)</span><br><span class="line">FetchContent_Populate(glfw)</span><br><span class="line"><span class="keyword">set</span>(GLFW_BUILD_TESTS <span class="keyword">OFF</span>)</span><br><span class="line"><span class="keyword">add_subdirectory</span>(<span class="variable">$&#123;glfw_SOURCE_DIR&#125;</span>)</span><br><span class="line"><span class="keyword">add_library</span>(glfw::glfw ALIAS glfw)</span><br></pre></td></tr></table></figure>
+
+<p>由于 glfw 库包含一堆 tests 和 examples
+，我们可能并不想生成这些文件，为此我们可以通过
+<code>FetchContent_Populate</code> 来手动配置 glfw 的编译。</p>
+<p>我们在添加 glfw 编译目标之前通过参数 <code>GLFW_BUILD_TESTS</code>
+来取消生成 tests，然后将其添加到代码库中，最终由于 glfw
+没有提供别名输出（<code>glfw::glfw</code>，可以用来防止打错名字，例如我们直接错写成
+<code>glfv</code> 时，没有这个依赖库 cmake 也不会报错，但是写成
+<code>glfw::glfv</code> 时没有这个依赖库 cmake
+会报错，提示我们找不到这个依赖库），我们手动为其添加一个别名。</p>
+<p><code>imgui</code> 库的添加代码</p>
+<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line">FetchContent_Populate(imgui)</span><br><span class="line">add_imgui(</span><br><span class="line">  USE_STD_STRING </span><br><span class="line">  USE_FREETYPE </span><br><span class="line">  IMGUI_DIR <span class="variable">$&#123;imgui_SOURCE_DIR&#125;</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>对于 imgui 而言稍微复杂一点，因为其并没有提供开箱即用的
+<code>CMakeLists.txt</code>
+供我们使用，我们需要手动配置使用哪些文件进行编译，为此我们写了一个小函数
+<code>add_imgui</code> 来辅助配置，完整代码如下</p>
+<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span>(add_imgui)</span><br><span class="line">  <span class="keyword">set</span>(options USE_STD_STRING USE_FREETYPE)</span><br><span class="line">  <span class="keyword">set</span>(one_value_args IMGUI_DIR)</span><br><span class="line">  <span class="keyword">set</span>(multi_value_args <span class="string">&quot;&quot;</span>)</span><br><span class="line">  <span class="keyword">cmake_parse_arguments</span>(ARGS <span class="string">&quot;$&#123;options&#125;&quot;</span> <span class="string">&quot;$&#123;one_value_args&#125;&quot;</span></span><br><span class="line">                             <span class="string">&quot;$&#123;multi_value_args&#125;&quot;</span> <span class="variable">$&#123;ARGN&#125;</span> )</span><br><span class="line"></span><br><span class="line">  <span class="keyword">message</span>(STATUS <span class="string">&quot;add imgui (opengl3 + glfw) [ STATIC ] with c++17&quot;</span>)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">list</span>(APPEND CMAKE_MESSAGE_INDENT <span class="string">&quot;  &quot;</span>)</span><br><span class="line"></span><br><span class="line">  <span class="comment"># Using dear imgui via a shared library is not recommended, </span></span><br><span class="line">  <span class="comment"># because we don&#x27;t guarantee backward nor forward ABI compatibility </span></span><br><span class="line">  <span class="comment"># (also function call overhead, as dear imgui is a call-heavy API)</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># we should use imgui as static library</span></span><br><span class="line">  <span class="keyword">add_library</span>(imgui STATIC</span><br><span class="line">    <span class="variable">$&#123;ARGS_IMGUI_DIR&#125;</span>/imgui_demo.cpp </span><br><span class="line">    <span class="variable">$&#123;ARGS_IMGUI_DIR&#125;</span>/imgui_draw.cpp </span><br><span class="line">    <span class="variable">$&#123;ARGS_IMGUI_DIR&#125;</span>/imgui_tables.cpp </span><br><span class="line">    <span class="variable">$&#123;ARGS_IMGUI_DIR&#125;</span>/imgui_widgets.cpp </span><br><span class="line">    <span class="variable">$&#123;ARGS_IMGUI_DIR&#125;</span>/imgui.cpp </span><br><span class="line">  )</span><br><span class="line"></span><br><span class="line">  <span class="keyword">add_library</span>(imgui::imgui ALIAS imgui)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">set_property</span>(<span class="keyword">TARGET</span> imgui PROPERTY CXX_STANDARD <span class="number">17</span>)</span><br><span class="line">  <span class="keyword">set_property</span>(<span class="keyword">TARGET</span> imgui PROPERTY CXX_STANDARD_REQUIRED <span class="keyword">ON</span>)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">target_include_directories</span>(imgui PUBLIC </span><br><span class="line">    <span class="variable">$&#123;ARGS_IMGUI_DIR&#125;</span></span><br><span class="line">  )</span><br><span class="line">  <span class="comment"># backends</span></span><br><span class="line">  <span class="keyword">target_sources</span>(imgui PUBLIC     </span><br><span class="line">    <span class="variable">$&#123;ARGS_IMGUI_DIR&#125;</span>/backends/imgui_impl_opengl3.cpp</span><br><span class="line">    <span class="variable">$&#123;ARGS_IMGUI_DIR&#125;</span>/backends/imgui_impl_glfw.cpp</span><br><span class="line">  )</span><br><span class="line"></span><br><span class="line">  <span class="keyword">target_include_directories</span>(imgui PUBLIC </span><br><span class="line">    <span class="variable">$&#123;ARGS_IMGUI_DIR&#125;</span>/backends</span><br><span class="line">  )</span><br><span class="line"></span><br><span class="line">  <span class="keyword">target_link_libraries</span>(imgui PUBLIC </span><br><span class="line">    glfw::glfw</span><br><span class="line">  )</span><br><span class="line">  </span><br><span class="line">  <span class="comment"># extensions</span></span><br><span class="line">  <span class="keyword">if</span> ( ARGS_USE_STD_STRING )</span><br><span class="line">    <span class="keyword">message</span>(STATUS <span class="string">&quot;enable std::string support for imgui::InputText&quot;</span>)</span><br><span class="line">    <span class="keyword">target_sources</span>(imgui PUBLIC </span><br><span class="line">      <span class="variable">$&#123;ARGS_IMGUI_DIR&#125;</span>/misc/cpp/imgui_stdlib.cpp</span><br><span class="line">    )</span><br><span class="line">    <span class="keyword">target_include_directories</span>(imgui PUBLIC </span><br><span class="line">      <span class="variable">$&#123;ARGS_IMGUI_DIR&#125;</span>/misc/cpp</span><br><span class="line">    )</span><br><span class="line">  <span class="keyword">endif</span>()</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">if</span> ( ARGS_USE_FREETYPE )</span><br><span class="line">    <span class="keyword">find_package</span>(Freetype QUIET)</span><br><span class="line">    <span class="keyword">if</span>(Freetype_FOUND)</span><br><span class="line">      <span class="keyword">message</span>(STATUS <span class="string">&quot;enable freetype for imgui&quot;</span>)</span><br><span class="line">      <span class="keyword">target_sources</span>(imgui PRIVATE </span><br><span class="line">        <span class="variable">$&#123;ARGS_IMGUI_DIR&#125;</span>/misc/freetype/imgui_freetype.cpp</span><br><span class="line">      )</span><br><span class="line">      <span class="keyword">target_include_directories</span>(imgui PRIVATE </span><br><span class="line">        <span class="variable">$&#123;ARGS_IMGUI_DIR&#125;</span>/misc/freetype</span><br><span class="line">      )</span><br><span class="line">      <span class="keyword">target_link_libraries</span>(imgui PRIVATE </span><br><span class="line">        Freetype::Freetype</span><br><span class="line">      )</span><br><span class="line">      <span class="keyword">target_compile_definitions</span>(imgui PRIVATE </span><br><span class="line">        IMGUI_ENABLE_FREETYPE</span><br><span class="line">      )</span><br><span class="line">    <span class="keyword">else</span>()</span><br><span class="line">    <span class="keyword">message</span>(STATUS <span class="string">&quot;disable freetype for imgui&quot;</span>)</span><br><span class="line">    <span class="keyword">endif</span>()</span><br><span class="line">  <span class="keyword">endif</span>()</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">list</span>(POP_BACK CMAKE_MESSAGE_INDENT)</span><br><span class="line"></span><br><span class="line"><span class="keyword">endfunction</span>(add_imgui)</span><br></pre></td></tr></table></figure>
+
+<p>函数 <code>add_imgui</code> 通过提供 imgui
+源代码目录以及一些配置项来简化配置流程，其默认使用 glfw + opengl
+作为渲染后端。</p>
+<p>然后对于 glad 库（用来加载 OpenGL 函数），其配置代码也十分简单</p>
+<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 配置为动态链接库</span></span><br><span class="line"><span class="keyword">add_library</span>(glad SHARED src/gl.c)</span><br><span class="line"><span class="keyword">target_compile_definitions</span>(glad PRIVATE -DGLAD_API_CALL_EXPORT_BUILD)</span><br><span class="line"><span class="keyword">target_compile_definitions</span>(glad PUBLIC -DGLAD_API_CALL_EXPORT)</span><br><span class="line"><span class="keyword">target_include_directories</span>(glad PUBLIC <span class="keyword">include</span>)</span><br><span class="line"><span class="keyword">add_library</span>(glad::glad ALIAS glad)</span><br></pre></td></tr></table></figure>
+
+<h1 id="杂项">杂项</h1>
+<p><strong>在 Windows 下使用动态链接库时可能会因为找不到 dll
+库的位置而无法启动应用</strong>，我们需要手动将动态链接库（例如
+<code>glad.dll</code>
+）拷贝到可执行环境目录下，才可以正常运行，但是每次手动拷贝太麻烦了，cmake
+也可以自动帮我们完成这一任务。</p>
+<p>（图片太大可能看不清字，写的是：<strong>由于找不到
+glad.dll，无法继续执行代码，重新安装程序可能会解决此问题。</strong>）</p>
+<p><em>比较坑的点在于 Windows 下使用 VSCode 完全看不到这个错误提示，而在
+Visual Studio 中就可以看到，恶心坏了</em></p>
+<p><img data-src="/posts/null/image-20230827220434585.png" /></p>
+<p>解决方案有很多：</p>
+<ul>
+<li>强制所有编译输出到同一个目录下，这样就可以确保一定能找到了（个人感觉比较丑陋，只能算一个
+workaround）</li>
+<li>找到该应用所有的依赖库，将其拷贝到可执行文件输出路径下（<strong>关键在于如何找到可执行文件的所有依赖库呢？</strong>）</li>
+</ul>
+<p>这个问题肯定不止我们一个人碰到过，cmake 给我们提供好了这个变量</p>
+<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line"><span class="comment"># %target-name% 对应的所有运行时依赖</span></span><br><span class="line">$&lt;TARGET_RUNTIME_DLLS:%<span class="keyword">target</span>-name%&gt;</span><br></pre></td></tr></table></figure>
+
+<p>以及</p>
+<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line"><span class="comment"># %target-name% 的可执行文件输出路径</span></span><br><span class="line">$&lt;TARGET_FILE_DIR:%<span class="keyword">target</span>-name%&gt;</span><br></pre></td></tr></table></figure>
+
+<p>这样我们可以通过 <code>add_custom_command</code>
+来进行自动拷贝了，完整代码如下</p>
+<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line"><span class="keyword">add_custom_command</span>(<span class="keyword">TARGET</span> test_imgui POST_BUILD</span><br><span class="line">  <span class="keyword">COMMAND</span> <span class="variable">$&#123;CMAKE_COMMAND&#125;</span> -E copy -t </span><br><span class="line">  $&lt;TARGET_FILE_DIR:test_imgui&gt; </span><br><span class="line">  $&lt;TARGET_RUNTIME_DLLS:test_imgui&gt;</span><br><span class="line">  COMMAND_EXPAND_LISTS</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>这一段代码来源于 cmake 官方文档（看来是需要这个功能的人太多了）</p>
+<blockquote>
+<p><a
+href="https://cmake.org/cmake/help/latest/manual/cmake-generator-expressions.7.html#genex:TARGET_RUNTIME_DLLS">genex:TARGET_RUNTIME_DLLS</a></p>
+</blockquote>
+<p>当然，这个功能要求 cmake 的版本比较新，需要在 cmake 版本高于
+3.21，记得更新 <code>cmake_minimum_required</code></p>
+<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line"><span class="keyword">cmake_minimum_required</span>(VERSION <span class="number">3.21</span>)</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>C++学习笔记</category>
+      </categories>
+      <tags>
+        <tag>C++</tag>
+        <tag>CMake</tag>
       </tags>
   </entry>
 </search>
