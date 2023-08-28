@@ -1,16 +1,16 @@
 ---
 title: CMake依赖管理
 mathjax: false
-date: 2023-08-27 21:05:34
-abbrlink:
+abbrlink: dbe7
 tags:
-- C++
-- CMake
+  - C++
+  - CMake
 category: C++学习笔记
+date: 2023-08-27 21:05:34
 ---
 
 
-# Git submodule 管理依赖 
+# Git Submodule 管理依赖 
 
 由于 C++ 自身的特殊性，要想实现跨平台代码，只能使用源码分发（也有类似于 Conan 的 C++ 依赖解决方案，但是对于一些冷门的库可能就不支持，还是得自己写）。
 
@@ -218,6 +218,20 @@ target_compile_definitions(glad PUBLIC -DGLAD_API_CALL_EXPORT)
 target_include_directories(glad PUBLIC include)
 add_library(glad::glad ALIAS glad)
 ```
+
+
+
+# ExternalProject 添加依赖
+
+这个也是 CMake 中下载依赖的一种方式，其早于 `FetchContent` 出现，可以提供和 `FetchContent` 类似的功能，主要通过一个巨大的函数进行依赖配置
+
+```cmake
+ExternalProject_Add
+```
+
+我们可以在其中指定编译的命令等，也可以使用 `ExternalProject_Add_Step` 来手动管理依赖的编译步骤，不过这种方式个人感觉没有 `FetchContent_Declare` 和 `FetchContent_Populate` 使用来的方便，就不过多介绍了，网上也有很多相关的教程。
+
+> [ExternalProject — CMake 3.27.4 Documentation](https://cmake.org/cmake/help/latest/module/ExternalProject.html)
 
 
 
