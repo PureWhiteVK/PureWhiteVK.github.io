@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"purewhitevk.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.14.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"default"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Hello，ANTLR4 ANTLR 是一个用 Java 写的语法分析工具，类似 Lex Yacc 以及 Flex Bison（这两个都有点太老了，而且Windows上也不好用），通过编写一个内嵌代码的文件（.g4）来定义文法，然后由 ANTLR 对文件进行分析，生成不同后端的分析程序，例如 C++、Python、Java 等，相比我们手写分析程序，只要我们定义好文法，就可以完成解析过程，提高开发">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Antlr4使用">
+<meta property="og:url" content="https://purewhitevk.github.io/posts/b5fa/">
+<meta property="og:site_name" content="PureWhiteVK&#39;s Blog">
+<meta property="og:description" content="Hello，ANTLR4 ANTLR 是一个用 Java 写的语法分析工具，类似 Lex Yacc 以及 Flex Bison（这两个都有点太老了，而且Windows上也不好用），通过编写一个内嵌代码的文件（.g4）来定义文法，然后由 ANTLR 对文件进行分析，生成不同后端的分析程序，例如 C++、Python、Java 等，相比我们手写分析程序，只要我们定义好文法，就可以完成解析过程，提高开发">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-08-28T09:02:48.000Z">
+<meta property="article:modified_time" content="2023-08-28T09:02:48.000Z">
+<meta property="article:author" content="PureWhiteVK">
+<meta property="article:tag" content="C++">
+<meta property="article:tag" content="CMake">
+<meta property="article:tag" content="ANTLR">
+<meta property="article:tag" content="编译原理">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://purewhitevk.github.io/posts/b5fa/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://purewhitevk.github.io/posts/b5fa/","path":"posts/b5fa/","title":"Antlr4使用"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Antlr4使用 | PureWhiteVK's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">PureWhiteVK's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">21</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">7</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">166</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#helloantlr4"><span class="nav-number">1.</span> <span class="nav-text">Hello，ANTLR4</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#antlr4-for-cpp"><span class="nav-number">2.</span> <span class="nav-text">ANTLR4 for CPP</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%87%AA%E8%A1%8C%E5%AE%9E%E7%8E%B0%E7%9A%84-antlr4-%E9%9B%86%E6%88%90%E6%96%B9%E5%BC%8F"><span class="nav-number">3.</span> <span class="nav-text">自行实现的 ANTLR4 集成方式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#fetchcontent-%E4%B8%8B%E8%BD%BD%E4%BE%9D%E8%B5%96"><span class="nav-number">3.0.1.</span> <span class="nav-text">FetchContent 下载依赖</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9D%82%E9%A1%B9"><span class="nav-number">4.</span> <span class="nav-text">杂项</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="PureWhiteVK"
+      src="/images/Touma.Kazusa.256x256.png">
+  <p class="site-author-name" itemprop="name">PureWhiteVK</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">166</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/PureWhiteVK" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;PureWhiteVK" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:yl_xiao@outlook.com" title="E-Mail → mailto:yl_xiao@outlook.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/dead.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://purewhitevk.github.io/posts/b5fa/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/Touma.Kazusa.256x256.png">
+      <meta itemprop="name" content="PureWhiteVK">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PureWhiteVK's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Antlr4使用 | PureWhiteVK's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Antlr4使用
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023/08/28 17:02:48" itemprop="dateCreated datePublished" datetime="2023-08-28T17:02:48+08:00">2023/08/28</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/C-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">C++学习笔记</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>2.8k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>10 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="helloantlr4">Hello，ANTLR4</h1>
+<p>ANTLR 是一个用 Java 写的语法分析工具，类似 Lex Yacc 以及 Flex
+Bison（这两个都有点太老了，而且Windows上也不好用），通过编写一个内嵌代码的文件（<code>.g4</code>）来定义文法，然后由
+ANTLR 对文件进行分析，生成不同后端的分析程序，例如 C++、Python、Java
+等，相比我们手写分析程序，只要我们定义好文法，就可以完成解析过程，提高开发效率。</p>
+<p>使用 ANTLR4 的最简单方式就是 Python 了，我们直接通过 pip 安装即可</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install antlr4-tools</span><br></pre></td></tr></table></figure>
+
+<p>由于 ANTLR 需要 Java ，如果没有安装 Java
+环境会在第一次运行时自动安装。</p>
+<p>之后我们可以定义一个简单的表达式文法来测试效果</p>
+<p><em><strong>Expr.g4</strong></em></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">grammar Expr;		</span><br><span class="line">prog:	expr EOF ;</span><br><span class="line">expr:	expr (&#x27;*&#x27;|&#x27;/&#x27;) expr</span><br><span class="line">    |	expr (&#x27;+&#x27;|&#x27;-&#x27;) expr</span><br><span class="line">    |	INT</span><br><span class="line">    |	&#x27;(&#x27; expr &#x27;)&#x27;</span><br><span class="line">    ;</span><br><span class="line">NEWLINE : [\r\n]+ -&gt; skip;</span><br><span class="line">INT     : [0-9]+ ;</span><br></pre></td></tr></table></figure>
+
+<p>（注意到文法中包含左递归，但是 ANTLR 会自动帮我们处理好）</p>
+<span id="more"></span>
+
+<p>通过下列命令测试文法</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">antlr4-parse Expr.g4 prog -tree</span><br></pre></td></tr></table></figure>
+
+<p>其命令格式如下</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">java org.antlr.v4.gui.Intrepreter [X.g4|XParser.g4 XLexer.g4] startRuleName</span><br><span class="line">  [-tokens] [-tree] [-gui] [-encoding encodingname]</span><br><span class="line">  [-trace] [-profile filename.csv] [input-filename(s)]</span><br><span class="line">Omitting input-filename makes rig read from stdin.</span><br></pre></td></tr></table></figure>
+
+<p>prog 对应于 <code>startRuleName</code></p>
+<p>此时会等待我们输入，我们输入一个有效的表达式</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">10*(5*2)</span><br></pre></td></tr></table></figure>
+
+<p>然后输入 <kbd>Ctrl</kbd> + <kbd>D</kbd>（Unix系统）或者
+<kbd>Ctrl</kbd>
++<kbd>Z</kbd>（Windows系统）来终止输入，此时就可以看到输出结果</p>
+<p>（由于是在 Python 中调用 Java 命令行，可以有点慢）</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">10*(4+2) </span><br><span class="line">^Z</span><br><span class="line">(prog:1 (<span class="built_in">expr</span>:1 (<span class="built_in">expr</span>:3 10) * (<span class="built_in">expr</span>:4 ( (<span class="built_in">expr</span>:2 (<span class="built_in">expr</span>:3 5) + (<span class="built_in">expr</span>:3 2)) ))) &lt;EOF&gt;)</span><br></pre></td></tr></table></figure>
+
+<p>可以看到其成功对我们的文法进行分析，并通过嵌套关系表示出语法分析树，这样用只是展示
+ANTLR 的分析效果，但是实际我们需要将其和应用集成起来，那么就需要使用
+ANTLR
+编译文法文件后生成不同语言的分析代码，从而实现高效的分析（最开始本来想用
+ANTLR来进行 HTTP
+报文的解析的，但是好像有点杀鸡用牛刀的意思，而且其无法支持流式输入，后面就自行写了一个简单的），不过对于
+URL 解析或者 MySQL 语句的解析倒是挺好用的。</p>
+<blockquote>
+<p><a
+target="_blank" rel="noopener" href="https://github.com/antlr/antlr4/blob/dev/doc/getting-started.md">antlr4/doc/getting-started.md
+at dev · antlr/antlr4 (github.com)</a></p>
+</blockquote>
+<h1 id="antlr4-for-cpp">ANTLR4 for CPP</h1>
+<p>在 C++ 环境中使用 ANTLR4 相对而言较为繁琐，其包含两个步骤</p>
+<ol type="1">
+<li>编译文法文件，生成对应的 C++ 解析代码（<code>Lexer.cpp</code> 以及
+<code>Parser.cpp</code>）</li>
+<li>链接 ANTLR4 的 C++ 运行库</li>
+</ol>
+<p>由于 C++
+本身的特殊性，第一个步骤可以通过命令行手动完成，但是第二个编译过程就很麻烦了，不过官方也给出了样例代码：</p>
+<blockquote>
+<p><a
+target="_blank" rel="noopener" href="https://github.com/antlr/antlr4/blob/dev/runtime/Cpp/README.md">antlr4/runtime/Cpp/README.md
+at dev · antlr/antlr4 (github.com)</a></p>
+</blockquote>
+<p>一般而言，只需要将 <code>&lt;ANTLR4_ROOT&gt;/runtime/Cpp/cmake</code>
+文件夹中的 <code>FindANTLR.cmake</code> 以及
+<code>ExternalAntlr4Cpp.cmake</code> 拷贝到项目本地，然后在
+<code>CMakeLists.txt</code> 中 <code>include</code> 进来即可</p>
+<p>示例如下</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">// 将两个 .cmake 文件放在 cmake 文件夹下</span><br><span class="line"><span class="keyword">list</span>(APPEND CMAKE_MODULE_PATH <span class="variable">$&#123;CMAKE_CURRENT_SOURCE_DIR&#125;</span>/cmake)</span><br><span class="line"></span><br><span class="line">// 设置编译 ANTLR4 的一些选项，MSVC CRT链接方式（MT/MD）、静态/动态链接库等</span><br><span class="line">// 设置所需要的 ANTLR4 版本（此处选择最新版）</span><br><span class="line"><span class="keyword">set</span>(ANTLR4_TAG <span class="number">4.13</span>.<span class="number">0</span>)</span><br><span class="line">// 添加外部依赖，通过 ExternalProject_Add 方式实现</span><br><span class="line">// 其默认会创建 static 和 shared 两种库，可以自行选择需要的库进行链接</span><br><span class="line"><span class="keyword">include</span>(ExternalAntlr4Cpp)</span><br><span class="line"></span><br><span class="line">// 对于第二个步骤，FindANTLR.cmake 提供 antlr_target 宏来自动化编译文法文件的过程，其使用示例如下</span><br><span class="line">antlr_target(</span><br><span class="line">	ExprParser Expr.g4 PARSER LEXER</span><br><span class="line">  PACKAGE parser</span><br><span class="line">)</span><br><span class="line">// 其会自动生成对应语言的分析代码，同时输出三个 cmake 变量，我们可以将其添加到编译目标中</span><br><span class="line"><span class="keyword">add_executable</span>(demo main.cpp)</span><br><span class="line"><span class="keyword">target_sources</span>(demo PRIVATE <span class="variable">$&#123;ANTLR_ExprParser_CXX_OUTPUTS&#125;</span>)</span><br><span class="line"><span class="keyword">target_include_directories</span>(demo PRIVATE <span class="variable">$&#123;ANTLR_ExprParser_OUTPUT_DIR&#125;</span>)</span><br><span class="line"></span><br><span class="line">// 最后连接到 antlr 的 cpp runtime 即可</span><br><span class="line"><span class="keyword">target_link_libraries</span>(demo PRIVATE antlr4_static)</span><br></pre></td></tr></table></figure>
+
+<p>个人在使用过程中感觉整个过程用起来有点别扭，主要有两个地方</p>
+<ol type="1">
+<li>使用 <code>ExternalAntlr4Cpp</code> 时并没有为我们创建 ALIAS
+目标（即 <code>glm::glm</code>
+这种，可以防止拼写错误问题），并且在编译时才会触发下载，无法提前代码状态（因为其使用的是
+<code>ExternalProject_Add</code>）</li>
+<li>通过 <code>antlr_target</code>
+方式添加的目标也仅在编译过程中才会创建，没编译前也是什么都没有，这样我们就不知道什么时候编译出错了，我们可能想将其作为源代码的一部分进行管理（因为其使用的是
+<code>add_custom_command</code> 实现，在编译时才会执行）。</li>
+</ol>
+<p>针对官方提供集成方案的两个缺点，我们参考官方集成方案进行一些修改，将
+<code>ExternalProject_Add</code> 替换为 <code>FetchContent</code>
+实现，同时通过 <code>execute_process</code> 方式替换
+<code>add_custom_command</code>，使得在每次重新配置时都会触发下载。</p>
+<h1 id="自行实现的-antlr4-集成方式">自行实现的 ANTLR4 集成方式</h1>
+<h3 id="fetchcontent-下载依赖">FetchContent 下载依赖</h3>
+<p>思路很简单，就是下载 + <code>add_subdirectory</code> 的老套路，不过
+ANTLR4 比较坑的是动态链接库和静态链接库的处理上，
+需要添加很多处理来保证编译正确（主要是 Windows 恶心人的
+<code>__declspec(dllexport)</code> 以及
+<code>__declspec(dllimport)</code>），而在 ANTLR4 的原始 CMakeLists.txt
+设置有点问题（主要是宏定义的可见范围设置有误）</p>
+<p><em>&lt;ANTLR4_ROOT&gt;/runtime/Cpp/runtime/CMakeLists.txt</em>（L120~132）</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (WIN32)</span><br><span class="line">  <span class="keyword">set</span>(static_lib_suffix <span class="string">&quot;-static&quot;</span>)</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">TARGET</span> antlr4_shared)</span><br><span class="line">    <span class="keyword">target_compile_definitions</span>(antlr4_shared PUBLIC ANTLR4CPP_EXPORTS)</span><br><span class="line">  <span class="keyword">endif</span>()</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">TARGET</span> antlr4_static)</span><br><span class="line">    <span class="keyword">target_compile_definitions</span>(antlr4_static PUBLIC ANTLR4CPP_STATIC)</span><br><span class="line">  <span class="keyword">endif</span>()</span><br><span class="line">  <span class="keyword">if</span>(CMAKE_CXX_COMPILER_ID <span class="keyword">MATCHES</span> <span class="string">&quot;MSVC&quot;</span>)</span><br><span class="line">    <span class="keyword">set</span>(extra_share_compile_flags <span class="string">&quot;-MP /wd4251&quot;</span>)</span><br><span class="line">    <span class="keyword">set</span>(extra_static_compile_flags <span class="string">&quot;-MP&quot;</span>)</span><br><span class="line">  <span class="keyword">endif</span>()</span><br><span class="line"><span class="keyword">endif</span>()</span><br></pre></td></tr></table></figure>
+
+<p>其中问题就出在
+<code>target_compile_definitions(antlr4_shared PUBLIC ANTLR4CPP_EXPORTS)</code>
+上。</p>
+<p>这个宏的作用就是控制 Windows DLL导出/DLL导入的，代码位于</p>
+<p><em>&lt;ANTLR4_ROOT&gt;/runtime/Cpp/runtime/src/antlr4-common.h</em>（L54~62）</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">ifdef</span> ANTLR4CPP_EXPORTS</span></span><br><span class="line">  <span class="meta">#<span class="keyword">define</span> ANTLR4CPP_PUBLIC __declspec(dllexport)</span></span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line">  <span class="meta">#<span class="keyword">ifdef</span> ANTLR4CPP_STATIC</span></span><br><span class="line">    <span class="meta">#<span class="keyword">define</span> ANTLR4CPP_PUBLIC</span></span><br><span class="line">  <span class="meta">#<span class="keyword">else</span></span></span><br><span class="line">    <span class="meta">#<span class="keyword">define</span> ANTLR4CPP_PUBLIC __declspec(dllimport)</span></span><br><span class="line">  <span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+
+<p>可以看到，当启用 <code>ANTLR4CPP_EXPORTS</code> 时就会开启
+dllexport，而没启用且不是静态链接就是 <code>dllimport</code>.</p>
+<p>但设置为 PUBLIC 时会在所有的编译单元中都启用该宏，导致编译
+<code>main.cpp</code>
+的时候会提示LINK2019错误，也就是找不到符号（当然找不到，本来应该是
+import 的变成了 export，怎么可能找得到符号呢）。</p>
+<p>这个问题改起来也很简单，只需要将 <code>PUBLIC</code> 改成
+<code>PRIVATE</code> 即可（可以向官方提 ISSUE），在
+<code>ExternalAntlr4Cpp.cmake</code>
+中给出了解决方案（不知道为什么不直接修改这个代码）</p>
+<p>通过创建 <code>IMPORTED</code> 的 target 并将该 target
+私有链接到原有的库，就可以避免 <code>ANTLR4CPP_EXPORTS</code>
+传递到我们的业务代码中了。</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">add_library</span>(antlr4_shared SHARED IMPORTED)</span><br><span class="line"><span class="keyword">add_dependencies</span>(antlr4_shared antlr4_runtime-build_shared)</span><br><span class="line"><span class="keyword">set_target_properties</span>(</span><br><span class="line">	antlr4_shared PROPERTIES</span><br><span class="line">  IMPORTED_LOCATION <span class="variable">$&#123;ANTLR4_RUNTIME_LIBRARIES&#125;</span>)</span><br><span class="line"><span class="keyword">target_include_directories</span>(antlr4_shared</span><br><span class="line">    INTERFACE <span class="variable">$&#123;ANTLR4_INCLUDE_DIRS&#125;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(ANTLR4_SHARED_LIBRARIES)</span><br><span class="line">  <span class="keyword">set_target_properties</span>(</span><br><span class="line">  	antlr4_shared PROPERTIES</span><br><span class="line">    IMPORTED_IMPLIB <span class="variable">$&#123;ANTLR4_SHARED_LIBRARIES&#125;</span></span><br><span class="line">  )</span><br><span class="line"><span class="keyword">endif</span>()</span><br></pre></td></tr></table></figure>
+
+<p>不过 CMake 在使用 IMPORTED target
+时比较恶心，需要手动指定链接库的位置，这个也在
+<code>ExternalAntlr4Cpp.cmake</code>
+中写死了（感觉不太优雅，不过能跑就行吧）</p>
+<p>了解官方的解决方案后，我们自行编写起来就简单很多了</p>
+<p><code>add-antlr4.cmake</code></p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span>(add_antlr4 TAG)</span><br><span class="line">  <span class="keyword">set</span>(ANTLR_OPTIONS SHARED WITH_STATIC_CRT WITH_LIBCXX DISABLE_WARNINGS)</span><br><span class="line">  <span class="keyword">set</span>(ANTLR_ONE_VALUE_ARGS <span class="string">&quot;&quot;</span>)</span><br><span class="line">  <span class="keyword">set</span>(ANTLR_MULTI_VALUE_ARGS <span class="string">&quot;&quot;</span>)</span><br><span class="line">  <span class="keyword">cmake_parse_arguments</span>(ANTLR4CPP</span><br><span class="line">                        <span class="string">&quot;$&#123;ANTLR_OPTIONS&#125;&quot;</span></span><br><span class="line">                        <span class="string">&quot;$&#123;ANTLR_ONE_VALUE_ARGS&#125;&quot;</span></span><br><span class="line">                        <span class="string">&quot;$&#123;ANTLR_MULTI_VALUE_ARGS&#125;&quot;</span></span><br><span class="line">                        <span class="variable">$&#123;ARGN&#125;</span>)</span><br><span class="line">  <span class="keyword">include</span>(CMakePrintHelpers)</span><br><span class="line">  FetchContent_Declare(</span><br><span class="line">    antlr4_cpp</span><br><span class="line">    GIT_REPOSITORY https://github.com/antlr/antlr4</span><br><span class="line">    GIT_TAG <span class="variable">$&#123;TAG&#125;</span></span><br><span class="line">    GIT_SHALLOW <span class="keyword">TRUE</span></span><br><span class="line">  )</span><br><span class="line">  FetchContent_Populate(antlr4_cpp)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">set</span>(antlr4_cpp_SOURCE_DIR </span><br><span class="line">    <span class="variable">$&#123;antlr4_cpp_SOURCE_DIR&#125;</span>/runtime/Cpp</span><br><span class="line">    CACHE INTERNAL <span class="string">&quot;&quot;</span></span><br><span class="line">  )</span><br><span class="line"></span><br><span class="line">  <span class="comment"># 可以从 VERSION 中读取到版本信息</span></span><br><span class="line">  <span class="keyword">file</span>(STRINGS <span class="variable">$&#123;antlr4_cpp_SOURCE_DIR&#125;</span>/VERSION ANTLR_VERSION)</span><br><span class="line">  cmake_print_variables(ANTLR_VERSION)</span><br><span class="line">  cmake_print_variables(ANTLR4CPP_WITH_STATIC_CRT)</span><br><span class="line">  cmake_print_variables(ANTLR4CPP_WITH_LIBCXX)</span><br><span class="line">  cmake_print_variables(ANTLR4CPP_DISABLE_WARNINGS)</span><br><span class="line">  cmake_print_variables(ANTLR4CPP_SHARED)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">set</span>(WITH_DEMO <span class="keyword">FALSE</span> CACHE INTERNAL <span class="string">&quot;&quot;</span>)</span><br><span class="line">  <span class="keyword">set</span>(WITH_STATIC_CRT <span class="variable">$&#123;ANTLR4CPP_WITH_STATIC_CRT&#125;</span> CACHE INTERNAL <span class="string">&quot;&quot;</span>)</span><br><span class="line">  <span class="keyword">set</span>(WITH_LIBCXX <span class="variable">$&#123;ANTLR4CPP_WITH_LIBCXX&#125;</span> CACHE INTERNAL <span class="string">&quot;&quot;</span>)</span><br><span class="line">  <span class="keyword">set</span>(DISABLE_WARNINGS <span class="variable">$&#123;ANTLR4CPP_DISABLE_WARNINGS&#125;</span> CACHE INTERNAL <span class="string">&quot;&quot;</span>)</span><br><span class="line">  <span class="keyword">set</span>(ANTLR4_INSTALL <span class="keyword">FALSE</span> CACHE INTERNAL <span class="string">&quot;&quot;</span>)</span><br><span class="line">  <span class="keyword">set</span>(ANTLR_BUILD_CPP_TESTS <span class="keyword">FALSE</span> CACHE INTERNAL <span class="string">&quot;&quot;</span>)</span><br><span class="line">  <span class="keyword">set</span>(ANTLR4_INCLUDE_DIRS </span><br><span class="line">    <span class="variable">$&#123;antlr4_cpp_SOURCE_DIR&#125;</span>/runtime/src </span><br><span class="line">    CACHE INTERNAL <span class="string">&quot;&quot;</span>)</span><br><span class="line">  <span class="keyword">set</span>(ANTLR4_OUTPUT_DIR </span><br><span class="line">    <span class="variable">$&#123;antlr4_cpp_BINARY_DIR&#125;</span>/runtime </span><br><span class="line">    CACHE INTERNAL <span class="string">&quot;&quot;</span></span><br><span class="line">  )</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span>(ANTLR4CPP_SHARED)</span><br><span class="line">    <span class="keyword">set</span>(ANTLR_BUILD_SHARED <span class="keyword">TRUE</span> CACHE INTERNAL <span class="string">&quot;&quot;</span>)</span><br><span class="line">    <span class="keyword">set</span>(ANTLR_BUILD_STATIC <span class="keyword">FALSE</span> CACHE INTERNAL <span class="string">&quot;&quot;</span>)</span><br><span class="line">  <span class="keyword">else</span>()</span><br><span class="line">    <span class="keyword">set</span>(ANTLR_BUILD_SHARED <span class="keyword">FALSE</span> CACHE INTERNAL <span class="string">&quot;&quot;</span>)</span><br><span class="line">    <span class="keyword">set</span>(ANTLR_BUILD_STATIC <span class="keyword">TRUE</span> CACHE INTERNAL <span class="string">&quot;&quot;</span>)</span><br><span class="line">  <span class="keyword">endif</span>()</span><br><span class="line"></span><br><span class="line">  <span class="comment"># from https://github.com/antlr/antlr4/blob/dev/runtime/Cpp/cmake/ExternalAntlr4Cpp.cmake</span></span><br><span class="line">  <span class="keyword">if</span>(MSVC)</span><br><span class="line">    <span class="keyword">set</span>(ANTLR4_STATIC_LIBRARIES</span><br><span class="line">      <span class="variable">$&#123;ANTLR4_OUTPUT_DIR&#125;</span>/antlr4-runtime-static.lib CACHE INTERNAL <span class="string">&quot;&quot;</span>)</span><br><span class="line">    <span class="keyword">set</span>(ANTLR4_SHARED_LIBRARIES</span><br><span class="line">      <span class="variable">$&#123;ANTLR4_OUTPUT_DIR&#125;</span>/antlr4-runtime.lib CACHE INTERNAL <span class="string">&quot;&quot;</span>)</span><br><span class="line">    <span class="keyword">set</span>(ANTLR4_RUNTIME_LIBRARIES</span><br><span class="line">      <span class="variable">$&#123;ANTLR4_OUTPUT_DIR&#125;</span>/antlr4-runtime.dll CACHE INTERNAL <span class="string">&quot;&quot;</span>)</span><br><span class="line">  <span class="keyword">else</span>()</span><br><span class="line">    <span class="keyword">set</span>(ANTLR4_STATIC_LIBRARIES</span><br><span class="line">      <span class="variable">$&#123;ANTLR4_OUTPUT_DIR&#125;</span>/libantlr4-runtime.a CACHE INTERNAL <span class="string">&quot;&quot;</span>)</span><br><span class="line">    <span class="keyword">if</span>(MINGW)</span><br><span class="line">      <span class="keyword">set</span>(ANTLR4_SHARED_LIBRARIES</span><br><span class="line">        <span class="variable">$&#123;ANTLR4_OUTPUT_DIR&#125;</span>/libantlr4-runtime.dll.a CACHE INTERNAL <span class="string">&quot;&quot;</span>)</span><br><span class="line">      <span class="keyword">set</span>(ANTLR4_RUNTIME_LIBRARIES</span><br><span class="line">        <span class="variable">$&#123;ANTLR4_OUTPUT_DIR&#125;</span>/libantlr4-runtime.dll CACHE INTERNAL <span class="string">&quot;&quot;</span>)</span><br><span class="line">    <span class="keyword">elseif</span>(CYGWIN)</span><br><span class="line">      <span class="keyword">set</span>(ANTLR4_SHARED_LIBRARIES</span><br><span class="line">        <span class="variable">$&#123;ANTLR4_OUTPUT_DIR&#125;</span>/libantlr4-runtime.dll.a CACHE INTERNAL <span class="string">&quot;&quot;</span>)</span><br><span class="line">      <span class="keyword">set</span>(ANTLR4_RUNTIME_LIBRARIES</span><br><span class="line">        <span class="comment"># https://github.com/antlr/antlr4/pull/2235#discussion_r173871830</span></span><br><span class="line">        <span class="comment"># due to cmake: https://cmake.org/cmake/help/latest/prop_tgt/SOVERSION.html</span></span><br><span class="line">        <span class="variable">$&#123;ANTLR4_OUTPUT_DIR&#125;</span>/cygantlr4-runtime-<span class="variable">$&#123;ANTLR_VERSION&#125;</span>.dll CACHE INTERNAL <span class="string">&quot;&quot;</span>)</span><br><span class="line">    <span class="keyword">elseif</span>(APPLE)</span><br><span class="line">      <span class="keyword">set</span>(ANTLR4_RUNTIME_LIBRARIES</span><br><span class="line">        <span class="variable">$&#123;ANTLR4_OUTPUT_DIR&#125;</span>/libantlr4-runtime.dylib CACHE INTERNAL <span class="string">&quot;&quot;</span>)</span><br><span class="line">    <span class="keyword">else</span>()</span><br><span class="line">      <span class="keyword">set</span>(ANTLR4_RUNTIME_LIBRARIES</span><br><span class="line">        <span class="variable">$&#123;ANTLR4_OUTPUT_DIR&#125;</span>/libantlr4-runtime.so CACHE INTERNAL <span class="string">&quot;&quot;</span>)</span><br><span class="line">    <span class="keyword">endif</span>()</span><br><span class="line">  <span class="keyword">endif</span>()</span><br><span class="line"></span><br><span class="line">  <span class="keyword">add_subdirectory</span>(</span><br><span class="line">    <span class="variable">$&#123;antlr4_cpp_SOURCE_DIR&#125;</span> </span><br><span class="line">    <span class="variable">$&#123;antlr4_cpp_BINARY_DIR&#125;</span></span><br><span class="line">  )</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span>(ANTLR4CPP_SHARED)</span><br><span class="line">    <span class="keyword">add_library</span>(antlr4_runtime_shared SHARED IMPORTED)</span><br><span class="line">    <span class="keyword">target_include_directories</span>(antlr4_runtime_shared</span><br><span class="line">      INTERFACE <span class="variable">$&#123;ANTLR4_INCLUDE_DIRS&#125;</span></span><br><span class="line">    )</span><br><span class="line">    <span class="keyword">set_target_properties</span>(antlr4_runtime_shared </span><br><span class="line">      PROPERTIES</span><br><span class="line">      IMPORTED_LOCATION <span class="variable">$&#123;ANTLR4_RUNTIME_LIBRARIES&#125;</span></span><br><span class="line">    )</span><br><span class="line">    <span class="keyword">set_target_properties</span>(antlr4_runtime_shared </span><br><span class="line">      PROPERTIES</span><br><span class="line">      IMPORTED_IMPLIB <span class="variable">$&#123;ANTLR4_SHARED_LIBRARIES&#125;</span></span><br><span class="line">    )</span><br><span class="line">    <span class="keyword">add_library</span>(antlr4::antlr4_shared ALIAS antlr4_runtime_shared)</span><br><span class="line">  <span class="keyword">else</span>()</span><br><span class="line">    <span class="keyword">target_include_directories</span>(antlr4_static INTERFACE <span class="variable">$&#123;ANTLR4_INCLUDE_DIRS&#125;</span>)</span><br><span class="line">    <span class="keyword">add_library</span>(antlr4::antlr4_static ALIAS antlr4_static)</span><br><span class="line">  <span class="keyword">endif</span>()</span><br><span class="line"></span><br><span class="line"><span class="keyword">endfunction</span>(add_antlr4)</span><br></pre></td></tr></table></figure>
+
+<p>其中我们指定了一些参数</p>
+<ul>
+<li><p><code>TAG</code>：Antlr 的版本（可以使用 git commit id 以及
+tag）</p></li>
+<li><p><code>SHARED</code> ：是否使用动态链接库</p></li>
+<li><p><code>WITH_STATIC_CRT</code>：静态 CRT（MSVC编译flag为
+<code>-MT</code> / <code>-MTd</code>），默认是动态 CRT （MSVC编译flag为
+<code>-MD</code> / <code>-MDd</code>，这样我们就需要安装
+vcredist）</p></li>
+<li><p><code>WITH_LIBCXX</code>：在 unix 下是否连接到
+libcxx，相当于一种另外的 c++ 运行库（对应的还有 libstdc++）</p></li>
+<li><p><code>DISABLE_WARNINGS</code>：很简单，是否开启警告（我们在编译
+Windows 动态链接库时就发现 W4275）</p>
+<p><a
+target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-cn/cpp/error-messages/compiler-warnings/compiler-warning-level-2-c4275?view=msvc-170">编译器警告（等级
+2）C4275 | Microsoft Learn</a></p>
+<p>不是什么大问题，但是很多，因为 ANTLR4 Runtime 的 所有异常都继承自
+<code>std::exception</code>，但是 MSVC 会提示
+<code>std::exception</code> 并不是 DLL导出的，可能存在问题。</p></li>
+</ul>
+<p>对于第二个，我们的修改很少，就是调整 <code>add_custom_command</code>
+为 <code>execute_process</code>，这样在每次进行 cmake
+配置时就会生成，便于 debug。</p>
+<p>完整代码</p>
+<p><code>add-antlr4-parser.cmake</code></p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span>(add_antlr4_parser TARGET_NAME INPUT_FILE)</span><br><span class="line">  <span class="keyword">set</span>(ANTLR_OPTIONS LEXER PARSER LISTENER VISITOR)</span><br><span class="line">  <span class="keyword">set</span>(ANTLR_ONE_VALUE_ARGS NAMESPACE OUTPUT_DIRECTORY)</span><br><span class="line">  <span class="keyword">set</span>(ANTLR_MULTI_VALUE_ARGS GENERATE_FLAGS)</span><br><span class="line">  <span class="keyword">cmake_parse_arguments</span>(ANTLR_TARGET</span><br><span class="line">                        <span class="string">&quot;$&#123;ANTLR_OPTIONS&#125;&quot;</span></span><br><span class="line">                        <span class="string">&quot;$&#123;ANTLR_ONE_VALUE_ARGS&#125;&quot;</span></span><br><span class="line">                        <span class="string">&quot;$&#123;ANTLR_MULTI_VALUE_ARGS&#125;&quot;</span></span><br><span class="line">                        <span class="variable">$&#123;ARGN&#125;</span>)</span><br><span class="line">  <span class="keyword">include</span>(CMakePrintHelpers)</span><br><span class="line">  <span class="keyword">set</span>(ANTLR_<span class="variable">$&#123;TARGET_NAME&#125;</span>_INPUT <span class="variable">$&#123;INPUT_FILE&#125;</span>)</span><br><span class="line"></span><br><span class="line">  cmake_path(GET INPUT_FILE STEM ANTLR_INPUT)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span>(ANTLR_TARGET_OUTPUT_DIRECTORY)</span><br><span class="line">    <span class="keyword">set</span>(ANTLR_<span class="variable">$&#123;TARGET_NAME&#125;</span>_OUTPUT_DIR <span class="variable">$&#123;ANTLR_TARGET_OUTPUT_DIRECTORY&#125;</span>)</span><br><span class="line">  <span class="keyword">else</span>()</span><br><span class="line">    <span class="keyword">set</span>(ANTLR_<span class="variable">$&#123;TARGET_NAME&#125;</span>_OUTPUT_DIR</span><br><span class="line">        <span class="variable">$&#123;CMAKE_CURRENT_BINARY_DIR&#125;</span>/antlr4cpp_generated_src/<span class="variable">$&#123;ANTLR_INPUT&#125;</span>)</span><br><span class="line">  <span class="keyword">endif</span>()</span><br><span class="line"></span><br><span class="line">  <span class="keyword">unset</span>(ANTLR_<span class="variable">$&#123;TARGET_NAME&#125;</span>_CXX_OUTPUTS)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span>((ANTLR_TARGET_LEXER <span class="keyword">AND</span> <span class="keyword">NOT</span> ANTLR_TARGET_PARSER) <span class="keyword">OR</span></span><br><span class="line">      (ANTLR_TARGET_PARSER <span class="keyword">AND</span> <span class="keyword">NOT</span> ANTLR_TARGET_LEXER))</span><br><span class="line">    <span class="keyword">list</span>(APPEND ANTLR_<span class="variable">$&#123;TARGET_NAME&#125;</span>_CXX_OUTPUTS</span><br><span class="line">          <span class="variable">$&#123;ANTLR_$&#123;TARGET_NAME&#125;</span>_OUTPUT_DIR&#125;/<span class="variable">$&#123;ANTLR_INPUT&#125;</span>.h</span><br><span class="line">          <span class="variable">$&#123;ANTLR_$&#123;TARGET_NAME&#125;</span>_OUTPUT_DIR&#125;/<span class="variable">$&#123;ANTLR_INPUT&#125;</span>.cpp)</span><br><span class="line">    <span class="keyword">set</span>(ANTLR_<span class="variable">$&#123;TARGET_NAME&#125;</span>_OUTPUTS</span><br><span class="line">        <span class="variable">$&#123;ANTLR_$&#123;TARGET_NAME&#125;</span>_OUTPUT_DIR&#125;/<span class="variable">$&#123;ANTLR_INPUT&#125;</span>.interp</span><br><span class="line">        <span class="variable">$&#123;ANTLR_$&#123;TARGET_NAME&#125;</span>_OUTPUT_DIR&#125;/<span class="variable">$&#123;ANTLR_INPUT&#125;</span>.tokens)</span><br><span class="line">  <span class="keyword">else</span>()</span><br><span class="line">    <span class="keyword">list</span>(APPEND ANTLR_<span class="variable">$&#123;TARGET_NAME&#125;</span>_CXX_OUTPUTS</span><br><span class="line">          <span class="variable">$&#123;ANTLR_$&#123;TARGET_NAME&#125;</span>_OUTPUT_DIR&#125;/<span class="variable">$&#123;ANTLR_INPUT&#125;</span>Lexer.h</span><br><span class="line">          <span class="variable">$&#123;ANTLR_$&#123;TARGET_NAME&#125;</span>_OUTPUT_DIR&#125;/<span class="variable">$&#123;ANTLR_INPUT&#125;</span>Lexer.cpp</span><br><span class="line">          <span class="variable">$&#123;ANTLR_$&#123;TARGET_NAME&#125;</span>_OUTPUT_DIR&#125;/<span class="variable">$&#123;ANTLR_INPUT&#125;</span>Parser.h</span><br><span class="line">          <span class="variable">$&#123;ANTLR_$&#123;TARGET_NAME&#125;</span>_OUTPUT_DIR&#125;/<span class="variable">$&#123;ANTLR_INPUT&#125;</span>Parser.cpp)</span><br><span class="line">    <span class="keyword">list</span>(APPEND ANTLR_<span class="variable">$&#123;TARGET_NAME&#125;</span>_OUTPUTS</span><br><span class="line">          <span class="variable">$&#123;ANTLR_$&#123;TARGET_NAME&#125;</span>_OUTPUT_DIR&#125;/<span class="variable">$&#123;ANTLR_INPUT&#125;</span>Lexer.interp</span><br><span class="line">          <span class="variable">$&#123;ANTLR_$&#123;TARGET_NAME&#125;</span>_OUTPUT_DIR&#125;/<span class="variable">$&#123;ANTLR_INPUT&#125;</span>Lexer.tokens)</span><br><span class="line">  <span class="keyword">endif</span>()</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span>(ANTLR_TARGET_LISTENER)</span><br><span class="line">    <span class="keyword">list</span>(APPEND ANTLR_<span class="variable">$&#123;TARGET_NAME&#125;</span>_CXX_OUTPUTS</span><br><span class="line">          <span class="variable">$&#123;ANTLR_$&#123;TARGET_NAME&#125;</span>_OUTPUT_DIR&#125;/<span class="variable">$&#123;ANTLR_INPUT&#125;</span>BaseListener.h</span><br><span class="line">          <span class="variable">$&#123;ANTLR_$&#123;TARGET_NAME&#125;</span>_OUTPUT_DIR&#125;/<span class="variable">$&#123;ANTLR_INPUT&#125;</span>BaseListener.cpp</span><br><span class="line">          <span class="variable">$&#123;ANTLR_$&#123;TARGET_NAME&#125;</span>_OUTPUT_DIR&#125;/<span class="variable">$&#123;ANTLR_INPUT&#125;</span>Listener.h</span><br><span class="line">          <span class="variable">$&#123;ANTLR_$&#123;TARGET_NAME&#125;</span>_OUTPUT_DIR&#125;/<span class="variable">$&#123;ANTLR_INPUT&#125;</span>Listener.cpp)</span><br><span class="line">    <span class="keyword">list</span>(APPEND ANTLR_TARGET_GENERATE_FLAGS -listener)</span><br><span class="line">  <span class="keyword">endif</span>()</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span>(ANTLR_TARGET_VISITOR)</span><br><span class="line">    <span class="keyword">list</span>(APPEND ANTLR_<span class="variable">$&#123;TARGET_NAME&#125;</span>_CXX_OUTPUTS</span><br><span class="line">          <span class="variable">$&#123;ANTLR_$&#123;TARGET_NAME&#125;</span>_OUTPUT_DIR&#125;/<span class="variable">$&#123;ANTLR_INPUT&#125;</span>BaseVisitor.h</span><br><span class="line">          <span class="variable">$&#123;ANTLR_$&#123;TARGET_NAME&#125;</span>_OUTPUT_DIR&#125;/<span class="variable">$&#123;ANTLR_INPUT&#125;</span>BaseVisitor.cpp</span><br><span class="line">          <span class="variable">$&#123;ANTLR_$&#123;TARGET_NAME&#125;</span>_OUTPUT_DIR&#125;/<span class="variable">$&#123;ANTLR_INPUT&#125;</span>Visitor.h</span><br><span class="line">          <span class="variable">$&#123;ANTLR_$&#123;TARGET_NAME&#125;</span>_OUTPUT_DIR&#125;/<span class="variable">$&#123;ANTLR_INPUT&#125;</span>Visitor.cpp)</span><br><span class="line">    <span class="keyword">list</span>(APPEND ANTLR_TARGET_GENERATE_FLAGS -visitor)</span><br><span class="line">  <span class="keyword">endif</span>()</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span>(ANTLR_TARGET_NAMESPACE)</span><br><span class="line">    <span class="keyword">list</span>(APPEND ANTLR_TARGET_GENERATE_FLAGS -package <span class="variable">$&#123;ANTLR_TARGET_NAMESPACE&#125;</span>)</span><br><span class="line">  <span class="keyword">endif</span>()</span><br><span class="line"></span><br><span class="line">  <span class="keyword">list</span>(APPEND ANTLR_<span class="variable">$&#123;TARGET_NAME&#125;</span>_OUTPUTS <span class="variable">$&#123;ANTLR_$&#123;TARGET_NAME&#125;</span>_CXX_OUTPUTS&#125;)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">execute_process</span>(</span><br><span class="line">      <span class="keyword">COMMAND</span> <span class="variable">$&#123;Java_JAVA_EXECUTABLE&#125;</span> -jar <span class="variable">$&#123;ANTLR_EXECUTABLE&#125;</span></span><br><span class="line">              <span class="variable">$&#123;INPUT_FILE&#125;</span></span><br><span class="line">              -o <span class="variable">$&#123;ANTLR_$&#123;TARGET_NAME&#125;</span>_OUTPUT_DIR&#125;</span><br><span class="line">              -no-listener</span><br><span class="line">              -Dlanguage=Cpp</span><br><span class="line">              <span class="variable">$&#123;ANTLR_TARGET_GENERATE_FLAGS&#125;</span></span><br><span class="line">      WORKING_DIRECTORY <span class="variable">$&#123;CMAKE_CURRENT_SOURCE_DIR&#125;</span></span><br><span class="line">  )</span><br><span class="line">  <span class="keyword">cmake_policy</span>(<span class="keyword">SET</span> CMP0140 NEW)</span><br><span class="line">  <span class="keyword">return</span>(PROPAGATE </span><br><span class="line">    ANTLR_<span class="variable">$&#123;TARGET_NAME&#125;</span>_OUTPUT_DIR </span><br><span class="line">    ANTLR_<span class="variable">$&#123;TARGET_NAME&#125;</span>_CXX_OUTPUTS </span><br><span class="line">    ANTLR_<span class="variable">$&#123;TARGET_NAME&#125;</span>_OUTPUTS</span><br><span class="line">  )</span><br><span class="line"><span class="keyword">endfunction</span>(add_antlr4_parser)</span><br></pre></td></tr></table></figure>
+
+<p>由于我们在 configure
+过程中进行生成，删除了几个不必要的配置，调用参数含义如下：</p>
+<ul>
+<li><p><code>TARGET_NAME</code>: 指定文法名词，例如
+<code>ExprParser</code></p></li>
+<li><p><code>INPUT_FILE</code>：对应的文法文件，例如
+<code>Expr.g4</code></p></li>
+<li><p><code>LEXER</code>、<code>PARSER</code>、<code>LISTENER</code>、<code>VISITOR</code>
+都是 BOOL 类型，表示是否开启对应的代码生成</p>
+<p>lexer 对应词法分析器，parser 对应语法分析其，listener 和 visitor
+是用来遍历语法树的两种方式（当然也可以自行实现语法树的遍历）</p></li>
+<li><p><code>NAMESPACE</code>：生成的分析器所属命名空间，例如
+<code>parser</code>，对应的语法分析器就是
+<code>parser::ExprParser</code></p></li>
+<li><p><code>OUTPUT_DIRECTORY</code>：生成的代码输出路径，例如我们可以将其输出到源代码文件夹
+<code>$&#123;CMAKE_CURRENT_SOURCE_DIR&#125;</code></p></li>
+<li><p><code>GENERATE_FLAGS</code>：一些其他的 antlr
+文法生成参数，前面的足够使用了， 这个一般用不到</p></li>
+</ul>
+<p>调用实例如下</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">add_antlr4_parser(</span><br><span class="line">  CalculatorParser Calculator.g4 </span><br><span class="line">  LEXER PARSER </span><br><span class="line">  NAMESPACE parser</span><br><span class="line">  OUTPUT_DIRECTORY <span class="variable">$&#123;CMAKE_SOURCE_DIR&#125;</span>/parser</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<h1 id="杂项">杂项</h1>
+<p>目前网上除了 ANTLR4 的 github
+的文档外，官方文档上信息很少，要想真正深入学习 ANTLR 的使用还是得看
+ANTLR 作者写的那本书 ANTLR 4权威指南，不过网上的 pdf
+版本还很多，也有中文版，基本上取代了文档的位置（连基本的 g4 文件 grammar
+都是书上讲的清楚一点，唉！）</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>PureWhiteVK
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://purewhitevk.github.io/posts/b5fa/" title="Antlr4使用">https://purewhitevk.github.io/posts/b5fa/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/dead.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/C/" rel="tag"># C++</a>
+              <a href="/tags/CMake/" rel="tag"># CMake</a>
+              <a href="/tags/ANTLR/" rel="tag"># ANTLR</a>
+              <a href="/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" rel="tag"># 编译原理</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/dbe7/" rel="prev" title="CMake依赖管理">
+                  <i class="fa fa-chevron-left"></i> CMake依赖管理
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PureWhiteVK</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">162k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">9:48</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

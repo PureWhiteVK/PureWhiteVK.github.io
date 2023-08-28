@@ -20,21 +20,21 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"purewhitevk.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.14.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"default"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="Git submodule 管理依赖 由于 C++ 自身的特殊性，要想实现跨平台代码，只能使用源码分发（也有类似于 Conan 的 C++ 依赖解决方案，但是对于一些冷门的库可能就不支持，还是得自己写）。 最简单的办法就是通过 git 的子模块将其添加到项目中，这种依赖管理方式确保可以访问到源代码，其缺点也很明显，我们在下载库的时候需要通过下载依赖库（也就是子模块），如果子模块较大可能下载起来比较">
+    <meta name="description" content="Git Submodule 管理依赖 由于 C++ 自身的特殊性，要想实现跨平台代码，只能使用源码分发（也有类似于 Conan 的 C++ 依赖解决方案，但是对于一些冷门的库可能就不支持，还是得自己写）。 最简单的办法就是通过 git 的子模块将其添加到项目中，这种依赖管理方式确保可以访问到源代码，其缺点也很明显，我们在下载库的时候需要通过下载依赖库（也就是子模块），如果子模块较大可能下载起来比较">
 <meta property="og:type" content="article">
 <meta property="og:title" content="CMake依赖管理">
 <meta property="og:url" content="https://purewhitevk.github.io/posts/dbe7/">
 <meta property="og:site_name" content="PureWhiteVK&#39;s Blog">
-<meta property="og:description" content="Git submodule 管理依赖 由于 C++ 自身的特殊性，要想实现跨平台代码，只能使用源码分发（也有类似于 Conan 的 C++ 依赖解决方案，但是对于一些冷门的库可能就不支持，还是得自己写）。 最简单的办法就是通过 git 的子模块将其添加到项目中，这种依赖管理方式确保可以访问到源代码，其缺点也很明显，我们在下载库的时候需要通过下载依赖库（也就是子模块），如果子模块较大可能下载起来比较">
+<meta property="og:description" content="Git Submodule 管理依赖 由于 C++ 自身的特殊性，要想实现跨平台代码，只能使用源码分发（也有类似于 Conan 的 C++ 依赖解决方案，但是对于一些冷门的库可能就不支持，还是得自己写）。 最简单的办法就是通过 git 的子模块将其添加到项目中，这种依赖管理方式确保可以访问到源代码，其缺点也很明显，我们在下载库的时候需要通过下载依赖库（也就是子模块），如果子模块较大可能下载起来比较">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://purewhitevk.github.io/posts/null/image-20230827220434585.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/dbe7/image-20230827220434585.png">
 <meta property="article:published_time" content="2023-08-27T13:05:34.000Z">
 <meta property="article:modified_time" content="2023-08-27T13:05:34.000Z">
 <meta property="article:author" content="PureWhiteVK">
 <meta property="article:tag" content="C++">
 <meta property="article:tag" content="CMake">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://purewhitevk.github.io/posts/null/image-20230827220434585.png">
+<meta name="twitter:image" content="https://purewhitevk.github.io/posts/dbe7/image-20230827220434585.png">
 
 
 <link rel="canonical" href="https://purewhitevk.github.io/posts/dbe7/">
@@ -92,7 +92,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">19</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">7</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">165</span></a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">21</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">7</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">166</span></a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
         </a>
@@ -143,7 +143,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#git-submodule-%E7%AE%A1%E7%90%86%E4%BE%9D%E8%B5%96"><span class="nav-number">1.</span> <span class="nav-text">Git submodule 管理依赖</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#fetchcontent-%E6%A8%A1%E5%9D%97%E6%B7%BB%E5%8A%A0%E4%BE%9D%E8%B5%96"><span class="nav-number">2.</span> <span class="nav-text">FetchContent 模块添加依赖</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9E%E9%99%85%E4%BD%BF%E7%94%A8"><span class="nav-number">3.</span> <span class="nav-text">实际使用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9D%82%E9%A1%B9"><span class="nav-number">4.</span> <span class="nav-text">杂项</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#git-submodule-%E7%AE%A1%E7%90%86%E4%BE%9D%E8%B5%96"><span class="nav-number">1.</span> <span class="nav-text">Git Submodule 管理依赖</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#fetchcontent-%E6%A8%A1%E5%9D%97%E6%B7%BB%E5%8A%A0%E4%BE%9D%E8%B5%96"><span class="nav-number">2.</span> <span class="nav-text">FetchContent 模块添加依赖</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9E%E9%99%85%E4%BD%BF%E7%94%A8"><span class="nav-number">3.</span> <span class="nav-text">实际使用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#externalproject-%E6%B7%BB%E5%8A%A0%E4%BE%9D%E8%B5%96"><span class="nav-number">4.</span> <span class="nav-text">ExternalProject 添加依赖</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9D%82%E9%A1%B9"><span class="nav-number">5.</span> <span class="nav-text">杂项</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -158,7 +158,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">165</span>
+          <span class="site-state-item-count">166</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -169,7 +169,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-count">21</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -255,7 +255,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>1.8k</span>
+      <span>2k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -273,7 +273,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h1 id="git-submodule-管理依赖">Git submodule 管理依赖</h1>
+        <h1 id="git-submodule-管理依赖">Git Submodule 管理依赖</h1>
 <p>由于 C++
 自身的特殊性，要想实现跨平台代码，只能使用源码分发（也有类似于 Conan 的
 C++ 依赖解决方案，但是对于一些冷门的库可能就不支持，还是得自己写）。</p>
@@ -367,6 +367,22 @@ git 仓库，减少下载时间。</p>
 <p>然后对于 glad 库（用来加载 OpenGL 函数），其配置代码也十分简单</p>
 <figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 配置为动态链接库</span></span><br><span class="line"><span class="keyword">add_library</span>(glad SHARED src/gl.c)</span><br><span class="line"><span class="keyword">target_compile_definitions</span>(glad PRIVATE -DGLAD_API_CALL_EXPORT_BUILD)</span><br><span class="line"><span class="keyword">target_compile_definitions</span>(glad PUBLIC -DGLAD_API_CALL_EXPORT)</span><br><span class="line"><span class="keyword">target_include_directories</span>(glad PUBLIC <span class="keyword">include</span>)</span><br><span class="line"><span class="keyword">add_library</span>(glad::glad ALIAS glad)</span><br></pre></td></tr></table></figure>
 
+<h1 id="externalproject-添加依赖">ExternalProject 添加依赖</h1>
+<p>这个也是 CMake 中下载依赖的一种方式，其早于 <code>FetchContent</code>
+出现，可以提供和 <code>FetchContent</code>
+类似的功能，主要通过一个巨大的函数进行依赖配置</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ExternalProject_Add</span><br></pre></td></tr></table></figure>
+
+<p>我们可以在其中指定编译的命令等，也可以使用
+<code>ExternalProject_Add_Step</code>
+来手动管理依赖的编译步骤，不过这种方式个人感觉没有
+<code>FetchContent_Declare</code> 和 <code>FetchContent_Populate</code>
+使用来的方便，就不过多介绍了，网上也有很多相关的教程。</p>
+<blockquote>
+<p><a
+target="_blank" rel="noopener" href="https://cmake.org/cmake/help/latest/module/ExternalProject.html">ExternalProject
+— CMake 3.27.4 Documentation</a></p>
+</blockquote>
 <h1 id="杂项">杂项</h1>
 <p><strong>在 Windows 下使用动态链接库时可能会因为找不到 dll
 库的位置而无法启动应用</strong>，我们需要手动将动态链接库（例如
@@ -377,7 +393,7 @@ git 仓库，减少下载时间。</p>
 glad.dll，无法继续执行代码，重新安装程序可能会解决此问题。</strong>）</p>
 <p><em>比较坑的点在于 Windows 下使用 VSCode 完全看不到这个错误提示，而在
 Visual Studio 中就可以看到，恶心坏了</em></p>
-<p><img data-src="/posts/null/image-20230827220434585.png" /></p>
+<p><img data-src="/posts/dbe7/image-20230827220434585.png" /></p>
 <p>解决方案有很多：</p>
 <ul>
 <li>强制所有编译输出到同一个目录下，这样就可以确保一定能找到了（个人感觉比较丑陋，只能算一个
@@ -441,6 +457,9 @@ target="_blank" rel="noopener" href="https://cmake.org/cmake/help/latest/manual/
                 </a>
             </div>
             <div class="post-nav-item">
+                <a href="/posts/b5fa/" rel="next" title="Antlr4使用">
+                  Antlr4使用 <i class="fa fa-chevron-right"></i>
+                </a>
             </div>
           </div>
     </footer>
@@ -472,13 +491,13 @@ target="_blank" rel="noopener" href="https://cmake.org/cmake/help/latest/manual/
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">159k</span>
+    <span title="站点总字数">162k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">9:38</span>
+    <span title="站点阅读时长">9:48</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
