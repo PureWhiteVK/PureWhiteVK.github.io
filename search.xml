@@ -2,7 +2,7 @@
 <search>
   <entry>
     <title>401. 二进制手表</title>
-    <url>/posts/96e0/</url>
+    <url>/posts/1b32/</url>
     <content><![CDATA[<h1 id="401-二进制手表">401. 二进制手表</h1>
 <blockquote>
 <p>链接：<a href="https://leetcode-cn.com/problems/binary-watch/">401.
@@ -1495,8 +1495,8 @@ dp[i] = min(dp[next[j]]*primes[j])
       </tags>
   </entry>
   <entry>
-    <title>个人博客搭建记录</title>
-    <url>/posts/96e0/</url>
+    <title>413. 等差数列划分</title>
+    <url>/posts/1678/</url>
     <content><![CDATA[<h1 id="413-等差数列划分">413. 等差数列划分</h1>
 <p>如果一个数列 <strong>至少有三个元素</strong>
 ，并且任意两个相邻元素之差相同，则称该数列为等差数列。</p>
@@ -1713,8 +1713,8 @@ href="https://leetcode-cn.com/problems/beautiful-arrangement">https://leetcode-c
       </tags>
   </entry>
   <entry>
-    <title>个人博客搭建记录</title>
-    <url>/posts/96e0/</url>
+    <title>552. 学生出勤记录 II</title>
+    <url>/posts/1678/</url>
     <content><![CDATA[<h1 id="552-学生出勤记录-ii">552. 学生出勤记录 II</h1>
 <p>可以用字符串表示一个学生的出勤记录，其中的每个字符用来标记当天的出勤情况（缺勤、迟到、到场）。记录中只含下面三种字符：</p>
 <ul>
