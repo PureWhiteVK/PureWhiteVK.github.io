@@ -136,7 +136,7 @@ target_link_libraries(demo PRIVATE antlr4_static)
 
 # 自行实现的 ANTLR4 集成方式
 
-### FetchContent 下载依赖
+## FetchContent 下载依赖
 
 思路很简单，就是下载 + `add_subdirectory` 的老套路，不过 ANTLR4 比较坑的是动态链接库和静态链接库的处理上， 需要添加很多处理来保证编译正确（主要是 Windows 恶心人的 `__declspec(dllexport)` 以及 `__declspec(dllimport)`），而在 ANTLR4 的原始 CMakeLists.txt 设置有点问题（主要是宏定义的可见范围设置有误）
 

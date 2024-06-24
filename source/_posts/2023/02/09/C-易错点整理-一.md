@@ -9,8 +9,6 @@ category: C++学习笔记
 ---
 
 
-# C++ 易错点整理（一）
-
 最近刷牛客的 C++ 语言专项练习（选择题），本来以为 C++ 掌握的还不错吧，一做题就全露馅了，细节太多了（ C++ 本身的 **未定义行为 undefined behavior** 以及 C++这么多年来的更新带来的包袱太多了）
 
 基本上所有的问题都可以在 [cppreference.com](https://en.cppreference.com/w/) 上面找到答案，还有样例，比较权威，然后实现相关的可以使用 [Compiler Explorer (godbolt.org)](https://godbolt.org/) 查看编译细节。

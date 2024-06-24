@@ -10,9 +10,6 @@ date: 2023-02-25 14:34:03
 
 
 
-
-# zerotier 实现内网穿透
-
 zerotier 可以将不同局域网下的主机连接到同一个虚拟局域网内（即内网穿透），使用之前需要注册一个 zerotier账号，所有对虚拟网络的操作（设备管理、ip设置等）都需要在 web 端进行。官方网址：https://www.zerotier.com/
 
 ## 注册 Zerotier 账号
