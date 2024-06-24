@@ -20,12 +20,12 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"purewhitevk.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.14.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"default"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="命令行切换 MSVC 版本 在 WIndows 下跑 Python 深度学习代码时，需要编译 C++ 库（点名 Pytorch3d），但是使用最新版本的 MSVC 进行编译的时候会报错，去 Github 看 Issue 时有提到降级可能有效，我们可以通过添加组件的方式直接下载指定版本的 MSVC 编译器。然后手动修改进行切换。为了怕后面遇到类似问题时忘记怎么搞，还是简单记录一下吧，具体操作如下：">
+    <meta name="description" content="在 WIndows 下跑 Python 深度学习代码时，需要编译 C++ 库（点名 Pytorch3d），但是使用最新版本的 MSVC 进行编译的时候会报错，去 Github 看 Issue 时有提到降级可能有效，我们可以通过添加组件的方式直接下载指定版本的 MSVC 编译器。然后手动修改进行切换。为了怕后面遇到类似问题时忘记怎么搞，还是简单记录一下吧，具体操作如下：  首先打开 Visual S">
 <meta property="og:type" content="article">
 <meta property="og:title" content="命令行切换MSVC版本">
 <meta property="og:url" content="https://purewhitevk.github.io/posts/30a2/">
 <meta property="og:site_name" content="PureWhiteVK&#39;s Blog">
-<meta property="og:description" content="命令行切换 MSVC 版本 在 WIndows 下跑 Python 深度学习代码时，需要编译 C++ 库（点名 Pytorch3d），但是使用最新版本的 MSVC 进行编译的时候会报错，去 Github 看 Issue 时有提到降级可能有效，我们可以通过添加组件的方式直接下载指定版本的 MSVC 编译器。然后手动修改进行切换。为了怕后面遇到类似问题时忘记怎么搞，还是简单记录一下吧，具体操作如下：">
+<meta property="og:description" content="在 WIndows 下跑 Python 深度学习代码时，需要编译 C++ 库（点名 Pytorch3d），但是使用最新版本的 MSVC 进行编译的时候会报错，去 Github 看 Issue 时有提到降级可能有效，我们可以通过添加组件的方式直接下载指定版本的 MSVC 编译器。然后手动修改进行切换。为了怕后面遇到类似问题时忘记怎么搞，还是简单记录一下吧，具体操作如下：  首先打开 Visual S">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://purewhitevk.github.io/posts/30a2/image-20230220223924979.png">
 <meta property="og:image" content="https://purewhitevk.github.io/posts/30a2/image-20230220224128371.png">
@@ -96,7 +96,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">21</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">7</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">166</span></a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">21</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">6</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">16</span></a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
         </a>
@@ -134,7 +134,7 @@
   
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+    <div class="sidebar-inner sidebar-overview-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           文章目录
@@ -147,7 +147,6 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%88%87%E6%8D%A2-msvc-%E7%89%88%E6%9C%AC"><span class="nav-number">1.</span> <span class="nav-text">命令行切换 MSVC 版本</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -162,13 +161,13 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">166</span>
+          <span class="site-state-item-count">16</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-count">6</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
@@ -259,7 +258,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>761</span>
+      <span>753</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -277,8 +276,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h1 id="命令行切换-msvc-版本">命令行切换 MSVC 版本</h1>
-<p>在 WIndows 下跑 Python 深度学习代码时，需要编译 C++ 库（点名
+        <p>在 WIndows 下跑 Python 深度学习代码时，需要编译 C++ 库（点名
 Pytorch3d），但是使用最新版本的 MSVC 进行编译的时候会报错，去 Github 看
 Issue 时有提到降级可能有效，我们可以通过添加组件的方式直接下载指定版本的
 MSVC
@@ -396,7 +394,7 @@ target="_blank" rel="noopener" href="https://cmake.org/cmake/help/latest/variabl
 
 <div class="copyright">
   &copy; 
-  <span itemprop="copyrightYear">2023</span>
+  <span itemprop="copyrightYear">2024</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
@@ -407,13 +405,13 @@ target="_blank" rel="noopener" href="https://cmake.org/cmake/help/latest/variabl
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">162k</span>
+    <span title="站点总字数">52k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">9:48</span>
+    <span title="站点阅读时长">3:09</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动

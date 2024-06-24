@@ -20,12 +20,12 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"purewhitevk.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.14.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"default"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="Dockerfile常见环境使用 ubuntu(国内镜像) 由于网内网络环境的问题，ubuntu不换源的话基本没法用，我们首先参考普通 ubuntu 系统如何换源，然后将其转换成命令形式，便于应用于 Dockerfile 中。 随便在网上搜 &quot;ubuntu换源&quot;，可以搜出一大堆教程，这里我们直接参考阿里云开源镜像站的官方教程，官方教程中给出了操作办法，就是手动将所有的源地址替换为阿里云的镜像地址：">
+    <meta name="description" content="ubuntu(国内镜像) 由于网内网络环境的问题，ubuntu不换源的话基本没法用，我们首先参考普通 ubuntu 系统如何换源，然后将其转换成命令形式，便于应用于 Dockerfile 中。 随便在网上搜 &quot;ubuntu换源&quot;，可以搜出一大堆教程，这里我们直接参考阿里云开源镜像站的官方教程，官方教程中给出了操作办法，就是手动将所有的源地址替换为阿里云的镜像地址：  首先我们使用 docker 跑">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Dockerfile常见环境使用">
 <meta property="og:url" content="https://purewhitevk.github.io/posts/4a2b/">
 <meta property="og:site_name" content="PureWhiteVK&#39;s Blog">
-<meta property="og:description" content="Dockerfile常见环境使用 ubuntu(国内镜像) 由于网内网络环境的问题，ubuntu不换源的话基本没法用，我们首先参考普通 ubuntu 系统如何换源，然后将其转换成命令形式，便于应用于 Dockerfile 中。 随便在网上搜 &quot;ubuntu换源&quot;，可以搜出一大堆教程，这里我们直接参考阿里云开源镜像站的官方教程，官方教程中给出了操作办法，就是手动将所有的源地址替换为阿里云的镜像地址：">
+<meta property="og:description" content="ubuntu(国内镜像) 由于网内网络环境的问题，ubuntu不换源的话基本没法用，我们首先参考普通 ubuntu 系统如何换源，然后将其转换成命令形式，便于应用于 Dockerfile 中。 随便在网上搜 &quot;ubuntu换源&quot;，可以搜出一大堆教程，这里我们直接参考阿里云开源镜像站的官方教程，官方教程中给出了操作办法，就是手动将所有的源地址替换为阿里云的镜像地址：  首先我们使用 docker 跑">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://purewhitevk.github.io/posts/4a2b/image-20230626220459741.png">
 <meta property="og:image" content="https://purewhitevk.github.io/posts/4a2b/image-20230626215508213.png">
@@ -114,7 +114,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">21</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">7</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">166</span></a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">21</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">6</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">16</span></a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
         </a>
@@ -165,7 +165,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#dockerfile%E5%B8%B8%E8%A7%81%E7%8E%AF%E5%A2%83%E4%BD%BF%E7%94%A8"><span class="nav-number">1.</span> <span class="nav-text">Dockerfile常见环境使用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ubuntu%E5%9B%BD%E5%86%85%E9%95%9C%E5%83%8F"><span class="nav-number">1.1.</span> <span class="nav-text">ubuntu(国内镜像)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#sed-%E5%91%BD%E4%BB%A4%E7%AE%80%E5%8D%95%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.1.1.</span> <span class="nav-text">sed 命令简单介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9B%BF%E6%8D%A2%E9%93%BE%E6%8E%A5"><span class="nav-number">1.1.2.</span> <span class="nav-text">替换链接</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ssh-%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="nav-number">1.2.</span> <span class="nav-text">ssh 服务器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#minicondapython"><span class="nav-number">1.3.</span> <span class="nav-text">miniconda(python)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#miniconda-%E6%8D%A2%E6%BA%90"><span class="nav-number">1.3.1.</span> <span class="nav-text">miniconda 换源</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E6%96%B0%E7%8E%AF%E5%A2%83%E5%B9%B6%E5%AE%89%E8%A3%85%E5%8C%85"><span class="nav-number">1.3.2.</span> <span class="nav-text">创建新环境并安装包</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">1.4.</span> <span class="nav-text">总结</span></a></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#ubuntu%E5%9B%BD%E5%86%85%E9%95%9C%E5%83%8F"><span class="nav-number">1.</span> <span class="nav-text">ubuntu(国内镜像)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#sed-%E5%91%BD%E4%BB%A4%E7%AE%80%E5%8D%95%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.1.</span> <span class="nav-text">sed 命令简单介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9B%BF%E6%8D%A2%E9%93%BE%E6%8E%A5"><span class="nav-number">1.2.</span> <span class="nav-text">替换链接</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ssh-%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="nav-number">2.</span> <span class="nav-text">ssh 服务器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#minicondapython"><span class="nav-number">3.</span> <span class="nav-text">miniconda(python)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#miniconda-%E6%8D%A2%E6%BA%90"><span class="nav-number">3.1.</span> <span class="nav-text">miniconda 换源</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E6%96%B0%E7%8E%AF%E5%A2%83%E5%B9%B6%E5%AE%89%E8%A3%85%E5%8C%85"><span class="nav-number">3.2.</span> <span class="nav-text">创建新环境并安装包</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -180,13 +180,13 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">166</span>
+          <span class="site-state-item-count">16</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-count">6</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
@@ -295,8 +295,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h1 id="dockerfile常见环境使用">Dockerfile常见环境使用</h1>
-<h2 id="ubuntu国内镜像">ubuntu(国内镜像)</h2>
+        <h2 id="ubuntu国内镜像">ubuntu(国内镜像)</h2>
 <p>由于网内网络环境的问题，ubuntu不换源的话基本没法用，我们首先参考普通
 ubuntu 系统如何换源，然后将其转换成命令形式，便于应用于 Dockerfile
 中。</p>
@@ -687,7 +686,7 @@ shm_Adenialzz的博客-CSDN博客</a></li>
 
 <div class="copyright">
   &copy; 
-  <span itemprop="copyrightYear">2023</span>
+  <span itemprop="copyrightYear">2024</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
@@ -698,13 +697,13 @@ shm_Adenialzz的博客-CSDN博客</a></li>
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">162k</span>
+    <span title="站点总字数">52k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">9:48</span>
+    <span title="站点阅读时长">3:09</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动

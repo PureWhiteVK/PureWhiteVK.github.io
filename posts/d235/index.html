@@ -20,17 +20,18 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"purewhitevk.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.14.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"default"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="318. 最大单词长度乘积 给定一个字符串数组 words，找到 length(word[i]) * length(word[j]) 的最大值，并且这两个单词不含有公共字母。你可以认为每个单词只包含小写字母。如果不存在这样的两个单词，返回 0。  链接：https:&#x2F;&#x2F;leetcode-cn.com&#x2F;problems&#x2F;maximum-product-of-word-lengths">
+    <meta name="description" content="整体结构 1234567891011121314151617181920212223242526272829.├── .gitignore├── .gitmodules├── CMakeLists.txt├── LICENSE├── README.md├── build├── cmake│   ├── CMakeLists.txt│   └── ...├── data│   ├── .gitkee">
 <meta property="og:type" content="article">
-<meta property="og:title" content="318. 最大单词长度乘积">
+<meta property="og:title" content="CMake项目结构模版">
 <meta property="og:url" content="https://purewhitevk.github.io/posts/d235/">
 <meta property="og:site_name" content="PureWhiteVK&#39;s Blog">
-<meta property="og:description" content="318. 最大单词长度乘积 给定一个字符串数组 words，找到 length(word[i]) * length(word[j]) 的最大值，并且这两个单词不含有公共字母。你可以认为每个单词只包含小写字母。如果不存在这样的两个单词，返回 0。  链接：https:&#x2F;&#x2F;leetcode-cn.com&#x2F;problems&#x2F;maximum-product-of-word-lengths">
+<meta property="og:description" content="整体结构 1234567891011121314151617181920212223242526272829.├── .gitignore├── .gitmodules├── CMakeLists.txt├── LICENSE├── README.md├── build├── cmake│   ├── CMakeLists.txt│   └── ...├── data│   ├── .gitkee">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2021-11-16T16:00:00.000Z">
-<meta property="article:modified_time" content="2021-11-16T16:00:00.000Z">
+<meta property="article:published_time" content="2023-07-06T12:35:20.000Z">
+<meta property="article:modified_time" content="2023-07-06T12:35:20.000Z">
 <meta property="article:author" content="PureWhiteVK">
-<meta property="article:tag" content="算法">
+<meta property="article:tag" content="C++">
+<meta property="article:tag" content="CMake">
 <meta name="twitter:card" content="summary">
 
 
@@ -38,10 +39,10 @@
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://purewhitevk.github.io/posts/d235/","path":"posts/d235/","title":"318. 最大单词长度乘积"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://purewhitevk.github.io/posts/d235/","path":"posts/d235/","title":"CMake项目结构模版"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>318. 最大单词长度乘积 | PureWhiteVK's Blog</title>
+<title>CMake项目结构模版 | PureWhiteVK's Blog</title>
   
 
 
@@ -89,7 +90,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">21</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">7</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">166</span></a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">21</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">6</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">16</span></a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
         </a>
@@ -140,7 +141,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#318-%E6%9C%80%E5%A4%A7%E5%8D%95%E8%AF%8D%E9%95%BF%E5%BA%A6%E4%B9%98%E7%A7%AF"><span class="nav-number">1.</span> <span class="nav-text">318. 最大单词长度乘积</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%8D%E8%BF%90%E7%AE%97"><span class="nav-number">1.1.</span> <span class="nav-text">位运算</span></a></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%B4%E4%BD%93%E7%BB%93%E6%9E%84"><span class="nav-number">1.</span> <span class="nav-text">整体结构</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BE%9D%E8%B5%96%E7%AE%A1%E7%90%86"><span class="nav-number">2.</span> <span class="nav-text">依赖管理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0-submodule"><span class="nav-number">2.1.</span> <span class="nav-text">添加 submodule</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E6%8C%87%E5%AE%9A-commit"><span class="nav-number">2.2.</span> <span class="nav-text">使用指定 commit</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%A0%E9%99%A4-submodule"><span class="nav-number">2.3.</span> <span class="nav-text">删除 submodule</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%AA%E4%BA%BA%E5%81%8F%E5%A5%BD%E5%91%BD%E5%90%8D%E6%96%B9%E5%BC%8F"><span class="nav-number">3.</span> <span class="nav-text">个人偏好命名方式</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -155,13 +156,13 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">166</span>
+          <span class="site-state-item-count">16</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-count">6</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
@@ -217,12 +218,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="318. 最大单词长度乘积 | PureWhiteVK's Blog">
+      <meta itemprop="name" content="CMake项目结构模版 | PureWhiteVK's Blog">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          318. 最大单词长度乘积
+          CMake项目结构模版
         </h1>
 
         <div class="post-meta-container">
@@ -233,7 +234,7 @@
       </span>
       <span class="post-meta-item-text">发表于</span>
 
-      <time title="创建时间：2021/11/17 00:00:00" itemprop="dateCreated datePublished" datetime="2021-11-17T00:00:00+08:00">2021/11/17</time>
+      <time title="创建时间：2023/07/06 20:35:20" itemprop="dateCreated datePublished" datetime="2023-07-06T20:35:20+08:00">2023/07/06</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -241,7 +242,7 @@
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/LeetCode%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/" itemprop="url" rel="index"><span itemprop="name">LeetCode刷题记录</span></a>
+          <a href="/categories/C-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">C++学习笔记</span></a>
         </span>
     </span>
 
@@ -252,14 +253,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>333</span>
+      <span>759</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>1 分钟</span>
+      <span>3 分钟</span>
     </span>
 </div>
 
@@ -270,21 +271,91 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h1 id="318-最大单词长度乘积">318. 最大单词长度乘积</h1>
-<p>给定一个字符串数组 words，找到 length(word[i]) * length(word[j])
-的最大值，并且这两个单词不含有公共字母。你可以认为每个单词只包含小写字母。如果不存在这样的两个单词，返回
-0。</p>
-<blockquote>
-<p>链接：<a
-target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/maximum-product-of-word-lengths">https://leetcode-cn.com/problems/maximum-product-of-word-lengths</a></p>
-</blockquote>
+        <h1 id="整体结构">整体结构</h1>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">.</span><br><span class="line">├── .gitignore</span><br><span class="line">├── .gitmodules</span><br><span class="line">├── CMakeLists.txt</span><br><span class="line">├── LICENSE</span><br><span class="line">├── README.md</span><br><span class="line">├── build</span><br><span class="line">├── cmake</span><br><span class="line">│   ├── CMakeLists.txt</span><br><span class="line">│   └── ...</span><br><span class="line">├── data</span><br><span class="line">│   ├── .gitkeep</span><br><span class="line">│   └── ...</span><br><span class="line">├── extern</span><br><span class="line">│   ├── CMakeLists.txt</span><br><span class="line">│   └── ...</span><br><span class="line">├── src</span><br><span class="line">│   ├── CMakeLists.txt</span><br><span class="line">│   ├── glad</span><br><span class="line">│   ├── lumos</span><br><span class="line">│   └── stb</span><br><span class="line">└── test</span><br><span class="line">    ├── CMakeLists.txt</span><br><span class="line">    ├── test_gl.cpp</span><br><span class="line">    ├── test_imageio.cpp</span><br><span class="line">    ├── test_imgui.cpp</span><br><span class="line">    ├── test_pcg.cpp</span><br><span class="line">    ├── test_random_permutation.cpp</span><br><span class="line">    └── test_viewer.cpp</span><br></pre></td></tr></table></figure>
+
 <span id="more"></span>
 
-<h2 id="位运算">位运算</h2>
-<p>看到判断两个只包含26个字母的字符串，下意识想到使用位运算存储每一个字符的使用情况，然后使用与运算，就可以在o(1)时间内判断两个单词是否存在公共字母，之后遍历一遍即可</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">maxProduct</span><span class="params">(String[] words)</span> &#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">l</span> <span class="operator">=</span> words.length;</span><br><span class="line">        <span class="type">int</span>[] bitmaps = <span class="keyword">new</span> <span class="title class_">int</span>[l];</span><br><span class="line">        <span class="type">int</span> <span class="variable">res</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;l;++i)&#123;</span><br><span class="line">            bitmaps[i] = getBitmap(words[i]);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;l;++i)&#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="type">int</span> j=i+<span class="number">1</span>;j&lt;l;++j)&#123;</span><br><span class="line">                <span class="comment">// 无论如何都需要进行两两比较吧</span></span><br><span class="line">                <span class="keyword">if</span>((bitmaps[i] &amp; bitmaps[j]) == <span class="number">0</span>)&#123;</span><br><span class="line">                    <span class="comment">// 不是重复单词</span></span><br><span class="line">                    res = Math.max(res,words[i].length()*words[j].length());</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> <span class="title function_">getBitmap</span><span class="params">(String word)</span>&#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">res</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">char</span> ch:word.toCharArray())&#123;</span><br><span class="line">            res |= (<span class="number">1</span>&lt;&lt;(ch-<span class="string">&#x27;a&#x27;</span>));</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>含义：</p>
+<ul>
+<li><p><code>CMakeLists.txt</code>：组织项目的源代码，不会包含具体的编译细节，仅包含项目的声明、跨平台控制等，示例如下：</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">cmake_minimum_required</span>(VERSION <span class="number">3.20</span>.<span class="number">0</span>)</span><br><span class="line"><span class="keyword">project</span>(Lumos)</span><br><span class="line"></span><br><span class="line"><span class="comment"># used with command `cmake -DENABLE_TESTING=ON -B build -S .`</span></span><br><span class="line"><span class="comment"># Define an option with default value OFF (disabled)</span></span><br><span class="line"><span class="keyword">option</span>(<span class="keyword">ENABLE_TESTING</span> <span class="string">&quot;Enable testing&quot;</span> <span class="keyword">OFF</span>)</span><br><span class="line"></span><br><span class="line">cmake_path(<span class="keyword">SET</span> DATA_PATH NORMALIZE <span class="variable">$&#123;PROJECT_SOURCE_DIR&#125;</span>/data)</span><br><span class="line"></span><br><span class="line"><span class="keyword">add_subdirectory</span>(cmake)</span><br><span class="line"><span class="keyword">add_subdirectory</span>(extern)</span><br><span class="line"><span class="keyword">add_subdirectory</span>(src)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">ENABLE_TESTING</span>)</span><br><span class="line">  <span class="keyword">enable_testing</span>()</span><br><span class="line">  <span class="keyword">add_subdirectory</span>(<span class="keyword">test</span>)</span><br><span class="line"><span class="keyword">endif</span>()</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>src</code>、<code>test</code>、<code>extern</code>
+分别代表源代码、测试代码以及第三方依赖库，每一个都会包含各自的
+<code>CMakeLists.txt</code>，用来管理代码，对于 <code>src</code>
+中的库代码（自定义的
+library），个人推荐将头文件（<code>.h</code>）和源代码文件
+（<code>.cpp</code>） 分开放，同时 include
+目录时设定好文件夹层级，示例如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">.</span><br><span class="line">├── CMakeLists.txt</span><br><span class="line">├── core</span><br><span class="line">│   ├── CMakeLists.txt</span><br><span class="line">│   ├── include</span><br><span class="line">│   │   └── lumos</span><br><span class="line">│   │       └── core</span><br><span class="line">│   └── src</span><br><span class="line">└── gui</span><br><span class="line">    ├── CMakeLists.txt</span><br><span class="line">    ├── include</span><br><span class="line">    │   └── lumos</span><br><span class="line">    │       └── gui</span><br><span class="line">    └── src</span><br></pre></td></tr></table></figure>
 
-<p>一个稍微优化一点的地方在于：对于掩码相同的字符串，我们只需要保存其最大长度即可，这样可以稍微减少一点比较次数，使用Map存储掩码和对应长度即可</p>
+<p>这样做稍微有点繁琐，但是代码的组织逻辑比较清晰</p>
+<p>对于 <code>extern</code> 文件夹，其用来添加第三方依赖，推荐使用
+<code>git submodule</code> 来管理版本，下载时使用
+<code>git clone --recursive &lt;repo-url&gt;</code> 即可。</p></li>
+</ul>
+<h1 id="依赖管理">依赖管理</h1>
+<h2 id="添加-submodule">添加 submodule</h2>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git submodule add &lt;repo-url&gt; &lt;local-submodule-path&gt;</span><br></pre></td></tr></table></figure>
+
+<p>例如</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git submodule add https://github.com/ocornut/imgui.git extern/imgui</span><br></pre></td></tr></table></figure>
+
+<h2 id="使用指定-commit">使用指定 commit</h2>
+<p>为确保代码稳定性，我们可能需要使用特定版本的代码，例如 imgui
+中我们想使用 tag 为 <code>v1.89.7-docking</code>，我们需要进入 submodule
+目录手动切换一下</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> extern/imgui</span><br><span class="line">git checkout v1.89.7-docking</span><br></pre></td></tr></table></figure>
+
+<p>当我们提交后 github 就会默认链接到该 repo 对应的 commit 了</p>
+<h2 id="删除-submodule">删除 submodule</h2>
+<p>在 git 中删除 submodule
+较为繁琐，没有一个直接删除的方法，参考网上的操作大概有以下5个步骤：</p>
+<ol type="1">
+<li><p>删除子模块目录</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">rm</span> -rf extern/imgui</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>删除 <code>.git</code> 的缓存</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">rm</span> --cached extern/imgui</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>删除 <code>.gitmodules</code> 中对应的子模块</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[submodule &quot;extern/imgui&quot;]</span><br><span class="line">	path = extern/imgui</span><br><span class="line">	url = https://github.com/ocornut/imgui.git</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>删除 <code>.git/config</code> 中相应条目</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">    [core]</span><br><span class="line">        repositoryformatversion = 0</span><br><span class="line">        filemode = <span class="literal">true</span></span><br><span class="line">        bare = <span class="literal">false</span></span><br><span class="line">        logallrefupdates = <span class="literal">true</span></span><br><span class="line">        ignorecase = <span class="literal">true</span></span><br><span class="line">        precomposeunicode = <span class="literal">true</span></span><br><span class="line">    ...</span><br><span class="line">[submodule <span class="string">&quot;extern/imgui&quot;</span>]</span><br><span class="line">	url = https://github.com/ocornut/imgui.git</span><br><span class="line">...</span><br><span class="line">5. 删除 `.git` 中子模块目录</span><br><span class="line"></span><br><span class="line">    ```bash</span><br><span class="line">    <span class="built_in">rm</span> -rf .git/modules/extern/imgui</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h1 id="个人偏好命名方式">个人偏好命名方式</h1>
+<p>命名方式有很多，选择自己喜欢的就行，关键在于<strong>统一</strong></p>
+<p><strong>文件名</strong></p>
+<p>小写下划线，例如
+<code>image_utils.h</code>，<code>imgae_utils.cpp</code></p>
+<p><strong>命名空间</strong></p>
+<p>小写（尽量不要添加下划线，使用子命名空间即可），例如
+<code>lumos::xxx</code>，<code>lumos::core::xxx</code></p>
+<p><strong>类名</strong></p>
+<p>首字母大写驼峰命名，对于全部大写的当成单词仅首字母大写，例如
+<code>HTML</code> 写成 <code>Html</code>，<code>RGBA</code> 写成
+<code>Rgba</code></p>
+<p>函数</p>
+<p><strong>类函数名</strong></p>
+<p>对于 <code>public / protected</code>
+方法而言使用首字母大写驼峰命名，例如 <code>Initialize</code>，对于
+<code>private</code> 方法使用首字母小写驼峰命名，例如
+<code>createContext</code></p>
+<p><strong>类变量</strong></p>
+<p>全部以 <code>m_</code> 开头，小写下划线，例如
+<code>m_handle</code></p>
+<p><strong>变量名</strong></p>
+<p>小写下划线，例如 <code>image_data</code></p>
+<p><strong>常量</strong></p>
+<p>全部大写，例如 <code>BUFFER_SIZE</code></p>
+<p><strong>cmake文件名</strong></p>
+<p>以 <code>-</code> 连接，例如 <code>add-imgui.cmake</code></p>
+<p><strong>cmake函数名</strong></p>
+<p>小写下划线（类似于 cmake 的函数命名方式），例如
+<code>add_imgui</code></p>
 
     </div>
 
@@ -302,7 +373,7 @@ target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/maximum-pr
   </li>
   <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="https://purewhitevk.github.io/posts/d235/" title="318. 最大单词长度乘积">https://purewhitevk.github.io/posts/d235/</a>
+      <a href="https://purewhitevk.github.io/posts/d235/" title="CMake项目结构模版">https://purewhitevk.github.io/posts/d235/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/dead.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -311,20 +382,21 @@ target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/maximum-pr
 </div>
 
           <div class="post-tags">
-              <a href="/tags/%E7%AE%97%E6%B3%95/" rel="tag"># 算法</a>
+              <a href="/tags/C/" rel="tag"># C++</a>
+              <a href="/tags/CMake/" rel="tag"># CMake</a>
           </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/posts/c664/" rel="prev" title="677. 键值映射">
-                  <i class="fa fa-chevron-left"></i> 677. 键值映射
+                <a href="/posts/4a2b/" rel="prev" title="Dockerfile常见环境使用">
+                  <i class="fa fa-chevron-left"></i> Dockerfile常见环境使用
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/posts/f3f9/" rel="next" title="397. 整数替换">
-                  397. 整数替换 <i class="fa fa-chevron-right"></i>
+                <a href="/posts/17bc/" rel="next" title="Python 易错点整理">
+                  Python 易错点整理 <i class="fa fa-chevron-right"></i>
                 </a>
             </div>
           </div>
@@ -346,7 +418,7 @@ target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/maximum-pr
 
 <div class="copyright">
   &copy; 
-  <span itemprop="copyrightYear">2023</span>
+  <span itemprop="copyrightYear">2024</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
@@ -357,13 +429,13 @@ target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/maximum-pr
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">162k</span>
+    <span title="站点总字数">52k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">9:48</span>
+    <span title="站点阅读时长">3:09</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
@@ -411,7 +483,7 @@ target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/maximum-pr
 
   
 
-  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
 <script src="/js/third-party/math/mathjax.js"></script>
 
 
