@@ -4753,4 +4753,183 @@ ANTLR 作者写的那本书 ANTLR 4权威指南，不过网上的 pdf
         <tag>编译原理</tag>
       </tags>
   </entry>
+  <entry>
+    <title>Git 常用操作</title>
+    <url>/posts/8de3/</url>
+    <content><![CDATA[<h1 id="git-clone">git clone</h1>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">git <span class="built_in">clone</span> &lt;repo-url&gt;</span><br></pre></td></tr></table></figure>
+
+<p>示例命令如下</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/boostorg/boost.git</span><br></pre></td></tr></table></figure>
+
+<p>一些常用的参数（全部参数选项可以通过 <code>git clone --help</code>
+查看）</p>
+<ul>
+<li><p><code>--recursive</code> 或
+<code>--recurse-submodules</code>（在较新版本的 git
+中使用，命令的语义更加清晰）：当要拉取的仓库中包含 submodule
+时，是默认不会拉取子仓库的，而指定这个参数即可拉取所有的子仓库。</p>
+<p>如果我们在下载的时候忘记指定
+<code>--recursive</code>，也可以通过下面命令重新拉取子仓库</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">git submodule update --init --recursive</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>--depth</code>：当我们只想下载指定更新次数的分支（这样可以减少下载的大小，在我们只需要最新的提交记录时很有用，当然也可以直接下载
+zip 或 tar.gz 等压缩文件来解决。</p></li>
+<li><p><code>-b</code> 或者
+<code>--branch</code>：指定要拉取的分支名称，例如下载 boost-1.86.0
+（这个实际上是一个 tag，但也可以通过这种方式下载）。</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/boostorg/boost.git --branch boost-1.86.0</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<span id="more"></span>
+
+<h2 id="添加-ssh-密钥">添加 SSH 密钥</h2>
+<ol type="1">
+<li><p>创建 ssh 密钥对，通过 <code>ssh-keygen</code> 创建即可</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">ssh-keygen -t &lt;加密方式&gt; -C &lt;密钥注释&gt;</span><br></pre></td></tr></table></figure>
+
+<p>示例如下</p>
+<figure class="highlight txt"><table><tr><td class="code"><pre><span class="line">PS D:\Code\Git&gt; ssh-keygen -t ed25519 -C &quot;foo@example.com&quot;</span><br><span class="line">Generating public/private ed25519 key pair.</span><br><span class="line">Enter file in which to save the key (C:\Users\xiao/.ssh/id_ed25519):</span><br><span class="line">Enter passphrase (empty for no passphrase):</span><br><span class="line">Enter same passphrase again:</span><br><span class="line">Your identification has been saved in C:\Users\xiao/.ssh/id_ed25519.</span><br><span class="line">Your public key has been saved in C:\Users\xiao/.ssh/id_ed25519.pub.</span><br><span class="line">The key fingerprint is:</span><br><span class="line">SHA256:rJ2ufXZ93fAPNsdqBrdUsMSABhse7zBpo0ewRa3nn+s foo@example.com</span><br><span class="line">The key&#x27;s randomart image is:</span><br><span class="line">+--[ED25519 256]--+</span><br><span class="line">|      ..*o ..o   |</span><br><span class="line">|       = *+   +  |</span><br><span class="line">|      . Xo.  . o |</span><br><span class="line">|       =.=.   . .|</span><br><span class="line">|      . So.    . |</span><br><span class="line">|       + .. . +. |</span><br><span class="line">|      . o  . *++=|</span><br><span class="line">|       o  o +.===|</span><br><span class="line">|      ..oo oE+..o|</span><br><span class="line">+----[SHA256]-----+</span><br></pre></td></tr></table></figure>
+
+<p>会提示我们创建的密钥对已经放置在了 <code>C:\Users\xiao\.ssh</code>
+路径下</p></li>
+<li><p>更新 ssh 的配置，修改
+<code>~/.ssh/config</code>，添加如下内容</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">Host gitlab.com</span><br><span class="line">  HostName gitlab.com</span><br><span class="line">  PreferredAuthentications publickey</span><br><span class="line">  IdentityFile ~/.ssh/gitlab.<span class="keyword">private</span>-key.pem</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在 gitlab 或者 github 上添加 SSH 密钥</p>
+<p>进入用户设置，点击 <code>SSH Keys</code></p>
+<p><img data-src="/posts/8de3/image-20240907110021863.png"
+style="zoom:50%;" /></p>
+<p>点击 Add new key</p>
+<p><img data-src="/posts/8de3/image-20240907110149847.png"
+style="zoom: 50%;" /></p>
+<p>将刚才创建的密钥对中公钥部分添加到此处，然后点击 Add 即可添加 SSH
+密钥</p>
+<p><img data-src="/posts/8de3/image-20240907110252194.png"
+style="zoom:50%;" /></p></li>
+<li><p>测试连接，在命令行中输入如下命令</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">PS D:\Code\Git&gt; ssh git@gitlab.com</span><br><span class="line">PTY allocation request failed on channel 0</span><br><span class="line">Welcome to GitLab, @PureWhiteVK!</span><br><span class="line">Connection to gitlab.com closed.</span><br></pre></td></tr></table></figure>
+
+<p>如果有类似输出，则说明 SSH 密钥添加成功</p></li>
+<li><p>通过 SSH 方式下载源码</p>
+<p><img data-src="/posts/8de3/image-20240907110430040.png"
+style="zoom: 50%;" /></p>
+<p>复制 Clone with SSH 中给出命令，在命令行中执行即可拉取源码</p></li>
+</ol>
+<h1 id="git-branch">git branch</h1>
+<h2 id="创建">创建</h2>
+<p>直接使用 <code>git checkout</code> 创建分支，示例如下</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">git checkout -b bugfix/my-bugfix-branch</span><br></pre></td></tr></table></figure>
+
+<p>（这个实际上等价于下面的两条命令）</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">git branch -f bugfix/my-bugfix-branch</span><br><span class="line">git checkout bugfix/my-bugfix-branch</span><br></pre></td></tr></table></figure>
+
+<p>因此使用 <code>git checkout -b &lt;branch&gt;</code>
+是最常用也最典型的操作方式</p>
+<h2 id="删除">删除</h2>
+<p>通过下面命令删除分支</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">git branch -D &lt;branch-name&gt;</span><br></pre></td></tr></table></figure>
+
+<p>如果要删除远端分支（不推荐），需要通过 <code>git push</code>
+命令完成，示例如下</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">git push origin --delete &lt;branch-name&gt;</span><br></pre></td></tr></table></figure>
+
+<h2 id="重命名">重命名</h2>
+<p>通过下面命令重命名分支（实际上是移动或者拷贝，这两种方式都可以实现重命名效果）</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">git branch -m &lt;old-branch&gt; &lt;new-branch&gt;</span><br></pre></td></tr></table></figure>
+
+<p>此处的 <code>-m</code> 表示 move，和 Linux 上 <code>move</code>
+命令一致，就是移动分支到新的标识符下。</p>
+<p>也可以使用 <code>-c</code> ，其表示 copy，和 Linux 上 <code>cp</code>
+命令一致，其好处就是不会丢弃原有的分支</p>
+<h1 id="合并">合并</h1>
+<p>在 git 中有两种方式可以实现合并，merge 和
+rebase，下面简单描述下二者区别：</p>
+<ul>
+<li><p>merge：<strong>创建一条新的
+commit</strong>，将分支1的改动和分支2的改动合并，记录在此 commit 中</p>
+<p>优点是能完整的记录所有的改动历史</p>
+<p>缺点是主干的历史并不是完全线性的，在版本回退时不太方便（通过 github
+的 PR 或者 gitlab 的 MR 都可以确保主干线性历史）</p></li>
+<li><p>rebase：将分支1中的相对于分支2不同的 commit 在 分支2
+上重新提交一遍，<strong>不会创建新的
+commit</strong>，但是分支1中改动部分的 commit
+的哈希值会发生改变（因为相当于在分支2上重新做了一遍）</p>
+<p>优点是能保证改动历史完全线性</p>
+<p>缺点是记录的历史实际上是改动过的（因为哈希值发生变化）</p></li>
+</ul>
+<p>对于这一部分的介绍推荐使用 <a
+href="https://learngitbranching.js.org/?locale=zh_CN">Learn Git
+Branching</a> 网站通过图形化方式加深对 <code>git merge</code> 和
+<code>git rebase</code> 的理解。</p>
+<h1 id="拉取">拉取</h1>
+<h2 id="git-fetch">git fetch</h2>
+<p>通过 <code>git clone</code> 下载到本地的分支，实际上<code>git</code>
+会帮我们自动创建一个 <code>origin/xxx</code> 分支（可以通过
+<code>git branch -a</code> 查看所有的分支），而 <code>git fetch</code>
+做的就是将远端的更新同步到本地的 <code>origin/xxx</code>
+分支中，如下所示</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">PS D:\Code\Git\Learn-Git&gt; git branch -a</span><br><span class="line">* main</span><br><span class="line">  remotes/origin/HEAD -&gt; origin/main</span><br><span class="line">  remotes/origin/main</span><br></pre></td></tr></table></figure>
+
+<h2 id="git-pull">git pull</h2>
+<p><code>pull</code> 想对于 <code>fetch</code>
+的区别就是其默认会将远端分支 merge
+到本地分支（如果远端分支和本地分支存在冲突的话），如果没有的话就直接
+fast-forward 即可</p>
+<h2 id="本地强行同步远端分支">本地强行同步远端分支</h2>
+<p>当远端分支进行过 rebase
+操作后，可能会导致本地分支和远端分支不一致，如果直接使用
+<code>git pull</code>
+会将远端的操作和本地操作都保留（即出现了两次历史），我们可能想避免这种行为，可以通过以下操作进行同步</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">git fetch</span><br><span class="line">git reset --soft origin/&lt;target-branch-name&gt;</span><br></pre></td></tr></table></figure>
+
+<p>通过 reset 命令本地分支强行重置到指定的分支上，这里我们指定的是
+origin 的分支（即远端分支），并通过 <code>--soft</code>
+确保本地尚未提交的改动还能继续保留</p>
+<h1 id="git-push">git push</h1>
+<p>这个命令没什么好说的，就一条</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">git push</span><br></pre></td></tr></table></figure>
+
+<p>如果本地创建了一个分支，想要将该分支也提交到远端的话，直接
+<code>git push</code> 会出错，但是 git 也会给出解决方案</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">PS D:\Code\Git\Learn-Git&gt; git push</span><br><span class="line">fatal: The current branch new-branch has no upstream branch.</span><br><span class="line">To push the current branch and <span class="built_in">set</span> the remote as upstream, use</span><br><span class="line"></span><br><span class="line">    git push --set-upstream origin new-branch</span><br><span class="line"></span><br><span class="line">To have this happen automatically <span class="keyword">for</span> branches without a tracking</span><br><span class="line">upstream, see <span class="string">&#x27;push.autoSetupRemote&#x27;</span> <span class="keyword">in</span> <span class="string">&#x27;git help config&#x27;</span>.</span><br></pre></td></tr></table></figure>
+
+<p>我们只需要执行上面提到的命令即可</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">git push --set-upstream origin new-branch</span><br></pre></td></tr></table></figure>
+
+<p>当然，也可以通过改变 push
+的默认行为来自动创建，不过这个设置就看个人了</p>
+<h2 id="强行推送远端分支">强行推送远端分支</h2>
+<p>当远端分支和本地分支有区别的时候（例如本地进行了 rebase 或者 reset
+操作，导致 git
+的记录出现问题时），我们可能需要强制将本地分支覆盖掉远端分支，就可以通过下面命令进行</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">git push -f</span><br></pre></td></tr></table></figure>
+
+<p>一般这个命令仅在个人的分支使用（例如
+<code>bugfix/xxx</code>或<code>feature/xxx</code>）</p>
+<h1 id="git-stash">git stash</h1>
+<p>当我们本地分支有改动尚未提交（未通过 git add 和 git commit
+时）但是需要切换分支时，git 会提示有改动未暂存，此时我们可以通过
+<code>git stash</code> 命令暂存，其就使用起来就相当于一个栈，</p>
+<ol type="1">
+<li><p>入栈操作：就是将当前所有的改动暂存起来</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">git stash</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>出栈操作：就是将当前暂存的改动释放出来，应用到当前分支中</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">git stash pop</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h1 id="说明">说明</h1>
+<p>上面介绍了一些常用的 git 命令，如果碰到其他的就直接使用
+<code>git &lt;command&gt; --help</code>
+查看相关文档，或者直接百度即可。</p>
+]]></content>
+      <categories>
+        <category>技术笔记</category>
+      </categories>
+      <tags>
+        <tag>git</tag>
+      </tags>
+  </entry>
 </search>

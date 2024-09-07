@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"purewhitevk.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.14.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"default"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="git clone 1git clone &lt;repo-url&gt;  示例命令如下 1git clone https:&#x2F;&#x2F;github.com&#x2F;boostorg&#x2F;boost.git  一些常用的参数（全部参数选项可以通过 git clone --help 查看）  --recursive 或 --recurse-submodules（在较新版本的 git 中使用，命令的语义更加清晰）：当要">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Git 常用操作">
+<meta property="og:url" content="https://purewhitevk.github.io/posts/8de3/">
+<meta property="og:site_name" content="PureWhiteVK&#39;s Blog">
+<meta property="og:description" content="git clone 1git clone &lt;repo-url&gt;  示例命令如下 1git clone https:&#x2F;&#x2F;github.com&#x2F;boostorg&#x2F;boost.git  一些常用的参数（全部参数选项可以通过 git clone --help 查看）  --recursive 或 --recurse-submodules（在较新版本的 git 中使用，命令的语义更加清晰）：当要">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/8de3/image-20240907110021863.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/8de3/image-20240907110149847.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/8de3/image-20240907110252194.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/8de3/image-20240907110430040.png">
+<meta property="article:published_time" content="2024-09-07T01:59:28.000Z">
+<meta property="article:modified_time" content="2024-09-07T01:59:28.000Z">
+<meta property="article:author" content="PureWhiteVK">
+<meta property="article:tag" content="git">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://purewhitevk.github.io/posts/8de3/image-20240907110021863.png">
+
+
+<link rel="canonical" href="https://purewhitevk.github.io/posts/8de3/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://purewhitevk.github.io/posts/8de3/","path":"posts/8de3/","title":"Git 常用操作"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Git 常用操作 | PureWhiteVK's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">PureWhiteVK's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">22</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">6</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">17</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#git-clone"><span class="nav-number">1.</span> <span class="nav-text">git clone</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0-ssh-%E5%AF%86%E9%92%A5"><span class="nav-number">1.1.</span> <span class="nav-text">添加 SSH 密钥</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#git-branch"><span class="nav-number">2.</span> <span class="nav-text">git branch</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA"><span class="nav-number">2.1.</span> <span class="nav-text">创建</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%A0%E9%99%A4"><span class="nav-number">2.2.</span> <span class="nav-text">删除</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%87%8D%E5%91%BD%E5%90%8D"><span class="nav-number">2.3.</span> <span class="nav-text">重命名</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%90%88%E5%B9%B6"><span class="nav-number">3.</span> <span class="nav-text">合并</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%8B%89%E5%8F%96"><span class="nav-number">4.</span> <span class="nav-text">拉取</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#git-fetch"><span class="nav-number">4.1.</span> <span class="nav-text">git fetch</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#git-pull"><span class="nav-number">4.2.</span> <span class="nav-text">git pull</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%AC%E5%9C%B0%E5%BC%BA%E8%A1%8C%E5%90%8C%E6%AD%A5%E8%BF%9C%E7%AB%AF%E5%88%86%E6%94%AF"><span class="nav-number">4.3.</span> <span class="nav-text">本地强行同步远端分支</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#git-push"><span class="nav-number">5.</span> <span class="nav-text">git push</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%BA%E8%A1%8C%E6%8E%A8%E9%80%81%E8%BF%9C%E7%AB%AF%E5%88%86%E6%94%AF"><span class="nav-number">5.1.</span> <span class="nav-text">强行推送远端分支</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#git-stash"><span class="nav-number">6.</span> <span class="nav-text">git stash</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AF%B4%E6%98%8E"><span class="nav-number">7.</span> <span class="nav-text">说明</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="PureWhiteVK"
+      src="/images/Touma.Kazusa.256x256.png">
+  <p class="site-author-name" itemprop="name">PureWhiteVK</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">17</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">22</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/PureWhiteVK" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;PureWhiteVK" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:yl_xiao@outlook.com" title="E-Mail → mailto:yl_xiao@outlook.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/dead.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://purewhitevk.github.io/posts/8de3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/Touma.Kazusa.256x256.png">
+      <meta itemprop="name" content="PureWhiteVK">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PureWhiteVK's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Git 常用操作 | PureWhiteVK's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Git 常用操作
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024/09/07 09:59:28" itemprop="dateCreated datePublished" datetime="2024-09-07T09:59:28+08:00">2024/09/07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">技术笔记</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>1.9k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>7 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="git-clone">git clone</h1>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> &lt;repo-url&gt;</span><br></pre></td></tr></table></figure>
+
+<p>示例命令如下</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/boostorg/boost.git</span><br></pre></td></tr></table></figure>
+
+<p>一些常用的参数（全部参数选项可以通过 <code>git clone --help</code>
+查看）</p>
+<ul>
+<li><p><code>--recursive</code> 或
+<code>--recurse-submodules</code>（在较新版本的 git
+中使用，命令的语义更加清晰）：当要拉取的仓库中包含 submodule
+时，是默认不会拉取子仓库的，而指定这个参数即可拉取所有的子仓库。</p>
+<p>如果我们在下载的时候忘记指定
+<code>--recursive</code>，也可以通过下面命令重新拉取子仓库</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git submodule update --init --recursive</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>--depth</code>：当我们只想下载指定更新次数的分支（这样可以减少下载的大小，在我们只需要最新的提交记录时很有用，当然也可以直接下载
+zip 或 tar.gz 等压缩文件来解决。</p></li>
+<li><p><code>-b</code> 或者
+<code>--branch</code>：指定要拉取的分支名称，例如下载 boost-1.86.0
+（这个实际上是一个 tag，但也可以通过这种方式下载）。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/boostorg/boost.git --branch boost-1.86.0</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<span id="more"></span>
+
+<h2 id="添加-ssh-密钥">添加 SSH 密钥</h2>
+<ol type="1">
+<li><p>创建 ssh 密钥对，通过 <code>ssh-keygen</code> 创建即可</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen -t &lt;加密方式&gt; -C &lt;密钥注释&gt;</span><br></pre></td></tr></table></figure>
+
+<p>示例如下</p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">PS D:\Code\Git&gt; ssh-keygen -t ed25519 -C &quot;foo@example.com&quot;</span><br><span class="line">Generating public/private ed25519 key pair.</span><br><span class="line">Enter file in which to save the key (C:\Users\xiao/.ssh/id_ed25519):</span><br><span class="line">Enter passphrase (empty for no passphrase):</span><br><span class="line">Enter same passphrase again:</span><br><span class="line">Your identification has been saved in C:\Users\xiao/.ssh/id_ed25519.</span><br><span class="line">Your public key has been saved in C:\Users\xiao/.ssh/id_ed25519.pub.</span><br><span class="line">The key fingerprint is:</span><br><span class="line">SHA256:rJ2ufXZ93fAPNsdqBrdUsMSABhse7zBpo0ewRa3nn+s foo@example.com</span><br><span class="line">The key&#x27;s randomart image is:</span><br><span class="line">+--[ED25519 256]--+</span><br><span class="line">|      ..*o ..o   |</span><br><span class="line">|       = *+   +  |</span><br><span class="line">|      . Xo.  . o |</span><br><span class="line">|       =.=.   . .|</span><br><span class="line">|      . So.    . |</span><br><span class="line">|       + .. . +. |</span><br><span class="line">|      . o  . *++=|</span><br><span class="line">|       o  o +.===|</span><br><span class="line">|      ..oo oE+..o|</span><br><span class="line">+----[SHA256]-----+</span><br></pre></td></tr></table></figure>
+
+<p>会提示我们创建的密钥对已经放置在了 <code>C:\Users\xiao\.ssh</code>
+路径下</p></li>
+<li><p>更新 ssh 的配置，修改
+<code>~/.ssh/config</code>，添加如下内容</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Host gitlab.com</span><br><span class="line">  HostName gitlab.com</span><br><span class="line">  PreferredAuthentications publickey</span><br><span class="line">  IdentityFile ~/.ssh/gitlab.<span class="keyword">private</span>-key.pem</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在 gitlab 或者 github 上添加 SSH 密钥</p>
+<p>进入用户设置，点击 <code>SSH Keys</code></p>
+<p><img data-src="/posts/8de3/image-20240907110021863.png"
+style="zoom:50%;" /></p>
+<p>点击 Add new key</p>
+<p><img data-src="/posts/8de3/image-20240907110149847.png"
+style="zoom: 50%;" /></p>
+<p>将刚才创建的密钥对中公钥部分添加到此处，然后点击 Add 即可添加 SSH
+密钥</p>
+<p><img data-src="/posts/8de3/image-20240907110252194.png"
+style="zoom:50%;" /></p></li>
+<li><p>测试连接，在命令行中输入如下命令</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">PS D:\Code\Git&gt; ssh git@gitlab.com</span><br><span class="line">PTY allocation request failed on channel 0</span><br><span class="line">Welcome to GitLab, @PureWhiteVK!</span><br><span class="line">Connection to gitlab.com closed.</span><br></pre></td></tr></table></figure>
+
+<p>如果有类似输出，则说明 SSH 密钥添加成功</p></li>
+<li><p>通过 SSH 方式下载源码</p>
+<p><img data-src="/posts/8de3/image-20240907110430040.png"
+style="zoom: 50%;" /></p>
+<p>复制 Clone with SSH 中给出命令，在命令行中执行即可拉取源码</p></li>
+</ol>
+<h1 id="git-branch">git branch</h1>
+<h2 id="创建">创建</h2>
+<p>直接使用 <code>git checkout</code> 创建分支，示例如下</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git checkout -b bugfix/my-bugfix-branch</span><br></pre></td></tr></table></figure>
+
+<p>（这个实际上等价于下面的两条命令）</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git branch -f bugfix/my-bugfix-branch</span><br><span class="line">git checkout bugfix/my-bugfix-branch</span><br></pre></td></tr></table></figure>
+
+<p>因此使用 <code>git checkout -b &lt;branch&gt;</code>
+是最常用也最典型的操作方式</p>
+<h2 id="删除">删除</h2>
+<p>通过下面命令删除分支</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git branch -D &lt;branch-name&gt;</span><br></pre></td></tr></table></figure>
+
+<p>如果要删除远端分支（不推荐），需要通过 <code>git push</code>
+命令完成，示例如下</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git push origin --delete &lt;branch-name&gt;</span><br></pre></td></tr></table></figure>
+
+<h2 id="重命名">重命名</h2>
+<p>通过下面命令重命名分支（实际上是移动或者拷贝，这两种方式都可以实现重命名效果）</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git branch -m &lt;old-branch&gt; &lt;new-branch&gt;</span><br></pre></td></tr></table></figure>
+
+<p>此处的 <code>-m</code> 表示 move，和 Linux 上 <code>move</code>
+命令一致，就是移动分支到新的标识符下。</p>
+<p>也可以使用 <code>-c</code> ，其表示 copy，和 Linux 上 <code>cp</code>
+命令一致，其好处就是不会丢弃原有的分支</p>
+<h1 id="合并">合并</h1>
+<p>在 git 中有两种方式可以实现合并，merge 和
+rebase，下面简单描述下二者区别：</p>
+<ul>
+<li><p>merge：<strong>创建一条新的
+commit</strong>，将分支1的改动和分支2的改动合并，记录在此 commit 中</p>
+<p>优点是能完整的记录所有的改动历史</p>
+<p>缺点是主干的历史并不是完全线性的，在版本回退时不太方便（通过 github
+的 PR 或者 gitlab 的 MR 都可以确保主干线性历史）</p></li>
+<li><p>rebase：将分支1中的相对于分支2不同的 commit 在 分支2
+上重新提交一遍，<strong>不会创建新的
+commit</strong>，但是分支1中改动部分的 commit
+的哈希值会发生改变（因为相当于在分支2上重新做了一遍）</p>
+<p>优点是能保证改动历史完全线性</p>
+<p>缺点是记录的历史实际上是改动过的（因为哈希值发生变化）</p></li>
+</ul>
+<p>对于这一部分的介绍推荐使用 <a
+target="_blank" rel="noopener" href="https://learngitbranching.js.org/?locale=zh_CN">Learn Git
+Branching</a> 网站通过图形化方式加深对 <code>git merge</code> 和
+<code>git rebase</code> 的理解。</p>
+<h1 id="拉取">拉取</h1>
+<h2 id="git-fetch">git fetch</h2>
+<p>通过 <code>git clone</code> 下载到本地的分支，实际上<code>git</code>
+会帮我们自动创建一个 <code>origin/xxx</code> 分支（可以通过
+<code>git branch -a</code> 查看所有的分支），而 <code>git fetch</code>
+做的就是将远端的更新同步到本地的 <code>origin/xxx</code>
+分支中，如下所示</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">PS D:\Code\Git\Learn-Git&gt; git branch -a</span><br><span class="line">* main</span><br><span class="line">  remotes/origin/HEAD -&gt; origin/main</span><br><span class="line">  remotes/origin/main</span><br></pre></td></tr></table></figure>
+
+<h2 id="git-pull">git pull</h2>
+<p><code>pull</code> 想对于 <code>fetch</code>
+的区别就是其默认会将远端分支 merge
+到本地分支（如果远端分支和本地分支存在冲突的话），如果没有的话就直接
+fast-forward 即可</p>
+<h2 id="本地强行同步远端分支">本地强行同步远端分支</h2>
+<p>当远端分支进行过 rebase
+操作后，可能会导致本地分支和远端分支不一致，如果直接使用
+<code>git pull</code>
+会将远端的操作和本地操作都保留（即出现了两次历史），我们可能想避免这种行为，可以通过以下操作进行同步</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git fetch</span><br><span class="line">git reset --soft origin/&lt;target-branch-name&gt;</span><br></pre></td></tr></table></figure>
+
+<p>通过 reset 命令本地分支强行重置到指定的分支上，这里我们指定的是
+origin 的分支（即远端分支），并通过 <code>--soft</code>
+确保本地尚未提交的改动还能继续保留</p>
+<h1 id="git-push">git push</h1>
+<p>这个命令没什么好说的，就一条</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git push</span><br></pre></td></tr></table></figure>
+
+<p>如果本地创建了一个分支，想要将该分支也提交到远端的话，直接
+<code>git push</code> 会出错，但是 git 也会给出解决方案</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">PS D:\Code\Git\Learn-Git&gt; git push</span><br><span class="line">fatal: The current branch new-branch has no upstream branch.</span><br><span class="line">To push the current branch and <span class="built_in">set</span> the remote as upstream, use</span><br><span class="line"></span><br><span class="line">    git push --set-upstream origin new-branch</span><br><span class="line"></span><br><span class="line">To have this happen automatically <span class="keyword">for</span> branches without a tracking</span><br><span class="line">upstream, see <span class="string">&#x27;push.autoSetupRemote&#x27;</span> <span class="keyword">in</span> <span class="string">&#x27;git help config&#x27;</span>.</span><br></pre></td></tr></table></figure>
+
+<p>我们只需要执行上面提到的命令即可</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git push --set-upstream origin new-branch</span><br></pre></td></tr></table></figure>
+
+<p>当然，也可以通过改变 push
+的默认行为来自动创建，不过这个设置就看个人了</p>
+<h2 id="强行推送远端分支">强行推送远端分支</h2>
+<p>当远端分支和本地分支有区别的时候（例如本地进行了 rebase 或者 reset
+操作，导致 git
+的记录出现问题时），我们可能需要强制将本地分支覆盖掉远端分支，就可以通过下面命令进行</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git push -f</span><br></pre></td></tr></table></figure>
+
+<p>一般这个命令仅在个人的分支使用（例如
+<code>bugfix/xxx</code>或<code>feature/xxx</code>）</p>
+<h1 id="git-stash">git stash</h1>
+<p>当我们本地分支有改动尚未提交（未通过 git add 和 git commit
+时）但是需要切换分支时，git 会提示有改动未暂存，此时我们可以通过
+<code>git stash</code> 命令暂存，其就使用起来就相当于一个栈，</p>
+<ol type="1">
+<li><p>入栈操作：就是将当前所有的改动暂存起来</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git stash</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>出栈操作：就是将当前暂存的改动释放出来，应用到当前分支中</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git stash pop</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h1 id="说明">说明</h1>
+<p>上面介绍了一些常用的 git 命令，如果碰到其他的就直接使用
+<code>git &lt;command&gt; --help</code>
+查看相关文档，或者直接百度即可。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>PureWhiteVK
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://purewhitevk.github.io/posts/8de3/" title="Git 常用操作">https://purewhitevk.github.io/posts/8de3/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/dead.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/git/" rel="tag"># git</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/b5fa/" rel="prev" title="Antlr4使用">
+                  <i class="fa fa-chevron-left"></i> Antlr4使用
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PureWhiteVK</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">54k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">3:16</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
