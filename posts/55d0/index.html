@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"purewhitevk.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.14.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"default"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="C&#x2F;C++ 程序内存布局 对于一个经典的 C&#x2F;C++ 程序，其内存区域可划分为 5 大部分  代码段（Text Segment）：只读区域，存储汇编指令 数据段（Data Segment）：存储非0初始化的全局变量或静态变量、字符串常量 BSS 段（Block Starting Symbol Segment）：存储0初始化的全局变量或静态变量，此段的作用在于减少可执行文件大小，在可执行文件中通常只">
+<meta property="og:type" content="article">
+<meta property="og:title" content="内存分析工具（1）：内存布局和内存泄漏">
+<meta property="og:url" content="https://purewhitevk.github.io/posts/55d0/">
+<meta property="og:site_name" content="PureWhiteVK&#39;s Blog">
+<meta property="og:description" content="C&#x2F;C++ 程序内存布局 对于一个经典的 C&#x2F;C++ 程序，其内存区域可划分为 5 大部分  代码段（Text Segment）：只读区域，存储汇编指令 数据段（Data Segment）：存储非0初始化的全局变量或静态变量、字符串常量 BSS 段（Block Starting Symbol Segment）：存储0初始化的全局变量或静态变量，此段的作用在于减少可执行文件大小，在可执行文件中通常只">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/55d0/memoryLayoutC.jpg">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/55d0/%E7%BB%98%E5%9B%BE1.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/55d0/stack_heap.drawio.png">
+<meta property="article:published_time" content="2024-09-09T12:05:13.000Z">
+<meta property="article:modified_time" content="2024-09-09T12:05:13.000Z">
+<meta property="article:author" content="PureWhiteVK">
+<meta property="article:tag" content="C++">
+<meta property="article:tag" content="内存分析">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://purewhitevk.github.io/posts/55d0/memoryLayoutC.jpg">
+
+
+<link rel="canonical" href="https://purewhitevk.github.io/posts/55d0/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://purewhitevk.github.io/posts/55d0/","path":"posts/55d0/","title":"内存分析工具（1）：内存布局和内存泄漏"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>内存分析工具（1）：内存布局和内存泄漏 | PureWhiteVK's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">PureWhiteVK's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">23</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">6</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">18</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#cc-%E7%A8%8B%E5%BA%8F%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80"><span class="nav-number">1.</span> <span class="nav-text">C&#x2F;C++ 程序内存布局</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E6%95%B0%E6%8D%AE%E6%AE%B5%E5%A4%A7%E5%B0%8F"><span class="nav-number">1.1.</span> <span class="nav-text">查看数据段大小</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81-stack-%E5%92%8C-heap"><span class="nav-number">1.2.</span> <span class="nav-text">为什么需要 Stack 和 Heap</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E5%86%85%E5%AD%98%E9%97%AE%E9%A2%98"><span class="nav-number">2.</span> <span class="nav-text">常见内存问题</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#memory-leak"><span class="nav-number">2.1.</span> <span class="nav-text">memory leak</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#allocdealloc-mismatch"><span class="nav-number">2.2.</span> <span class="nav-text">alloc&#x2F;dealloc mismatch</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#double-free"><span class="nav-number">2.3.</span> <span class="nav-text">double free</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#heap-buffer-out-of-range"><span class="nav-number">2.4.</span> <span class="nav-text">heap buffer out of range</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#use-after-free"><span class="nav-number">2.5.</span> <span class="nav-text">use after free</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#use-after-return"><span class="nav-number">2.6.</span> <span class="nav-text">use after return</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#use-after-scope"><span class="nav-number">2.7.</span> <span class="nav-text">use after scope</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#stack-buffer-overflow"><span class="nav-number">2.8.</span> <span class="nav-text">stack buffer overflow</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#global-buffer-overflow"><span class="nav-number">2.9.</span> <span class="nav-text">global buffer overflow</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">3.</span> <span class="nav-text">参考</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="PureWhiteVK"
+      src="/images/Touma.Kazusa.256x256.png">
+  <p class="site-author-name" itemprop="name">PureWhiteVK</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/PureWhiteVK" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;PureWhiteVK" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:yl_xiao@outlook.com" title="E-Mail → mailto:yl_xiao@outlook.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/dead.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://purewhitevk.github.io/posts/55d0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/Touma.Kazusa.256x256.png">
+      <meta itemprop="name" content="PureWhiteVK">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PureWhiteVK's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="内存分析工具（1）：内存布局和内存泄漏 | PureWhiteVK's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          内存分析工具（1）：内存布局和内存泄漏
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024/09/09 20:05:13" itemprop="dateCreated datePublished" datetime="2024-09-09T20:05:13+08:00">2024/09/09</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/C-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">C++学习笔记</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>2.4k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>9 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="cc-程序内存布局">C/C++ 程序内存布局</h1>
+<p>对于一个经典的 C/C++ 程序，其内存区域可划分为 5 大部分</p>
+<ul>
+<li>代码段（Text Segment）：只读区域，存储汇编指令</li>
+<li>数据段（Data
+Segment）：存储非0初始化的全局变量或静态变量、字符串常量</li>
+<li>BSS 段（<strong>B</strong>lock <strong>S</strong>tarting
+<strong>S</strong>ymbol
+Segment）：存储0初始化的全局变量或静态变量，<strong>此段的作用在于减少可执行文件大小</strong>，在可执行文件中通常只需要记录一个长度即可</li>
+<li>堆区（Heap）：程序运行过程中进行动态内存分配的区域</li>
+<li>栈区（Stack）：程序运行过程中存储函数调用栈帧（存储函数执行时的临时变量）</li>
+</ul>
+<p>下图展示了这五块在内存上的排列顺序(图片来自^1^)</p>
+<p><img data-src="/posts/55d0/memoryLayoutC.jpg" style="zoom: 80%;" /></p>
+<span id="more"></span>
+
+<h2 id="查看数据段大小">查看数据段大小</h2>
+<p>在 Linux 下可以通过 <code>size</code> 命令查看 C/C++
+程序的静态数据段大小情况</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>使用 <code>size</code> 查看 text，data 和 bss 段大小</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(base) ➜  Debug size memory_layout </span><br><span class="line">   text    data     bss     dec     hex filename</span><br><span class="line">   1418     544       8    1970     7b2 memory_layout</span><br></pre></td></tr></table></figure>
+
+<p>此时分别添加字符串常量和0初始化的变量</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> a&#123;&#125;;</span><br><span class="line"><span class="type">int</span> b = <span class="number">1230</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>再次使用 <code>size</code> 命令查看大小，输出如下</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(base) ➜  Debug size memory_layout</span><br><span class="line">   text    data     bss     dec     hex filename</span><br><span class="line">   1418     548      12    1978     7ba memory_layout</span><br></pre></td></tr></table></figure>
+
+<p>可以观察到 data 段和 bss 段分别增加了 4 个 byte，分别对应 a 和
+b。</p>
+<h2 id="为什么需要-stack-和-heap">为什么需要 Stack 和 Heap</h2>
+<p>Stack 和 Heap 原本是数据结构中的概念</p>
+<ul>
+<li>Stack 描述的是 **后进先出（LIFO）**数据结构</li>
+<li>Heap
+可分为大根堆、小根堆和斐波那契堆等，描述的是一种具有特殊偏序关系的树状结构（父节点值一定大于或小于子节点值之类的）</li>
+</ul>
+<p>在内存中，这两个概念稍微有点区别</p>
+<p>下表展示了 Stack Memory 和 Heap Memory 的对比</p>
+<table>
+<thead>
+<tr class="header">
+<th>Stack Memory</th>
+<th>Heap Memory</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>存储局部变量、函数参数和函数调用上下文（如返回地址）</td>
+<td>存储动态分配的数据</td>
+</tr>
+<tr class="even">
+<td>自动分配和释放数据</td>
+<td>手动管理，由程序员负责分配和释放</td>
+</tr>
+<tr class="odd">
+<td>内存管理有效，大小有限，适用于生命周期较短的小数据</td>
+<td>大小相对栈更大，适用于长生命周期和较大数据</td>
+</tr>
+<tr class="even">
+<td>内存地址由大到小</td>
+<td>内存地址由小到大</td>
+</tr>
+</tbody>
+</table>
+<p>概念说起来有点干巴巴的，还是给一个示例和图表辅助说明一下</p>
+<p>Stack Memory
+的一个最经典的用途就是函数调用的栈，例如递归函数斐波那契数</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">fact</span><span class="params">(<span class="type">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(n == <span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> n * <span class="built_in">face</span>(n<span class="number">-1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在调用 <code>fact(3)</code> 时，需要首先计算 <code>fact(2)</code>
+的值才能继续计算，而计算 <code>fact(2)</code> 有需要进一步计算
+<code>fact(1)</code>，此时满足递归终止条件，可直接返回。</p>
+<p>可绘制出调用 <code>fact(3)</code> 并获取返回值的栈帧变化情况如下</p>
+<p><img data-src="/posts/55d0/绘图1.png" /></p>
+<p>Stack Memory 之所以取名为 Stack Memory
+就是因为其在函数调用时先调用的函数最后退出，符合 LIFO
+特性，因而称之为栈内存。</p>
+<p>至于Heap
+Memory，首先其特点是数据在Heap中存储可以不连续（存在内存碎片），可以想象成不同数据随意的放在一起（书堆、杂物堆等），如下图所示（图片来自^2^）。</p>
+<p><img data-src="/posts/55d0/stack_heap.drawio.png" /></p>
+<h1 id="常见内存问题">常见内存问题</h1>
+<p>在编写 C/C++ 程序时，一不留神会碰到
+SEGFAULT（段错误），这是由于程序进行了异常的内存访问所导致的，常见的内存错误有</p>
+<ul>
+<li>内存泄漏：动态分配内存而不释放</li>
+<li>内存破坏
+<ul>
+<li>alloc/dealloc mismatch &amp; new/delete type mismatch</li>
+<li>double free</li>
+<li>heap buffer out of range</li>
+<li>use after free</li>
+<li>use after scope</li>
+<li>use after return</li>
+<li>stack buffer out of range</li>
+<li>global buffer out of range</li>
+</ul></li>
+</ul>
+<p>下面分别列举一些例子</p>
+<h2 id="memory-leak">memory leak</h2>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">const</span> <span class="type">char</span> *<span class="title">FuncThatCallMalloc</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="type">char</span> *data = <span class="built_in">reinterpret_cast</span>&lt;<span class="type">char</span> *&gt;(<span class="built_in">malloc</span>(<span class="number">20</span>));</span><br><span class="line">  data[<span class="number">0</span>] = <span class="string">&#x27;h&#x27;</span>;</span><br><span class="line">  data[<span class="number">1</span>] = <span class="string">&#x27;e&#x27;</span>;</span><br><span class="line">  data[<span class="number">2</span>] = <span class="string">&#x27;l&#x27;</span>;</span><br><span class="line">  data[<span class="number">3</span>] = <span class="string">&#x27;l&#x27;</span>;</span><br><span class="line">  data[<span class="number">4</span>] = <span class="string">&#x27;o&#x27;</span>;</span><br><span class="line">  data[<span class="number">5</span>] = <span class="string">&#x27;\0&#x27;</span>;</span><br><span class="line">  <span class="keyword">return</span> data;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;%s\n&quot;</span>, <span class="built_in">FuncThatCallMalloc</span>());</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;%s\n&quot;</span>, <span class="built_in">FuncThatCallMalloc</span>());</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;%s\n&quot;</span>, <span class="built_in">FuncThatCallMalloc</span>());</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;%s\n&quot;</span>, <span class="built_in">FuncThatCallMalloc</span>());</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>每次调用 <code>FuncThatCallMalloc</code>，都会请求动态内存分配 20
+bytes，但是并未释放，如果在程序运行过程中不断调用该函数，程序占用内存将不断增加，直达操作系统无法再分配内存，导致程序崩溃。</p>
+<h2 id="allocdealloc-mismatch">alloc/dealloc mismatch</h2>
+<p>C++ 中除了 <code>malloc</code> 和 <code>free</code> 之外，可以使用
+<code>new/delete</code> 或者
+<code>new[]/delete[]</code>方式进行动态内存分配，使用 <code>new</code>
+本质上编译器也会转而为我们调用 <code>malloc</code>，因此可以使用
+<code>free</code> 进行释放，但是不匹配的 <code>malloc/free</code>或
+<code>new/delete</code>调用也会造成内存泄漏或者内存破坏，下面例子展示了这种情况</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Test</span> &#123;</span><br><span class="line">  <span class="keyword">public</span>:</span><br><span class="line">  <span class="built_in">Test</span>() &#123;</span><br><span class="line">    data = <span class="built_in">malloc</span>(<span class="number">20</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  ~<span class="built_in">Test</span>() &#123;</span><br><span class="line">    <span class="built_in">free</span>(data);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="type">void</span>* data&#123;&#125;;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="type">void</span>* d = <span class="built_in">reinterpret_cast</span>&lt;<span class="type">void</span>*&gt;(<span class="keyword">new</span> <span class="built_in">Test</span>());</span><br><span class="line">  <span class="built_in">free</span>(d);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这段代码可以正常运行并返回0，但是通过 <code>free</code> 并不会调用
+<code>~Test()</code>，因此不会释放类 <code>Test</code>
+在构造过程中分配的 data 数据，这一段内存就再也无法释放了。</p>
+<h2 id="double-free">double free</h2>
+<p>在 Linux 中，这一问题会出现在关闭两次文件上，如下所示</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  FILE* f = <span class="built_in">fopen</span>(<span class="string">&quot;test.bin&quot;</span>,<span class="string">&quot;wb&quot;</span>);</span><br><span class="line">  <span class="built_in">fclose</span>(f);</span><br><span class="line">  <span class="built_in">fclose</span>(f);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行时会直接abort，如下所示</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(base) ➜  Debug ./memory_layout</span><br><span class="line">free(): double free detected <span class="keyword">in</span> tcache 2</span><br><span class="line">[1]    13311 abort      ./memory_layout</span><br></pre></td></tr></table></figure>
+
+<h2 id="heap-buffer-out-of-range">heap buffer out of range</h2>
+<p>这一问题也很常见，例如当我们动态分配了一个长度为 100 的
+buffer，但我们访问其位置为 120 时出现越界访问，导致程序崩溃</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="type">int</span> h = <span class="number">320</span>;</span><br><span class="line">  <span class="type">int</span> w = <span class="number">320</span>;</span><br><span class="line">  <span class="type">char</span> *buf = <span class="keyword">new</span> <span class="type">char</span>[h + w];</span><br><span class="line">  <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; h; i++) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> j = <span class="number">0</span>; j &lt; w; j++) &#123;</span><br><span class="line">      buf[i * w + j] = <span class="string">&#x27;a&#x27;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">delete</span>[] buf;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>执行结果如下</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(base) ➜  Debug ./memory_layout</span><br><span class="line">[<span class="number">1</span>]    <span class="number">14048</span> segmentation fault  ./memory_layout</span><br></pre></td></tr></table></figure>
+
+<h2 id="use-after-free">use after free</h2>
+<p>当我们读取一个已经被释放掉的内存时，其结果是未知的，即使我们并没有再分配新的内存</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="type">int</span> *a = <span class="keyword">new</span> <span class="type">int</span>&#123;<span class="number">123</span>&#125;;</span><br><span class="line">  <span class="type">double</span> *b = <span class="keyword">new</span> <span class="type">double</span>&#123;<span class="number">0.123</span>&#125;;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;&amp;a = %p, a = %d\n&quot;</span>, a, *a);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;&amp;b = %p, b = %lf\n&quot;</span>, b, *b);</span><br><span class="line">  <span class="keyword">delete</span> b;</span><br><span class="line">  <span class="keyword">delete</span> a;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;&amp;a = %p, a = %d\n&quot;</span>, a, *a);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;&amp;b = %p, b = %lf\n&quot;</span>, b, *b);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行结果如下</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">(base) ➜  Debug ./memory_layout</span><br><span class="line">&amp;a = 0x55cba8191eb0, a = 123</span><br><span class="line">&amp;b = 0x55cba8191ed0, b = 0.123000</span><br><span class="line">&amp;a = 0x55cba8191eb0, a = -1474748720</span><br><span class="line">&amp;b = 0x55cba8191ed0, b = 0.000000</span><br></pre></td></tr></table></figure>
+
+<h2 id="use-after-return">use after return</h2>
+<p>这个问题也很常见，当我们返回一个栈上变量的地址，并再后续代码中使用时，其值是不确定的</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> *ptr;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">A</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="type">int</span> data[<span class="number">2048</span>];</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;this is in A!\n&quot;</span>);</span><br><span class="line">  ptr = data;</span><br><span class="line">  data[<span class="number">0</span>] = <span class="number">1337</span>;</span><br><span class="line">  data[<span class="number">2047</span>] = <span class="number">13337</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">B</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="type">double</span> b = <span class="number">0.1234</span>;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;this is in B!\n&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="built_in">A</span>();</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;%p = %d\n&quot;</span>, ptr, *ptr);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;%p = %d\n&quot;</span>, &amp;ptr[<span class="number">2047</span>], ptr[<span class="number">2047</span>]);</span><br><span class="line">  <span class="built_in">B</span>();</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;%p = %d\n&quot;</span>, ptr, *ptr);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;%p = %d\n&quot;</span>, &amp;ptr[<span class="number">2047</span>], ptr[<span class="number">2047</span>]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行结果如下</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">this</span> is in A!</span><br><span class="line"><span class="number">0x7ffff039b520</span> = <span class="number">1337</span></span><br><span class="line"><span class="number">0x7ffff039d51c</span> = <span class="number">13337</span></span><br><span class="line"><span class="keyword">this</span> is in B!</span><br><span class="line"><span class="number">0x7ffff039b520</span> = <span class="number">1337</span></span><br><span class="line"><span class="number">0x7ffff039d51c</span> = <span class="number">21951</span></span><br></pre></td></tr></table></figure>
+
+<p>此处实际上并不会崩溃，因为函数执行完只会移动栈指针，并不会对内存做过多调整，此时栈内存数据仍会保留，在后续代码中也可以使用，但是不知道什么时候，读取到的值就不对了，从而导致程序执行结果出现异常。</p>
+<h2 id="use-after-scope">use after scope</h2>
+<p>这个和前一个效果类似，在 C++ 中引入 scope
+可以更方便的管理对象生命周期，当对象离开 scope
+时会自动调用析构函数，这也是 RAII（Resouce Acquisition Is
+Initialization） 实现的基本原理。</p>
+<p>但是当我们在 scope 内取一个 scope
+外的值时，其值也可能并非我们想的那样</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Test</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="built_in">Test</span>() &#123; data = <span class="number">1337</span>; &#125;</span><br><span class="line">  ~<span class="built_in">Test</span>() &#123; data = <span class="number">1238</span>; &#125;</span><br><span class="line">  <span class="type">int</span> data&#123;&#125;;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  Test *ptr1, *ptr2;</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="comment">// enter scope</span></span><br><span class="line">    Test t0&#123;&#125;;</span><br><span class="line">    ptr1 = &amp;t0;</span><br><span class="line">    &#123;</span><br><span class="line">      Test t1&#123;&#125;;</span><br><span class="line">      ptr2 = &amp;t1;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;ptr1-&gt;data = %d\n&quot;</span>, ptr1-&gt;data);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;ptr2-&gt;data = %d\n&quot;</span>, ptr2-&gt;data);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>由于 scope
+内的对象也是栈上对象，访问时不容易出现崩溃，但是其值就可能并非我们想的那样了</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(base) ➜  Debug ./memory_layout</span><br><span class="line">ptr1-&gt;data = 1238</span><br><span class="line">ptr2-&gt;data = 1238</span><br></pre></td></tr></table></figure>
+
+<h2 id="stack-buffer-overflow">stack buffer overflow</h2>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">Func</span><span class="params">(<span class="type">void</span>* buf,<span class="type">size_t</span> size)</span> </span>&#123;</span><br><span class="line">  <span class="type">char</span>* b = <span class="built_in">reinterpret_cast</span>&lt;<span class="type">char</span>*&gt;(buf);</span><br><span class="line">  <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;size;i++) &#123;</span><br><span class="line">    b[i] = <span class="string">&#x27;a&#x27;</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="type">char</span> buf[<span class="number">123</span>];</span><br><span class="line">  <span class="built_in">Func</span>(buf,<span class="number">153</span>);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行结果如下</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(base) ➜  Debug ./memory_layout</span><br><span class="line">*** stack smashing detected ***: terminated</span><br><span class="line">[1]    19730 abort      ./memory_layout</span><br></pre></td></tr></table></figure>
+
+<p>但是当 overflow
+的数据并不大时，并不会造成显著的影响，但是会为程序埋下隐患。</p>
+<h2 id="global-buffer-overflow">global buffer overflow</h2>
+<p>对于 global buffer overflow
+也是同理，无非就是溢出的内存区域变了，这种情况下bug更为隐蔽，因为 global
+buffer
+段通常溢出一点点也是无大碍，并不影响程序执行，但是拿到数据是否是我们所想就不为所知了（谁知道读写溢出段的值什么时候会被覆盖掉？）。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> global_buffer1[<span class="number">120</span>];</span><br><span class="line"><span class="type">int</span> global_buffer2[<span class="number">120</span>];</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">Func</span><span class="params">(<span class="type">void</span> *buf, <span class="type">size_t</span> size)</span> </span>&#123;</span><br><span class="line">  <span class="type">char</span> *b = <span class="built_in">reinterpret_cast</span>&lt;<span class="type">char</span> *&gt;(buf);</span><br><span class="line">  <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; size; i++) &#123;</span><br><span class="line">    b[i] = <span class="string">&#x27;a&#x27;</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="built_in">Func</span>(global_buffer1, <span class="number">153</span>);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;global_buffer1: %p~%p\n&quot;</span>,global_buffer1,global_buffer1 + <span class="number">120</span>);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;global_buffer2: %p~%p\n&quot;</span>,global_buffer2,global_buffer2 + <span class="number">120</span>);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行结果</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(base) ➜  Debug ./memory_layout</span><br><span class="line">global_buffer1: 0x562168281040~0x562168281220</span><br><span class="line">global_buffer2: 0x562168281220~0x562168281400</span><br></pre></td></tr></table></figure>
+
+<p>从结果中我们可以看到，global_buffer1 和 global_buffer2
+在内存的排列上时连续的，因此下溢 global_buffer1 会直接修改到
+global_buffer2，如果在后续执行中设置
+global_buffer2，将覆盖之前设置的值，引发未知的bug。</p>
+<h1 id="参考">参考</h1>
+<ol type="1">
+<li><a
+target="_blank" rel="noopener" href="https://www.naukri.com/code360/library/memory-layout-of-c-program">Memory
+layout of C program - Naukri Code 360</a></li>
+<li>[What and Where Are the Memory Stack and Heap? | Baeldung on
+Computer Science](<a
+target="_blank" rel="noopener" href="https://www.baeldung.com/cs/memory-stack-vs-heap#:~:text=Stack">https://www.baeldung.com/cs/memory-stack-vs-heap#:~:text=Stack</a>
+memory is a sort,longer lifespan than stack memory.)</li>
+<li><a
+target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/cpp/sanitizers/asan?view=msvc-170">AddressSanitizer
+| Microsoft Learn</a></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>PureWhiteVK
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://purewhitevk.github.io/posts/55d0/" title="内存分析工具（1）：内存布局和内存泄漏">https://purewhitevk.github.io/posts/55d0/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/dead.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/C/" rel="tag"># C++</a>
+              <a href="/tags/%E5%86%85%E5%AD%98%E5%88%86%E6%9E%90/" rel="tag"># 内存分析</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/8de3/" rel="prev" title="Git 常用操作">
+                  <i class="fa fa-chevron-left"></i> Git 常用操作
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PureWhiteVK</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">56k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">3:24</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
