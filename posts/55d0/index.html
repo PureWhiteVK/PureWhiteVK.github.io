@@ -94,7 +94,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">23</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">6</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">18</span></a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">23</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">6</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">21</span></a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
         </a>
@@ -160,7 +160,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-count">21</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -348,7 +348,7 @@ b。</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">fact</span><span class="params">(<span class="type">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(n == <span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> n * <span class="built_in">face</span>(n<span class="number">-1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>在调用 <code>fact(3)</code> 时，需要首先计算 <code>fact(2)</code>
-的值才能继续计算，而计算 <code>fact(2)</code> 有需要进一步计算
+的值才能继续计算，而计算 <code>fact(2)</code> 又需要进一步计算
 <code>fact(1)</code>，此时满足递归终止条件，可直接返回。</p>
 <p>可绘制出调用 <code>fact(3)</code> 并获取返回值的栈帧变化情况如下</p>
 <p><img data-src="/posts/55d0/绘图1.png" /></p>
@@ -365,14 +365,15 @@ SEGFAULT（段错误），这是由于程序进行了异常的内存访问所导
 <li>内存泄漏：动态分配内存而不释放</li>
 <li>内存破坏
 <ul>
-<li>alloc/dealloc mismatch &amp; new/delete type mismatch</li>
-<li>double free</li>
-<li>heap buffer out of range</li>
-<li>use after free</li>
-<li>use after scope</li>
-<li>use after return</li>
-<li>stack buffer out of range</li>
-<li>global buffer out of range</li>
+<li>alloc/dealloc mismatch &amp; new/delete type
+mismatch（分配/释放不匹配）</li>
+<li>double free（重复释放）</li>
+<li>heap buffer out of range（堆缓冲越界）</li>
+<li>use after free（释放后使用）</li>
+<li>use after scope（作用域外使用）</li>
+<li>use after return（返回后使用）</li>
+<li>stack buffer out of range（栈缓冲越界）</li>
+<li>global buffer out of range（全局缓冲越界）</li>
 </ul></li>
 </ul>
 <p>下面分别列举一些例子</p>
@@ -510,6 +511,9 @@ target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/cpp/sanit
                 </a>
             </div>
             <div class="post-nav-item">
+                <a href="/posts/daa5/" rel="next" title="内存分析工具（2）：实现内存泄漏检查">
+                  内存分析工具（2）：实现内存泄漏检查 <i class="fa fa-chevron-right"></i>
+                </a>
             </div>
           </div>
     </footer>
@@ -541,13 +545,13 @@ target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/cpp/sanit
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">56k</span>
+    <span title="站点总字数">60k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">3:24</span>
+    <span title="站点阅读时长">3:39</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动

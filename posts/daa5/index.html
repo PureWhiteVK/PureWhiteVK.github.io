@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"purewhitevk.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.14.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"default"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="基本原理 内存泄漏是指程序在运行时动态分配了内存，但是没有正确释放或者回收这些内存，导致已分配的内存无法被重新利用。随着程序的运行，未释放的内存会逐渐累积，可能最终耗尽系统的可用内存。 内存泄漏检查工具的基本原理是通过监控程序的内存分配和释放操作，来检查是否有未正确释放的内存，其主要包含以下3个部分：  内存分配函数追踪 调用栈分析 内存泄漏报告  内存分配函数追踪可通过拦截（Hook）、插桩（I">
+<meta property="og:type" content="article">
+<meta property="og:title" content="内存分析工具（2）：实现内存泄漏检查">
+<meta property="og:url" content="https://purewhitevk.github.io/posts/daa5/">
+<meta property="og:site_name" content="PureWhiteVK&#39;s Blog">
+<meta property="og:description" content="基本原理 内存泄漏是指程序在运行时动态分配了内存，但是没有正确释放或者回收这些内存，导致已分配的内存无法被重新利用。随着程序的运行，未释放的内存会逐渐累积，可能最终耗尽系统的可用内存。 内存泄漏检查工具的基本原理是通过监控程序的内存分配和释放操作，来检查是否有未正确释放的内存，其主要包含以下3个部分：  内存分配函数追踪 调用栈分析 内存泄漏报告  内存分配函数追踪可通过拦截（Hook）、插桩（I">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/daa5/plt-flow.drawio.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/daa5/dlopen-recursive-malloc.drawio.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/daa5/initialize-glibc-malloc.drawio-1727008632420-9.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/daa5/log-recursive-malloc.drawio-1727008883541-13.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/daa5/malloc-hook-basic.drawio-1727008791210-11.png">
+<meta property="article:published_time" content="2024-09-09T14:37:53.000Z">
+<meta property="article:modified_time" content="2024-09-09T14:37:53.000Z">
+<meta property="article:author" content="PureWhiteVK">
+<meta property="article:tag" content="C++">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="内存分析">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://purewhitevk.github.io/posts/daa5/plt-flow.drawio.png">
+
+
+<link rel="canonical" href="https://purewhitevk.github.io/posts/daa5/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://purewhitevk.github.io/posts/daa5/","path":"posts/daa5/","title":"内存分析工具（2）：实现内存泄漏检查"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>内存分析工具（2）：实现内存泄漏检查 | PureWhiteVK's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">PureWhiteVK's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">23</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">6</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">21</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86"><span class="nav-number">1.</span> <span class="nav-text">基本原理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%80%9A%E8%BF%87-ld_preload-%E5%AE%9E%E7%8E%B0-malloc-hook"><span class="nav-number">2.</span> <span class="nav-text">通过 LD_PRELOAD 实现 malloc
+hook</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ld_preload"><span class="nav-number">2.1.</span> <span class="nav-text">LD_PRELOAD</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E7%AC%A6%E5%8F%B7%E8%A7%A3%E6%9E%90%E6%9C%BA%E5%88%B6"><span class="nav-number">2.2.</span> <span class="nav-text">动态符号解析机制</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96-stacktrace"><span class="nav-number">3.</span> <span class="nav-text">获取 stacktrace</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E7%BB%86%E8%8A%82"><span class="nav-number">4.</span> <span class="nav-text">实现细节</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96-glibc-malloc-%E5%87%BD%E6%95%B0%E6%8C%87%E9%92%88"><span class="nav-number">4.1.</span> <span class="nav-text">获取 glibc malloc 函数指针</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%81%BF%E5%85%8D%E9%80%92%E5%BD%92%E8%B0%83%E7%94%A8"><span class="nav-number">4.2.</span> <span class="nav-text">避免递归调用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%9A%E7%BA%BF%E7%A8%8B%E8%AE%B0%E5%BD%95"><span class="nav-number">4.3.</span> <span class="nav-text">多线程记录</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">5.</span> <span class="nav-text">参考</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="PureWhiteVK"
+      src="/images/Touma.Kazusa.256x256.png">
+  <p class="site-author-name" itemprop="name">PureWhiteVK</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">21</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/PureWhiteVK" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;PureWhiteVK" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:yl_xiao@outlook.com" title="E-Mail → mailto:yl_xiao@outlook.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/dead.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://purewhitevk.github.io/posts/daa5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/Touma.Kazusa.256x256.png">
+      <meta itemprop="name" content="PureWhiteVK">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PureWhiteVK's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="内存分析工具（2）：实现内存泄漏检查 | PureWhiteVK's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          内存分析工具（2）：实现内存泄漏检查
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024/09/09 22:37:53" itemprop="dateCreated datePublished" datetime="2024-09-09T22:37:53+08:00">2024/09/09</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/C-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">C++学习笔记</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>3.3k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>12 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="基本原理">基本原理</h1>
+<p>内存泄漏是指<strong>程序在运行时动态分配了内存，但是没有正确释放或者回收这些内存</strong>，导致已分配的内存无法被重新利用。随着程序的运行，未释放的内存会逐渐累积，可能最终耗尽系统的可用内存。</p>
+<p>内存泄漏检查工具的基本原理是通过<strong>监控程序的内存分配和释放操作，来检查是否有未正确释放的内存</strong>，其主要包含以下3个部分：</p>
+<ul>
+<li>内存分配函数追踪</li>
+<li>调用栈分析</li>
+<li>内存泄漏报告</li>
+</ul>
+<p>内存分配函数追踪可通过拦截（Hook）、插桩（Instrumentation）等方式实现，下面对比了几种常见内存泄漏检查方式</p>
+<ol type="1">
+<li><p>函数拦截（Hook）</p>
+<p>原理：拦截CRT提供的内存管理函数，将其替换为自定义的内存管理函数，从而实现内存分配和释放的记录</p>
+<p>优点：可通过 <code>LD_PRELOAD</code>
+等技术通过动态链接方式实现函数拦截，代码侵入性小</p>
+<p>缺点：由于在每一次内存分配/释放时都会记录，会带来一定的性能开销</p></li>
+<li><p>代码植入（Code Instrumentation）和影子内存（Shadow Memory）</p>
+<p>原理：将程序中每一个内存块的状态映射到另一块内存区域，并在每一次内存操作时更新状态信息（通过代码植入实现）</p>
+<p>优点：内存状态追踪结果精确，可实现其他内存检查功能</p>
+<p>缺点：编译期植入方法（Address
+Sanitizer）需要重新编译代码，而运行时植入方法（Valgrind）使用仿真器运行（Emulator），程序运行速度显著降低</p></li>
+</ol>
+<p>下一节将详细介绍 ASAN 和 Valgrind
+的实现原理和基本使用，本节将着重介绍通过函数拦截方式实现的内存泄漏检查工具。</p>
+<span id="more"></span>
+
+<h1 id="通过-ld_preload-实现-malloc-hook">通过 LD_PRELOAD 实现 malloc
+hook</h1>
+<p>在 Windows 下，可直接通过 <code>_CrtSetAllocHook</code> API
+直接添加自定义的内存内存分配/释放函数，</p>
+<p>在 Linux 下，GCC 也提供了类似的 Hook 函数，如
+<code>__malloc_hook</code>、<code>__realloc_hook</code>、<code>__free_hook</code>、<code>__memalign_hook</code>
+等，但其已经在 glibc 2.32 版本被弃用，并在 glibc 2.34 版本中将这些 hook
+代码移除，将其放到了 <code>libc_malloc_debug.so.0</code>
+中。目前更推荐的方式是通过 <code>LD_PRELOAD</code> 环境变量直接替换
+<code>malloc</code> 等函数。</p>
+<h2 id="ld_preload">LD_PRELOAD</h2>
+<p>在 Linux 系统下，<code>LD_PRELOAD</code>
+环境变量的作用是<strong>在动态链接库的加载过程中指定额外的动态库优先加载</strong>。如果
+<code>LD_PRELOAD</code>
+中的库提供了与系统库（glibc）中相同名称的符号，动态链接器（ld）将会优先使用这些符号进行解析，从而实现对系统库函数的替换和劫持。</p>
+<p>从 <code>LD_PRELOAD</code>
+的作用可以看出，其仅适用于动态链接场景，对于静态链接的库无法应用，因为静态链接库的符号解析在编译期就已经完成，而动态链接库的符号地址将在函数第一次调用时解析。</p>
+<p>我们要劫持的内存管理函数包含在 glibc （GNU C
+Library）中，因此需要确保编译的程序是动态链接 glibc 而不是静态链接 glibc
+的，可以通过 <code>ldd</code> 命令查看程序依赖的动态链接库，如果包含
+libc.so.6，则说明其动态链接到 glibc，我们便可以通过
+<code>LD_PRELOAD</code> 方式替换 malloc 并进行内存分配/释放的追踪。</p>
+<p>也可以直接使用 <code>file</code> 查看可执行程序的基本情况</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(base) ➜  build file demo</span><br><span class="line">demo: ELF 64-bit LSB shared object, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, BuildID[sha1]=9d1c40ef0056c0cd218526d4e4d0e177ccb0a783, <span class="keyword">for</span> GNU/Linux 3.2.0, with debug_info, not stripped</span><br></pre></td></tr></table></figure>
+
+<p>在链接过程中指定 <code>-static</code> 可实现静态链接 glibc，再次使用
+<code>file</code> 查看基本情况</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(base) ➜  build file demo_static</span><br><span class="line">demo_static: ELF 64-bit LSB executable, x86-64, version 1 (GNU/Linux), statically linked, BuildID[sha1]=771d155d3f1ff156c986dcc67d6e07e3e80a74b1, <span class="keyword">for</span> GNU/Linux 3.2.0, with debug_info, not stripped</span><br></pre></td></tr></table></figure>
+
+<p>使用 <code>ldd</code> 是也将提示 "not a dynamic
+executable"，其不包含任何动态链接信息。</p>
+<h2 id="动态符号解析机制">动态符号解析机制</h2>
+<p>动态符号解析机制是现代操作系统通过动态链接库（如
+<code>glibc</code>）实现符号（函数和变量）在程序运行时的地址解析过程。它允许程序在不重新编译的情况下调用共享库中的符号。</p>
+<p>在动态链接过程中，程序的符号（例如函数调用）在编译时并不知道最终的内存地址，而是在运行时由<strong>动态链接器</strong>负责解析。这种机制依赖于两张表：<strong>GOT（Global
+Offset Table）</strong> 和 <strong>PLT（Procedure Linkage
+Table）</strong>，它们协同工作，以便符号在首次调用时完成解析，并优化后续调用。</p>
+<ul>
+<li><p>全局偏移表（GOT）</p>
+<p>是动态链接的二进制文件（可执行程序、动态链接库等）用于管理
+<strong>外部函数地址</strong> 的机制。由于这些
+<strong>地址在运行时才会确定</strong>（因为动态链接的存在），GOT
+提供了一种 <strong>在符号解析后动态更新这些外部符号地址</strong>
+的方式。</p>
+<p>GOT 中的每个表项都对应一个外部库中的符号，当
+<strong>函数第一次被调用时，动态链接器解析其实际地址并将其存储在 GOT
+中</strong>。随后的调用将直接使用存储在 GOT
+中的地址，从而避免了每次调用时重新解析地址的开销。</p></li>
+<li><p>过程链接表（PLT）</p>
+<p><strong>过程链接表（PLT）</strong> 充当调用外部函数的跳板。当程序
+<strong>首次调用外部函数时，控制会转移到与该函数关联的 PLT
+条目</strong>。这个 PLT
+条目负责调用动态链接器，以解析该函数的地址（如果尚未解析）。解析完成后，地址会被存储在
+<strong>GOT</strong> 中。</p>
+<p><strong>因此，</strong> 一旦外部函数或变量的地址被解析后，GOT
+条目会被直接使用。<strong>PLT 条目用于协助初次解析</strong>
+这些地址，通过动态链接器完成。</p></li>
+</ul>
+<p>在 compiler explorer 中可以观察到这一点</p>
+<p>样例代码</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="type">void</span>* data = <span class="built_in">malloc</span>(<span class="number">20</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在 Output 菜单栏中勾选 “Link to
+binary”，编译参数为默认，可以看到其汇编代码如下</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">malloc@plt-0x10:</span><br><span class="line"> push   QWORD PTR [rip+0x2fe2]        # 404008 &lt;_GLOBAL_OFFSET_TABLE_+0x8&gt;</span><br><span class="line"> jmp    QWORD PTR [rip+0x2fe4]        # 404010 &lt;_GLOBAL_OFFSET_TABLE_+0x10&gt;</span><br><span class="line"> nop    DWORD PTR [rax+0x0]</span><br><span class="line">main:</span><br><span class="line"> push   rbp</span><br><span class="line"> mov    rbp,rsp</span><br><span class="line"> sub    rsp,0x10</span><br><span class="line"> mov    edi,0x14</span><br><span class="line"> call   401030 &lt;malloc@plt&gt;</span><br><span class="line"> mov    QWORD PTR [rbp-0x8],rax</span><br><span class="line"> mov    eax,0x0</span><br><span class="line"> leave</span><br><span class="line"> ret</span><br></pre></td></tr></table></figure>
+
+<p>在调用 malloc 时，其并没有给出真正的地址，而是跳转到 plt 的对应表项
+<code>malloc@plt</code>。</p>
+<p>而当我们指定 <code>-static</code> 链接选项后，其部分汇编代码如下</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">main:</span><br><span class="line"> push   rbp</span><br><span class="line"> mov    rbp,rsp</span><br><span class="line"> sub    rsp,0x10</span><br><span class="line"> mov    edi,0x14</span><br><span class="line"> call   4194e0 &lt;__libc_malloc&gt;</span><br><span class="line"> mov    QWORD PTR [rbp-0x8],rax</span><br><span class="line"> mov    eax,0x0</span><br><span class="line"> leave</span><br><span class="line"> ret</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p>可以看到其直接调用的就是 <code>__libc_malloc</code>，节省了跳转 plt
+获取实际地址的过程。</p>
+<p>下图展示了程序（动态链接 glibc）调用 <code>malloc</code>
+函数的过程</p>
+<p><img data-src="/posts/daa5/plt-flow.drawio.png" style="zoom:67%;" /></p>
+<p>下面给出动态符号解析的伪代码</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Map&lt;FuncId,DynamicResolver&gt; PLT&#123;&#125;;</span><br><span class="line">Map&lt;FuncId,Function&gt; GOT&#123;&#125;;</span><br><span class="line"><span class="comment">// call malloc@plt</span></span><br><span class="line"><span class="keyword">if</span>(GOT.<span class="built_in">find</span>(FuncId) == GOT.<span class="built_in">end</span>()) </span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">void</span>* ptr = PLT[name].<span class="built_in">dl_runtime_resolve</span>();</span><br><span class="line">    GOT[name] = ptr;</span><br><span class="line">&#125;</span><br><span class="line">GOT[name](...)</span><br></pre></td></tr></table></figure>
+
+<p>在代码中，也可以通过 <code>dlsym</code>
+直接获取函数符号信息，如下所示</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;assert.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;dlfcn.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">using</span> Malloc = <span class="type">void</span> *(<span class="type">size_t</span>);</span><br><span class="line">  Malloc *my_malloc = <span class="built_in">reinterpret_cast</span>&lt;Malloc *&gt;(<span class="built_in">dlsym</span>(RTLD_DEFAULT, <span class="string">&quot;malloc&quot;</span>));</span><br><span class="line">  <span class="built_in">assert</span>(my_malloc == &amp;malloc);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="获取-stacktrace">获取 stacktrace</h1>
+<blockquote>
+<p>[!Note]</p>
+<p>参考 <a target="_blank" rel="noopener" href="https://github.com/jeremy-rifkin/cpptrace">cpptrace</a>
+中不同 unwind 方案</p>
+</blockquote>
+<p>在内存检测工具中，一个很重要的功能就是获取函数的调用栈，这样我们才能定位到是在何时何地发生的内存泄漏。</p>
+<p>其具体可以分为两步</p>
+<ol type="1">
+<li><p>遍历栈帧列表，回溯每一层函数调用的程序计数器，构造函数调用链</p>
+<p>可以使用 libbacktrace、glibc自带的backtrace函数或 libunwind
+进行获取</p></li>
+<li><p>根据程序计数器的值和调试符号信息，获取函数名、调用源码位置信息</p>
+<p>可以使用 libbacktrace 或者 addr2line 命令行工具获取</p></li>
+</ol>
+<h1 id="实现细节">实现细节</h1>
+<blockquote>
+<p>[!Note]</p>
+<p>为便于说明，后续 malloc 指代 glibc 中相关的内存分配/释放函数，如
+free、realloc、calloc 等，malloc hook为我们用于替换 glibc
+相关内存分配/释放的函数。</p>
+</blockquote>
+<p>根据 LD_PRELOAD 的功能描述，使用 malloc hook 替换 malloc
+后，所有动态链接 malloc 的地方都将解析为 malloc hook 调用。</p>
+<p>为不影响软件的正常执行，我们需要在 malloc hook 中调用
+malloc，然后根据其返回结果记录相关信息。</p>
+<p>那么如何在 malloc hook 中调用 malloc呢，直接通过
+<code>void* data = malloc(20)</code> 这种肯定是不行的，前面提到的
+<code>dlsym</code> 就发挥其作用了。</p>
+<h2 id="获取-glibc-malloc-函数指针">获取 glibc malloc 函数指针</h2>
+<p>我们只需要通过 <code>dlopen</code> 打开系统的 <code>glibc</code>
+动态库，然后通过 <code>dlsym</code> 获取 malloc 函数指针即可。</p>
+<p><strong>且这一加载步骤只能在第一次调用 malloc 时触发，因为第一次调用
+malloc 的时机可能早于静态变量初始化时机</strong></p>
+<p>但是在 <code>dlopen</code> 和 <code>dlsym</code>
+内部执行过程中也可能调用 malloc，如下所示</p>
+<p><img data-src="/posts/daa5/dlopen-recursive-malloc.drawio.png"
+style="zoom:67%;" /></p>
+<p>但是此时我们还没有拿到 malloc 的函数指针，这样就会陷入死循环。</p>
+<p>为解决这种情况，我们就需要提供一块临时内存区域供 <code>dlopen</code>
+和 <code>dlsym</code>
+使用（即实现一个静态内存池），以确保我们可以正确拿到 glibc 的 malloc
+函数指针地址。实现如下</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">constexpr</span> <span class="type">size_t</span> BUFFER_SIZE = <span class="number">1</span> &lt;&lt; <span class="number">14</span>;</span><br><span class="line"><span class="type">char</span> buffer[BUFFER_SIZE];</span><br><span class="line"><span class="type">size_t</span> pos = <span class="number">0</span>;</span><br><span class="line"><span class="type">size_t</span> capacity = BUFFER_SIZE;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span>* <span class="title">temp_malloc</span><span class="params">(<span class="type">size_t</span> size)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(capacity &lt; size) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">nullptr</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="type">void</span>* ptr = buffer + size;</span><br><span class="line">    pos += size;</span><br><span class="line">    capacity -= size;</span><br><span class="line">    <span class="keyword">return</span> ptr;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">temp_free</span><span class="params">(<span class="type">void</span>* ptr)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// do nothing</span></span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>由此可以避免初始化 malloc 时的递归调用，下图展示了 Malloc Hook
+中初始化 glibc malloc 的流程</p>
+<p><img data-src="/posts/daa5/initialize-glibc-malloc.drawio-1727008632420-9.png"
+style="zoom:67%;" /></p>
+<h2 id="避免递归调用">避免递归调用</h2>
+<p>这是我们预想的 malloc hook 的基本功能伪代码</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span>* <span class="title">my_malloc</span><span class="params">(<span class="type">size_t</span> size)</span> </span>&#123;</span><br><span class="line">    <span class="type">void</span>* ptr = <span class="built_in">glibc_malloc</span>(size);</span><br><span class="line">    <span class="built_in">Log</span>(ptr,size);</span><br><span class="line">    <span class="keyword">return</span> ptr;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其中 Log
+函数将记录每一次内存分配的相关信息，为记录每一次内存分配/释放调用及其相关调用栈，我们需要准备两个
+map，一个用于存储每一条分配信息，一个用于存储调用栈信息。第二个 map
+是为了减少调用栈的重复存储，以尽可能减少内存占用。</p>
+<p>两个 map 的定义如下</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">AllocInfo</span> &#123;</span><br><span class="line">    <span class="type">uintptr_t</span> ptr&#123;&#125;;</span><br><span class="line">    <span class="type">size_t</span> size&#123;&#125;;</span><br><span class="line">    <span class="type">size_t</span> frame_id&#123;&#125;;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">Frames</span> &#123;</span><br><span class="line">    <span class="type">size_t</span> length&#123;&#125;;</span><br><span class="line">    std::array&lt;<span class="type">uintptr_t</span>,127&gt; pcs&#123;&#125;;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> AllocMap = map&lt;<span class="type">uintptr_t</span>,AllocInfo&gt;;</span><br><span class="line"><span class="keyword">using</span> FrameMap = map&lt;<span class="type">size_t</span>, Frames&gt;;</span><br></pre></td></tr></table></figure>
+
+<p>AllocMap 的键为通过 malloc，calloc，realloc
+等内存分配函数所分配的内存块的首地址。</p>
+<p>FrameMap 的键为对 Frames 结构体通过 hash_combine（参考 boost
+实现）后获取的 hash 值，以尽可能减少重复。</p>
+<p>无论是使用 tree map 还是 hash
+map，其在插入过程中都有可能都有可能进行动态内存分配，即如下调用链</p>
+<p><img data-src="/posts/daa5/log-recursive-malloc.drawio-1727008883541-13.png"
+style="zoom:67%;" /></p>
+<p>这样会导致 malloc hook 的递归调用，而在 malloc hook
+内部发生的动态内存分配对于软件的内存泄漏检查而言毫无意义，可以直接忽略，因此需要添加一个递归标志位，以判断
+malloc hook 是否发生递归调用。</p>
+<p>如下图所示</p>
+<p><img data-src="/posts/daa5/malloc-hook-basic.drawio-1727008791210-11.png"
+style="zoom: 67%;" /></p>
+<p>写成伪代码如下所示</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span>* <span class="title">my_malloc</span><span class="params">(<span class="type">size_t</span> size)</span> </span>&#123;</span><br><span class="line">    <span class="type">static</span> entered = <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">if</span>(entered) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">glibc_malloc</span>(size);</span><br><span class="line">    &#125;</span><br><span class="line">    entered = <span class="literal">true</span>;</span><br><span class="line">    <span class="type">void</span>* ptr = <span class="built_in">glibc_malloc</span>(size);</span><br><span class="line">    <span class="built_in">Log</span>(ptr,size);</span><br><span class="line">    entered = <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">return</span> ptr;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>由于在 free、realloc、calloc 等内存分配/释放函数中也会调用到
+malloc（因为 Log
+记录的调用），因此全局状态标识位必须只有一个，其表示当前程序正在执行内存分配函数过程中。</strong></p>
+<h2 id="多线程记录">多线程记录</h2>
+<p><strong>内存分配函数可能会在多线程环境下使用，而上述递归标志位、AllocMap
+和 FrameMap 都是全局变量，在并发读写时需要加锁。</strong></p>
+<ul>
+<li><p>对于递归标志位而言，如果对其加锁，则同一时间内将仅有一个变量进入
+malloc hook 执行，这样会极大的影响程序性能。但一个线程进入 malloc hook
+执行并不应该阻碍另一个线程执行 malloc hook，<strong>即 malloc hook
+的递归标志位应该时每个线程独有的状态标志位</strong>，将递归标志位从
+<code>static</code> 转换为
+<code>thread_local</code>，以避免频繁的进行线程同步。</p></li>
+<li><p>而对于 AllocMap 和 FrameMap 而言，可以尝试使用
+concurrent_hash_map
+等数据结构<strong>缩小加锁的范围</strong>以尽可能提高 malloc hook
+的执行效率。</p></li>
+</ul>
+<p>最后章节中，我们将会对实现的 malloc hook 进行
+benchmark，就可以发现不同设计下的性能差距。并给出最终完整版 malloc hook
+实现。</p>
+<h1 id="参考">参考</h1>
+<ol type="1">
+<li><a
+target="_blank" rel="noopener" href="https://book.hacktricks.xyz/binary-exploitation/arbitrary-write-2-exec/aw2exec-got-plt">WWW2Exec
+- GOT/PLT | HackTricks</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/cpp/c-runtime-library/reference/crtsetallochook?view=msvc-170">_CrtSetAllocHook
+| Microsoft Learn</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://man7.org/linux/man-pages/man8/ld.so.8.html">ld.so(8) -
+Linux manual page (man7.org)</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://github.com/google/sanitizers/wiki/AddressSanitizerAlgorithm">AddressSanitizerAlgorithm
+· google/sanitizers Wiki (github.com)</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://valgrind.org/docs/manual/design-impl.html">Valgrind</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://github.com/jeremy-rifkin/cpptrace">jeremy-rifkin/cpptrace:
+Simple, portable, and self-contained stacktrace library for C++11 and
+newer (github.com)</a></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>PureWhiteVK
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://purewhitevk.github.io/posts/daa5/" title="内存分析工具（2）：实现内存泄漏检查">https://purewhitevk.github.io/posts/daa5/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/dead.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/C/" rel="tag"># C++</a>
+              <a href="/tags/Linux/" rel="tag"># Linux</a>
+              <a href="/tags/%E5%86%85%E5%AD%98%E5%88%86%E6%9E%90/" rel="tag"># 内存分析</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/55d0/" rel="prev" title="内存分析工具（1）：内存布局和内存泄漏">
+                  <i class="fa fa-chevron-left"></i> 内存分析工具（1）：内存布局和内存泄漏
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/cfb2/" rel="next" title="内存分析工具（3）：内存破坏检查">
+                  内存分析工具（3）：内存破坏检查 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PureWhiteVK</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">60k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">3:39</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
