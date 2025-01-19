@@ -2791,6 +2791,74 @@ style="zoom:50%;" /></p>
       </tags>
   </entry>
   <entry>
+    <title>命令行切换MSVC版本</title>
+    <url>/posts/30a2/</url>
+    <content><![CDATA[<p>在 WIndows 下跑 Python 深度学习代码时，需要编译 C++ 库（点名
+Pytorch3d），但是使用最新版本的 MSVC 进行编译的时候会报错，去 Github 看
+Issue 时有提到降级可能有效，我们可以通过添加组件的方式直接下载指定版本的
+MSVC
+编译器。然后手动修改进行切换。为了怕后面遇到类似问题时忘记怎么搞，还是简单记录一下吧，具体操作如下：</p>
+<ol type="1">
+<li><p>首先打开 Visual Studio Installer，点击 <code>修改</code> 按钮</p>
+<p><img data-src="/posts/30a2/image-20230220223924979.png" /></p>
+<span id="more"></span>
+</li>
+<li><p>在 <code>单个组件</code> 菜单中，找到指定版本的 MSVC</p>
+<p>注意编译器的名称是
+<code>MSVC v&lt;xxx&gt; - VS &lt;xxxx&gt; C++ x64/86 生成工具(v&lt;xx&gt;.&lt;xx&gt;)</code>，千万不要下错了</p>
+<p><img data-src="/posts/30a2/image-20230220224128371.png" /></p></li>
+<li><p>下载完成后，我们找到 Visual Studio 的安装目录， 其中
+<code>VC</code> 目录就包含了 MSVC 相关的文件</p>
+<p><img data-src="/posts/30a2/image-20230220224414127.png" /></p></li>
+<li><p>进入 <code>VC</code> 目录，在 <code>Tools\MSVC</code>
+我们就可以找到安装的所有 MSVC 编译器</p>
+<p><img data-src="/posts/30a2/image-20230220224544477.png" /></p></li>
+<li><p>我们可以进入一个子目录，进入 <code>bin\Hostx64\x64</code>
+文件夹，然后在这个文件夹下打开 Developer PowerShell，输入
+<code>.\cl.exe</code> 查看版本</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">(base) PS C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\bin\Hostx64\x64&gt; cl</span><br><span class="line">用于 x64 的 Microsoft (R) C/C++ 优化编译器 19.25.28614 版</span><br><span class="line">版权所有(C) Microsoft Corporation。保留所有权利。</span><br><span class="line"></span><br><span class="line">用法: cl [ 选项... ] 文件名... [ /link 链接选项... ]</span><br><span class="line">(base) PS C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\bin\Hostx64\x64&gt; .\cl.exe</span><br><span class="line">用于 x64 的 Microsoft (R) C/C++ 优化编译器 19.29.30147 版</span><br><span class="line">版权所有(C) Microsoft Corporation。保留所有权利。</span><br><span class="line"></span><br><span class="line">用法: cl [ 选项... ] 文件名... [ /link 链接选项... ]</span><br></pre></td></tr></table></figure>
+
+<p>可以看到，当我们直接输入 <code>cl</code> 时，调用的是环境变量中设置的
+MSVC 编译器，而输入 <code>.\cl.exe</code> 直接调用当前目录下的
+<code>cl.exe</code> 时就会调用当前目录的 MSVC 编译器</p></li>
+<li><p>最后我们只需要切换当前环境变量中使用的 <code>cl</code>
+就行，这里需要进入 <code>&lt;vs-path&gt;\VC\Auxiliary\Build</code>
+路径，在这个路径下面就制定了默认使用的 MSVC 版本</p></li>
+</ol>
+<p><img data-src="/posts/30a2/image-20230220225257590.png" /></p>
+<p>我们只需要修改其中的包含 <code>VCToolsVersion</code> 和
+<code>VCRedistVersion</code>
+字样的文件，将其中对应版本全部替换成我们需要的 MSVC 版本即可</p>
+<p><code>Microsoft.VCToolsVersion.default.props</code></p>
+   <figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version = <span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;utf-8&quot;</span>?&gt;</span> </span><br><span class="line"><span class="tag">&lt;<span class="name">Project</span> <span class="attr">ToolsVersion</span> = <span class="string">&quot;4.0&quot;</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://schemas.microsoft.com/developer/msbuild/2003&quot;</span>&gt;</span> </span><br><span class="line">  <span class="tag">&lt;<span class="name">PropertyGroup</span>&gt;</span> </span><br><span class="line">    <span class="tag">&lt;<span class="name">VCToolsVersion</span> <span class="attr">Condition</span> = <span class="string">&quot;&#x27;$(VCToolsVersion)&#x27; == &#x27;&#x27;&quot;</span> &gt;</span>14.25.28610<span class="tag">&lt;/<span class="name">VCToolsVersion</span>&gt;</span> </span><br><span class="line">    <span class="tag">&lt;<span class="name">VCToolsRedistVersion</span> <span class="attr">Condition</span> = <span class="string">&quot;&#x27;$(VCToolsRedistVersion)&#x27; == &#x27;&#x27;&quot;</span> &gt;</span>14.25.28508<span class="tag">&lt;/<span class="name">VCToolsRedistVersion</span>&gt;</span> </span><br><span class="line">  <span class="tag">&lt;/<span class="name">PropertyGroup</span>&gt;</span>      </span><br><span class="line"><span class="tag">&lt;/<span class="name">Project</span>&gt;</span>     </span><br></pre></td></tr></table></figure>
+
+<p><code>Microsoft.VCToolsVersion.default.txt</code>（这个文件实际上就一个版本号，直接改掉就可以）</p>
+   <figure class="highlight txt"><table><tr><td class="code"><pre><span class="line">14.25.28610</span><br></pre></td></tr></table></figure>
+
+<ol start="7" type="1">
+<li>切换完成后，我们再使用 Developer Powershell
+打开时就不会出问题了</li>
+</ol>
+<p>注：上面的更改仅适用于命令行，在 Visual Studio
+中可以直接手动更换，具体参考官方教程：<a
+href="https://learn.microsoft.com/en-us/cpp/build/how-to-modify-the-target-framework-and-platform-toolset?view=msvc-170">How
+to: Modify the Target Framework and Platform Toolset | Microsoft
+Learn</a></p>
+<p>使用命令行是因为 Python 编译 C
+库需要从命令行调用，所以只能这样修改，而 cmake
+等编译工具实际上也只需要指定版本即可，具体可以参考官方文档：<a
+href="https://cmake.org/cmake/help/latest/variable/MSVC_VERSION.html">MSVC_VERSION
+— CMake 3.26.0-rc4 Documentation</a></p>
+]]></content>
+      <categories>
+        <category>技术笔记</category>
+      </categories>
+      <tags>
+        <tag>C++</tag>
+        <tag>MSVC</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>zerotier实现内网穿透</title>
     <url>/posts/f9ab/</url>
     <content><![CDATA[<p>zerotier
@@ -3674,74 +3742,6 @@ library），个人推荐将头文件（<code>.h</code>）和源代码文件
       <tags>
         <tag>C++</tag>
         <tag>CMake</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>命令行切换MSVC版本</title>
-    <url>/posts/30a2/</url>
-    <content><![CDATA[<p>在 WIndows 下跑 Python 深度学习代码时，需要编译 C++ 库（点名
-Pytorch3d），但是使用最新版本的 MSVC 进行编译的时候会报错，去 Github 看
-Issue 时有提到降级可能有效，我们可以通过添加组件的方式直接下载指定版本的
-MSVC
-编译器。然后手动修改进行切换。为了怕后面遇到类似问题时忘记怎么搞，还是简单记录一下吧，具体操作如下：</p>
-<ol type="1">
-<li><p>首先打开 Visual Studio Installer，点击 <code>修改</code> 按钮</p>
-<p><img data-src="/posts/30a2/image-20230220223924979.png" /></p>
-<span id="more"></span>
-</li>
-<li><p>在 <code>单个组件</code> 菜单中，找到指定版本的 MSVC</p>
-<p>注意编译器的名称是
-<code>MSVC v&lt;xxx&gt; - VS &lt;xxxx&gt; C++ x64/86 生成工具(v&lt;xx&gt;.&lt;xx&gt;)</code>，千万不要下错了</p>
-<p><img data-src="/posts/30a2/image-20230220224128371.png" /></p></li>
-<li><p>下载完成后，我们找到 Visual Studio 的安装目录， 其中
-<code>VC</code> 目录就包含了 MSVC 相关的文件</p>
-<p><img data-src="/posts/30a2/image-20230220224414127.png" /></p></li>
-<li><p>进入 <code>VC</code> 目录，在 <code>Tools\MSVC</code>
-我们就可以找到安装的所有 MSVC 编译器</p>
-<p><img data-src="/posts/30a2/image-20230220224544477.png" /></p></li>
-<li><p>我们可以进入一个子目录，进入 <code>bin\Hostx64\x64</code>
-文件夹，然后在这个文件夹下打开 Developer PowerShell，输入
-<code>.\cl.exe</code> 查看版本</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">(base) PS C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\bin\Hostx64\x64&gt; cl</span><br><span class="line">用于 x64 的 Microsoft (R) C/C++ 优化编译器 19.25.28614 版</span><br><span class="line">版权所有(C) Microsoft Corporation。保留所有权利。</span><br><span class="line"></span><br><span class="line">用法: cl [ 选项... ] 文件名... [ /link 链接选项... ]</span><br><span class="line">(base) PS C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\bin\Hostx64\x64&gt; .\cl.exe</span><br><span class="line">用于 x64 的 Microsoft (R) C/C++ 优化编译器 19.29.30147 版</span><br><span class="line">版权所有(C) Microsoft Corporation。保留所有权利。</span><br><span class="line"></span><br><span class="line">用法: cl [ 选项... ] 文件名... [ /link 链接选项... ]</span><br></pre></td></tr></table></figure>
-
-<p>可以看到，当我们直接输入 <code>cl</code> 时，调用的是环境变量中设置的
-MSVC 编译器，而输入 <code>.\cl.exe</code> 直接调用当前目录下的
-<code>cl.exe</code> 时就会调用当前目录的 MSVC 编译器</p></li>
-<li><p>最后我们只需要切换当前环境变量中使用的 <code>cl</code>
-就行，这里需要进入 <code>&lt;vs-path&gt;\VC\Auxiliary\Build</code>
-路径，在这个路径下面就制定了默认使用的 MSVC 版本</p></li>
-</ol>
-<p><img data-src="/posts/30a2/image-20230220225257590.png" /></p>
-<p>我们只需要修改其中的包含 <code>VCToolsVersion</code> 和
-<code>VCRedistVersion</code>
-字样的文件，将其中对应版本全部替换成我们需要的 MSVC 版本即可</p>
-<p><code>Microsoft.VCToolsVersion.default.props</code></p>
-   <figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version = <span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;utf-8&quot;</span>?&gt;</span> </span><br><span class="line"><span class="tag">&lt;<span class="name">Project</span> <span class="attr">ToolsVersion</span> = <span class="string">&quot;4.0&quot;</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://schemas.microsoft.com/developer/msbuild/2003&quot;</span>&gt;</span> </span><br><span class="line">  <span class="tag">&lt;<span class="name">PropertyGroup</span>&gt;</span> </span><br><span class="line">    <span class="tag">&lt;<span class="name">VCToolsVersion</span> <span class="attr">Condition</span> = <span class="string">&quot;&#x27;$(VCToolsVersion)&#x27; == &#x27;&#x27;&quot;</span> &gt;</span>14.25.28610<span class="tag">&lt;/<span class="name">VCToolsVersion</span>&gt;</span> </span><br><span class="line">    <span class="tag">&lt;<span class="name">VCToolsRedistVersion</span> <span class="attr">Condition</span> = <span class="string">&quot;&#x27;$(VCToolsRedistVersion)&#x27; == &#x27;&#x27;&quot;</span> &gt;</span>14.25.28508<span class="tag">&lt;/<span class="name">VCToolsRedistVersion</span>&gt;</span> </span><br><span class="line">  <span class="tag">&lt;/<span class="name">PropertyGroup</span>&gt;</span>      </span><br><span class="line"><span class="tag">&lt;/<span class="name">Project</span>&gt;</span>     </span><br></pre></td></tr></table></figure>
-
-<p><code>Microsoft.VCToolsVersion.default.txt</code>（这个文件实际上就一个版本号，直接改掉就可以）</p>
-   <figure class="highlight txt"><table><tr><td class="code"><pre><span class="line">14.25.28610</span><br></pre></td></tr></table></figure>
-
-<ol start="7" type="1">
-<li>切换完成后，我们再使用 Developer Powershell
-打开时就不会出问题了</li>
-</ol>
-<p>注：上面的更改仅适用于命令行，在 Visual Studio
-中可以直接手动更换，具体参考官方教程：<a
-href="https://learn.microsoft.com/en-us/cpp/build/how-to-modify-the-target-framework-and-platform-toolset?view=msvc-170">How
-to: Modify the Target Framework and Platform Toolset | Microsoft
-Learn</a></p>
-<p>使用命令行是因为 Python 编译 C
-库需要从命令行调用，所以只能这样修改，而 cmake
-等编译工具实际上也只需要指定版本即可，具体可以参考官方文档：<a
-href="https://cmake.org/cmake/help/latest/variable/MSVC_VERSION.html">MSVC_VERSION
-— CMake 3.26.0-rc4 Documentation</a></p>
-]]></content>
-      <categories>
-        <category>技术笔记</category>
-      </categories>
-      <tags>
-        <tag>C++</tag>
-        <tag>MSVC</tag>
       </tags>
   </entry>
   <entry>
