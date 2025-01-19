@@ -1,6 +1,284 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>个人博客搭建记录</title>
+    <url>/posts/96e0/</url>
+    <content><![CDATA[<p>之前都是在知乎上写博客，这样看的人也多，方便讨论，但是知乎的 markdown
+编辑器不是很好用，本地写完后还需要一张一张上传图片，太麻烦了，就自己搭一个博客，又不想进行域名备案啥的，服务器也要出钱
+:( 。最后搜到 Github 有提供免费的静态页面部署功能，这样写完 markdown
+笔记可以直接上传到
+Github，还可以通过网页访问，nice！(白嫖的感觉真好)</p>
+<h1 id="github-pages">Github Pages</h1>
+<h2 id="创建主页仓库">创建主页仓库</h2>
+<p>通过 <a href="https://pages.github.com/">Github Pages</a>，我们可以将
+markdown
+撰写的笔记转换成静态网页，并进行部署。其创建流程也十分简单，只需要创建一个名为
+<code>&lt;username&gt;.github.io</code> 的仓库，如下图所示</p>
+<p><img data-src="/posts/96e0/image-20230102151015131.png"
+style="zoom:50%;" /></p>
+<p>此处我们选择的是 Private
+仓库，只有我们能进行修改，但是主页是公开访问的，这样可以保证笔记源文件安全
+:) 。</p>
+<span id="more"></span>
+
+<p>创建完成后仓库中什么都没有</p>
+<p><img data-src="/posts/96e0/image-20230102151942075.png"
+style="zoom:33%;" /></p>
+<p>此时我们在浏览器中输入 <a
+href="https://purewhitevk.github.io"><span>https://purewhitevk.github.io</span></a>
+（URL不区分大小写，直接用小写即可），显示404，页面不存在。</p>
+<p><img data-src="/posts/96e0/image-20230102152125799.png"
+style="zoom: 50%;" /></p>
+<p>别心急，很快就可以看到博客页面了。</p>
+<h2 id="静态博客框架">静态博客框架</h2>
+<p>在网上搜了一下，有很多博客框架，例如 wordpress 等，但是 wordpress
+需要数据库，还需要单独配服务器进行部署，太麻烦了，满足我们需求的有三个</p>
+<ul>
+<li><p>Jekyll（Github 原生支持）</p>
+<p>使用 Ruby 实现</p></li>
+<li><p>Hexo</p>
+<p>使用 Node.js 实现</p></li>
+<li><p>Hugo</p>
+<p>使用 Go 实现</p></li>
+</ul>
+<p>三者在功能上大同小异，都可以直接将 <code>.md</code>
+文件转换成<code>html</code> 文件，且支持部署在 Github Pages
+上。个人比较推荐 <a
+href="https://hexo.io/">Hexo</a>，其环境搭建起来比较方便，且插件较多，操作起来比较简单。</p>
+<p><img data-src="/posts/96e0/image-20230102153212301.png"
+style="zoom:50%;" /></p>
+<h1 id="hexo环境配置">hexo环境配置</h1>
+<h2 id="安装">安装</h2>
+<ol type="1">
+<li><p>全局安装 hexo-cli，这样我们可以直接调用 hexo 的命令行命令</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm install hexo-cli -g</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>将我们的主页仓库 clone 到本地，此处我们将其放到文件夹
+<code>Note</code> 下</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/PureWhiteVK/PureWhiteVK.github.io.git Note</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>下载 <a
+href="https://github.com/hexojs/hexo-starter">hexo-starter</a>
+并解压到本地仓库中</p>
+<p>点击右侧 <code>Code</code> 按钮，直接下载 ZIP
+压缩包即可（其实我们也可以直接 fork 这个仓库，但是这样我们的仓库就不能是
+private 了）</p>
+<p><img data-src="/posts/96e0/image-20230102154426653.png"
+style="zoom:50%;" /></p></li>
+<li><p>使用 <code>npm install</code> 安装依赖</p></li>
+<li><p>输入 <code>hexo server</code> 进行运行本地服务</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">(base) PS D:\Code\Note&gt; hexo server</span><br><span class="line">INFO  Validating config</span><br><span class="line">INFO  Start processing</span><br><span class="line">INFO  hexois running at http://localhost:4000/ . Press Ctrl+C to stop.</span><br></pre></td></tr></table></figure>
+
+<p>在浏览器中打开
+<code>localhost:4000</code>，就可以预览生成后的静态页面效果了</p>
+<p><img data-src="/posts/96e0/image-20230102161237387.png"
+style="zoom:50%;" /></p></li>
+</ol>
+<h2 id="主题">主题</h2>
+<p>hexo 上有很多精美的主题，这里我们选择 <a
+href="https://github.com/theme-next/hexo-theme-next">next</a>
+作为博客主题，其比较稳定，功能也很全。</p>
+<p>直接使用 npm 进行安装即可</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm install --save hexo-theme-next</span><br></pre></td></tr></table></figure>
+
+<p>安装之后，我们需要将主题配置文件
+<code>node_modules/hexo-theme-next/_config.yml</code>
+拷贝至根目录下，并重命名为 <code>_config.next.yml</code></p>
+<p>最终修改根目录下的 <code>_config.yml</code>
+即可，将其更换为我们需要的主题</p>
+<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Extensions</span></span><br><span class="line"><span class="comment">## Plugins: https://hexo.io/plugins/</span></span><br><span class="line"><span class="comment">## Themes: https://hexo.io/themes/</span></span><br><span class="line"><span class="attr">theme:</span> <span class="string">next</span></span><br></pre></td></tr></table></figure>
+
+<p>最后清理之前生成的文件，并重建部署一下</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">hexo clean &amp;&amp; hexo server</span><br></pre></td></tr></table></figure>
+
+<p>主题效果如下</p>
+<p><img data-src="/posts/96e0/image-20230102163251257.png"
+style="zoom:50%;" /></p>
+<h2 id="插件">插件</h2>
+<p>hexo 提供了很多插件来简化我们的操作，并提供一些其他的功能。由于 hexo
+是基于 node.js 实现的，我们可以通过 npm 来安装和卸载 hexo 插件。</p>
+<p>安装插件命令</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm install --save &lt;plugin-name&gt;</span><br></pre></td></tr></table></figure>
+
+<p>删除插件命令</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm uninstall --save &lt;plugin-name&gt;</span><br></pre></td></tr></table></figure>
+
+<p>我们使用了以下几个插件（具体配置可以直接参考 hexo-next-theme
+的插件使用文档：<a
+href="https://theme-next.js.org/docs/third-party-services/">Third-party
+Plugins | NexT</a> 即可）</p>
+<ul>
+<li>hexo-generator-searchdb：实现搜索功能，支持html文件检索</li>
+<li>hexo-abbrlink：自动生成文章的永久链接</li>
+<li>hexo-word-counter：统计文章字数</li>
+</ul>
+<h2 id="配置">配置</h2>
+<p>hexo的配置文件位于根目录下的
+<code>_config.yml</code>，下面列举了我们需要修改的一些关键配置项</p>
+<h3 id="网站基本设置">网站基本设置</h3>
+<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">title:</span> <span class="string">&quot;PureWhite&#x27;s Blog&quot;</span></span><br><span class="line"><span class="attr">subtitle:</span> <span class="string">&#x27;&#x27;</span></span><br><span class="line"><span class="attr">description:</span> <span class="string">&#x27;&#x27;</span></span><br><span class="line"><span class="attr">keywords:</span></span><br><span class="line"><span class="attr">author:</span> <span class="string">PureWhiteVK</span></span><br><span class="line"><span class="attr">language:</span> <span class="string">zh-CN</span></span><br><span class="line"><span class="attr">timezone:</span> <span class="string">Asia/Shanghai</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="url设置">URL设置</h3>
+<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">url:</span> <span class="string">https://purewhitevk.github.io</span></span><br><span class="line"><span class="comment"># 这样我们笔记永久链接为 https://purewhitevk.github.io/posts/43fc/</span></span><br><span class="line"><span class="attr">permalink:</span> <span class="string">posts/:abbrlink/</span> </span><br><span class="line"><span class="comment"># 我们使用了 hexo-abbrlink 插件，其通过对名称以及时间戳使用 crc16 算法，生成四位的一个唯一编码</span></span><br><span class="line"><span class="comment"># 四位十六进制可以表示 65536 篇文章，这对于我们博客而言已经绰绰有余了</span></span><br><span class="line"><span class="attr">abbrlink:</span></span><br><span class="line">  <span class="attr">alg:</span> <span class="string">crc16</span></span><br><span class="line">  <span class="attr">rep:</span> <span class="string">hex</span></span><br><span class="line"><span class="attr">permalink_defaults:</span></span><br><span class="line"><span class="attr">pretty_urls:</span></span><br><span class="line">  <span class="comment"># 末尾的index后缀</span></span><br><span class="line">  <span class="attr">trailing_index:</span> <span class="literal">false</span></span><br><span class="line">  <span class="comment"># 末尾的.html后缀</span></span><br><span class="line">  <span class="attr">trailing_html:</span> <span class="literal">false</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="写作相关配置">写作相关配置</h3>
+<p>这里我们主要调整生成 hexo 生成的 markdown 文件名称</p>
+<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># File name of new posts</span></span><br><span class="line"><span class="attr">new_post_name:</span> <span class="string">:year/:month/:day/:title.md</span></span><br></pre></td></tr></table></figure>
+
+<p>hexo 添加 post 命令</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">hexo new [layout] &lt;title&gt;</span><br></pre></td></tr></table></figure>
+
+<p>示例</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">(base) PS D:\Code\Note&gt; hexo new post <span class="string">&quot;Hello World&quot;</span></span><br><span class="line">INFO  Validating config</span><br><span class="line">INFO  Created: D:\Code\Note\<span class="built_in">source</span>\_posts\2023\01\02\Hello-World.md</span><br></pre></td></tr></table></figure>
+
+<p>markdown 文件内容如下</p>
+<figure class="highlight markdown"><table><tr><td class="code"><pre><span class="line">---</span><br><span class="line">title: Hello World</span><br><span class="line">date: 2023-01-02 17:03:17</span><br><span class="line"><span class="section">tags:</span></span><br><span class="line"><span class="section">---</span></span><br></pre></td></tr></table></figure>
+
+<p>其会默认包含一些内容，其中用三横线包裹起来的是 Front
+Matter，其用来标识 markdown
+文档的一些属性，例如标题、创建日期、标签（tags）、类别（categories）、永久链接等，hexo
+通过读取 Front Matter 来控制生成的 html 文件。</p>
+<h3 id="next-主题配置">next 主题配置</h3>
+<p>前面提到，我们从 <code>node_modules</code> 中将 next
+的配置拷贝至了根目录，并重命名为
+<code>_config.next.yml</code>，主题相关的配置直接在这个文件中进行修改即可，next
+中提供了非常多的配置项，就不一一介绍了，详细可以直接参考Next主题文档：<a
+href="https://theme-next.js.org/">NexT - Theme for Hexo</a></p>
+<h2 id="图片">图片</h2>
+<p>由于 markdown 和 html 在使用上的区别（markdown 本地，html
+网络），我们在 markdown 中插入图片</p>
+<figure class="highlight markdown"><table><tr><td class="code"><pre><span class="line">![<span class="string">image-description</span>](<span class="link">/local/path/to/image</span>)</span><br></pre></td></tr></table></figure>
+
+<p>会被直接转换成 html 的 <code>img</code> 标签</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">&quot;/local/path/to/image&quot;</span> <span class="attr">alt</span>=<span class="string">&quot;image-description&quot;</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>但是一个是本地路径，一个是网络 URI，直接这么转换肯定会问题。</p>
+<p>参考 hexo 的[资源管理文档](<a
+href="https://hexo.io/docs/asset-folders">Asset Folders | Hexo</a>)，在
+hexo 中，最简单的图片管理方式就是将图片文件放置在
+<code>source/images</code> 文件夹下，这样在网页中我们可以直接通过
+<code>/images/&lt;image-name&gt;</code> 进行访问。</p>
+<blockquote>
+<p>Assets are non-post files in the <code>source</code> folder, such as
+images, CSS or JavaScript files. For instance, If you are only going to
+have a few images in the hexoproject, then <strong>the easiest way is to
+keep them in a <code>source/images</code> directory.</strong> Then, you
+can access them using something like</p>
+<figure class="highlight markdown"><table><tr><td class="code"><pre><span class="line">![](<span class="link">/images/image.jpg</span>)</span><br></pre></td></tr></table></figure>
+
+</blockquote>
+<p>markdown 写法</p>
+<figure class="highlight markdown"><table><tr><td class="code"><pre><span class="line">![](<span class="link">/images/image.jpg</span>)</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>注意images前面的 <code>/</code>
+，必须包含这个斜杠，否则图片路径就变成了相对当前URL的路径，会导致图片访问出错。加上<code>/</code>
+就表示是相对域名的URL，即
+<code>https://purewhitevk.github.io/images/image.jpg</code>；而不加<code>/</code>时就是相对当前网址的URL，假设我们当前网址为
+<code>https://purewhitevk.github.io/posts/abcd</code>
+，那么对应的图片URL为
+<code>https://purewhitevk.github.io/posts/abcd/images/image.jpg</code>，这样就会导致找不到图片。（通过相对路径读取图片文件也是一种可行的方式）</p>
+</blockquote>
+<p>对应生成的 html 代码</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">&quot;/images/image.jpg&quot;</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>但是这样我们在本地使用 typora 编写 markdown 时就会有问题，好在 typora
+也给出了解决方案：<a
+href="https://support.typora.io/Images/#relative-path-to-certain-folder">Images
+in Typora - Typora Support</a>。只需要在 markdown 的 Front Matter
+中添加两个属性，将 markdown
+中所有的图片路径都修改成相对某个路径的绝对路径即可（也就是<code>/relative/to/some-image.png</code>的形式）。</p>
+<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 设置相对的路径，设置根目录为 source</span></span><br><span class="line"><span class="attr">typora-root-url:</span> <span class="string">../../../../</span></span><br><span class="line"><span class="comment"># 插入图片时自动拷贝图片到 source/images/ 下</span></span><br><span class="line"><span class="attr">typora-copy-images-to:</span> <span class="string">../../../../images</span></span><br></pre></td></tr></table></figure>
+
+<p>我们的文章都位于
+<code>source/_posts/&lt;year&gt;/&lt;month&gt;/&lt;day&gt;</code>
+路径下，图片存储路径为<code>source/images</code>下，通过设置<code>typora-root-url</code>，当我们在markdown中插入一张路径为
+<code>/images/image.jpg</code> 时，其会自动将
+<code>typora-root-url</code>和该路径进行拼接，最终结果就是
+<code>../../../../images/image.jpg</code>，正确读取到图片。另外一个便捷的功能就是插入图片时自动拷贝到指定文件夹，这样我们可以丝滑的添加图片了，不需要手动上传并设置链接。</p>
+<p>我们可以将这两个配置项添加到 markdown 模板中（hexo 中称为
+scaffold，脚手架），就不用每次都手动添加，修改
+<code>scaffolds/post.md</code> 如下</p>
+<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">title:</span> &#123;&#123; <span class="string">title</span> &#125;&#125;</span><br><span class="line"><span class="attr">date:</span> &#123;&#123; <span class="string">date</span> &#125;&#125;</span><br><span class="line"><span class="attr">tags:</span></span><br><span class="line"><span class="attr">category:</span></span><br><span class="line"><span class="attr">mathjax:</span> <span class="literal">false</span></span><br><span class="line"><span class="attr">typora-root-url:</span> <span class="string">../../../../</span></span><br><span class="line"><span class="attr">typora-copy-images-to:</span> <span class="string">../../../../images</span></span><br><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="comment"># 此处 more 标签用于 next 主题显示摘要</span></span><br><span class="line"><span class="string">&lt;!--</span> <span class="string">more</span> <span class="string">--&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>这样我们通过 <code>hexo new post &lt;title&gt;</code>
+时就会默认配置好 typora。</p>
+<p>附：typora的图像存储相关设置</p>
+<p><img data-src="/posts/96e0/image-20230105230235058.png"
+style="zoom:50%;" /></p>
+<p>由于我们使用 Front Matter 进行配置，在图像处就不需要任何配置了。</p>
+<h2 id="公式">公式</h2>
+<p>另外一个比较令人头疼的就是公式渲染问题，latex 公式在语法上和 markdown
+存在一些冲突，如果使用默认的 <code>hexo-renderer-marked </code>
+渲染引擎进行生成会导致最终渲染出来的 latex 公式是错误的，我们需要将
+markdown 渲染引擎替换为 <code>hexo-renderer-pandoc</code>。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 首先删除原来的渲染器</span></span><br><span class="line">npm uninstall --save hexo-renderer-marked</span><br><span class="line"><span class="comment"># 安装新的渲染器</span></span><br><span class="line">npm install --save hexo-renderer-pandoc</span><br></pre></td></tr></table></figure>
+
+<p>然后在 next 主题的配置文件 <code>_config.next.yml</code> 中开启
+mathjax 的支持</p>
+<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">math:</span></span><br><span class="line">  <span class="comment"># Default (false) will load mathjax / katex script on demand.</span></span><br><span class="line">  <span class="comment"># That is it only render those page which has `mathjax: true` in front-matter.</span></span><br><span class="line">  <span class="comment"># If you set it to true, it will load mathjax / katex script EVERY PAGE.</span></span><br><span class="line">  <span class="attr">every_page:</span> <span class="literal">false</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">mathjax:</span></span><br><span class="line">    <span class="attr">enable:</span> <span class="literal">true</span> <span class="comment"># &lt;--- 将此处 false 修改为 true</span></span><br><span class="line">    <span class="comment"># Available values: none | ams | all</span></span><br><span class="line">    <span class="attr">tags:</span> <span class="string">none</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">katex:</span></span><br><span class="line">    <span class="attr">enable:</span> <span class="literal">false</span></span><br><span class="line">    <span class="comment"># See: https://github.com/KaTeX/KaTeX/tree/master/contrib/copy-tex</span></span><br><span class="line">    <span class="attr">copy_tex:</span> <span class="literal">false</span></span><br></pre></td></tr></table></figure>
+
+<p>写一个简单的公式测试一下效果</p>
+<figure class="highlight latex"><table><tr><td class="code"><pre><span class="line"><span class="built_in">$</span><span class="built_in">$</span></span><br><span class="line"><span class="keyword">\int</span> <span class="built_in">_</span>0 <span class="built_in">^</span><span class="keyword">\pi</span> <span class="keyword">\sin</span> x <span class="keyword">\,</span><span class="keyword">\mathrm</span>&#123;d&#125; x = 2</span><br><span class="line"><span class="built_in">$</span><span class="built_in">$</span></span><br></pre></td></tr></table></figure>
+
+<p>对应渲染结果 <span class="math display">\[
+\int _0 ^\pi \sin x \,\mathrm{d} x = 2
+\]</span> 如果可以正确看到公式就说明公式配置成功。</p>
+<h2 id="部署">部署</h2>
+<p>在 hexo 官网中给出了 Github Pages 的部署方式：<a
+href="https://hexo.io/docs/github-pages">GitHub Pages |
+Hexo</a>，由于我们会将源代码也上传至 Github 仓库，我们使用 Github
+Workflow 的方式来自动执行部署过程。</p>
+<p>其部署过程很简单</p>
+<ol type="1">
+<li>提交代码 （push）</li>
+<li>执行 workflow 中指定的操作，安装
+node.js，执行相关命令生成静态页面</li>
+<li>通过 Github Pages 展示静态页面</li>
+</ol>
+<p>由于我们将hexo的markdown渲染器修改为<code>hexo-renderer-pandoc</code>，其需要提前安装好
+pandoc
+并添加到环境变量，我们需要在官方提供的workflow中修改一下，在容器中安装好
+pandoc，网上一搜发现也有大佬已经分享了 pandoc 的配置命令：<a
+href="https://github.com/nikeee/setup-pandoc">nikeee/setup-pandoc</a>，直接拿过来用即可</p>
+<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="attr">uses:</span> <span class="string">nikeee/setup-pandoc@v1</span></span><br><span class="line">  <span class="attr">with:</span></span><br><span class="line">    <span class="attr">pandoc-version:</span> <span class="string">&#x27;2.7.3&#x27;</span> <span class="comment"># The pandoc version to download (if necessary) and use.</span></span><br></pre></td></tr></table></figure>
+
+<p>最后根据本地使用的 node.js 和 pandoc
+版本，将其修改成对应的版本即可</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">(base) PS D:\Code\Note&gt; node --version</span><br><span class="line">v18.12.1</span><br><span class="line">(base) PS D:\Code\Note&gt; pandoc --version</span><br><span class="line">pandoc.exe 2.19.2</span><br><span class="line">Compiled with pandoc-types 1.22.2.1, texmath 0.12.5.2, skylighting 0.13,</span><br><span class="line">citeproc 0.8.0.1, ipynb 0.2, hslua 2.2.1</span><br><span class="line">Scripting engine: Lua 5.4</span><br><span class="line">User data directory: C:\Users\xiao\AppData\Roaming\pandoc</span><br><span class="line">Copyright (C) 2006-2022 John MacFarlane. Web:  https://pandoc.org</span><br><span class="line">This is free software; see the <span class="built_in">source</span> <span class="keyword">for</span> copying conditions. There is no</span><br><span class="line">warranty, not even <span class="keyword">for</span> merchantability or fitness <span class="keyword">for</span> a particular purpose.</span><br></pre></td></tr></table></figure>
+
+<p>完整的 workflow 配置代码如下</p>
+<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">name:</span> <span class="string">Pages</span></span><br><span class="line"></span><br><span class="line"><span class="attr">on:</span></span><br><span class="line">  <span class="attr">push:</span></span><br><span class="line">    <span class="attr">branches:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">main</span>  <span class="comment"># default branch</span></span><br><span class="line"></span><br><span class="line"><span class="attr">jobs:</span></span><br><span class="line">  <span class="attr">pages:</span></span><br><span class="line">    <span class="attr">runs-on:</span> <span class="string">ubuntu-latest</span></span><br><span class="line">    <span class="attr">steps:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">uses:</span> <span class="string">actions/checkout@v3</span></span><br><span class="line">        <span class="attr">with:</span></span><br><span class="line">          <span class="attr">token:</span> <span class="string">$&#123;&#123;</span> <span class="string">secrets.GITHUB_TOKEN</span> <span class="string">&#125;&#125;</span></span><br><span class="line">          <span class="attr">submodules:</span> <span class="string">recursive</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Use</span> <span class="string">Pandoc</span> <span class="number">2.19</span><span class="number">.2</span></span><br><span class="line">        <span class="attr">uses:</span> <span class="string">nikeee/setup-pandoc@v1</span></span><br><span class="line">        <span class="attr">with:</span></span><br><span class="line">          <span class="attr">pandoc-version:</span> <span class="string">&quot;2.19.2&quot;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Use</span> <span class="string">Node.js</span> <span class="number">18.12</span><span class="number">.1</span></span><br><span class="line">        <span class="attr">uses:</span> <span class="string">actions/setup-node@v2</span></span><br><span class="line">        <span class="attr">with:</span></span><br><span class="line">          <span class="attr">node-version:</span> <span class="string">&quot;18.12.1&quot;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Cache</span> <span class="string">NPM</span> <span class="string">dependencies</span></span><br><span class="line">        <span class="attr">uses:</span> <span class="string">actions/cache@v2</span></span><br><span class="line">        <span class="attr">with:</span></span><br><span class="line">          <span class="attr">path:</span> <span class="string">node_modules</span></span><br><span class="line">          <span class="attr">key:</span> <span class="string">$&#123;&#123;</span> <span class="string">runner.OS</span> <span class="string">&#125;&#125;-npm-cache</span></span><br><span class="line">          <span class="attr">restore-keys:</span> <span class="string">|</span></span><br><span class="line"><span class="string">            $&#123;&#123; runner.OS &#125;&#125;-npm-cache</span></span><br><span class="line"><span class="string"></span>      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Install</span> <span class="string">Dependencies</span></span><br><span class="line">        <span class="attr">run:</span> <span class="string">npm</span> <span class="string">install</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Build</span></span><br><span class="line">        <span class="attr">run:</span> <span class="string">npm</span> <span class="string">run</span> <span class="string">build</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Deploy</span></span><br><span class="line">        <span class="attr">uses:</span> <span class="string">peaceiris/actions-gh-pages@v3</span></span><br><span class="line">        <span class="attr">with:</span></span><br><span class="line">          <span class="attr">github_token:</span> <span class="string">$&#123;&#123;</span> <span class="string">secrets.GITHUB_TOKEN</span> <span class="string">&#125;&#125;</span></span><br><span class="line">          <span class="attr">publish_dir:</span> <span class="string">./public</span></span><br></pre></td></tr></table></figure>
+
+<p>由于我们仓库实际上还没有初始化，需要使用 git
+初始化一下仓库再进行提交，初始化命令如下</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git init</span><br><span class="line">git add .</span><br><span class="line">git commit -m <span class="string">&quot;Initial commit&quot;</span></span><br><span class="line">git branch -M main</span><br><span class="line">git remote add origin https://github.com/PureWhiteVK/PureWhiteVK.github.io.git</span><br><span class="line">git push -u origin main</span><br></pre></td></tr></table></figure>
+
+<p>提交之后代码后，我们可以在 Actions 面板中看到正在执行的 Workflows</p>
+<p><img data-src="/posts/96e0/image-20230102185759306.png"
+style="zoom:50%;" /></p>
+<p>第一次 pages build and deployment 一定会执行失败，因为我们还没设置
+Github Page 部署时使用的分支，hexo 的 workflow
+在执行后会单独创建一个分支（gh-pages）来存放静态网页，我们在设置中切换一下即可。</p>
+<p><img data-src="/posts/96e0/image-20230102190220044.png"
+style="zoom:50%;" /></p>
+<p>调整完成后，可以看到提示我们网站已经上线了（Your site is live at <a
+href="https://purewhitevk.github.io"><span>https://purewhitevk.github.io</span></a>），进入
+<a
+href="https://purewhitevk.github.io"><span>https://purewhitevk.github.io</span></a>
+就可以访问到部署好的博客页面了。（github.io访问速度可能较慢，最好挂梯子）</p>
+<p><img data-src="/posts/96e0/image-20230102190311710.png"
+style="zoom: 25%;" /></p>
+]]></content>
+      <categories>
+        <category>Hexo使用记录</category>
+      </categories>
+      <tags>
+        <tag>hexo</tag>
+        <tag>github pages</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>LaTex公式学习笔记</title>
     <url>/posts/caff/</url>
     <content><![CDATA[<p>之前我们已经配置好了 hexo 对 LaTex 公式的支持（在 markdown 的 Front
@@ -1039,284 +1317,6 @@ expressions - Overleaf, Online LaTeX Editor</a></li>
       <tags>
         <tag>mathjax</tag>
         <tag>LaTex</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>个人博客搭建记录</title>
-    <url>/posts/96e0/</url>
-    <content><![CDATA[<p>之前都是在知乎上写博客，这样看的人也多，方便讨论，但是知乎的 markdown
-编辑器不是很好用，本地写完后还需要一张一张上传图片，太麻烦了，就自己搭一个博客，又不想进行域名备案啥的，服务器也要出钱
-:( 。最后搜到 Github 有提供免费的静态页面部署功能，这样写完 markdown
-笔记可以直接上传到
-Github，还可以通过网页访问，nice！(白嫖的感觉真好)</p>
-<h1 id="github-pages">Github Pages</h1>
-<h2 id="创建主页仓库">创建主页仓库</h2>
-<p>通过 <a href="https://pages.github.com/">Github Pages</a>，我们可以将
-markdown
-撰写的笔记转换成静态网页，并进行部署。其创建流程也十分简单，只需要创建一个名为
-<code>&lt;username&gt;.github.io</code> 的仓库，如下图所示</p>
-<p><img data-src="/posts/96e0/image-20230102151015131.png"
-style="zoom:50%;" /></p>
-<p>此处我们选择的是 Private
-仓库，只有我们能进行修改，但是主页是公开访问的，这样可以保证笔记源文件安全
-:) 。</p>
-<span id="more"></span>
-
-<p>创建完成后仓库中什么都没有</p>
-<p><img data-src="/posts/96e0/image-20230102151942075.png"
-style="zoom:33%;" /></p>
-<p>此时我们在浏览器中输入 <a
-href="https://purewhitevk.github.io"><span>https://purewhitevk.github.io</span></a>
-（URL不区分大小写，直接用小写即可），显示404，页面不存在。</p>
-<p><img data-src="/posts/96e0/image-20230102152125799.png"
-style="zoom: 50%;" /></p>
-<p>别心急，很快就可以看到博客页面了。</p>
-<h2 id="静态博客框架">静态博客框架</h2>
-<p>在网上搜了一下，有很多博客框架，例如 wordpress 等，但是 wordpress
-需要数据库，还需要单独配服务器进行部署，太麻烦了，满足我们需求的有三个</p>
-<ul>
-<li><p>Jekyll（Github 原生支持）</p>
-<p>使用 Ruby 实现</p></li>
-<li><p>Hexo</p>
-<p>使用 Node.js 实现</p></li>
-<li><p>Hugo</p>
-<p>使用 Go 实现</p></li>
-</ul>
-<p>三者在功能上大同小异，都可以直接将 <code>.md</code>
-文件转换成<code>html</code> 文件，且支持部署在 Github Pages
-上。个人比较推荐 <a
-href="https://hexo.io/">Hexo</a>，其环境搭建起来比较方便，且插件较多，操作起来比较简单。</p>
-<p><img data-src="/posts/96e0/image-20230102153212301.png"
-style="zoom:50%;" /></p>
-<h1 id="hexo环境配置">hexo环境配置</h1>
-<h2 id="安装">安装</h2>
-<ol type="1">
-<li><p>全局安装 hexo-cli，这样我们可以直接调用 hexo 的命令行命令</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm install hexo-cli -g</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>将我们的主页仓库 clone 到本地，此处我们将其放到文件夹
-<code>Note</code> 下</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/PureWhiteVK/PureWhiteVK.github.io.git Note</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>下载 <a
-href="https://github.com/hexojs/hexo-starter">hexo-starter</a>
-并解压到本地仓库中</p>
-<p>点击右侧 <code>Code</code> 按钮，直接下载 ZIP
-压缩包即可（其实我们也可以直接 fork 这个仓库，但是这样我们的仓库就不能是
-private 了）</p>
-<p><img data-src="/posts/96e0/image-20230102154426653.png"
-style="zoom:50%;" /></p></li>
-<li><p>使用 <code>npm install</code> 安装依赖</p></li>
-<li><p>输入 <code>hexo server</code> 进行运行本地服务</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">(base) PS D:\Code\Note&gt; hexo server</span><br><span class="line">INFO  Validating config</span><br><span class="line">INFO  Start processing</span><br><span class="line">INFO  hexois running at http://localhost:4000/ . Press Ctrl+C to stop.</span><br></pre></td></tr></table></figure>
-
-<p>在浏览器中打开
-<code>localhost:4000</code>，就可以预览生成后的静态页面效果了</p>
-<p><img data-src="/posts/96e0/image-20230102161237387.png"
-style="zoom:50%;" /></p></li>
-</ol>
-<h2 id="主题">主题</h2>
-<p>hexo 上有很多精美的主题，这里我们选择 <a
-href="https://github.com/theme-next/hexo-theme-next">next</a>
-作为博客主题，其比较稳定，功能也很全。</p>
-<p>直接使用 npm 进行安装即可</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm install --save hexo-theme-next</span><br></pre></td></tr></table></figure>
-
-<p>安装之后，我们需要将主题配置文件
-<code>node_modules/hexo-theme-next/_config.yml</code>
-拷贝至根目录下，并重命名为 <code>_config.next.yml</code></p>
-<p>最终修改根目录下的 <code>_config.yml</code>
-即可，将其更换为我们需要的主题</p>
-<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Extensions</span></span><br><span class="line"><span class="comment">## Plugins: https://hexo.io/plugins/</span></span><br><span class="line"><span class="comment">## Themes: https://hexo.io/themes/</span></span><br><span class="line"><span class="attr">theme:</span> <span class="string">next</span></span><br></pre></td></tr></table></figure>
-
-<p>最后清理之前生成的文件，并重建部署一下</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">hexo clean &amp;&amp; hexo server</span><br></pre></td></tr></table></figure>
-
-<p>主题效果如下</p>
-<p><img data-src="/posts/96e0/image-20230102163251257.png"
-style="zoom:50%;" /></p>
-<h2 id="插件">插件</h2>
-<p>hexo 提供了很多插件来简化我们的操作，并提供一些其他的功能。由于 hexo
-是基于 node.js 实现的，我们可以通过 npm 来安装和卸载 hexo 插件。</p>
-<p>安装插件命令</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm install --save &lt;plugin-name&gt;</span><br></pre></td></tr></table></figure>
-
-<p>删除插件命令</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm uninstall --save &lt;plugin-name&gt;</span><br></pre></td></tr></table></figure>
-
-<p>我们使用了以下几个插件（具体配置可以直接参考 hexo-next-theme
-的插件使用文档：<a
-href="https://theme-next.js.org/docs/third-party-services/">Third-party
-Plugins | NexT</a> 即可）</p>
-<ul>
-<li>hexo-generator-searchdb：实现搜索功能，支持html文件检索</li>
-<li>hexo-abbrlink：自动生成文章的永久链接</li>
-<li>hexo-word-counter：统计文章字数</li>
-</ul>
-<h2 id="配置">配置</h2>
-<p>hexo的配置文件位于根目录下的
-<code>_config.yml</code>，下面列举了我们需要修改的一些关键配置项</p>
-<h3 id="网站基本设置">网站基本设置</h3>
-<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">title:</span> <span class="string">&quot;PureWhite&#x27;s Blog&quot;</span></span><br><span class="line"><span class="attr">subtitle:</span> <span class="string">&#x27;&#x27;</span></span><br><span class="line"><span class="attr">description:</span> <span class="string">&#x27;&#x27;</span></span><br><span class="line"><span class="attr">keywords:</span></span><br><span class="line"><span class="attr">author:</span> <span class="string">PureWhiteVK</span></span><br><span class="line"><span class="attr">language:</span> <span class="string">zh-CN</span></span><br><span class="line"><span class="attr">timezone:</span> <span class="string">Asia/Shanghai</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="url设置">URL设置</h3>
-<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">url:</span> <span class="string">https://purewhitevk.github.io</span></span><br><span class="line"><span class="comment"># 这样我们笔记永久链接为 https://purewhitevk.github.io/posts/43fc/</span></span><br><span class="line"><span class="attr">permalink:</span> <span class="string">posts/:abbrlink/</span> </span><br><span class="line"><span class="comment"># 我们使用了 hexo-abbrlink 插件，其通过对名称以及时间戳使用 crc16 算法，生成四位的一个唯一编码</span></span><br><span class="line"><span class="comment"># 四位十六进制可以表示 65536 篇文章，这对于我们博客而言已经绰绰有余了</span></span><br><span class="line"><span class="attr">abbrlink:</span></span><br><span class="line">  <span class="attr">alg:</span> <span class="string">crc16</span></span><br><span class="line">  <span class="attr">rep:</span> <span class="string">hex</span></span><br><span class="line"><span class="attr">permalink_defaults:</span></span><br><span class="line"><span class="attr">pretty_urls:</span></span><br><span class="line">  <span class="comment"># 末尾的index后缀</span></span><br><span class="line">  <span class="attr">trailing_index:</span> <span class="literal">false</span></span><br><span class="line">  <span class="comment"># 末尾的.html后缀</span></span><br><span class="line">  <span class="attr">trailing_html:</span> <span class="literal">false</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="写作相关配置">写作相关配置</h3>
-<p>这里我们主要调整生成 hexo 生成的 markdown 文件名称</p>
-<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># File name of new posts</span></span><br><span class="line"><span class="attr">new_post_name:</span> <span class="string">:year/:month/:day/:title.md</span></span><br></pre></td></tr></table></figure>
-
-<p>hexo 添加 post 命令</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">hexo new [layout] &lt;title&gt;</span><br></pre></td></tr></table></figure>
-
-<p>示例</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">(base) PS D:\Code\Note&gt; hexo new post <span class="string">&quot;Hello World&quot;</span></span><br><span class="line">INFO  Validating config</span><br><span class="line">INFO  Created: D:\Code\Note\<span class="built_in">source</span>\_posts\2023\01\02\Hello-World.md</span><br></pre></td></tr></table></figure>
-
-<p>markdown 文件内容如下</p>
-<figure class="highlight markdown"><table><tr><td class="code"><pre><span class="line">---</span><br><span class="line">title: Hello World</span><br><span class="line">date: 2023-01-02 17:03:17</span><br><span class="line"><span class="section">tags:</span></span><br><span class="line"><span class="section">---</span></span><br></pre></td></tr></table></figure>
-
-<p>其会默认包含一些内容，其中用三横线包裹起来的是 Front
-Matter，其用来标识 markdown
-文档的一些属性，例如标题、创建日期、标签（tags）、类别（categories）、永久链接等，hexo
-通过读取 Front Matter 来控制生成的 html 文件。</p>
-<h3 id="next-主题配置">next 主题配置</h3>
-<p>前面提到，我们从 <code>node_modules</code> 中将 next
-的配置拷贝至了根目录，并重命名为
-<code>_config.next.yml</code>，主题相关的配置直接在这个文件中进行修改即可，next
-中提供了非常多的配置项，就不一一介绍了，详细可以直接参考Next主题文档：<a
-href="https://theme-next.js.org/">NexT - Theme for Hexo</a></p>
-<h2 id="图片">图片</h2>
-<p>由于 markdown 和 html 在使用上的区别（markdown 本地，html
-网络），我们在 markdown 中插入图片</p>
-<figure class="highlight markdown"><table><tr><td class="code"><pre><span class="line">![<span class="string">image-description</span>](<span class="link">/local/path/to/image</span>)</span><br></pre></td></tr></table></figure>
-
-<p>会被直接转换成 html 的 <code>img</code> 标签</p>
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">&quot;/local/path/to/image&quot;</span> <span class="attr">alt</span>=<span class="string">&quot;image-description&quot;</span> /&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>但是一个是本地路径，一个是网络 URI，直接这么转换肯定会问题。</p>
-<p>参考 hexo 的[资源管理文档](<a
-href="https://hexo.io/docs/asset-folders">Asset Folders | Hexo</a>)，在
-hexo 中，最简单的图片管理方式就是将图片文件放置在
-<code>source/images</code> 文件夹下，这样在网页中我们可以直接通过
-<code>/images/&lt;image-name&gt;</code> 进行访问。</p>
-<blockquote>
-<p>Assets are non-post files in the <code>source</code> folder, such as
-images, CSS or JavaScript files. For instance, If you are only going to
-have a few images in the hexoproject, then <strong>the easiest way is to
-keep them in a <code>source/images</code> directory.</strong> Then, you
-can access them using something like</p>
-<figure class="highlight markdown"><table><tr><td class="code"><pre><span class="line">![](<span class="link">/images/image.jpg</span>)</span><br></pre></td></tr></table></figure>
-
-</blockquote>
-<p>markdown 写法</p>
-<figure class="highlight markdown"><table><tr><td class="code"><pre><span class="line">![](<span class="link">/images/image.jpg</span>)</span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>注意images前面的 <code>/</code>
-，必须包含这个斜杠，否则图片路径就变成了相对当前URL的路径，会导致图片访问出错。加上<code>/</code>
-就表示是相对域名的URL，即
-<code>https://purewhitevk.github.io/images/image.jpg</code>；而不加<code>/</code>时就是相对当前网址的URL，假设我们当前网址为
-<code>https://purewhitevk.github.io/posts/abcd</code>
-，那么对应的图片URL为
-<code>https://purewhitevk.github.io/posts/abcd/images/image.jpg</code>，这样就会导致找不到图片。（通过相对路径读取图片文件也是一种可行的方式）</p>
-</blockquote>
-<p>对应生成的 html 代码</p>
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">&quot;/images/image.jpg&quot;</span> /&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>但是这样我们在本地使用 typora 编写 markdown 时就会有问题，好在 typora
-也给出了解决方案：<a
-href="https://support.typora.io/Images/#relative-path-to-certain-folder">Images
-in Typora - Typora Support</a>。只需要在 markdown 的 Front Matter
-中添加两个属性，将 markdown
-中所有的图片路径都修改成相对某个路径的绝对路径即可（也就是<code>/relative/to/some-image.png</code>的形式）。</p>
-<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 设置相对的路径，设置根目录为 source</span></span><br><span class="line"><span class="attr">typora-root-url:</span> <span class="string">../../../../</span></span><br><span class="line"><span class="comment"># 插入图片时自动拷贝图片到 source/images/ 下</span></span><br><span class="line"><span class="attr">typora-copy-images-to:</span> <span class="string">../../../../images</span></span><br></pre></td></tr></table></figure>
-
-<p>我们的文章都位于
-<code>source/_posts/&lt;year&gt;/&lt;month&gt;/&lt;day&gt;</code>
-路径下，图片存储路径为<code>source/images</code>下，通过设置<code>typora-root-url</code>，当我们在markdown中插入一张路径为
-<code>/images/image.jpg</code> 时，其会自动将
-<code>typora-root-url</code>和该路径进行拼接，最终结果就是
-<code>../../../../images/image.jpg</code>，正确读取到图片。另外一个便捷的功能就是插入图片时自动拷贝到指定文件夹，这样我们可以丝滑的添加图片了，不需要手动上传并设置链接。</p>
-<p>我们可以将这两个配置项添加到 markdown 模板中（hexo 中称为
-scaffold，脚手架），就不用每次都手动添加，修改
-<code>scaffolds/post.md</code> 如下</p>
-<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">title:</span> &#123;&#123; <span class="string">title</span> &#125;&#125;</span><br><span class="line"><span class="attr">date:</span> &#123;&#123; <span class="string">date</span> &#125;&#125;</span><br><span class="line"><span class="attr">tags:</span></span><br><span class="line"><span class="attr">category:</span></span><br><span class="line"><span class="attr">mathjax:</span> <span class="literal">false</span></span><br><span class="line"><span class="attr">typora-root-url:</span> <span class="string">../../../../</span></span><br><span class="line"><span class="attr">typora-copy-images-to:</span> <span class="string">../../../../images</span></span><br><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="comment"># 此处 more 标签用于 next 主题显示摘要</span></span><br><span class="line"><span class="string">&lt;!--</span> <span class="string">more</span> <span class="string">--&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>这样我们通过 <code>hexo new post &lt;title&gt;</code>
-时就会默认配置好 typora。</p>
-<p>附：typora的图像存储相关设置</p>
-<p><img data-src="/posts/96e0/image-20230105230235058.png"
-style="zoom:50%;" /></p>
-<p>由于我们使用 Front Matter 进行配置，在图像处就不需要任何配置了。</p>
-<h2 id="公式">公式</h2>
-<p>另外一个比较令人头疼的就是公式渲染问题，latex 公式在语法上和 markdown
-存在一些冲突，如果使用默认的 <code>hexo-renderer-marked </code>
-渲染引擎进行生成会导致最终渲染出来的 latex 公式是错误的，我们需要将
-markdown 渲染引擎替换为 <code>hexo-renderer-pandoc</code>。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 首先删除原来的渲染器</span></span><br><span class="line">npm uninstall --save hexo-renderer-marked</span><br><span class="line"><span class="comment"># 安装新的渲染器</span></span><br><span class="line">npm install --save hexo-renderer-pandoc</span><br></pre></td></tr></table></figure>
-
-<p>然后在 next 主题的配置文件 <code>_config.next.yml</code> 中开启
-mathjax 的支持</p>
-<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">math:</span></span><br><span class="line">  <span class="comment"># Default (false) will load mathjax / katex script on demand.</span></span><br><span class="line">  <span class="comment"># That is it only render those page which has `mathjax: true` in front-matter.</span></span><br><span class="line">  <span class="comment"># If you set it to true, it will load mathjax / katex script EVERY PAGE.</span></span><br><span class="line">  <span class="attr">every_page:</span> <span class="literal">false</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">mathjax:</span></span><br><span class="line">    <span class="attr">enable:</span> <span class="literal">true</span> <span class="comment"># &lt;--- 将此处 false 修改为 true</span></span><br><span class="line">    <span class="comment"># Available values: none | ams | all</span></span><br><span class="line">    <span class="attr">tags:</span> <span class="string">none</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">katex:</span></span><br><span class="line">    <span class="attr">enable:</span> <span class="literal">false</span></span><br><span class="line">    <span class="comment"># See: https://github.com/KaTeX/KaTeX/tree/master/contrib/copy-tex</span></span><br><span class="line">    <span class="attr">copy_tex:</span> <span class="literal">false</span></span><br></pre></td></tr></table></figure>
-
-<p>写一个简单的公式测试一下效果</p>
-<figure class="highlight latex"><table><tr><td class="code"><pre><span class="line"><span class="built_in">$</span><span class="built_in">$</span></span><br><span class="line"><span class="keyword">\int</span> <span class="built_in">_</span>0 <span class="built_in">^</span><span class="keyword">\pi</span> <span class="keyword">\sin</span> x <span class="keyword">\,</span><span class="keyword">\mathrm</span>&#123;d&#125; x = 2</span><br><span class="line"><span class="built_in">$</span><span class="built_in">$</span></span><br></pre></td></tr></table></figure>
-
-<p>对应渲染结果 <span class="math display">\[
-\int _0 ^\pi \sin x \,\mathrm{d} x = 2
-\]</span> 如果可以正确看到公式就说明公式配置成功。</p>
-<h2 id="部署">部署</h2>
-<p>在 hexo 官网中给出了 Github Pages 的部署方式：<a
-href="https://hexo.io/docs/github-pages">GitHub Pages |
-Hexo</a>，由于我们会将源代码也上传至 Github 仓库，我们使用 Github
-Workflow 的方式来自动执行部署过程。</p>
-<p>其部署过程很简单</p>
-<ol type="1">
-<li>提交代码 （push）</li>
-<li>执行 workflow 中指定的操作，安装
-node.js，执行相关命令生成静态页面</li>
-<li>通过 Github Pages 展示静态页面</li>
-</ol>
-<p>由于我们将hexo的markdown渲染器修改为<code>hexo-renderer-pandoc</code>，其需要提前安装好
-pandoc
-并添加到环境变量，我们需要在官方提供的workflow中修改一下，在容器中安装好
-pandoc，网上一搜发现也有大佬已经分享了 pandoc 的配置命令：<a
-href="https://github.com/nikeee/setup-pandoc">nikeee/setup-pandoc</a>，直接拿过来用即可</p>
-<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="attr">uses:</span> <span class="string">nikeee/setup-pandoc@v1</span></span><br><span class="line">  <span class="attr">with:</span></span><br><span class="line">    <span class="attr">pandoc-version:</span> <span class="string">&#x27;2.7.3&#x27;</span> <span class="comment"># The pandoc version to download (if necessary) and use.</span></span><br></pre></td></tr></table></figure>
-
-<p>最后根据本地使用的 node.js 和 pandoc
-版本，将其修改成对应的版本即可</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">(base) PS D:\Code\Note&gt; node --version</span><br><span class="line">v18.12.1</span><br><span class="line">(base) PS D:\Code\Note&gt; pandoc --version</span><br><span class="line">pandoc.exe 2.19.2</span><br><span class="line">Compiled with pandoc-types 1.22.2.1, texmath 0.12.5.2, skylighting 0.13,</span><br><span class="line">citeproc 0.8.0.1, ipynb 0.2, hslua 2.2.1</span><br><span class="line">Scripting engine: Lua 5.4</span><br><span class="line">User data directory: C:\Users\xiao\AppData\Roaming\pandoc</span><br><span class="line">Copyright (C) 2006-2022 John MacFarlane. Web:  https://pandoc.org</span><br><span class="line">This is free software; see the <span class="built_in">source</span> <span class="keyword">for</span> copying conditions. There is no</span><br><span class="line">warranty, not even <span class="keyword">for</span> merchantability or fitness <span class="keyword">for</span> a particular purpose.</span><br></pre></td></tr></table></figure>
-
-<p>完整的 workflow 配置代码如下</p>
-<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">name:</span> <span class="string">Pages</span></span><br><span class="line"></span><br><span class="line"><span class="attr">on:</span></span><br><span class="line">  <span class="attr">push:</span></span><br><span class="line">    <span class="attr">branches:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">main</span>  <span class="comment"># default branch</span></span><br><span class="line"></span><br><span class="line"><span class="attr">jobs:</span></span><br><span class="line">  <span class="attr">pages:</span></span><br><span class="line">    <span class="attr">runs-on:</span> <span class="string">ubuntu-latest</span></span><br><span class="line">    <span class="attr">steps:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">uses:</span> <span class="string">actions/checkout@v3</span></span><br><span class="line">        <span class="attr">with:</span></span><br><span class="line">          <span class="attr">token:</span> <span class="string">$&#123;&#123;</span> <span class="string">secrets.GITHUB_TOKEN</span> <span class="string">&#125;&#125;</span></span><br><span class="line">          <span class="attr">submodules:</span> <span class="string">recursive</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Use</span> <span class="string">Pandoc</span> <span class="number">2.19</span><span class="number">.2</span></span><br><span class="line">        <span class="attr">uses:</span> <span class="string">nikeee/setup-pandoc@v1</span></span><br><span class="line">        <span class="attr">with:</span></span><br><span class="line">          <span class="attr">pandoc-version:</span> <span class="string">&quot;2.19.2&quot;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Use</span> <span class="string">Node.js</span> <span class="number">18.12</span><span class="number">.1</span></span><br><span class="line">        <span class="attr">uses:</span> <span class="string">actions/setup-node@v2</span></span><br><span class="line">        <span class="attr">with:</span></span><br><span class="line">          <span class="attr">node-version:</span> <span class="string">&quot;18.12.1&quot;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Cache</span> <span class="string">NPM</span> <span class="string">dependencies</span></span><br><span class="line">        <span class="attr">uses:</span> <span class="string">actions/cache@v2</span></span><br><span class="line">        <span class="attr">with:</span></span><br><span class="line">          <span class="attr">path:</span> <span class="string">node_modules</span></span><br><span class="line">          <span class="attr">key:</span> <span class="string">$&#123;&#123;</span> <span class="string">runner.OS</span> <span class="string">&#125;&#125;-npm-cache</span></span><br><span class="line">          <span class="attr">restore-keys:</span> <span class="string">|</span></span><br><span class="line"><span class="string">            $&#123;&#123; runner.OS &#125;&#125;-npm-cache</span></span><br><span class="line"><span class="string"></span>      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Install</span> <span class="string">Dependencies</span></span><br><span class="line">        <span class="attr">run:</span> <span class="string">npm</span> <span class="string">install</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Build</span></span><br><span class="line">        <span class="attr">run:</span> <span class="string">npm</span> <span class="string">run</span> <span class="string">build</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Deploy</span></span><br><span class="line">        <span class="attr">uses:</span> <span class="string">peaceiris/actions-gh-pages@v3</span></span><br><span class="line">        <span class="attr">with:</span></span><br><span class="line">          <span class="attr">github_token:</span> <span class="string">$&#123;&#123;</span> <span class="string">secrets.GITHUB_TOKEN</span> <span class="string">&#125;&#125;</span></span><br><span class="line">          <span class="attr">publish_dir:</span> <span class="string">./public</span></span><br></pre></td></tr></table></figure>
-
-<p>由于我们仓库实际上还没有初始化，需要使用 git
-初始化一下仓库再进行提交，初始化命令如下</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git init</span><br><span class="line">git add .</span><br><span class="line">git commit -m <span class="string">&quot;Initial commit&quot;</span></span><br><span class="line">git branch -M main</span><br><span class="line">git remote add origin https://github.com/PureWhiteVK/PureWhiteVK.github.io.git</span><br><span class="line">git push -u origin main</span><br></pre></td></tr></table></figure>
-
-<p>提交之后代码后，我们可以在 Actions 面板中看到正在执行的 Workflows</p>
-<p><img data-src="/posts/96e0/image-20230102185759306.png"
-style="zoom:50%;" /></p>
-<p>第一次 pages build and deployment 一定会执行失败，因为我们还没设置
-Github Page 部署时使用的分支，hexo 的 workflow
-在执行后会单独创建一个分支（gh-pages）来存放静态网页，我们在设置中切换一下即可。</p>
-<p><img data-src="/posts/96e0/image-20230102190220044.png"
-style="zoom:50%;" /></p>
-<p>调整完成后，可以看到提示我们网站已经上线了（Your site is live at <a
-href="https://purewhitevk.github.io"><span>https://purewhitevk.github.io</span></a>），进入
-<a
-href="https://purewhitevk.github.io"><span>https://purewhitevk.github.io</span></a>
-就可以访问到部署好的博客页面了。（github.io访问速度可能较慢，最好挂梯子）</p>
-<p><img data-src="/posts/96e0/image-20230102190311710.png"
-style="zoom: 25%;" /></p>
-]]></content>
-      <categories>
-        <category>Hexo使用记录</category>
-      </categories>
-      <tags>
-        <tag>hexo</tag>
-        <tag>github pages</tag>
       </tags>
   </entry>
   <entry>
@@ -2791,74 +2791,6 @@ style="zoom:50%;" /></p>
       </tags>
   </entry>
   <entry>
-    <title>命令行切换MSVC版本</title>
-    <url>/posts/30a2/</url>
-    <content><![CDATA[<p>在 WIndows 下跑 Python 深度学习代码时，需要编译 C++ 库（点名
-Pytorch3d），但是使用最新版本的 MSVC 进行编译的时候会报错，去 Github 看
-Issue 时有提到降级可能有效，我们可以通过添加组件的方式直接下载指定版本的
-MSVC
-编译器。然后手动修改进行切换。为了怕后面遇到类似问题时忘记怎么搞，还是简单记录一下吧，具体操作如下：</p>
-<ol type="1">
-<li><p>首先打开 Visual Studio Installer，点击 <code>修改</code> 按钮</p>
-<p><img data-src="/posts/30a2/image-20230220223924979.png" /></p>
-<span id="more"></span>
-</li>
-<li><p>在 <code>单个组件</code> 菜单中，找到指定版本的 MSVC</p>
-<p>注意编译器的名称是
-<code>MSVC v&lt;xxx&gt; - VS &lt;xxxx&gt; C++ x64/86 生成工具(v&lt;xx&gt;.&lt;xx&gt;)</code>，千万不要下错了</p>
-<p><img data-src="/posts/30a2/image-20230220224128371.png" /></p></li>
-<li><p>下载完成后，我们找到 Visual Studio 的安装目录， 其中
-<code>VC</code> 目录就包含了 MSVC 相关的文件</p>
-<p><img data-src="/posts/30a2/image-20230220224414127.png" /></p></li>
-<li><p>进入 <code>VC</code> 目录，在 <code>Tools\MSVC</code>
-我们就可以找到安装的所有 MSVC 编译器</p>
-<p><img data-src="/posts/30a2/image-20230220224544477.png" /></p></li>
-<li><p>我们可以进入一个子目录，进入 <code>bin\Hostx64\x64</code>
-文件夹，然后在这个文件夹下打开 Developer PowerShell，输入
-<code>.\cl.exe</code> 查看版本</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">(base) PS C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\bin\Hostx64\x64&gt; cl</span><br><span class="line">用于 x64 的 Microsoft (R) C/C++ 优化编译器 19.25.28614 版</span><br><span class="line">版权所有(C) Microsoft Corporation。保留所有权利。</span><br><span class="line"></span><br><span class="line">用法: cl [ 选项... ] 文件名... [ /link 链接选项... ]</span><br><span class="line">(base) PS C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\bin\Hostx64\x64&gt; .\cl.exe</span><br><span class="line">用于 x64 的 Microsoft (R) C/C++ 优化编译器 19.29.30147 版</span><br><span class="line">版权所有(C) Microsoft Corporation。保留所有权利。</span><br><span class="line"></span><br><span class="line">用法: cl [ 选项... ] 文件名... [ /link 链接选项... ]</span><br></pre></td></tr></table></figure>
-
-<p>可以看到，当我们直接输入 <code>cl</code> 时，调用的是环境变量中设置的
-MSVC 编译器，而输入 <code>.\cl.exe</code> 直接调用当前目录下的
-<code>cl.exe</code> 时就会调用当前目录的 MSVC 编译器</p></li>
-<li><p>最后我们只需要切换当前环境变量中使用的 <code>cl</code>
-就行，这里需要进入 <code>&lt;vs-path&gt;\VC\Auxiliary\Build</code>
-路径，在这个路径下面就制定了默认使用的 MSVC 版本</p></li>
-</ol>
-<p><img data-src="/posts/30a2/image-20230220225257590.png" /></p>
-<p>我们只需要修改其中的包含 <code>VCToolsVersion</code> 和
-<code>VCRedistVersion</code>
-字样的文件，将其中对应版本全部替换成我们需要的 MSVC 版本即可</p>
-<p><code>Microsoft.VCToolsVersion.default.props</code></p>
-   <figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version = <span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;utf-8&quot;</span>?&gt;</span> </span><br><span class="line"><span class="tag">&lt;<span class="name">Project</span> <span class="attr">ToolsVersion</span> = <span class="string">&quot;4.0&quot;</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://schemas.microsoft.com/developer/msbuild/2003&quot;</span>&gt;</span> </span><br><span class="line">  <span class="tag">&lt;<span class="name">PropertyGroup</span>&gt;</span> </span><br><span class="line">    <span class="tag">&lt;<span class="name">VCToolsVersion</span> <span class="attr">Condition</span> = <span class="string">&quot;&#x27;$(VCToolsVersion)&#x27; == &#x27;&#x27;&quot;</span> &gt;</span>14.25.28610<span class="tag">&lt;/<span class="name">VCToolsVersion</span>&gt;</span> </span><br><span class="line">    <span class="tag">&lt;<span class="name">VCToolsRedistVersion</span> <span class="attr">Condition</span> = <span class="string">&quot;&#x27;$(VCToolsRedistVersion)&#x27; == &#x27;&#x27;&quot;</span> &gt;</span>14.25.28508<span class="tag">&lt;/<span class="name">VCToolsRedistVersion</span>&gt;</span> </span><br><span class="line">  <span class="tag">&lt;/<span class="name">PropertyGroup</span>&gt;</span>      </span><br><span class="line"><span class="tag">&lt;/<span class="name">Project</span>&gt;</span>     </span><br></pre></td></tr></table></figure>
-
-<p><code>Microsoft.VCToolsVersion.default.txt</code>（这个文件实际上就一个版本号，直接改掉就可以）</p>
-   <figure class="highlight txt"><table><tr><td class="code"><pre><span class="line">14.25.28610</span><br></pre></td></tr></table></figure>
-
-<ol start="7" type="1">
-<li>切换完成后，我们再使用 Developer Powershell
-打开时就不会出问题了</li>
-</ol>
-<p>注：上面的更改仅适用于命令行，在 Visual Studio
-中可以直接手动更换，具体参考官方教程：<a
-href="https://learn.microsoft.com/en-us/cpp/build/how-to-modify-the-target-framework-and-platform-toolset?view=msvc-170">How
-to: Modify the Target Framework and Platform Toolset | Microsoft
-Learn</a></p>
-<p>使用命令行是因为 Python 编译 C
-库需要从命令行调用，所以只能这样修改，而 cmake
-等编译工具实际上也只需要指定版本即可，具体可以参考官方文档：<a
-href="https://cmake.org/cmake/help/latest/variable/MSVC_VERSION.html">MSVC_VERSION
-— CMake 3.26.0-rc4 Documentation</a></p>
-]]></content>
-      <categories>
-        <category>技术笔记</category>
-      </categories>
-      <tags>
-        <tag>C++</tag>
-        <tag>MSVC</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>zerotier实现内网穿透</title>
     <url>/posts/f9ab/</url>
     <content><![CDATA[<p>zerotier
@@ -3745,6 +3677,74 @@ library），个人推荐将头文件（<code>.h</code>）和源代码文件
       </tags>
   </entry>
   <entry>
+    <title>命令行切换MSVC版本</title>
+    <url>/posts/30a2/</url>
+    <content><![CDATA[<p>在 WIndows 下跑 Python 深度学习代码时，需要编译 C++ 库（点名
+Pytorch3d），但是使用最新版本的 MSVC 进行编译的时候会报错，去 Github 看
+Issue 时有提到降级可能有效，我们可以通过添加组件的方式直接下载指定版本的
+MSVC
+编译器。然后手动修改进行切换。为了怕后面遇到类似问题时忘记怎么搞，还是简单记录一下吧，具体操作如下：</p>
+<ol type="1">
+<li><p>首先打开 Visual Studio Installer，点击 <code>修改</code> 按钮</p>
+<p><img data-src="/posts/30a2/image-20230220223924979.png" /></p>
+<span id="more"></span>
+</li>
+<li><p>在 <code>单个组件</code> 菜单中，找到指定版本的 MSVC</p>
+<p>注意编译器的名称是
+<code>MSVC v&lt;xxx&gt; - VS &lt;xxxx&gt; C++ x64/86 生成工具(v&lt;xx&gt;.&lt;xx&gt;)</code>，千万不要下错了</p>
+<p><img data-src="/posts/30a2/image-20230220224128371.png" /></p></li>
+<li><p>下载完成后，我们找到 Visual Studio 的安装目录， 其中
+<code>VC</code> 目录就包含了 MSVC 相关的文件</p>
+<p><img data-src="/posts/30a2/image-20230220224414127.png" /></p></li>
+<li><p>进入 <code>VC</code> 目录，在 <code>Tools\MSVC</code>
+我们就可以找到安装的所有 MSVC 编译器</p>
+<p><img data-src="/posts/30a2/image-20230220224544477.png" /></p></li>
+<li><p>我们可以进入一个子目录，进入 <code>bin\Hostx64\x64</code>
+文件夹，然后在这个文件夹下打开 Developer PowerShell，输入
+<code>.\cl.exe</code> 查看版本</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">(base) PS C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\bin\Hostx64\x64&gt; cl</span><br><span class="line">用于 x64 的 Microsoft (R) C/C++ 优化编译器 19.25.28614 版</span><br><span class="line">版权所有(C) Microsoft Corporation。保留所有权利。</span><br><span class="line"></span><br><span class="line">用法: cl [ 选项... ] 文件名... [ /link 链接选项... ]</span><br><span class="line">(base) PS C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\bin\Hostx64\x64&gt; .\cl.exe</span><br><span class="line">用于 x64 的 Microsoft (R) C/C++ 优化编译器 19.29.30147 版</span><br><span class="line">版权所有(C) Microsoft Corporation。保留所有权利。</span><br><span class="line"></span><br><span class="line">用法: cl [ 选项... ] 文件名... [ /link 链接选项... ]</span><br></pre></td></tr></table></figure>
+
+<p>可以看到，当我们直接输入 <code>cl</code> 时，调用的是环境变量中设置的
+MSVC 编译器，而输入 <code>.\cl.exe</code> 直接调用当前目录下的
+<code>cl.exe</code> 时就会调用当前目录的 MSVC 编译器</p></li>
+<li><p>最后我们只需要切换当前环境变量中使用的 <code>cl</code>
+就行，这里需要进入 <code>&lt;vs-path&gt;\VC\Auxiliary\Build</code>
+路径，在这个路径下面就制定了默认使用的 MSVC 版本</p></li>
+</ol>
+<p><img data-src="/posts/30a2/image-20230220225257590.png" /></p>
+<p>我们只需要修改其中的包含 <code>VCToolsVersion</code> 和
+<code>VCRedistVersion</code>
+字样的文件，将其中对应版本全部替换成我们需要的 MSVC 版本即可</p>
+<p><code>Microsoft.VCToolsVersion.default.props</code></p>
+   <figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version = <span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;utf-8&quot;</span>?&gt;</span> </span><br><span class="line"><span class="tag">&lt;<span class="name">Project</span> <span class="attr">ToolsVersion</span> = <span class="string">&quot;4.0&quot;</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://schemas.microsoft.com/developer/msbuild/2003&quot;</span>&gt;</span> </span><br><span class="line">  <span class="tag">&lt;<span class="name">PropertyGroup</span>&gt;</span> </span><br><span class="line">    <span class="tag">&lt;<span class="name">VCToolsVersion</span> <span class="attr">Condition</span> = <span class="string">&quot;&#x27;$(VCToolsVersion)&#x27; == &#x27;&#x27;&quot;</span> &gt;</span>14.25.28610<span class="tag">&lt;/<span class="name">VCToolsVersion</span>&gt;</span> </span><br><span class="line">    <span class="tag">&lt;<span class="name">VCToolsRedistVersion</span> <span class="attr">Condition</span> = <span class="string">&quot;&#x27;$(VCToolsRedistVersion)&#x27; == &#x27;&#x27;&quot;</span> &gt;</span>14.25.28508<span class="tag">&lt;/<span class="name">VCToolsRedistVersion</span>&gt;</span> </span><br><span class="line">  <span class="tag">&lt;/<span class="name">PropertyGroup</span>&gt;</span>      </span><br><span class="line"><span class="tag">&lt;/<span class="name">Project</span>&gt;</span>     </span><br></pre></td></tr></table></figure>
+
+<p><code>Microsoft.VCToolsVersion.default.txt</code>（这个文件实际上就一个版本号，直接改掉就可以）</p>
+   <figure class="highlight txt"><table><tr><td class="code"><pre><span class="line">14.25.28610</span><br></pre></td></tr></table></figure>
+
+<ol start="7" type="1">
+<li>切换完成后，我们再使用 Developer Powershell
+打开时就不会出问题了</li>
+</ol>
+<p>注：上面的更改仅适用于命令行，在 Visual Studio
+中可以直接手动更换，具体参考官方教程：<a
+href="https://learn.microsoft.com/en-us/cpp/build/how-to-modify-the-target-framework-and-platform-toolset?view=msvc-170">How
+to: Modify the Target Framework and Platform Toolset | Microsoft
+Learn</a></p>
+<p>使用命令行是因为 Python 编译 C
+库需要从命令行调用，所以只能这样修改，而 cmake
+等编译工具实际上也只需要指定版本即可，具体可以参考官方文档：<a
+href="https://cmake.org/cmake/help/latest/variable/MSVC_VERSION.html">MSVC_VERSION
+— CMake 3.26.0-rc4 Documentation</a></p>
+]]></content>
+      <categories>
+        <category>技术笔记</category>
+      </categories>
+      <tags>
+        <tag>C++</tag>
+        <tag>MSVC</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Python 易错点整理</title>
     <url>/posts/17bc/</url>
     <content><![CDATA[<h1 id="魔法方法和内置属性">魔法方法和内置属性</h1>
@@ -4154,103 +4154,6 @@ capturing group</p>
       </tags>
   </entry>
   <entry>
-    <title>生成排列和组合</title>
-    <url>/posts/454a/</url>
-    <content><![CDATA[<h1 id="所有排列">所有排列</h1>
-<p>由于排列本身的递归形式，可以通过回溯不断生成所有的排列。例如序列为
-<code>[1,2,3,4]</code>，当我们确定第一个位置为 <code>1</code>
-后，剩下三个位置，此时有效的排列就变成了 剩下三个数 <code>[2,3,4]</code>
-在剩下三个位置上的全排列了，这样我们就从求 <code>[1,2,3,4]</code>
-的全排列变成了求 <code>[2,3,4]</code> 全排列，当序列长度为 1
-时其排列就为其本身，递归终止。</p>
-<p>根据这个思路我们就可以写出所有的全排列了</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">permutations</span><span class="params">(<span class="type">const</span> std::vector&lt;<span class="type">int</span>&gt;&amp; numbers,</span></span></span><br><span class="line"><span class="params"><span class="function">                  std::vector&lt;<span class="type">int</span>&gt;&amp; curr,</span></span></span><br><span class="line"><span class="params"><span class="function">                  std::vector&lt;<span class="type">int</span>&gt;&amp; visited,</span></span></span><br><span class="line"><span class="params"><span class="function">                  <span class="type">const</span> std::vector&lt;std::vector&lt;<span class="type">int</span>&gt;&gt;&amp; output)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(curr.<span class="built_in">size</span>() == <span class="built_in">numbers</span>().<span class="built_in">size</span>()) &#123;</span><br><span class="line">        output.<span class="built_in">emplece_back</span>(curr);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;numbers.<span class="built_in">size</span>();i++) &#123;</span><br><span class="line">        <span class="keyword">if</span>(visited[i]) &#123;</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        visited[i] = <span class="literal">true</span>;</span><br><span class="line">        curr.<span class="built_in">emplace_back</span>(numbers[i]);</span><br><span class="line">        <span class="built_in">permutations</span>(numbers,curr,visited,output);</span><br><span class="line">        curr.<span class="built_in">pop_back</span>();</span><br><span class="line">        visited[i] = <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<span id="more"></span>
-
-<h1 id="无重复元素的所有排列">无重复元素的所有排列</h1>
-<p>如果所提供的序列中包含重复元素，我们通过上面的算法就可能生成重复结果，最简单的办法就是使用
-<code>set</code>
-去重了，但是这不是我们想要的，是否可以直接生成不包含重复元素的全排列呢？从原理进行分析：</p>
-<p>例如序列 <code>[1,2,2,4]</code>，为便于展示，我们将两个 2
-标上下标，根据前面的算法，我们首先确定位置1的元素 <span
-class="math display">\[
-[2_{a},]
-\]</span> 此时我们确定了编号为 a 的 2，此时还剩下三个元素 <span
-class="math inline">\([2_{b},1,4]\)</span>，其结果就应该是剩下三个的全排列。</p>
-<p>如果我们确定位置1的元素为 <span class="math display">\[
-[2_{b},]
-\]</span> 此时剩下 <span class="math inline">\([2_{a},1,4]\)</span>
-三个元素全排列，但是这个部分生成的结果和 <span
-class="math inline">\(2_a\)</span>
-生成的完全一致，因此我们可以全部跳过。</p>
-<p>因此，<strong>如果我们知道当前位置该值已经设置过，就可以直接跳过了</strong>，从而确保每次生成都是不一样的，我们可以使用一个
-map
-来进行计数，这样我们遍历每一个位置的时候都会使用不一样的元素，从而杜绝了重复元素。</p>
-<p>代码如下：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">permutations</span><span class="params">(<span class="type">const</span> std::vector&lt;<span class="type">int</span>&gt;&amp; numbers</span></span></span><br><span class="line"><span class="params"><span class="function">                  std::vector&lt;std::vector&lt;<span class="type">int</span>&gt;&gt;&amp; output)</span> </span>&#123;</span><br><span class="line">    std::unordered_map&lt;<span class="type">int</span>,<span class="type">int</span>&gt; count;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i : numbers) &#123;</span><br><span class="line">        <span class="keyword">if</span>(count.<span class="built_in">find</span>(i) == count.<span class="built_in">end</span>()) &#123;</span><br><span class="line">            count[i] = <span class="number">1</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            count[i] ++;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    std::vector&lt;<span class="type">int</span>&gt; curr;</span><br><span class="line">    std::function&lt;<span class="type">void</span>()&gt; recursion;</span><br><span class="line">    recursion = [&amp;]()&#123;</span><br><span class="line">        <span class="keyword">if</span>(curr.<span class="built_in">size</span>() == numbers.<span class="built_in">size</span>()) &#123;</span><br><span class="line">            output.<span class="built_in">emplace_back</span>(curr);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">const</span> <span class="keyword">auto</span>&amp; [key, value] : count) &#123;</span><br><span class="line">            <span class="keyword">if</span>(value == <span class="number">0</span>) &#123;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            count[key]--;</span><br><span class="line">            curr.<span class="built_in">emplace_back</span>(key);</span><br><span class="line">            <span class="built_in">recursion</span>();</span><br><span class="line">            curr.<span class="built_in">pop_back</span>();</span><br><span class="line">            count[key]++;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="built_in">recursion</span>();</span><br><span class="line">    <span class="keyword">return</span> output;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h1 id="所有组合">所有组合</h1>
-<p>从给定候选序列 <code>nums</code>(不包含重复元素) 中生成长度为
-<code>k</code>
-的组合序列，其生成过程十分类似于排列，区别就是组合中没有顺序信息，例如候选序列为
-<code>[1,2,3,4]</code>，<code>k</code>等于2，<code>[1,2]</code> 和
-<code>[2,1]</code> 实际上表示的是同一个组合，因此仅使用
-<code>visited</code>
-数组并不够用，还需要确保同一个组合仅生成一次，实现起来也很简单，我们只需要确保遍历时前面已经访问过的后面不再访问即可。例如
-<code>[1,2,3,4]</code>，我们从 1 开始，所有的组合为</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[1,2],[1,3],[1,4]</span><br></pre></td></tr></table></figure>
-
-<p>当从2开始的时候，可选范围为 [2,3,4]</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[2,3],[2,4]</span><br></pre></td></tr></table></figure>
-
-<p>当从3开始的时候，可选范围为 [3,4]</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[3,4]</span><br></pre></td></tr></table></figure>
-
-<p>相比于排列，越往后候选元素的个数越少，而排列在循环过程中候选元素个数不变。</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">combination</span><span class="params">(<span class="type">const</span> std::vector&lt;<span class="type">int</span>&gt;&amp; nums,</span></span></span><br><span class="line"><span class="params"><span class="function">                 std::vector&lt;std::vector&lt;<span class="type">int</span>&gt;&gt;&amp; output)</span> </span>&#123;</span><br><span class="line">    std::vector&lt;<span class="type">int</span>&gt; curr;</span><br><span class="line">    std::function&lt;<span class="type">void</span>(<span class="type">int</span>)&gt; recursion;</span><br><span class="line">    recursion = [&amp;](<span class="type">int</span> s)&#123;</span><br><span class="line">        <span class="keyword">if</span>(curr.<span class="built_in">size</span>() == nums.<span class="built_in">size</span>()) &#123;</span><br><span class="line">            output.<span class="built_in">emplace_back</span>(curr);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i=s;i&lt;nums.<span class="built_in">size</span>();i++) &#123;</span><br><span class="line">            curr.<span class="built_in">emplace_back</span>(nums[i]);</span><br><span class="line">            <span class="built_in">recursion</span>(i+<span class="number">1</span>);</span><br><span class="line">            curr.<span class="built_in">pop_back</span>();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="built_in">recursion</span>(<span class="number">1</span>);</span><br><span class="line">    <span class="keyword">return</span> output;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h1 id="下一个排列">下一个排列</h1>
-<p>这个实际上是 C++ STL 中的 <code>next_permutation</code>
-原理，对于一个支持比较（operator&lt;）的序列，可以通过该函数得到下一个排列结果</p>
-<p>例如
-<code>[1,2,3,4]</code>，不断执行<code>next_permutation</code>的输出结果如下：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string&gt;</span></span></span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    std::string s = <span class="string">&quot;123&quot;</span>;</span><br><span class="line">    <span class="keyword">do</span> std::cout &lt;&lt; s &lt;&lt; <span class="string">&#x27;\n&#x27;</span>;</span><br><span class="line">    <span class="keyword">while</span> (std::<span class="built_in">next_permutation</span>(s.<span class="built_in">begin</span>(), s.<span class="built_in">end</span>()));</span><br><span class="line">    std::cout &lt;&lt; s &lt;&lt; <span class="string">&#x27;\n&#x27;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>输出结果为</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">123</span><br><span class="line">132</span><br><span class="line">213</span><br><span class="line">231</span><br><span class="line">312</span><br><span class="line">321</span><br></pre></td></tr></table></figure>
-
-<p>其关键在于：<strong>所有的排列中，升序序列为最小，降序序列为最大</strong>，</p>
-<p>我们可以从 123 的排列中看出来，123最小，321最大</p>
-<p>对于任意一个序列，我们从后向前找到最大的升序序列（最大），位置从
-<code>[j,n-1]</code>，然后从升序序列中找到第一个大于
-<code>nums[j-1]</code> 的元素
-<code>nums[k]</code>，交换两元素，再将升序序列反转即可。</p>
-<p>下图展示了序列 <code>1432765</code> 的下一排列生成图示，其对应序列为
-<code>1435267</code></p>
-<p><img data-src="/posts/454a/image-20230809172245015.png" /></p>
-<p>按照这三个步骤，我们可以很简单的写出代码：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">next_permutation</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; nums)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 1. 找到 nums 的升序序列 </span></span><br><span class="line">    <span class="type">int</span> i = nums.<span class="built_in">size</span>() - <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span>(i &gt; <span class="number">0</span> &amp;&amp; nums[i] &lt;= nums[i<span class="number">-1</span>]) &#123;</span><br><span class="line">        i--;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 已经是最大，返回最小（重新开始）</span></span><br><span class="line">    <span class="keyword">if</span>(i == <span class="number">0</span>) &#123;</span><br><span class="line">        std::<span class="built_in">reverse</span>(nums.<span class="built_in">begin</span>(),nums.<span class="built_in">end</span>());</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 2. 找到稍微大一点的</span></span><br><span class="line">    <span class="type">int</span> j = i - <span class="number">1</span>;</span><br><span class="line">    i = nums.<span class="built_in">size</span>() - <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span>(i &gt; j &amp;&amp; nums[i] &lt;= nums[j]) &#123;</span><br><span class="line">        i--;</span><br><span class="line">    &#125;</span><br><span class="line">    std::<span class="built_in">swap</span>(nums[i],nums[j]);</span><br><span class="line">    <span class="comment">// 3. 升序序列转降序序列</span></span><br><span class="line">    std::<span class="built_in">reverse</span>(nums.<span class="built_in">begin</span>() + j + <span class="number">1</span>,nums.<span class="built_in">end</span>());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h1 id="随机排列">随机排列</h1>
-<p>随机排列同样是一个递归问题，当我们确定位置1的元素后，剩下的结果就是后续元素的排列，一直递归下去就可以拿到结果。由于序列的序号是连续且有序的，我们可以使用二分法逐步确定。</p>
-<p>通过随机数生成一个 <code>[0,nums.size()-1]</code> 范围的数
-<code>m</code> 后，我们剩下两个方向，<code>[0,m-1]</code> 以及
-<code>[m+1,nums.size()-1]</code>，之后分别在左右两侧生成，直到结束。</p>
-<p>代码如下</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">random_permutation</span><span class="params">(<span class="type">const</span> std::vector&lt;<span class="type">int</span>&gt;&amp; nums,</span></span></span><br><span class="line"><span class="params"><span class="function">                        std::vector&lt;<span class="type">int</span>&gt;&amp; output)</span> </span>&#123;</span><br><span class="line">    std::function&lt;<span class="type">void</span>(<span class="type">int</span>,<span class="type">int</span>)&gt; recursion;</span><br><span class="line">    recursion = [&amp;](<span class="type">int</span> l,<span class="type">int</span> r) &#123;</span><br><span class="line">        <span class="keyword">if</span>(l &gt; r) &#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="type">int</span> m = <span class="built_in">uniform_sample</span>(l,r);</span><br><span class="line">        output.<span class="built_in">emplace_back</span>(nums[m]);</span><br><span class="line">        <span class="built_in">recursion</span>(l,m<span class="number">-1</span>);</span><br><span class="line">        <span class="built_in">recursion</span>(m+<span class="number">1</span>,r);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">recursion</span>(<span class="number">0</span>,nums.<span class="built_in">size</span>()<span class="number">-1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>对应 uniform_sample 的实现可自行百度，只要可以实现 <code>[l,r]</code>
-区间的均匀采样即可。</p>
-]]></content>
-      <categories>
-        <category>算法</category>
-      </categories>
-      <tags>
-        <tag>算法</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>遍历二叉树的n种方式</title>
     <url>/posts/7a74/</url>
     <content><![CDATA[<h1 id="二叉树实现">二叉树实现</h1>
@@ -4398,6 +4301,103 @@ class="math inline">\(\mathcal{O}(1)\)</span>，使用链表反转的后序遍�
 <p>代码最后单独添加了一个 <code>add_path(root)</code>
 是因为莫里斯遍历完成后实际上还有根节点的输出没完成，需要遍历一遍添加这个输出。</p>
 <p>（还有一种解决方案就是再添加一个根节点，将原来的根节点作为新根节点的左节点，这样就可以在一个循环内输出所有的结果了）</p>
+]]></content>
+      <categories>
+        <category>算法</category>
+      </categories>
+      <tags>
+        <tag>算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>生成排列和组合</title>
+    <url>/posts/454a/</url>
+    <content><![CDATA[<h1 id="所有排列">所有排列</h1>
+<p>由于排列本身的递归形式，可以通过回溯不断生成所有的排列。例如序列为
+<code>[1,2,3,4]</code>，当我们确定第一个位置为 <code>1</code>
+后，剩下三个位置，此时有效的排列就变成了 剩下三个数 <code>[2,3,4]</code>
+在剩下三个位置上的全排列了，这样我们就从求 <code>[1,2,3,4]</code>
+的全排列变成了求 <code>[2,3,4]</code> 全排列，当序列长度为 1
+时其排列就为其本身，递归终止。</p>
+<p>根据这个思路我们就可以写出所有的全排列了</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">permutations</span><span class="params">(<span class="type">const</span> std::vector&lt;<span class="type">int</span>&gt;&amp; numbers,</span></span></span><br><span class="line"><span class="params"><span class="function">                  std::vector&lt;<span class="type">int</span>&gt;&amp; curr,</span></span></span><br><span class="line"><span class="params"><span class="function">                  std::vector&lt;<span class="type">int</span>&gt;&amp; visited,</span></span></span><br><span class="line"><span class="params"><span class="function">                  <span class="type">const</span> std::vector&lt;std::vector&lt;<span class="type">int</span>&gt;&gt;&amp; output)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(curr.<span class="built_in">size</span>() == <span class="built_in">numbers</span>().<span class="built_in">size</span>()) &#123;</span><br><span class="line">        output.<span class="built_in">emplece_back</span>(curr);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;numbers.<span class="built_in">size</span>();i++) &#123;</span><br><span class="line">        <span class="keyword">if</span>(visited[i]) &#123;</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        visited[i] = <span class="literal">true</span>;</span><br><span class="line">        curr.<span class="built_in">emplace_back</span>(numbers[i]);</span><br><span class="line">        <span class="built_in">permutations</span>(numbers,curr,visited,output);</span><br><span class="line">        curr.<span class="built_in">pop_back</span>();</span><br><span class="line">        visited[i] = <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+<h1 id="无重复元素的所有排列">无重复元素的所有排列</h1>
+<p>如果所提供的序列中包含重复元素，我们通过上面的算法就可能生成重复结果，最简单的办法就是使用
+<code>set</code>
+去重了，但是这不是我们想要的，是否可以直接生成不包含重复元素的全排列呢？从原理进行分析：</p>
+<p>例如序列 <code>[1,2,2,4]</code>，为便于展示，我们将两个 2
+标上下标，根据前面的算法，我们首先确定位置1的元素 <span
+class="math display">\[
+[2_{a},]
+\]</span> 此时我们确定了编号为 a 的 2，此时还剩下三个元素 <span
+class="math inline">\([2_{b},1,4]\)</span>，其结果就应该是剩下三个的全排列。</p>
+<p>如果我们确定位置1的元素为 <span class="math display">\[
+[2_{b},]
+\]</span> 此时剩下 <span class="math inline">\([2_{a},1,4]\)</span>
+三个元素全排列，但是这个部分生成的结果和 <span
+class="math inline">\(2_a\)</span>
+生成的完全一致，因此我们可以全部跳过。</p>
+<p>因此，<strong>如果我们知道当前位置该值已经设置过，就可以直接跳过了</strong>，从而确保每次生成都是不一样的，我们可以使用一个
+map
+来进行计数，这样我们遍历每一个位置的时候都会使用不一样的元素，从而杜绝了重复元素。</p>
+<p>代码如下：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">permutations</span><span class="params">(<span class="type">const</span> std::vector&lt;<span class="type">int</span>&gt;&amp; numbers</span></span></span><br><span class="line"><span class="params"><span class="function">                  std::vector&lt;std::vector&lt;<span class="type">int</span>&gt;&gt;&amp; output)</span> </span>&#123;</span><br><span class="line">    std::unordered_map&lt;<span class="type">int</span>,<span class="type">int</span>&gt; count;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i : numbers) &#123;</span><br><span class="line">        <span class="keyword">if</span>(count.<span class="built_in">find</span>(i) == count.<span class="built_in">end</span>()) &#123;</span><br><span class="line">            count[i] = <span class="number">1</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            count[i] ++;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    std::vector&lt;<span class="type">int</span>&gt; curr;</span><br><span class="line">    std::function&lt;<span class="type">void</span>()&gt; recursion;</span><br><span class="line">    recursion = [&amp;]()&#123;</span><br><span class="line">        <span class="keyword">if</span>(curr.<span class="built_in">size</span>() == numbers.<span class="built_in">size</span>()) &#123;</span><br><span class="line">            output.<span class="built_in">emplace_back</span>(curr);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">const</span> <span class="keyword">auto</span>&amp; [key, value] : count) &#123;</span><br><span class="line">            <span class="keyword">if</span>(value == <span class="number">0</span>) &#123;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            count[key]--;</span><br><span class="line">            curr.<span class="built_in">emplace_back</span>(key);</span><br><span class="line">            <span class="built_in">recursion</span>();</span><br><span class="line">            curr.<span class="built_in">pop_back</span>();</span><br><span class="line">            count[key]++;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="built_in">recursion</span>();</span><br><span class="line">    <span class="keyword">return</span> output;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="所有组合">所有组合</h1>
+<p>从给定候选序列 <code>nums</code>(不包含重复元素) 中生成长度为
+<code>k</code>
+的组合序列，其生成过程十分类似于排列，区别就是组合中没有顺序信息，例如候选序列为
+<code>[1,2,3,4]</code>，<code>k</code>等于2，<code>[1,2]</code> 和
+<code>[2,1]</code> 实际上表示的是同一个组合，因此仅使用
+<code>visited</code>
+数组并不够用，还需要确保同一个组合仅生成一次，实现起来也很简单，我们只需要确保遍历时前面已经访问过的后面不再访问即可。例如
+<code>[1,2,3,4]</code>，我们从 1 开始，所有的组合为</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[1,2],[1,3],[1,4]</span><br></pre></td></tr></table></figure>
+
+<p>当从2开始的时候，可选范围为 [2,3,4]</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[2,3],[2,4]</span><br></pre></td></tr></table></figure>
+
+<p>当从3开始的时候，可选范围为 [3,4]</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[3,4]</span><br></pre></td></tr></table></figure>
+
+<p>相比于排列，越往后候选元素的个数越少，而排列在循环过程中候选元素个数不变。</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">combination</span><span class="params">(<span class="type">const</span> std::vector&lt;<span class="type">int</span>&gt;&amp; nums,</span></span></span><br><span class="line"><span class="params"><span class="function">                 std::vector&lt;std::vector&lt;<span class="type">int</span>&gt;&gt;&amp; output)</span> </span>&#123;</span><br><span class="line">    std::vector&lt;<span class="type">int</span>&gt; curr;</span><br><span class="line">    std::function&lt;<span class="type">void</span>(<span class="type">int</span>)&gt; recursion;</span><br><span class="line">    recursion = [&amp;](<span class="type">int</span> s)&#123;</span><br><span class="line">        <span class="keyword">if</span>(curr.<span class="built_in">size</span>() == nums.<span class="built_in">size</span>()) &#123;</span><br><span class="line">            output.<span class="built_in">emplace_back</span>(curr);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i=s;i&lt;nums.<span class="built_in">size</span>();i++) &#123;</span><br><span class="line">            curr.<span class="built_in">emplace_back</span>(nums[i]);</span><br><span class="line">            <span class="built_in">recursion</span>(i+<span class="number">1</span>);</span><br><span class="line">            curr.<span class="built_in">pop_back</span>();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="built_in">recursion</span>(<span class="number">1</span>);</span><br><span class="line">    <span class="keyword">return</span> output;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="下一个排列">下一个排列</h1>
+<p>这个实际上是 C++ STL 中的 <code>next_permutation</code>
+原理，对于一个支持比较（operator&lt;）的序列，可以通过该函数得到下一个排列结果</p>
+<p>例如
+<code>[1,2,3,4]</code>，不断执行<code>next_permutation</code>的输出结果如下：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string&gt;</span></span></span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    std::string s = <span class="string">&quot;123&quot;</span>;</span><br><span class="line">    <span class="keyword">do</span> std::cout &lt;&lt; s &lt;&lt; <span class="string">&#x27;\n&#x27;</span>;</span><br><span class="line">    <span class="keyword">while</span> (std::<span class="built_in">next_permutation</span>(s.<span class="built_in">begin</span>(), s.<span class="built_in">end</span>()));</span><br><span class="line">    std::cout &lt;&lt; s &lt;&lt; <span class="string">&#x27;\n&#x27;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>输出结果为</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">123</span><br><span class="line">132</span><br><span class="line">213</span><br><span class="line">231</span><br><span class="line">312</span><br><span class="line">321</span><br></pre></td></tr></table></figure>
+
+<p>其关键在于：<strong>所有的排列中，升序序列为最小，降序序列为最大</strong>，</p>
+<p>我们可以从 123 的排列中看出来，123最小，321最大</p>
+<p>对于任意一个序列，我们从后向前找到最大的升序序列（最大），位置从
+<code>[j,n-1]</code>，然后从升序序列中找到第一个大于
+<code>nums[j-1]</code> 的元素
+<code>nums[k]</code>，交换两元素，再将升序序列反转即可。</p>
+<p>下图展示了序列 <code>1432765</code> 的下一排列生成图示，其对应序列为
+<code>1435267</code></p>
+<p><img data-src="/posts/454a/image-20230809172245015.png" /></p>
+<p>按照这三个步骤，我们可以很简单的写出代码：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">next_permutation</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; nums)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 1. 找到 nums 的升序序列 </span></span><br><span class="line">    <span class="type">int</span> i = nums.<span class="built_in">size</span>() - <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span>(i &gt; <span class="number">0</span> &amp;&amp; nums[i] &lt;= nums[i<span class="number">-1</span>]) &#123;</span><br><span class="line">        i--;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 已经是最大，返回最小（重新开始）</span></span><br><span class="line">    <span class="keyword">if</span>(i == <span class="number">0</span>) &#123;</span><br><span class="line">        std::<span class="built_in">reverse</span>(nums.<span class="built_in">begin</span>(),nums.<span class="built_in">end</span>());</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 2. 找到稍微大一点的</span></span><br><span class="line">    <span class="type">int</span> j = i - <span class="number">1</span>;</span><br><span class="line">    i = nums.<span class="built_in">size</span>() - <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span>(i &gt; j &amp;&amp; nums[i] &lt;= nums[j]) &#123;</span><br><span class="line">        i--;</span><br><span class="line">    &#125;</span><br><span class="line">    std::<span class="built_in">swap</span>(nums[i],nums[j]);</span><br><span class="line">    <span class="comment">// 3. 升序序列转降序序列</span></span><br><span class="line">    std::<span class="built_in">reverse</span>(nums.<span class="built_in">begin</span>() + j + <span class="number">1</span>,nums.<span class="built_in">end</span>());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="随机排列">随机排列</h1>
+<p>随机排列同样是一个递归问题，当我们确定位置1的元素后，剩下的结果就是后续元素的排列，一直递归下去就可以拿到结果。由于序列的序号是连续且有序的，我们可以使用二分法逐步确定。</p>
+<p>通过随机数生成一个 <code>[0,nums.size()-1]</code> 范围的数
+<code>m</code> 后，我们剩下两个方向，<code>[0,m-1]</code> 以及
+<code>[m+1,nums.size()-1]</code>，之后分别在左右两侧生成，直到结束。</p>
+<p>代码如下</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">random_permutation</span><span class="params">(<span class="type">const</span> std::vector&lt;<span class="type">int</span>&gt;&amp; nums,</span></span></span><br><span class="line"><span class="params"><span class="function">                        std::vector&lt;<span class="type">int</span>&gt;&amp; output)</span> </span>&#123;</span><br><span class="line">    std::function&lt;<span class="type">void</span>(<span class="type">int</span>,<span class="type">int</span>)&gt; recursion;</span><br><span class="line">    recursion = [&amp;](<span class="type">int</span> l,<span class="type">int</span> r) &#123;</span><br><span class="line">        <span class="keyword">if</span>(l &gt; r) &#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="type">int</span> m = <span class="built_in">uniform_sample</span>(l,r);</span><br><span class="line">        output.<span class="built_in">emplace_back</span>(nums[m]);</span><br><span class="line">        <span class="built_in">recursion</span>(l,m<span class="number">-1</span>);</span><br><span class="line">        <span class="built_in">recursion</span>(m+<span class="number">1</span>,r);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">recursion</span>(<span class="number">0</span>,nums.<span class="built_in">size</span>()<span class="number">-1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>对应 uniform_sample 的实现可自行百度，只要可以实现 <code>[l,r]</code>
+区间的均匀采样即可。</p>
 ]]></content>
       <categories>
         <category>算法</category>
@@ -5380,114 +5380,5 @@ newer (github.com)</a></li>
         <tag>Linux</tag>
         <tag>内存分析</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>内存分析工具（3）：内存破坏检查</title>
-    <url>/posts/cfb2/</url>
-    <content><![CDATA[<h1 id="概述">概述</h1>
-<span id="more"></span>
-
-<h1 id="asan">ASAN</h1>
-<h2 id="基本原理">基本原理</h2>
-<p><img data-src="/posts/cfb2/0krvVF5794QOcfcRF.png" /></p>
-<p><img data-src="/posts/cfb2/image1.png" /></p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="type">char</span>* data = <span class="built_in">reinterpret_cast</span>&lt;<span class="type">char</span>*&gt;(<span class="built_in">malloc</span>(<span class="number">20</span>));</span><br><span class="line">    data[<span class="number">35</span>] = <span class="string">&#x27;a&#x27;</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>未开启之前的汇编代码</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">main:</span><br><span class="line">        push    rbp</span><br><span class="line">        mov     rbp, rsp</span><br><span class="line">        sub     rsp, <span class="number">16</span></span><br><span class="line">        mov     edi, <span class="number">20</span></span><br><span class="line">        call    malloc</span><br><span class="line">        mov     QWORD PTR [rbp<span class="number">-8</span>], rax</span><br><span class="line">        mov     rax, QWORD PTR [rbp<span class="number">-8</span>]</span><br><span class="line">        add     rax, <span class="number">35</span></span><br><span class="line">        mov     BYTE PTR [rax], <span class="number">97</span></span><br><span class="line">        mov     eax, <span class="number">0</span></span><br><span class="line">        leave</span><br><span class="line">        ret</span><br></pre></td></tr></table></figure>
-
-<p>开启 ASAN 后汇编代码</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">main:</span><br><span class="line">        push    rbp</span><br><span class="line">        mov     rbp, rsp</span><br><span class="line">        sub     rsp, 16</span><br><span class="line">        mov     edi, 20</span><br><span class="line">        call    malloc</span><br><span class="line">        mov     QWORD PTR [rbp-8], rax</span><br><span class="line">        mov     rax, QWORD PTR [rbp-8]</span><br><span class="line">        lea     rcx, [rax+35]</span><br><span class="line">        mov     rax, rcx</span><br><span class="line">        mov     rdx, rax</span><br><span class="line">        shr     rdx, 3</span><br><span class="line">        add     rdx, 2147450880</span><br><span class="line">        movzx   edx, BYTE PTR [rdx]</span><br><span class="line">        test    dl, dl</span><br><span class="line">        setne   sil</span><br><span class="line">        mov     rdi, rax</span><br><span class="line">        and     edi, 7</span><br><span class="line">        cmp     dil, dl</span><br><span class="line">        setge   dl</span><br><span class="line">        and     edx, esi</span><br><span class="line">        test    dl, dl</span><br><span class="line">        je      .L2</span><br><span class="line">        mov     rdi, rax</span><br><span class="line">        call    __asan_report_store1</span><br><span class="line">.L2:</span><br><span class="line">        mov     BYTE PTR [rcx], 97</span><br><span class="line">        mov     eax, 0</span><br><span class="line">        leave</span><br><span class="line">        ret</span><br><span class="line">_GLOBAL__sub_I_00099_0_main:</span><br><span class="line">        push    rbp</span><br><span class="line">        mov     rbp, rsp</span><br><span class="line">        call    __asan_init</span><br><span class="line">        call    __asan_version_mismatch_check_v8</span><br><span class="line">        pop     rbp</span><br><span class="line">        ret</span><br></pre></td></tr></table></figure>
-
-<p>看一个 stack buffer overflow 的例子</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="type">int</span> array[<span class="number">10</span>];</span><br><span class="line">    array[<span class="number">0</span>] = <span class="number">0</span>;</span><br><span class="line">    array[<span class="number">1</span>] = <span class="number">0</span>;</span><br><span class="line">    array[<span class="number">2</span>] = <span class="number">0</span>;</span><br><span class="line">    array[<span class="number">3</span>] = <span class="number">0</span>;</span><br><span class="line">    array[<span class="number">4</span>] = <span class="number">0</span>;</span><br><span class="line">    array[<span class="number">5</span>] = <span class="number">0</span>;</span><br><span class="line">    array[<span class="number">6</span>] = <span class="number">0</span>;</span><br><span class="line">    array[<span class="number">7</span>] = <span class="number">0</span>;</span><br><span class="line">    array[<span class="number">8</span>] = <span class="number">0</span>;</span><br><span class="line">    array[<span class="number">9</span>] = <span class="number">0</span>;</span><br><span class="line">    array[<span class="number">10</span>] = <span class="number">0</span>;</span><br><span class="line">    array[<span class="number">14</span>] = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>原始汇编</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">main:</span><br><span class="line">        push    rbp</span><br><span class="line">        mov     rbp, rsp</span><br><span class="line">        mov     DWORD PTR [rbp-48], 0</span><br><span class="line">        mov     DWORD PTR [rbp-44], 0</span><br><span class="line">        mov     DWORD PTR [rbp-40], 0</span><br><span class="line">        mov     DWORD PTR [rbp-36], 0</span><br><span class="line">        mov     DWORD PTR [rbp-32], 0</span><br><span class="line">        mov     DWORD PTR [rbp-28], 0</span><br><span class="line">        mov     DWORD PTR [rbp-24], 0</span><br><span class="line">        mov     DWORD PTR [rbp-20], 0</span><br><span class="line">        mov     DWORD PTR [rbp-16], 0</span><br><span class="line">        mov     DWORD PTR [rbp-12], 0</span><br><span class="line">        mov     DWORD PTR [rbp-8], 0</span><br><span class="line">        mov     DWORD PTR [rbp+8], 0</span><br><span class="line">        mov     eax, 0</span><br><span class="line">        pop     rbp</span><br><span class="line">        ret</span><br></pre></td></tr></table></figure>
-
-<p>开启 ASAN 后的汇编</p>
-<h2 id="使用">使用</h2>
-<p>前面提到，ASAN是一个</p>
-<h2 id="asan-缺点">ASAN 缺点</h2>
-<h1 id="valgrind">Valgrind</h1>
-<blockquote>
-<p>[!Note]</p>
-<p>How to pronounce "Valgrind" ?</p>
-<p>The "Val" as in the word "value". The "grind" is pronounced with a
-short 'i' ie. "grinned" (rhymes with "tinned") rather than "grined"
-(rhymes with "find"). Don't feel bad: almost everyone gets it wrong at
-first.</p>
-</blockquote>
-<h2 id="基本原理-1">基本原理</h2>
-<p><img data-src="/posts/cfb2/valgrind-flow-1024x763.png" /></p>
-<p><img data-src="/posts/cfb2/2-Figure1-1.png" /></p>
-<p><img data-src="/posts/cfb2/image-20240923003236690.png" /></p>
-<h2 id="使用-1">使用</h2>
-<h1 id="asan-和-valgrind-功能对比">ASAN 和 Valgrind 功能对比</h1>
-<h1 id="其他-sanitizer">其他 Sanitizer</h1>
-<h2 id="msanonly-on-clang">MSAN（only on clang）</h2>
-<h2 id="tsan">TSAN</h2>
-<h2 id="ubsan">UBSAN</h2>
-<p>detect undefined behavior</p>
-<p>比较值得注意的几个</p>
-<ul>
-<li><p>float-cast-overflow</p></li>
-<li><p>float-divide-by-zero</p></li>
-<li><p>signed-integer-overflow</p></li>
-<li><p>integer-divide-by-zero</p></li>
-<li><p>return</p></li>
-</ul>
-<h1 id="参考">参考</h1>
-<ol type="1">
-<li><a
-href="https://github.com/google/sanitizers/wiki/AddressSanitizerAlgorithm">AddressSanitizerAlgorithm
-· google/sanitizers Wiki (github.com)</a></li>
-<li><a
-href="https://valgrind.org/docs/manual/design-impl.html">Valgrind</a></li>
-<li><a href="https://valgrind.org/docs/phd2004.pdf">phd2004.pdf
-(valgrind.org)</a></li>
-<li><a href="https://clang.llvm.org/docs/index.html">Welcome to Clang's
-documentation! — Clang 20.0.0git documentation (llvm.org)</a></li>
-<li><a
-href="https://gcc.gnu.org/onlinedocs/gcc-10.5.0/gcc/Instrumentation-Options.html">Instrumentation
-Options (Using the GNU Compiler Collection (GCC))</a></li>
-<li><a
-href="https://xueshi.io/2023/01/08/LLVM-Tools-02-Address-Sanitizer-02-Algorithm/">LLVM
-工具系列 - Address Sanitizer 实现原理 (2) | 代码手工艺人
-(xueshi.io)</a></li>
-</ol>
-]]></content>
-      <categories>
-        <category>C++学习笔记</category>
-      </categories>
-      <tags>
-        <tag>C++</tag>
-        <tag>Linux</tag>
-        <tag>内存分析</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>内存分析工具（4）：malloc性能测试</title>
-    <url>/posts/5645/</url>
-    <content><![CDATA[<p>这篇博客主要是对自定义实现内存泄漏检查工具进行的一个性能测试，对比启用内存泄漏检查后的性能损失情况，同时检查是否有误报情况</p>
-<p>参考的是 <a
-href="https://github.com/daanx/mimalloc-bench">daanx/mimalloc-bench:
-Suite for benchmarking malloc implementations. (github.com)</a> 仓库</p>
-<p>选择的场景</p>
-<ul>
-<li>barnes</li>
-<li>cfrac</li>
-<li>espresso</li>
-<li>larsonN</li>
-<li>glibc-simple and glibc-thread （benchmark for glibc）</li>
-<li>sh6bench</li>
-<li>sh8benchN</li>
-<li>xmalloc-testN</li>
-</ul>
-<span id="more"></span>
-
-<p>首先主要介绍编译过程</p>
-<p>对比 valgrind，asan 和 自行实现的 memtracer 效果</p>
-]]></content>
   </entry>
 </search>
