@@ -84,7 +84,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">23</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">6</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">19</span></a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">21</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">5</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">15</span></a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
         </a>
@@ -149,18 +149,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-count">15</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-count">5</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-count">21</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -188,241 +188,6 @@
     </div>
 
     <div class="main-inner index posts-expand">
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://purewhitevk.github.io/posts/daa5/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/Touma.Kazusa.256x256.png">
-      <meta itemprop="name" content="PureWhiteVK">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="PureWhiteVK's Blog">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | PureWhiteVK's Blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/posts/daa5/" class="post-title-link" itemprop="url">内存分析工具（2）：实现内存泄漏检查</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2024/09/09 22:37:53" itemprop="dateCreated datePublished" datetime="2024-09-09T22:37:53+08:00">2024/09/09</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/C-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">C++学习笔记</span></a>
-        </span>
-    </span>
-
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>3.3k</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>12 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="基本原理">基本原理</h1>
-<p>内存泄漏是指<strong>程序在运行时动态分配了内存，但是没有正确释放或者回收这些内存</strong>，导致已分配的内存无法被重新利用。随着程序的运行，未释放的内存会逐渐累积，可能最终耗尽系统的可用内存。</p>
-<p>内存泄漏检查工具的基本原理是通过<strong>监控程序的内存分配和释放操作，来检查是否有未正确释放的内存</strong>，其主要包含以下3个部分：</p>
-<ul>
-<li>内存分配函数追踪</li>
-<li>调用栈分析</li>
-<li>内存泄漏报告</li>
-</ul>
-<p>内存分配函数追踪可通过拦截（Hook）、插桩（Instrumentation）等方式实现，下面对比了几种常见内存泄漏检查方式</p>
-<ol type="1">
-<li><p>函数拦截（Hook）</p>
-<p>原理：拦截CRT提供的内存管理函数，将其替换为自定义的内存管理函数，从而实现内存分配和释放的记录</p>
-<p>优点：可通过 <code>LD_PRELOAD</code>
-等技术通过动态链接方式实现函数拦截，代码侵入性小</p>
-<p>缺点：由于在每一次内存分配/释放时都会记录，会带来一定的性能开销</p></li>
-<li><p>代码植入（Code Instrumentation）和影子内存（Shadow Memory）</p>
-<p>原理：将程序中每一个内存块的状态映射到另一块内存区域，并在每一次内存操作时更新状态信息（通过代码植入实现）</p>
-<p>优点：内存状态追踪结果精确，可实现其他内存检查功能</p>
-<p>缺点：编译期植入方法（Address
-Sanitizer）需要重新编译代码，而运行时植入方法（Valgrind）使用仿真器运行（Emulator），程序运行速度显著降低</p></li>
-</ol>
-<p>下一节将详细介绍 ASAN 和 Valgrind
-的实现原理和基本使用，本节将着重介绍通过函数拦截方式实现的内存泄漏检查工具。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/posts/daa5/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://purewhitevk.github.io/posts/55d0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/Touma.Kazusa.256x256.png">
-      <meta itemprop="name" content="PureWhiteVK">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="PureWhiteVK's Blog">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | PureWhiteVK's Blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/posts/55d0/" class="post-title-link" itemprop="url">内存分析工具（1）：内存布局和内存泄漏</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2024/09/09 20:05:13" itemprop="dateCreated datePublished" datetime="2024-09-09T20:05:13+08:00">2024/09/09</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/C-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">C++学习笔记</span></a>
-        </span>
-    </span>
-
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>2.4k</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>9 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="cc-程序内存布局">C/C++ 程序内存布局</h1>
-<p>对于一个经典的 C/C++ 程序，其内存区域可划分为 5 大部分</p>
-<ul>
-<li>代码段（Text Segment）：只读区域，存储汇编指令</li>
-<li>数据段（Data
-Segment）：存储非0初始化的全局变量或静态变量、字符串常量</li>
-<li>BSS 段（<strong>B</strong>lock <strong>S</strong>tarting
-<strong>S</strong>ymbol
-Segment）：存储0初始化的全局变量或静态变量，<strong>此段的作用在于减少可执行文件大小</strong>，在可执行文件中通常只需要记录一个长度即可</li>
-<li>堆区（Heap）：程序运行过程中进行动态内存分配的区域</li>
-<li>栈区（Stack）：程序运行过程中存储函数调用栈帧（存储函数执行时的临时变量）</li>
-</ul>
-<p>下图展示了这五块在内存上的排列顺序(图片来自^1^)</p>
-<p><img data-src="/posts/55d0/memoryLayoutC.jpg" style="zoom: 80%;" /></p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/posts/55d0/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
 
     
 
@@ -996,133 +761,6 @@ C++ 依赖解决方案，但是对于一些冷门的库可能就不支持，还�
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://purewhitevk.github.io/posts/17bc/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/Touma.Kazusa.256x256.png">
-      <meta itemprop="name" content="PureWhiteVK">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="PureWhiteVK's Blog">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | PureWhiteVK's Blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/posts/17bc/" class="post-title-link" itemprop="url">Python 易错点整理</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2023/07/28 15:44:56" itemprop="dateCreated datePublished" datetime="2023-07-28T15:44:56+08:00">2023/07/28</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Python/" itemprop="url" rel="index"><span itemprop="name">Python</span></a>
-        </span>
-    </span>
-
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>3.9k</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>14 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="魔法方法和内置属性">魔法方法和内置属性</h1>
-<h2 id="容器类型">容器类型</h2>
-<p>根据以下程序，下列选项中，说法正确的是（）</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Foo</span>(): </span><br><span class="line">	<span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self</span>): </span><br><span class="line">        <span class="keyword">pass</span> </span><br><span class="line">	<span class="keyword">def</span> <span class="title function_">__getitem__</span>(<span class="params">self,pos</span>): </span><br><span class="line">		<span class="keyword">return</span> <span class="built_in">range</span>(<span class="number">0</span>,<span class="number">30</span>,<span class="number">10</span>)[pos] </span><br><span class="line">foo = Foo() </span><br></pre></td></tr></table></figure>
-
-<ol type="1">
-<li><code>foo</code> 对象表现得像个序列</li>
-<li>可以使用 <code>len(foo)</code> 来查看对象 <code>foo</code>
-的元素个数</li>
-<li>可以使用 <code>for i in foo:print(i)</code> 来遍历 <code>foo</code>
-的元素</li>
-<li>不能使用 <code>foo[0]</code> 来访问对象 <code>foo</code>
-的第一个元素</li>
-</ol>
-<blockquote>
-<p><a
-target="_blank" rel="noopener" href="https://docs.python.org/3.9/glossary.html#term-sequence">https://docs.python.org/3.9/glossary.html#term-sequence</a></p>
-</blockquote>
-<p>对于第一个选项，Python文档中定义序列(sequence)必须实现两个方法，<code>__getitem__</code>以及<code>__len__</code>，即支持通过整数的索引以及返回序列的长度，而
-<code>Foo</code> 仅实现了整数索引功能，因此不是序列。</p>
-<p>对于第二个选项，<code>len(foo)</code> 实际上会调用
-<code>__len__</code> 方法来获取序列长度，类没实现该方法故不行</p>
-<p>对于第三个选项，<code>for</code> 语句支持两种，一种为通过
-<code>__iter__</code> 进行调用，另一种则为
-<code>__getitem__</code>，因此<strong>正确</strong></p>
-<p>对于第四个选项，由于我们定义了 <code>__getitem__</code>
-方法，我们是可以通过 <code>foo[0]</code> 来访问 <code>foo</code>
-的第一个元素的</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/posts/17bc/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
     <link itemprop="mainEntityOfPage" href="https://purewhitevk.github.io/posts/d235/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1333,6 +971,335 @@ style="zoom:67%;" /></p>
 
 
 
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://purewhitevk.github.io/posts/80b6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/Touma.Kazusa.256x256.png">
+      <meta itemprop="name" content="PureWhiteVK">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PureWhiteVK's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | PureWhiteVK's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/posts/80b6/" class="post-title-link" itemprop="url">nohup命令使用</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023/03/01 23:09:12" itemprop="dateCreated datePublished" datetime="2023-03-01T23:09:12+08:00">2023/03/01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Linux%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">Linux学习</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>3k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>11 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>最近需要在服务器上跑模型，需要长时间运行，但是服务器是通过 ssh
+连接的，如果我们中途断开连接，正在跑的代码也会自动关闭。实在是有点整蛊，要想
+ssh 断开连接后代码还可以继续执行，需要使用 <code>nohup</code> 命令。</p>
+<p>使用 <code>nohup --help</code>，我们可以得到帮助信息</p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">(base) ➜  ~ nohup --help</span><br><span class="line">Usage: nohup COMMAND [ARG]...</span><br><span class="line">  or:  nohup OPTION</span><br><span class="line">Run COMMAND, ignoring hangup signals.</span><br><span class="line"></span><br><span class="line">      --help     display this help and exit</span><br><span class="line">      --version  output version information and exit</span><br><span class="line"></span><br><span class="line">If standard input is a terminal, redirect it from an unreadable file.</span><br><span class="line">If standard output is a terminal, append output to &#x27;nohup.out&#x27; if possible,</span><br><span class="line">&#x27;$HOME/nohup.out&#x27; otherwise.</span><br><span class="line">If standard error is a terminal, redirect it to standard output.</span><br><span class="line">To save output to FILE, use &#x27;nohup COMMAND &gt; FILE&#x27;.</span><br><span class="line"></span><br><span class="line">NOTE: your shell may have its own version of nohup, which usually supersedes</span><br><span class="line">the version described here.  Please refer to your shell&#x27;s documentation</span><br><span class="line">for details about the options it supports.</span><br><span class="line"></span><br><span class="line">GNU coreutils online help: &lt;https://www.gnu.org/software/coreutils/&gt;</span><br><span class="line">Report nohup translation bugs to &lt;https://translationproject.org/team/&gt;</span><br><span class="line">Full documentation at: &lt;https://www.gnu.org/software/coreutils/nohup&gt;</span><br><span class="line">or available locally via: info &#x27;(coreutils) nohup invocation&#x27;</span><br></pre></td></tr></table></figure>
+
+<p>其中第三行解释了 nohup 命令的作用</p>
+<blockquote>
+<p><em>Run COMMAND, ignoring hangup signals.</em></p>
+</blockquote>
+<p>从描述中我们可以看到，其作用其实很简单，就是忽略 <code>hup</code>
+信号。那么现在问题来了，<code>hup</code> 信号是什么？有什么作用？</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/posts/80b6/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://purewhitevk.github.io/posts/f9ab/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/Touma.Kazusa.256x256.png">
+      <meta itemprop="name" content="PureWhiteVK">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PureWhiteVK's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | PureWhiteVK's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/posts/f9ab/" class="post-title-link" itemprop="url">zerotier实现内网穿透</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023/02/25 14:34:03" itemprop="dateCreated datePublished" datetime="2023-02-25T14:34:03+08:00">2023/02/25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">技术笔记</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>2.2k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>8 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>zerotier
+可以将不同局域网下的主机连接到同一个虚拟局域网内（即内网穿透），使用之前需要注册一个
+zerotier账号，所有对虚拟网络的操作（设备管理、ip设置等）都需要在 web
+端进行。官方网址：<a
+target="_blank" rel="noopener" href="https://www.zerotier.com/">https://www.zerotier.com/</a></p>
+<h2 id="注册-zerotier-账号">注册 Zerotier 账号</h2>
+<blockquote>
+<p>注：zerotier 服务器在国外，访问的时候可能需要挂梯子。</p>
+</blockquote>
+<p>进入<a target="_blank" rel="noopener" href="https://www.zerotier.com/">官网</a></p>
+<p><img data-src="/posts/f9ab/zerotier-website.jpg" style="zoom:50%;" /></p>
+<p>点击右上角的 Sign Up 按钮就可以进入注册页面</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/posts/f9ab/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://purewhitevk.github.io/posts/30a2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/Touma.Kazusa.256x256.png">
+      <meta itemprop="name" content="PureWhiteVK">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PureWhiteVK's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | PureWhiteVK's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/posts/30a2/" class="post-title-link" itemprop="url">命令行切换MSVC版本</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023/02/20 22:10:49" itemprop="dateCreated datePublished" datetime="2023-02-20T22:10:49+08:00">2023/02/20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">技术笔记</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>753</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>3 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>在 WIndows 下跑 Python 深度学习代码时，需要编译 C++ 库（点名
+Pytorch3d），但是使用最新版本的 MSVC 进行编译的时候会报错，去 Github 看
+Issue 时有提到降级可能有效，我们可以通过添加组件的方式直接下载指定版本的
+MSVC
+编译器。然后手动修改进行切换。为了怕后面遇到类似问题时忘记怎么搞，还是简单记录一下吧，具体操作如下：</p>
+<ol type="1">
+<li><p>首先打开 Visual Studio Installer，点击 <code>修改</code> 按钮</p>
+<p><img data-src="/posts/30a2/image-20230220223924979.png" /></p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/posts/30a2/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
   <nav class="pagination">
     <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/page/2/"><i class="fa fa-angle-right"></i></a>
   </nav>
@@ -1357,13 +1324,13 @@ style="zoom:67%;" /></p>
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">60k</span>
+    <span title="站点总字数">45k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">3:37</span>
+    <span title="站点阅读时长">2:44</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
