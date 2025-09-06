@@ -10,7 +10,8 @@ const { yellow } = require('picocolors');
 hexo.config.pandoc = Object.assign({
     pandoc_bin: 'pandoc',
     math_engine: 'mathjax',
-    markdown_mode: 'gfm',
+    // https://pandoc.org/MANUAL.html#pandocs-markdown
+    markdown_mode: 'gfm+alerts',
     filters: [],
     lua_filters: [],
     extra: [],
@@ -32,14 +33,7 @@ const is_array = obj => Array.isArray(obj);
 
 const is_object = obj => typeof (obj) === 'object';
 
-const get_cache = (stream, encoding) => {
-    const buf = stream.getCache();
-    stream.destroy();
-    if (!encoding) return buf;
-    return buf.toString(encoding);
-};
-
-const renderer = (data, options) => {
+const renderer = (data) => {
     const { log } = hexo;
 
     let config = hexo.config.pandoc;

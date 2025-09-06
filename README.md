@@ -14,7 +14,7 @@ npm install -g hexo@6.3.0
 start a local server
 
 ```sh
-hexo serve
+hexo server
 ```
 
 ## Pandoc 3.0.1
@@ -61,4 +61,18 @@ User data directory: C:\Users\Administrator\AppData\Roaming\pandoc
 Copyright (C) 2006-2023 John MacFarlane. Web:  https://pandoc.org
 This is free software; see the source for copying conditions. There is no
 warranty, not even for merchantability or fitness for a particular purpose.
+```
+
+Debug pandoc lua-filter
+
+```bash
+export LUA_PATH="$(pwd)/lua/?.lua"
+
+pandoc --from=gfm+alerts \
+    --to=html5 --mathjax \
+    --metadata=pagetitle:ignored \
+    --metadata=standalone:true \
+    --lua-filter=lua/image-asset.lua \
+    -o test.html \
+    test.md
 ```
