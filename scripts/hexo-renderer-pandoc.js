@@ -3,7 +3,7 @@
 'use strict';
 
 const { spawn } = require('node:child_process');
-const path = require('node:path')
+const path = require('node:path');
 const assert = require('node:assert');
 const { yellow } = require('picocolors');
 
@@ -37,7 +37,7 @@ const get_cache = (stream, encoding) => {
     stream.destroy();
     if (!encoding) return buf;
     return buf.toString(encoding);
-}
+};
 
 const renderer = (data, options) => {
     const { log } = hexo;
