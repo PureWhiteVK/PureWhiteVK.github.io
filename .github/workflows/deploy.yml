@@ -13,10 +13,10 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           submodules: recursive
-      - name: Use Pandoc 3.0.1
+      - name: Use Pandoc 3.7.0.2
         uses: nikeee/setup-pandoc@v1
         with:
-          pandoc-version: "3.0.1"
+          pandoc-version: "3.7.0.2"
       - name: Use Node.js 18.12.1
         uses: actions/setup-node@v3
         with:
