@@ -3616,163 +3616,6 @@ map
       </tags>
   </entry>
   <entry>
-    <title>CMake依赖管理</title>
-    <url>/posts/dbe7/</url>
-    <content><![CDATA[<h1 id="git-submodule-管理依赖">Git Submodule 管理依赖</h1>
-<p>由于 C++
-自身的特殊性，要想实现跨平台代码，只能使用源码分发（也有类似于 Conan 的
-C++ 依赖解决方案，但是对于一些冷门的库可能就不支持，还是得自己写）。</p>
-<p>最简单的办法就是通过 git
-的子模块将其添加到项目中，这种依赖管理方式确保可以访问到源代码，其缺点也很明显，我们在下载库的时候需要通过下载依赖库（也就是子模块），如果子模块较大可能下载起来比较耗时。</p>
-<p>前面一个笔记中也提到了，要想删除添加的 git submodule
-十分麻烦，没有一个简单的命令可以直接删除，需要手动调整需要文件才能删除干净。</p>
-<h1 id="fetchcontent-模块添加依赖">FetchContent 模块添加依赖</h1>
-<p>而 FetchContent 是 CMake 提供的一种新式依赖管理方案（在 3.11
-版本首次出现），其在 CMake
-的配置过程中自动下载依赖项并配置（或者由用户自行配置）。这样可以保持我们的代码库整洁。</p>
-<span id="more"></span>
-
-<p>使用时首先引入这个模块</p>
-<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line"><span class="keyword">include</span>(FetchContent)</span><br></pre></td></tr></table></figure>
-
-<p>主要包含下面三个函数</p>
-<ul>
-<li><p><code>FetchContent_Declare</code>：用来指定依赖库的下载路径（git
-仓库地址或者 URL 链接，其会自动解压缩）</p></li>
-<li><p><code>FetchContent_MakeAvailable</code>：自动配置依赖库（相当于调用了
-<code>add_subdirectory</code>）</p></li>
-<li><p><code>FetchContent_Populate</code>：手动配置依赖库，这个函数会帮我们配置好一系列变量，然后由使用者自行管理如何编译）</p>
-<p>其会设置一些常用的变量</p>
-<ul>
-<li><code>&lt;lowercaseName&gt;_SOURCE_DIR</code>，指定的库源代码地址</li>
-<li><code>&lt;lowercaseName&gt;_BINARY_DIR</code>，指定库的编译输出地址</li>
-</ul>
-<p>当我们使用的时候就可以通过 <code>add_subdirectory</code>
-进行添加，也可以手写 <code>CMakeLists.txt</code> 来手动添加库</p></li>
-</ul>
-<p>其中有点需要注意的就是 <code>FetchContent_MakeAvailable</code>
-需要在所有的 <code>FetchContent_Declare</code>
-声明完成后再写，这样可以确保我们依赖加载完全了，因为一个依赖有可能使用
-<code>FetchContent</code> 添加另外一个依赖（隐式依赖）</p>
-<blockquote>
-<p><a
-href="https://cmake.org/cmake/help/latest/module/FetchContent.html#fetchcontent">FetchContent
-— CMake 3.27.4 Documentation</a></p>
-<p>Projects should aim to declare the details of all dependencies they
-might use before they call <code>FetchContent_MakeAvailable()</code> for
-any of them. This ensures that if any of the dependencies are also
-sub-dependencies of one or more of the others, the main project still
-controls the details that will be used (because it will declare them
-first before the dependencies get a chance to).</p>
-</blockquote>
-<h1 id="实际使用">实际使用</h1>
-<p>下面给出一个实际案例：</p>
-<p>我们需要添加四个依赖：<code>fmt</code>，<code>glfw</code>，<code>imgui</code>，<code>glad</code></p>
-<p>对于前三个，我们都可以使用 <code>FetchContent</code> 来添加，由于
-<code>glad</code>
-是使用网站生成的，我们需要手动将其将其添加到源代码库中。</p>
-<p><code>fmt</code> 库的添加代码</p>
-<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line">FetchContent_Declare(</span><br><span class="line">    fmt</span><br><span class="line">    GIT_REPOSITORY https://github.com/fmtlib/fmt.git</span><br><span class="line">    GIT_TAG <span class="number">10.1</span>.<span class="number">0</span></span><br><span class="line">    GIT_SHALLOW <span class="keyword">ON</span></span><br><span class="line">)</span><br><span class="line">FetchContent_MakeAvailable(fmt)</span><br></pre></td></tr></table></figure>
-
-<p>这里我们通过 <code>GIT_REPOSITORY</code> 指定了待下载库的 git
-仓库连接，同时通过 <code>GIT_TAG</code> 指定我们需要的版本（也可使用
-commit 号），最后的 <code>GIT_SHALLOW</code> 表示我们在
-<code>git clone</code> 时设置
-<code>--depth 1</code>，这样可以确保我们仅下载需要的部分，而不下载完整的
-git 仓库，减少下载时间。</p>
-<p>由于 <code>fmt</code> 库本身比较简单，且是一个 header-only
-的库，我们直接通过 <code>FetchContent_MakeAvailable</code>
-将其添加到代码中即可，当我们需要使用该库时直接链接即可，例如</p>
-<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line"><span class="keyword">add_executable</span>(test_fmt main.cpp)</span><br><span class="line"><span class="keyword">target_link_libraries</span>(test_fmt PRIVATE fmt::fmt)</span><br></pre></td></tr></table></figure>
-
-<p><code>glfw</code> 库的添加代码</p>
-<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line">FetchContent_Declare(</span><br><span class="line">    glfw</span><br><span class="line">    GIT_REPOSITORY https://github.com/glfw/glfw</span><br><span class="line">    GIT_TAG <span class="number">3.3</span>.<span class="number">8</span></span><br><span class="line">    GIT_SHALLOW <span class="keyword">ON</span></span><br><span class="line">)</span><br><span class="line">FetchContent_Populate(glfw)</span><br><span class="line"><span class="keyword">set</span>(GLFW_BUILD_TESTS <span class="keyword">OFF</span>)</span><br><span class="line"><span class="keyword">add_subdirectory</span>(<span class="variable">$&#123;glfw_SOURCE_DIR&#125;</span>)</span><br><span class="line"><span class="keyword">add_library</span>(glfw::glfw ALIAS glfw)</span><br></pre></td></tr></table></figure>
-
-<p>由于 glfw 库包含一堆 tests 和 examples
-，我们可能并不想生成这些文件，为此我们可以通过
-<code>FetchContent_Populate</code> 来手动配置 glfw 的编译。</p>
-<p>我们在添加 glfw 编译目标之前通过参数 <code>GLFW_BUILD_TESTS</code>
-来取消生成 tests，然后将其添加到代码库中，最终由于 glfw
-没有提供别名输出（<code>glfw::glfw</code>，可以用来防止打错名字，例如我们直接错写成
-<code>glfv</code> 时，没有这个依赖库 cmake 也不会报错，但是写成
-<code>glfw::glfv</code> 时没有这个依赖库 cmake
-会报错，提示我们找不到这个依赖库），我们手动为其添加一个别名。</p>
-<p><code>imgui</code> 库的添加代码</p>
-<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line">FetchContent_Populate(imgui)</span><br><span class="line">add_imgui(</span><br><span class="line">  USE_STD_STRING </span><br><span class="line">  USE_FREETYPE </span><br><span class="line">  IMGUI_DIR <span class="variable">$&#123;imgui_SOURCE_DIR&#125;</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
-
-<p>对于 imgui 而言稍微复杂一点，因为其并没有提供开箱即用的
-<code>CMakeLists.txt</code>
-供我们使用，我们需要手动配置使用哪些文件进行编译，为此我们写了一个小函数
-<code>add_imgui</code> 来辅助配置，完整代码如下</p>
-<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span>(add_imgui)</span><br><span class="line">  <span class="keyword">set</span>(options USE_STD_STRING USE_FREETYPE)</span><br><span class="line">  <span class="keyword">set</span>(one_value_args IMGUI_DIR)</span><br><span class="line">  <span class="keyword">set</span>(multi_value_args <span class="string">&quot;&quot;</span>)</span><br><span class="line">  <span class="keyword">cmake_parse_arguments</span>(ARGS <span class="string">&quot;$&#123;options&#125;&quot;</span> <span class="string">&quot;$&#123;one_value_args&#125;&quot;</span></span><br><span class="line">                             <span class="string">&quot;$&#123;multi_value_args&#125;&quot;</span> <span class="variable">$&#123;ARGN&#125;</span> )</span><br><span class="line"></span><br><span class="line">  <span class="keyword">message</span>(STATUS <span class="string">&quot;add imgui (opengl3 + glfw) [ STATIC ] with c++17&quot;</span>)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">list</span>(APPEND CMAKE_MESSAGE_INDENT <span class="string">&quot;  &quot;</span>)</span><br><span class="line"></span><br><span class="line">  <span class="comment"># Using dear imgui via a shared library is not recommended, </span></span><br><span class="line">  <span class="comment"># because we don&#x27;t guarantee backward nor forward ABI compatibility </span></span><br><span class="line">  <span class="comment"># (also function call overhead, as dear imgui is a call-heavy API)</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># we should use imgui as static library</span></span><br><span class="line">  <span class="keyword">add_library</span>(imgui STATIC</span><br><span class="line">    <span class="variable">$&#123;ARGS_IMGUI_DIR&#125;</span>/imgui_demo.cpp </span><br><span class="line">    <span class="variable">$&#123;ARGS_IMGUI_DIR&#125;</span>/imgui_draw.cpp </span><br><span class="line">    <span class="variable">$&#123;ARGS_IMGUI_DIR&#125;</span>/imgui_tables.cpp </span><br><span class="line">    <span class="variable">$&#123;ARGS_IMGUI_DIR&#125;</span>/imgui_widgets.cpp </span><br><span class="line">    <span class="variable">$&#123;ARGS_IMGUI_DIR&#125;</span>/imgui.cpp </span><br><span class="line">  )</span><br><span class="line"></span><br><span class="line">  <span class="keyword">add_library</span>(imgui::imgui ALIAS imgui)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">set_property</span>(<span class="keyword">TARGET</span> imgui PROPERTY CXX_STANDARD <span class="number">17</span>)</span><br><span class="line">  <span class="keyword">set_property</span>(<span class="keyword">TARGET</span> imgui PROPERTY CXX_STANDARD_REQUIRED <span class="keyword">ON</span>)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">target_include_directories</span>(imgui PUBLIC </span><br><span class="line">    <span class="variable">$&#123;ARGS_IMGUI_DIR&#125;</span></span><br><span class="line">  )</span><br><span class="line">  <span class="comment"># backends</span></span><br><span class="line">  <span class="keyword">target_sources</span>(imgui PUBLIC     </span><br><span class="line">    <span class="variable">$&#123;ARGS_IMGUI_DIR&#125;</span>/backends/imgui_impl_opengl3.cpp</span><br><span class="line">    <span class="variable">$&#123;ARGS_IMGUI_DIR&#125;</span>/backends/imgui_impl_glfw.cpp</span><br><span class="line">  )</span><br><span class="line"></span><br><span class="line">  <span class="keyword">target_include_directories</span>(imgui PUBLIC </span><br><span class="line">    <span class="variable">$&#123;ARGS_IMGUI_DIR&#125;</span>/backends</span><br><span class="line">  )</span><br><span class="line"></span><br><span class="line">  <span class="keyword">target_link_libraries</span>(imgui PUBLIC </span><br><span class="line">    glfw::glfw</span><br><span class="line">  )</span><br><span class="line">  </span><br><span class="line">  <span class="comment"># extensions</span></span><br><span class="line">  <span class="keyword">if</span> ( ARGS_USE_STD_STRING )</span><br><span class="line">    <span class="keyword">message</span>(STATUS <span class="string">&quot;enable std::string support for imgui::InputText&quot;</span>)</span><br><span class="line">    <span class="keyword">target_sources</span>(imgui PUBLIC </span><br><span class="line">      <span class="variable">$&#123;ARGS_IMGUI_DIR&#125;</span>/misc/cpp/imgui_stdlib.cpp</span><br><span class="line">    )</span><br><span class="line">    <span class="keyword">target_include_directories</span>(imgui PUBLIC </span><br><span class="line">      <span class="variable">$&#123;ARGS_IMGUI_DIR&#125;</span>/misc/cpp</span><br><span class="line">    )</span><br><span class="line">  <span class="keyword">endif</span>()</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">if</span> ( ARGS_USE_FREETYPE )</span><br><span class="line">    <span class="keyword">find_package</span>(Freetype QUIET)</span><br><span class="line">    <span class="keyword">if</span>(Freetype_FOUND)</span><br><span class="line">      <span class="keyword">message</span>(STATUS <span class="string">&quot;enable freetype for imgui&quot;</span>)</span><br><span class="line">      <span class="keyword">target_sources</span>(imgui PRIVATE </span><br><span class="line">        <span class="variable">$&#123;ARGS_IMGUI_DIR&#125;</span>/misc/freetype/imgui_freetype.cpp</span><br><span class="line">      )</span><br><span class="line">      <span class="keyword">target_include_directories</span>(imgui PRIVATE </span><br><span class="line">        <span class="variable">$&#123;ARGS_IMGUI_DIR&#125;</span>/misc/freetype</span><br><span class="line">      )</span><br><span class="line">      <span class="keyword">target_link_libraries</span>(imgui PRIVATE </span><br><span class="line">        Freetype::Freetype</span><br><span class="line">      )</span><br><span class="line">      <span class="keyword">target_compile_definitions</span>(imgui PRIVATE </span><br><span class="line">        IMGUI_ENABLE_FREETYPE</span><br><span class="line">      )</span><br><span class="line">    <span class="keyword">else</span>()</span><br><span class="line">    <span class="keyword">message</span>(STATUS <span class="string">&quot;disable freetype for imgui&quot;</span>)</span><br><span class="line">    <span class="keyword">endif</span>()</span><br><span class="line">  <span class="keyword">endif</span>()</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">list</span>(POP_BACK CMAKE_MESSAGE_INDENT)</span><br><span class="line"></span><br><span class="line"><span class="keyword">endfunction</span>(add_imgui)</span><br></pre></td></tr></table></figure>
-
-<p>函数 <code>add_imgui</code> 通过提供 imgui
-源代码目录以及一些配置项来简化配置流程，其默认使用 glfw + opengl
-作为渲染后端。</p>
-<p>然后对于 glad 库（用来加载 OpenGL 函数），其配置代码也十分简单</p>
-<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 配置为动态链接库</span></span><br><span class="line"><span class="keyword">add_library</span>(glad SHARED src/gl.c)</span><br><span class="line"><span class="keyword">target_compile_definitions</span>(glad PRIVATE -DGLAD_API_CALL_EXPORT_BUILD)</span><br><span class="line"><span class="keyword">target_compile_definitions</span>(glad PUBLIC -DGLAD_API_CALL_EXPORT)</span><br><span class="line"><span class="keyword">target_include_directories</span>(glad PUBLIC <span class="keyword">include</span>)</span><br><span class="line"><span class="keyword">add_library</span>(glad::glad ALIAS glad)</span><br></pre></td></tr></table></figure>
-
-<h1 id="externalproject-添加依赖">ExternalProject 添加依赖</h1>
-<p>这个也是 CMake 中下载依赖的一种方式，其早于 <code>FetchContent</code>
-出现，可以提供和 <code>FetchContent</code>
-类似的功能，主要通过一个巨大的函数进行依赖配置</p>
-<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line">ExternalProject_Add</span><br></pre></td></tr></table></figure>
-
-<p>我们可以在其中指定编译的命令等，也可以使用
-<code>ExternalProject_Add_Step</code>
-来手动管理依赖的编译步骤，不过这种方式个人感觉没有
-<code>FetchContent_Declare</code> 和 <code>FetchContent_Populate</code>
-使用来的方便，就不过多介绍了，网上也有很多相关的教程。</p>
-<blockquote>
-<p><a
-href="https://cmake.org/cmake/help/latest/module/ExternalProject.html">ExternalProject
-— CMake 3.27.4 Documentation</a></p>
-</blockquote>
-<h1 id="杂项">杂项</h1>
-<p><strong>在 Windows 下使用动态链接库时可能会因为找不到 dll
-库的位置而无法启动应用</strong>，我们需要手动将动态链接库（例如
-<code>glad.dll</code>
-）拷贝到可执行环境目录下，才可以正常运行，但是每次手动拷贝太麻烦了，cmake
-也可以自动帮我们完成这一任务。</p>
-<p>（图片太大可能看不清字，写的是：<strong>由于找不到
-glad.dll，无法继续执行代码，重新安装程序可能会解决此问题。</strong>）</p>
-<p><em>比较坑的点在于 Windows 下使用 VSCode 完全看不到这个错误提示，而在
-Visual Studio 中就可以看到，恶心坏了</em></p>
-<p><img data-src="/posts/dbe7/image-20230827220434585.png" /></p>
-<p>解决方案有很多：</p>
-<ul>
-<li>强制所有编译输出到同一个目录下，这样就可以确保一定能找到了（个人感觉比较丑陋，只能算一个
-workaround）</li>
-<li>找到该应用所有的依赖库，将其拷贝到可执行文件输出路径下（<strong>关键在于如何找到可执行文件的所有依赖库呢？</strong>）</li>
-</ul>
-<p>这个问题肯定不止我们一个人碰到过，cmake 给我们提供好了这个变量</p>
-<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line"><span class="comment"># %target-name% 对应的所有运行时依赖</span></span><br><span class="line">$&lt;TARGET_RUNTIME_DLLS:%<span class="keyword">target</span>-name%&gt;</span><br></pre></td></tr></table></figure>
-
-<p>以及</p>
-<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line"><span class="comment"># %target-name% 的可执行文件输出路径</span></span><br><span class="line">$&lt;TARGET_FILE_DIR:%<span class="keyword">target</span>-name%&gt;</span><br></pre></td></tr></table></figure>
-
-<p>这样我们可以通过 <code>add_custom_command</code>
-来进行自动拷贝了，完整代码如下</p>
-<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line"><span class="keyword">add_custom_command</span>(<span class="keyword">TARGET</span> test_imgui POST_BUILD</span><br><span class="line">  <span class="keyword">COMMAND</span> <span class="variable">$&#123;CMAKE_COMMAND&#125;</span> -E copy -t </span><br><span class="line">  $&lt;TARGET_FILE_DIR:test_imgui&gt; </span><br><span class="line">  $&lt;TARGET_RUNTIME_DLLS:test_imgui&gt;</span><br><span class="line">  COMMAND_EXPAND_LISTS</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
-
-<p>这一段代码来源于 cmake 官方文档（看来是需要这个功能的人太多了）</p>
-<blockquote>
-<p><a
-href="https://cmake.org/cmake/help/latest/manual/cmake-generator-expressions.7.html#genex:TARGET_RUNTIME_DLLS">genex:TARGET_RUNTIME_DLLS</a></p>
-</blockquote>
-<p>当然，这个功能要求 cmake 的版本比较新，需要在 cmake 版本高于
-3.21，记得更新 <code>cmake_minimum_required</code></p>
-<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line"><span class="keyword">cmake_minimum_required</span>(VERSION <span class="number">3.21</span>)</span><br></pre></td></tr></table></figure>
-]]></content>
-      <categories>
-        <category>C++学习笔记</category>
-      </categories>
-      <tags>
-        <tag>C++</tag>
-        <tag>CMake</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Antlr4使用</title>
     <url>/posts/b5fa/</url>
     <content><![CDATA[<h1 id="helloantlr4">Hello，ANTLR4</h1>
@@ -3963,6 +3806,163 @@ ANTLR 作者写的那本书 ANTLR 4权威指南，不过网上的 pdf
       </tags>
   </entry>
   <entry>
+    <title>CMake依赖管理</title>
+    <url>/posts/dbe7/</url>
+    <content><![CDATA[<h1 id="git-submodule-管理依赖">Git Submodule 管理依赖</h1>
+<p>由于 C++
+自身的特殊性，要想实现跨平台代码，只能使用源码分发（也有类似于 Conan 的
+C++ 依赖解决方案，但是对于一些冷门的库可能就不支持，还是得自己写）。</p>
+<p>最简单的办法就是通过 git
+的子模块将其添加到项目中，这种依赖管理方式确保可以访问到源代码，其缺点也很明显，我们在下载库的时候需要通过下载依赖库（也就是子模块），如果子模块较大可能下载起来比较耗时。</p>
+<p>前面一个笔记中也提到了，要想删除添加的 git submodule
+十分麻烦，没有一个简单的命令可以直接删除，需要手动调整需要文件才能删除干净。</p>
+<h1 id="fetchcontent-模块添加依赖">FetchContent 模块添加依赖</h1>
+<p>而 FetchContent 是 CMake 提供的一种新式依赖管理方案（在 3.11
+版本首次出现），其在 CMake
+的配置过程中自动下载依赖项并配置（或者由用户自行配置）。这样可以保持我们的代码库整洁。</p>
+<span id="more"></span>
+
+<p>使用时首先引入这个模块</p>
+<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line"><span class="keyword">include</span>(FetchContent)</span><br></pre></td></tr></table></figure>
+
+<p>主要包含下面三个函数</p>
+<ul>
+<li><p><code>FetchContent_Declare</code>：用来指定依赖库的下载路径（git
+仓库地址或者 URL 链接，其会自动解压缩）</p></li>
+<li><p><code>FetchContent_MakeAvailable</code>：自动配置依赖库（相当于调用了
+<code>add_subdirectory</code>）</p></li>
+<li><p><code>FetchContent_Populate</code>：手动配置依赖库，这个函数会帮我们配置好一系列变量，然后由使用者自行管理如何编译）</p>
+<p>其会设置一些常用的变量</p>
+<ul>
+<li><code>&lt;lowercaseName&gt;_SOURCE_DIR</code>，指定的库源代码地址</li>
+<li><code>&lt;lowercaseName&gt;_BINARY_DIR</code>，指定库的编译输出地址</li>
+</ul>
+<p>当我们使用的时候就可以通过 <code>add_subdirectory</code>
+进行添加，也可以手写 <code>CMakeLists.txt</code> 来手动添加库</p></li>
+</ul>
+<p>其中有点需要注意的就是 <code>FetchContent_MakeAvailable</code>
+需要在所有的 <code>FetchContent_Declare</code>
+声明完成后再写，这样可以确保我们依赖加载完全了，因为一个依赖有可能使用
+<code>FetchContent</code> 添加另外一个依赖（隐式依赖）</p>
+<blockquote>
+<p><a
+href="https://cmake.org/cmake/help/latest/module/FetchContent.html#fetchcontent">FetchContent
+— CMake 3.27.4 Documentation</a></p>
+<p>Projects should aim to declare the details of all dependencies they
+might use before they call <code>FetchContent_MakeAvailable()</code> for
+any of them. This ensures that if any of the dependencies are also
+sub-dependencies of one or more of the others, the main project still
+controls the details that will be used (because it will declare them
+first before the dependencies get a chance to).</p>
+</blockquote>
+<h1 id="实际使用">实际使用</h1>
+<p>下面给出一个实际案例：</p>
+<p>我们需要添加四个依赖：<code>fmt</code>，<code>glfw</code>，<code>imgui</code>，<code>glad</code></p>
+<p>对于前三个，我们都可以使用 <code>FetchContent</code> 来添加，由于
+<code>glad</code>
+是使用网站生成的，我们需要手动将其将其添加到源代码库中。</p>
+<p><code>fmt</code> 库的添加代码</p>
+<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line">FetchContent_Declare(</span><br><span class="line">    fmt</span><br><span class="line">    GIT_REPOSITORY https://github.com/fmtlib/fmt.git</span><br><span class="line">    GIT_TAG <span class="number">10.1</span>.<span class="number">0</span></span><br><span class="line">    GIT_SHALLOW <span class="keyword">ON</span></span><br><span class="line">)</span><br><span class="line">FetchContent_MakeAvailable(fmt)</span><br></pre></td></tr></table></figure>
+
+<p>这里我们通过 <code>GIT_REPOSITORY</code> 指定了待下载库的 git
+仓库连接，同时通过 <code>GIT_TAG</code> 指定我们需要的版本（也可使用
+commit 号），最后的 <code>GIT_SHALLOW</code> 表示我们在
+<code>git clone</code> 时设置
+<code>--depth 1</code>，这样可以确保我们仅下载需要的部分，而不下载完整的
+git 仓库，减少下载时间。</p>
+<p>由于 <code>fmt</code> 库本身比较简单，且是一个 header-only
+的库，我们直接通过 <code>FetchContent_MakeAvailable</code>
+将其添加到代码中即可，当我们需要使用该库时直接链接即可，例如</p>
+<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line"><span class="keyword">add_executable</span>(test_fmt main.cpp)</span><br><span class="line"><span class="keyword">target_link_libraries</span>(test_fmt PRIVATE fmt::fmt)</span><br></pre></td></tr></table></figure>
+
+<p><code>glfw</code> 库的添加代码</p>
+<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line">FetchContent_Declare(</span><br><span class="line">    glfw</span><br><span class="line">    GIT_REPOSITORY https://github.com/glfw/glfw</span><br><span class="line">    GIT_TAG <span class="number">3.3</span>.<span class="number">8</span></span><br><span class="line">    GIT_SHALLOW <span class="keyword">ON</span></span><br><span class="line">)</span><br><span class="line">FetchContent_Populate(glfw)</span><br><span class="line"><span class="keyword">set</span>(GLFW_BUILD_TESTS <span class="keyword">OFF</span>)</span><br><span class="line"><span class="keyword">add_subdirectory</span>(<span class="variable">$&#123;glfw_SOURCE_DIR&#125;</span>)</span><br><span class="line"><span class="keyword">add_library</span>(glfw::glfw ALIAS glfw)</span><br></pre></td></tr></table></figure>
+
+<p>由于 glfw 库包含一堆 tests 和 examples
+，我们可能并不想生成这些文件，为此我们可以通过
+<code>FetchContent_Populate</code> 来手动配置 glfw 的编译。</p>
+<p>我们在添加 glfw 编译目标之前通过参数 <code>GLFW_BUILD_TESTS</code>
+来取消生成 tests，然后将其添加到代码库中，最终由于 glfw
+没有提供别名输出（<code>glfw::glfw</code>，可以用来防止打错名字，例如我们直接错写成
+<code>glfv</code> 时，没有这个依赖库 cmake 也不会报错，但是写成
+<code>glfw::glfv</code> 时没有这个依赖库 cmake
+会报错，提示我们找不到这个依赖库），我们手动为其添加一个别名。</p>
+<p><code>imgui</code> 库的添加代码</p>
+<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line">FetchContent_Populate(imgui)</span><br><span class="line">add_imgui(</span><br><span class="line">  USE_STD_STRING </span><br><span class="line">  USE_FREETYPE </span><br><span class="line">  IMGUI_DIR <span class="variable">$&#123;imgui_SOURCE_DIR&#125;</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>对于 imgui 而言稍微复杂一点，因为其并没有提供开箱即用的
+<code>CMakeLists.txt</code>
+供我们使用，我们需要手动配置使用哪些文件进行编译，为此我们写了一个小函数
+<code>add_imgui</code> 来辅助配置，完整代码如下</p>
+<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span>(add_imgui)</span><br><span class="line">  <span class="keyword">set</span>(options USE_STD_STRING USE_FREETYPE)</span><br><span class="line">  <span class="keyword">set</span>(one_value_args IMGUI_DIR)</span><br><span class="line">  <span class="keyword">set</span>(multi_value_args <span class="string">&quot;&quot;</span>)</span><br><span class="line">  <span class="keyword">cmake_parse_arguments</span>(ARGS <span class="string">&quot;$&#123;options&#125;&quot;</span> <span class="string">&quot;$&#123;one_value_args&#125;&quot;</span></span><br><span class="line">                             <span class="string">&quot;$&#123;multi_value_args&#125;&quot;</span> <span class="variable">$&#123;ARGN&#125;</span> )</span><br><span class="line"></span><br><span class="line">  <span class="keyword">message</span>(STATUS <span class="string">&quot;add imgui (opengl3 + glfw) [ STATIC ] with c++17&quot;</span>)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">list</span>(APPEND CMAKE_MESSAGE_INDENT <span class="string">&quot;  &quot;</span>)</span><br><span class="line"></span><br><span class="line">  <span class="comment"># Using dear imgui via a shared library is not recommended, </span></span><br><span class="line">  <span class="comment"># because we don&#x27;t guarantee backward nor forward ABI compatibility </span></span><br><span class="line">  <span class="comment"># (also function call overhead, as dear imgui is a call-heavy API)</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># we should use imgui as static library</span></span><br><span class="line">  <span class="keyword">add_library</span>(imgui STATIC</span><br><span class="line">    <span class="variable">$&#123;ARGS_IMGUI_DIR&#125;</span>/imgui_demo.cpp </span><br><span class="line">    <span class="variable">$&#123;ARGS_IMGUI_DIR&#125;</span>/imgui_draw.cpp </span><br><span class="line">    <span class="variable">$&#123;ARGS_IMGUI_DIR&#125;</span>/imgui_tables.cpp </span><br><span class="line">    <span class="variable">$&#123;ARGS_IMGUI_DIR&#125;</span>/imgui_widgets.cpp </span><br><span class="line">    <span class="variable">$&#123;ARGS_IMGUI_DIR&#125;</span>/imgui.cpp </span><br><span class="line">  )</span><br><span class="line"></span><br><span class="line">  <span class="keyword">add_library</span>(imgui::imgui ALIAS imgui)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">set_property</span>(<span class="keyword">TARGET</span> imgui PROPERTY CXX_STANDARD <span class="number">17</span>)</span><br><span class="line">  <span class="keyword">set_property</span>(<span class="keyword">TARGET</span> imgui PROPERTY CXX_STANDARD_REQUIRED <span class="keyword">ON</span>)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">target_include_directories</span>(imgui PUBLIC </span><br><span class="line">    <span class="variable">$&#123;ARGS_IMGUI_DIR&#125;</span></span><br><span class="line">  )</span><br><span class="line">  <span class="comment"># backends</span></span><br><span class="line">  <span class="keyword">target_sources</span>(imgui PUBLIC     </span><br><span class="line">    <span class="variable">$&#123;ARGS_IMGUI_DIR&#125;</span>/backends/imgui_impl_opengl3.cpp</span><br><span class="line">    <span class="variable">$&#123;ARGS_IMGUI_DIR&#125;</span>/backends/imgui_impl_glfw.cpp</span><br><span class="line">  )</span><br><span class="line"></span><br><span class="line">  <span class="keyword">target_include_directories</span>(imgui PUBLIC </span><br><span class="line">    <span class="variable">$&#123;ARGS_IMGUI_DIR&#125;</span>/backends</span><br><span class="line">  )</span><br><span class="line"></span><br><span class="line">  <span class="keyword">target_link_libraries</span>(imgui PUBLIC </span><br><span class="line">    glfw::glfw</span><br><span class="line">  )</span><br><span class="line">  </span><br><span class="line">  <span class="comment"># extensions</span></span><br><span class="line">  <span class="keyword">if</span> ( ARGS_USE_STD_STRING )</span><br><span class="line">    <span class="keyword">message</span>(STATUS <span class="string">&quot;enable std::string support for imgui::InputText&quot;</span>)</span><br><span class="line">    <span class="keyword">target_sources</span>(imgui PUBLIC </span><br><span class="line">      <span class="variable">$&#123;ARGS_IMGUI_DIR&#125;</span>/misc/cpp/imgui_stdlib.cpp</span><br><span class="line">    )</span><br><span class="line">    <span class="keyword">target_include_directories</span>(imgui PUBLIC </span><br><span class="line">      <span class="variable">$&#123;ARGS_IMGUI_DIR&#125;</span>/misc/cpp</span><br><span class="line">    )</span><br><span class="line">  <span class="keyword">endif</span>()</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">if</span> ( ARGS_USE_FREETYPE )</span><br><span class="line">    <span class="keyword">find_package</span>(Freetype QUIET)</span><br><span class="line">    <span class="keyword">if</span>(Freetype_FOUND)</span><br><span class="line">      <span class="keyword">message</span>(STATUS <span class="string">&quot;enable freetype for imgui&quot;</span>)</span><br><span class="line">      <span class="keyword">target_sources</span>(imgui PRIVATE </span><br><span class="line">        <span class="variable">$&#123;ARGS_IMGUI_DIR&#125;</span>/misc/freetype/imgui_freetype.cpp</span><br><span class="line">      )</span><br><span class="line">      <span class="keyword">target_include_directories</span>(imgui PRIVATE </span><br><span class="line">        <span class="variable">$&#123;ARGS_IMGUI_DIR&#125;</span>/misc/freetype</span><br><span class="line">      )</span><br><span class="line">      <span class="keyword">target_link_libraries</span>(imgui PRIVATE </span><br><span class="line">        Freetype::Freetype</span><br><span class="line">      )</span><br><span class="line">      <span class="keyword">target_compile_definitions</span>(imgui PRIVATE </span><br><span class="line">        IMGUI_ENABLE_FREETYPE</span><br><span class="line">      )</span><br><span class="line">    <span class="keyword">else</span>()</span><br><span class="line">    <span class="keyword">message</span>(STATUS <span class="string">&quot;disable freetype for imgui&quot;</span>)</span><br><span class="line">    <span class="keyword">endif</span>()</span><br><span class="line">  <span class="keyword">endif</span>()</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">list</span>(POP_BACK CMAKE_MESSAGE_INDENT)</span><br><span class="line"></span><br><span class="line"><span class="keyword">endfunction</span>(add_imgui)</span><br></pre></td></tr></table></figure>
+
+<p>函数 <code>add_imgui</code> 通过提供 imgui
+源代码目录以及一些配置项来简化配置流程，其默认使用 glfw + opengl
+作为渲染后端。</p>
+<p>然后对于 glad 库（用来加载 OpenGL 函数），其配置代码也十分简单</p>
+<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 配置为动态链接库</span></span><br><span class="line"><span class="keyword">add_library</span>(glad SHARED src/gl.c)</span><br><span class="line"><span class="keyword">target_compile_definitions</span>(glad PRIVATE -DGLAD_API_CALL_EXPORT_BUILD)</span><br><span class="line"><span class="keyword">target_compile_definitions</span>(glad PUBLIC -DGLAD_API_CALL_EXPORT)</span><br><span class="line"><span class="keyword">target_include_directories</span>(glad PUBLIC <span class="keyword">include</span>)</span><br><span class="line"><span class="keyword">add_library</span>(glad::glad ALIAS glad)</span><br></pre></td></tr></table></figure>
+
+<h1 id="externalproject-添加依赖">ExternalProject 添加依赖</h1>
+<p>这个也是 CMake 中下载依赖的一种方式，其早于 <code>FetchContent</code>
+出现，可以提供和 <code>FetchContent</code>
+类似的功能，主要通过一个巨大的函数进行依赖配置</p>
+<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line">ExternalProject_Add</span><br></pre></td></tr></table></figure>
+
+<p>我们可以在其中指定编译的命令等，也可以使用
+<code>ExternalProject_Add_Step</code>
+来手动管理依赖的编译步骤，不过这种方式个人感觉没有
+<code>FetchContent_Declare</code> 和 <code>FetchContent_Populate</code>
+使用来的方便，就不过多介绍了，网上也有很多相关的教程。</p>
+<blockquote>
+<p><a
+href="https://cmake.org/cmake/help/latest/module/ExternalProject.html">ExternalProject
+— CMake 3.27.4 Documentation</a></p>
+</blockquote>
+<h1 id="杂项">杂项</h1>
+<p><strong>在 Windows 下使用动态链接库时可能会因为找不到 dll
+库的位置而无法启动应用</strong>，我们需要手动将动态链接库（例如
+<code>glad.dll</code>
+）拷贝到可执行环境目录下，才可以正常运行，但是每次手动拷贝太麻烦了，cmake
+也可以自动帮我们完成这一任务。</p>
+<p>（图片太大可能看不清字，写的是：<strong>由于找不到
+glad.dll，无法继续执行代码，重新安装程序可能会解决此问题。</strong>）</p>
+<p><em>比较坑的点在于 Windows 下使用 VSCode 完全看不到这个错误提示，而在
+Visual Studio 中就可以看到，恶心坏了</em></p>
+<p><img data-src="/posts/dbe7/image-20230827220434585.png" /></p>
+<p>解决方案有很多：</p>
+<ul>
+<li>强制所有编译输出到同一个目录下，这样就可以确保一定能找到了（个人感觉比较丑陋，只能算一个
+workaround）</li>
+<li>找到该应用所有的依赖库，将其拷贝到可执行文件输出路径下（<strong>关键在于如何找到可执行文件的所有依赖库呢？</strong>）</li>
+</ul>
+<p>这个问题肯定不止我们一个人碰到过，cmake 给我们提供好了这个变量</p>
+<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line"><span class="comment"># %target-name% 对应的所有运行时依赖</span></span><br><span class="line">$&lt;TARGET_RUNTIME_DLLS:%<span class="keyword">target</span>-name%&gt;</span><br></pre></td></tr></table></figure>
+
+<p>以及</p>
+<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line"><span class="comment"># %target-name% 的可执行文件输出路径</span></span><br><span class="line">$&lt;TARGET_FILE_DIR:%<span class="keyword">target</span>-name%&gt;</span><br></pre></td></tr></table></figure>
+
+<p>这样我们可以通过 <code>add_custom_command</code>
+来进行自动拷贝了，完整代码如下</p>
+<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line"><span class="keyword">add_custom_command</span>(<span class="keyword">TARGET</span> test_imgui POST_BUILD</span><br><span class="line">  <span class="keyword">COMMAND</span> <span class="variable">$&#123;CMAKE_COMMAND&#125;</span> -E copy -t </span><br><span class="line">  $&lt;TARGET_FILE_DIR:test_imgui&gt; </span><br><span class="line">  $&lt;TARGET_RUNTIME_DLLS:test_imgui&gt;</span><br><span class="line">  COMMAND_EXPAND_LISTS</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>这一段代码来源于 cmake 官方文档（看来是需要这个功能的人太多了）</p>
+<blockquote>
+<p><a
+href="https://cmake.org/cmake/help/latest/manual/cmake-generator-expressions.7.html#genex:TARGET_RUNTIME_DLLS">genex:TARGET_RUNTIME_DLLS</a></p>
+</blockquote>
+<p>当然，这个功能要求 cmake 的版本比较新，需要在 cmake 版本高于
+3.21，记得更新 <code>cmake_minimum_required</code></p>
+<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line"><span class="keyword">cmake_minimum_required</span>(VERSION <span class="number">3.21</span>)</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>C++学习笔记</category>
+      </categories>
+      <tags>
+        <tag>C++</tag>
+        <tag>CMake</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Git 常用操作</title>
     <url>/posts/8de3/</url>
     <content><![CDATA[<h1 id="git-clone">git clone</h1>
@@ -4142,14 +4142,285 @@ origin 的分支（即远端分支），并通过 <code>--soft</code>
       </tags>
   </entry>
   <entry>
+    <title>Conan使用</title>
+    <url>/posts/2944/</url>
+    <content><![CDATA[<p><a href="https://conan.io/">Conan</a> 作为一个 C++
+包管理工具，相对于之前介绍的 CMake FetchContent 或者 ExternalProject
+方式添加第三方依赖会更加简单，但是<del>凡是碰上了
+C++，都简单不到哪去，</del>学习成本还是有一点的，就用一篇笔记介绍一下
+Conan 的基本使用。</p>
+<h1 id="安装-conan">安装 Conan</h1>
+<p>由于我们后面会大量使用 conanfile.py，且为使用 Python 插件进行
+<code>conanfile.py</code> 的代码补全，直接使用 pyhton 库的方式安装
+conan，使用如下命令进行安装</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">python -m pip install conan</span><br></pre></td></tr></table></figure>
+
+<p>安装之后例行检查一下版本</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">conan --version</span><br></pre></td></tr></table></figure>
+
+<p><img data-src="/posts/2944/image-20250905214611421.png" /></p>
+<span id="more"></span>
+
+<h1 id="conan-模板项目">Conan 模板项目</h1>
+<p>通过 <code>conan new</code> 命令可以快速创建 c++ 模板项目</p>
+<p>对于基于 cmake 的 c++ 程序而言，使用 <code>cmake_exe</code> 和
+<code>cmake_lib</code>，conan 也支持自行指定代码模板，稍后会结合 VS Code
+提供一个添加 vscode 支持的 conan cmake 模板。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">conan new cmake_exe -d name=hello-conan</span><br></pre></td></tr></table></figure>
+
+<p>执行命令后，其会自动帮我创建好一些必要的文件，如下图所示</p>
+<p><img data-src="/posts/2944/image-20250905215352708.png" /></p>
+<p>其目录结构如下所示</p>
+<p><img data-src="/posts/2944/image-20250905215605185.png"
+style="zoom: 80%;" /></p>
+<p>c++ 源码和头文件放在 <code>src</code> 目录下，同时还生成了一个
+test_package 目录，用于测试当前包，但是暂时用不上</p>
+<h1 id="hello-world">Hello World</h1>
+<p>之后我们依次输入以下命令，完成样例项目的编译和运行</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">conan profile detect --force</span><br><span class="line">conan install . --building=missing</span><br><span class="line">cmake --list-presets</span><br><span class="line">cmake . --preset conan-default</span><br><span class="line">cmake --list-presets build</span><br><span class="line">cmake --build --preset conan-release</span><br><span class="line">cmake --install build --prefix install</span><br><span class="line">./install/bin/hello-conan.exe</span><br></pre></td></tr></table></figure>
+
+<p>下面简单介绍一下每一步在做什么</p>
+<p>step1（代码行1）：生成编译工具链配置</p>
+<p>step2（代码行2）：下载并安装三方库依赖</p>
+<p>step3（代码行3~4）：查看当前 cmake configure 预设配置，并进行
+configure，生成当前项目的编译配置</p>
+<p>step4（代码行5~6）：查看当前 cmake 的编译预设配置，并进行编译</p>
+<p>step5（代码行7）：执行 cmake 安装，将可执行文件安装到
+<code>install</code> 目录</p>
+<p>step6（代码行8）：执行程序</p>
+<p>最后执行结果输出如下：</p>
+<p><img data-src="/posts/2944/image-20250905222445701.png"
+style="zoom:67%;" /></p>
+<h1 id="vs-code-支持">VS Code 支持</h1>
+<p>目前我们都是使用命令行进行简单的操作，但是真正进行开发的时候还需要IDE的代码提示和调试功能才行，下面也简略介绍一下如何基于
+VS Code 配置一个结合 conan 的 c++ 开发环境。</p>
+<h2 id="安装c开发插件">安装C++开发插件</h2>
+<ul>
+<li>C/C++ Extension Pack</li>
+<li>CMake Tools</li>
+<li>clangd</li>
+<li>CodeLLDB</li>
+</ul>
+<h2 id="添加自定义-tasks">添加自定义 Tasks</h2>
+<blockquote>
+<p>[!TIP]</p>
+<p>如何在 vscode 中添加自定义 task 可以参考 <a
+href="https://code.visualstudio.com/docs/debugtest/tasks">tasks
+使用文档</a></p>
+</blockquote>
+<p>通过快捷键 <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>
+打开配置面板，输入 <code>task</code>，选择
+"<em><strong>任务：配置任务</strong></em>"</p>
+<p><img data-src="/posts/2944/image-20250905225129587.png"
+style="zoom:67%;" /></p>
+<p>然后点击 "<em><strong>使用模板创建 tasks.json 文件</strong></em>"
+，这样就会自动创建一个可用的 tasks.json</p>
+<p><img data-src="/posts/2944/image-20250905225333434.png"
+style="zoom: 67%;" /></p>
+<p>之后还可以选择 tasks 的模板，这里直接选择 “<em><strong>Others
+运行任意外部命令的示例</strong></em>”</p>
+<p><img data-src="/posts/2944/image-20250905225957119.png"
+style="zoom:67%;" /></p>
+<p>创建好的模板 tasks.json 内容如下</p>
+<blockquote>
+<p>[!TIP]</p>
+<p>如果招不到文件入口，也可以直接手动创建
+<code>.vscode/tasks.json</code> 文件，并复制下列内容</p>
+</blockquote>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="comment">// See https://go.microsoft.com/fwlink/?LinkId=733558</span></span><br><span class="line">    <span class="comment">// for the documentation about the tasks.json format</span></span><br><span class="line">    <span class="attr">&quot;version&quot;</span><span class="punctuation">:</span> <span class="string">&quot;2.0.0&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;tasks&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">        <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;label&quot;</span><span class="punctuation">:</span> <span class="string">&quot;echo&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;shell&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;command&quot;</span><span class="punctuation">:</span> <span class="string">&quot;echo Hello&quot;</span></span><br><span class="line">        <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>根据前一节的操作步骤，可以将其化为3个部分：</p>
+<ul>
+<li>Conan 准备步骤
+<ul>
+<li><code>conan profile detect</code></li>
+<li><code>conan install</code></li>
+</ul></li>
+<li>CMake 配置编译步骤
+<ul>
+<li><code>cmake --preset &lt;selected-configure-preset&gt;</code></li>
+<li><code>cmake --build --preset &lt;selected-build-preset&gt;</code></li>
+<li><code>cmake --install</code></li>
+</ul></li>
+<li>程序运行
+<ul>
+<li><code>.\hello-conan</code></li>
+</ul></li>
+</ul>
+<p>在 VS Code 中已经集成了 CMake 的插件，可以直接读取 Conan 生成好的
+CMakePresets.json，进行配置和编译，为此，我们只需要在 Tasks 中编写 Conan
+的相关操作即可。</p>
+<p>剩下可以直接通过 <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>
+调出命令面板，执行 CMake 相关操作即可，如下图所示</p>
+<p><img data-src="/posts/2944/image-20250906151057744.png"
+style="zoom:67%;" /></p>
+<p>其中</p>
+<ul>
+<li><code>CMake: 选择配置预设</code> 对应命令行
+<code>cmake --list-presets</code></li>
+<li><code>CMake: 配置</code> 就对应命令行
+<code>cmake . --preset &lt;selected-configure-preset&gt;</code></li>
+<li><code>CMake: 生成</code> 就对应命令行
+<code>cmake --build --preset &lt;selected-build-preset&gt;</code></li>
+</ul>
+<p>封装 Conan 工具链检查和依赖安装的 tasks.json 内容如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    // See https://go.microsoft.com/fwlink/?LinkId=733558</span><br><span class="line">    // for the documentation about the tasks.json format</span><br><span class="line">    &quot;version&quot;: &quot;2.0.0&quot;,</span><br><span class="line">    &quot;tasks&quot;: [</span><br><span class="line">        &#123;</span><br><span class="line">            &quot;label&quot;: &quot;Conan: Detect Profile&quot;,</span><br><span class="line">            &quot;type&quot;: &quot;shell&quot;,</span><br><span class="line">            &quot;command&quot;: &quot;conan&quot;,</span><br><span class="line">            &quot;args&quot;: [</span><br><span class="line">                &quot;profile&quot;,</span><br><span class="line">                &quot;detect&quot;,</span><br><span class="line">                &quot;--force&quot;</span><br><span class="line">            ],</span><br><span class="line">            &quot;group&quot;: &quot;build&quot;,</span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            &quot;label&quot;: &quot;Conan: Install Dependency [Debug]&quot;,</span><br><span class="line">            &quot;type&quot;: &quot;shell&quot;,</span><br><span class="line">            &quot;command&quot;: &quot;conan&quot;,</span><br><span class="line">            &quot;args&quot;: [</span><br><span class="line">                &quot;install&quot;,</span><br><span class="line">                &quot;-s=&#x27;build_type=Debug&#x27;&quot;,</span><br><span class="line">                &quot;-of=&#x27;$&#123;workspaceFolder&#125;/build/Debug&#x27;&quot;,</span><br><span class="line">                &quot;.&quot;,</span><br><span class="line">                &quot;--build=missing&quot;</span><br><span class="line">            ],</span><br><span class="line">            &quot;hide&quot;: true</span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            &quot;label&quot;: &quot;Conan: Install Dependency [Release]&quot;,</span><br><span class="line">            &quot;type&quot;: &quot;shell&quot;,</span><br><span class="line">            &quot;command&quot;: &quot;conan&quot;,</span><br><span class="line">            &quot;args&quot;: [</span><br><span class="line">                &quot;install&quot;,</span><br><span class="line">                &quot;-s=&#x27;build_type=Release&#x27;&quot;,</span><br><span class="line">                &quot;-of=&#x27;$&#123;workspaceFolder&#125;/build/Release&#x27;&quot;,</span><br><span class="line">                &quot;.&quot;,</span><br><span class="line">                &quot;--build=missing&quot;</span><br><span class="line">            ],</span><br><span class="line">            &quot;hide&quot;: true</span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            &quot;label&quot;: &quot;CMake: Select Configure Preset&quot;,</span><br><span class="line">            &quot;command&quot;: &quot;$&#123;command:cmake.selectConfigurePreset&#125;&quot;,</span><br><span class="line">            &quot;hide&quot;: true</span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            &quot;label&quot;: &quot;CMake: Configure&quot;,</span><br><span class="line">            &quot;command&quot;: &quot;$&#123;command:cmake.configure&#125;&quot;,</span><br><span class="line">            &quot;hide&quot;: true</span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            &quot;label&quot;: &quot;Conan: Install &amp; CMake: Configure&quot;,</span><br><span class="line">            &quot;group&quot;: &quot;build&quot;,</span><br><span class="line">            &quot;dependsOn&quot;: [</span><br><span class="line">                &quot;Conan: Install Dependency [Debug]&quot;,</span><br><span class="line">                &quot;Conan: Install Dependency [Release]&quot;,</span><br><span class="line">                &quot;CMake: Select Configure Preset&quot;,</span><br><span class="line">                &quot;CMake: Configure&quot;</span><br><span class="line">            ],</span><br><span class="line">            &quot;dependsOrder&quot;: &quot;sequence&quot;</span><br><span class="line">        &#125;,</span><br><span class="line">    ],</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们定义了 6 个 task：</p>
+<ul>
+<li><p><code>Conan: Detect Profile</code>：对应
+<code>conan profile detect --force</code></p></li>
+<li><p><code>Conan: Install Dependency [Debug]</code>：对应
+<code>conan install</code>（安装 Debug 编译模式下的依赖）</p></li>
+<li><p><code>Conan: Install Dependency [Release]</code>：对应
+<code>conan install</code>（安装 Release 编译模式下的依赖）</p></li>
+<li><p><code>CMake: Select Configure Preset</code>：通过
+<code>$&#123;command:cmake.selectConfigurePreset&#125;</code> 执行 CMake
+插件提供的命令</p></li>
+<li><p><code>CMake: Configure</code>：同上，通过
+<code>$&#123;command:cmake.configure&#125;</code> 执行 CMake 插件提供的命令</p>
+<blockquote>
+<p>[!NOTE]</p>
+<p>这里 <code>$&#123;command:cmake.configure&#125;</code>
+会执行插件提供的命令，并使用命令输出进行字符串替换，中间可能会报错，但是我们的主要目标是在
+tasks 中执行 VS Code 的一些命令（有点邪道？），具体可以参考 VS Code
+对变量替换的<a
+href="https://code.visualstudio.com/docs/reference/variables-reference#_command-variables">说明文档</a></p>
+<p><img data-src="/posts/2944/image-20250906162550232.png"
+style="zoom: 80%;" /></p>
+</blockquote></li>
+<li><p><code>Conan: Install &amp; CMake: Configure</code>，同时安装
+Debug 和 Release 模式下的依赖，并选择预设配置进行生成</p></li>
+</ul>
+<p>由于我们设置 task 的 group 为 <code>build</code>，可以直接通过快捷键
+<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>B</kbd>
+快速调用（调用生成任务），如下所示</p>
+<p><img data-src="/posts/2944/image-20250906161922307.png"
+style="zoom:67%;" /></p>
+<p>这样，再使用 VS Code 进行开发时，只需要以下 3 个步骤：</p>
+<ul>
+<li><strong>[可选]</strong> Conan 检测工具链</li>
+<li><strong>[首次执行/三方库更新时]</strong> Debug / Release
+三方库依赖</li>
+<li>调用 CMake 配置和编译</li>
+</ul>
+<h2 id="配置-clangd">配置 clangd</h2>
+<p>为了实现多平台统一的开发体验，使用 clangd
+进行代码补全，同样，还是需要一系列的配置，这一次主要修改
+<code>.vscode/settings.json</code>，相关配置如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;editor.tabSize&quot;: 2,</span><br><span class="line">    &quot;C_Cpp.intelliSenseEngine&quot;: &quot;disabled&quot;,</span><br><span class="line">    &quot;C_Cpp.formatting&quot;: &quot;clangFormat&quot;,</span><br><span class="line">    &quot;clangd.arguments&quot;: [</span><br><span class="line">        &quot;--compile-commands-dir=$&#123;workspaceFolder&#125;/build&quot;,</span><br><span class="line">        &quot;--all-scopes-completion&quot;,</span><br><span class="line">        &quot;--background-index&quot;,</span><br><span class="line">        &quot;--background-index-priority=background&quot;,</span><br><span class="line">        &quot;--clang-tidy&quot;,</span><br><span class="line">        &quot;--completion-style=bundled&quot;,</span><br><span class="line">        &quot;--header-insertion=never&quot;,</span><br><span class="line">        &quot;--pch-storage=disk&quot;,</span><br><span class="line">        &quot;-j=8&quot;</span><br><span class="line">    ],</span><br><span class="line">    &quot;cmake.exportCompileCommandsFile&quot;: true,</span><br><span class="line">    &quot;cmake.copyCompileCommands&quot;: &quot;$&#123;workspaceFolder&#125;/build/compile_commands.json&quot;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其中比较关键的配置项有 4 项：</p>
+<ol type="1">
+<li><p><code>C_Cpp.intelliSenseEngine</code>：禁用 C/C++
+插件自带的代码提示引擎，其会和 clangd 冲突，一般在安装 clangd
+插件时就会自动提示禁用了</p></li>
+<li><p><code>cmake.exportCompileCommandsFile</code>：设置 cmake 插件在
+configure 时导出 <code>compile_commands.json</code>，这一步实际上是在
+cmake configure 的时候添加 <code>-DCMAKE_EXPORT_COMPILE_COMMANDS</code>
+选项</p>
+<p><img data-src="/posts/2944/image-20250906154021456.png"
+style="zoom: 50%;" /></p>
+<p>clangd 依赖 compile_commands.json 进行代码补全</p></li>
+<li><p><code>cmake.copyCompileCommandsFile</code>：将
+compile_commands.json 拷贝到指定位置，因为我们目前使用的是 Ninja
+进行编译，其是单配置方式，<strong>Debug 模式和 Release 模式的
+compile_commands.json
+会输出到不同的目录下</strong>，因此需要通过该选项，将不同编译配置下的
+compile_commands.json 输出到一个固定位置，便于 clangd 读取</p>
+<blockquote>
+<p>[!TIP]</p>
+<p>单配置模式：Debug 和 Release 需要单独的 CMake Configure，例如 Make 和
+Ninja</p>
+<p>多配置模式：Debug 和 Release 可以共用同一套 CMake Configure，例如
+Visual Studio 的 Solution</p>
+</blockquote></li>
+<li><p><code>clangd.arguments</code> ：配置 clangd
+如何进行代码补全，具体可以通过 <code>clangd --help</code>
+查看，这里配置的是个人觉得比较好用的一些配置，其中比较关键的一个是
+<code>--compile-commands-dir=$&#123;workspaceFolder&#125;/build</code>，其指定了
+<code>compile_commands.json</code>
+所在目录，这一个需要与前一个配置的路径相对应，否则 clangd
+也会有问题</p></li>
+<li><p><code>editor.tabSize</code> 和 <code>C_Cpp.formating</code>
+是代码格式化的配置，可根据个人喜好进行配置</p></li>
+</ol>
+<p>填写好相关配置后，可以重启 clangd（同样在命令面板中进行操作）</p>
+<p><img data-src="/posts/2944/image-20250906155307215.png"
+style="zoom:67%;" /></p>
+<p>并在输出中观察 clangd 是否正常工作</p>
+<p><img data-src="/posts/2944/image-20250906155411208.png"
+style="zoom: 50%;" /></p>
+<p>如果看到 clangd 的相关日志有刚才配置好的命令行选项，并成功加载了
+compile_commands.json 文件，则说明已经配置完成，可以编写代码了</p>
+<h2 id="配置调试">配置调试</h2>
+<p>还有最后一步—代码调试（已经感觉有点累了，VS Code
+的开发环境确实有点难配置了），幸好，这一步只需要集成一下 cmake
+的调用命令即可，创建
+<code>.vscode/launch.json</code>，并填写如下内容</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;configurations&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;lldb&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;request&quot;</span><span class="punctuation">:</span> <span class="string">&quot;launch&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Launch CMake Target&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;program&quot;</span><span class="punctuation">:</span> <span class="string">&quot;$&#123;command:cmake.launchTargetPath&#125;&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;args&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;cwd&quot;</span><span class="punctuation">:</span> <span class="string">&quot;$&#123;workspaceFolder&#125;&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>这里我们使用了一个 <code>$&#123;command:cmake.launchTargetPath&#125;</code>
+来获取当前配置的启动程序，就不用每次都修改配置文件了，而且会在启动之前自动完成编译</p>
+<p>如果需要使用其他命令，也可以查询插件提供的所有命令（不过当我们需要指定额外的运行参数时，还是之间创建新的
+launch target 会更好）</p>
+<p><img data-src="/posts/2944/image-20250906160212000.png"
+style="zoom:50%;" /></p>
+<h1 id="添加依赖">添加依赖</h1>
+<p>到这里，我们就可以开始修改代码（终于进入正题了😓），添加一些想要的依赖了（<del>调包侠
+yes！</del>），简单点，使用 Eigen 和 spdlog 做一个简单的矩阵运算吧。</p>
+<p>首先在 <a href="https://conan.io/center">conan center</a>
+网站上查询需要使用包的版本</p>
+<p><img data-src="/posts/2944/image-20250905223759007.png"
+style="zoom: 50%;" /></p>
+<p>点击详情后，可以进一步查看如何在 <code>conanfile.py</code>
+中引入这个包</p>
+<p><img data-src="/posts/2944/image-20250906162906291.png"
+style="zoom:50%;" /></p>
+<p>只需要修改 <code>conanfile.py</code>，创建 requirements
+函数，并填写依赖即可，对于 spdlog 也是如此。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">requirements</span>(<span class="params">self</span>):</span><br><span class="line">    self.requires(<span class="string">&quot;eigen/3.4.0&quot;</span>)</span><br><span class="line">    self.requires(<span class="string">&quot;spdlog/1.15.3&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>引入依赖后，需要重新调用一遍 conan
+install，就会自动下载对应的包了。</p>
+<p>为了使用包，还需要更改 CMakeLists.txt，通过 cmake 的 find_package
+找到对应的包，将其链接到可执行程序上即可，在指引中也同样有写</p>
+<p><img data-src="/posts/2944/image-20250906163226350.png"
+style="zoom:50%;" /></p>
+<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line"><span class="keyword">find_package</span>(Eigen3 REQUIRED)</span><br><span class="line"><span class="keyword">find_package</span>(spdlog REQUIRED)</span><br><span class="line"></span><br><span class="line"><span class="keyword">target_link_libraries</span>(<span class="variable">$&#123;PROJECT_NAME&#125;</span> PRIVATE  Eigen3::Eigen spdlog::spdlog)</span><br></pre></td></tr></table></figure>
+
+<p>此时重新 configure 后，compile_commands.json
+中包含了我们新引入了第三方依赖，就可以通过 clangd 进行代码补全了</p>
+<p><img data-src="/posts/2944/image-20250906163633295.png"
+style="zoom: 50%;" /></p>
+<h1 id="自定义-conan-项目模板">自定义 Conan 项目模板</h1>
+<p>从前面 VS Code 配置过程可以看出，VS Code
+作为一个文本编辑器，将其转换成 C++ 的 IDE
+需要各种各样的配置，为了简化这一个配置过程，我们可以借助 conan
+的模板项目，创建 <code>cmake_exe-vscode</code> 和
+<code>cmake_lib-vscode</code>
+的模板，这样我们就可以减少很多的初始化时间，更加专注于代码本身了（想起了前端开发中各种代码模板生成工具）。</p>
+<blockquote>
+<p>参考 Conan <a
+href="https://docs.conan.io/2/reference/commands/new.html#custom-templates">创建项目模板文档</a></p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>C++学习笔记</category>
+      </categories>
+      <tags>
+        <tag>C++</tag>
+        <tag>CMake</tag>
+        <tag>Python</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>命令行设置 Proxy</title>
     <url>/posts/4af5/</url>
     <content><![CDATA[<h1 id="powershell-设置">Powershell 设置</h1>
 <p>通过 <code>$PROFILE</code> 变量，可以查询到 Powershell
 默认加载的配置文件路径，如下所示</p>
 <p><img data-src="/posts/4af5/image-20250827211708072.png" /></p>
-<span id="more"></span>
-
 <p>如果文件不存在，直接创建一个即可，然后填入下面两个预定义的函数（默认代理的地址为
 <code>127.0.0.1:7890</code>，纪念天国的CFW🙏）</p>
 <figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">proxy_on</span></span> &#123;</span><br><span class="line">    <span class="variable">$proxy</span>=<span class="string">&quot;http://127.0.0.1:7890&quot;</span></span><br><span class="line">    <span class="variable">$Env:http_proxy</span> = <span class="string">&quot;<span class="variable">$proxy</span>&quot;</span></span><br><span class="line">    <span class="variable">$Env:https_proxy</span> = <span class="string">&quot;<span class="variable">$proxy</span>&quot;</span></span><br><span class="line">    <span class="built_in">Write-Host</span> <span class="string">&quot;Proxy enabled: <span class="variable">$proxy</span>&quot;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">proxy_off</span></span> &#123;</span><br><span class="line">    <span class="built_in">Remove-Item</span> Env:\http_proxy <span class="literal">-ErrorAction</span> SilentlyContinue</span><br><span class="line">    <span class="built_in">Remove-Item</span> Env:\https_proxy <span class="literal">-ErrorAction</span> SilentlyContinue</span><br><span class="line">    <span class="built_in">Write-Host</span> <span class="string">&quot;Proxy disabled&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -4157,6 +4428,8 @@ origin 的分支（即远端分支），并通过 <code>--soft</code>
 <p>当更改完 <code>$PROFILE</code> 文件后，使用 <code>. $PROFILE</code>
 加载更新后的配置文件，并通过简单的 <code>curl</code>
 命令判断是否可用</p>
+<span id="more"></span>
+
 <p><img data-src="/posts/4af5/image-20250827212341633.png" /></p>
 <p>（由于 cmd 并不支持 profile
 ，就无法编写类似的函数了，不过其基本思路也就是设置
