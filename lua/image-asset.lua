@@ -64,6 +64,10 @@ local function get_alert_type(div)
     return curr_alert_type, curr_icon
 end
 
+local function capitalize_first(str)
+    return (str:gsub("^%l", string.upper))
+end
+
 local function Div(div)
     -- check class list of <div> element
     local curr_alert_type, curr_icon = get_alert_type(div)
@@ -75,7 +79,7 @@ local function Div(div)
     -- override markdown-alert and markdown-alert-* class
     div.attr['classes'] = { 'markdown-alert', 'markdown-alert-' .. curr_alert_type }
     -- construct new title element
-    div.content[1] = pandoc.Div({ pandoc.RawInline('html', curr_icon), pandoc.text.upper(curr_alert_type) }, {
+    div.content[1] = pandoc.Div({ pandoc.RawInline('html', curr_icon), pandoc.Strong(capitalize_first(curr_alert_type)) }, {
         class = 'markdown-alert-title'
     })
     -- logging.temp('Div',div)

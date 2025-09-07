@@ -1,14 +1,14 @@
 # Local Environment Settings
 
-## Node v18.12.1
+## Node.js
 
-download node@18.12.1 from https://nodejs.org/en/download/package-manager
+download node from https://nodejs.org/en/download/package-manager
 
 run the following command
 
 ```sh
 npm install
-npm install -g hexo@6.3.0
+npm install -g hexo
 ```
 
 start a local server
@@ -17,22 +17,34 @@ start a local server
 hexo server
 ```
 
-## Pandoc 3.0.1
+generate static pages
 
-download pandoc@3.0.1 form https://github.com/jgm/pandoc/releases
+```sh
+hexo generate
+```
+
+create new post page
+
+```sh
+hexo new post
+```
+
+## Pandoc
+
+download pandoc form https://github.com/jgm/pandoc/releases or install through homebrew / chocolatey.
 
 # Example
 
 ## hexo
 
 ```command-line
-PS C:\Users\Administrator\Documents\Note> hexo -v
+$> hexo -v
 INFO  Validating config
-hexo: 6.3.0
+hexo: 7.3.0
 hexo-cli: 4.3.2
-os: win32 10.0.19045 undefined
+os: win32 10.0.26100 undefined
 node: 18.12.1
-v8: 10.2.154.15-node.12       
+v8: 10.2.154.15-node.12
 uv: 1.43.0
 zlib: 1.2.11
 brotli: 1.0.9
@@ -53,17 +65,19 @@ nghttp3: 0.7.0
 ## Pandoc
 
 ```command-line
-PS C:\Users\Administrator\Documents\Note> pandoc -v
-pandoc.exe 3.0.1
+$> pandoc -v
+pandoc.exe 3.7.0.2
 Features: +server +lua
 Scripting engine: Lua 5.4
-User data directory: C:\Users\Administrator\AppData\Roaming\pandoc
-Copyright (C) 2006-2023 John MacFarlane. Web:  https://pandoc.org
+User data directory: C:\Users\xiao\AppData\Roaming\pandoc
+Copyright (C) 2006-2024 John MacFarlane. Web: https://pandoc.org
 This is free software; see the source for copying conditions. There is no
 warranty, not even for merchantability or fitness for a particular purpose.
 ```
 
-Debug pandoc lua-filter
+### Debug pandoc lua-filter
+
+make sure you have `LUA_PATH` environment variable set to `<project_root>/lua/?.lua`, otherwise pandoc can not find `logging.lua` file.
 
 ```bash
 export LUA_PATH="$(pwd)/lua/?.lua"
