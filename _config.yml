@@ -116,14 +116,10 @@ search:
   format: html
 
 pandoc:
-  lua_filters: lua/image-asset.lua
+  lua_filters: lua/pandoc-filters.lua
 
 markdown:
   render:
     html: true
     breaks: false
     linkify: true
-  # TODO: https://www.npmjs.com/package/remark-github-blockquote-alert to add github blockquote alert here
-  # merely a process for markdown here ?
-  # plugins:
-  #   - markdown-it-github-alerts

@@ -185,7 +185,6 @@ step6（代码行8）：执行程序
             "args": [
                 "install",
                 "-s='build_type=Debug'",
-                "-of='${workspaceFolder}/build/Debug'",
                 ".",
                 "--build=missing"
             ],
@@ -198,7 +197,6 @@ step6（代码行8）：执行程序
             "args": [
                 "install",
                 "-s='build_type=Release'",
-                "-of='${workspaceFolder}/build/Release'",
                 ".",
                 "--build=missing"
             ],
@@ -291,6 +289,46 @@ step6（代码行8）：执行程序
 ```
 
 这种丑陋的形式（在 c++ 中写正则表达式，也是需要多次转义，c++ 字符串本身的转义和正则表达式中的转义）
+
+不过最后发现，在命令行里指定 `tools.cmake.cmaketoolchain:extra_variables` ，无法实现跨平台，最后只能在 conanfile.py 中添加，里面也有点坑。
+
+默认的 conanfile.py 如下
+
+```python
+class testRecipe(ConanFile):
+    ...
+    def layout(self):
+        cmake_layout(self)
+    
+    def generate(self):
+        deps = CMakeDeps(self)
+        deps.generate()
+        tc = CMakeToolchain(self)
+        tc.generate()
+```
+
+如果需要在 conanfile.py 中指定 cmake 的 generator，**一定要同时修改 `layout` 和 `generate` 两个函数**，否则在 layout 获得的 build_dir 是错误的，导致 conan 自动创建的 build 目录是有问题的，修改情况如下：
+
+```diff
+--- "a/.\\conanfile.py"
++++ "b/.\\conanfile.py"
+@@ -1,10 +1,11 @@
+ class testRecipe(ConanFile):
+     ...
+     def layout(self):
+-        cmake_layout(self)
++        self.cmake_generator = "Ninja"
++        cmake_layout(self,generator=self.cmake_generator)
+
+     def generate(self):
+         deps = CMakeDeps(self)
+         deps.generate()
+-        tc = CMakeToolchain(self)
++        tc = CMakeToolchain(self,generator=self.cmake_generator)
+         tc.generate()
+```
+
+
 
 
 

@@ -79,9 +79,15 @@ local function Div(div)
     -- override markdown-alert and markdown-alert-* class
     div.attr['classes'] = { 'markdown-alert', 'markdown-alert-' .. curr_alert_type }
     -- construct new title element
-    div.content[1] = pandoc.Div({ pandoc.RawInline('html', curr_icon), pandoc.Strong(capitalize_first(curr_alert_type)) }, {
-        class = 'markdown-alert-title'
-    })
+    div.content[1] = pandoc.Div(
+        { 
+            pandoc.RawInline('html', curr_icon), 
+            pandoc.Strong(capitalize_first(curr_alert_type)) 
+        }, 
+        {
+        	class = 'markdown-alert-title'
+    	}
+    )
     -- logging.temp('Div',div)
     return div
 end

@@ -83,10 +83,8 @@ make sure you have `LUA_PATH` environment variable set to `<project_root>/lua/?.
 export LUA_PATH="$(pwd)/lua/?.lua"
 
 pandoc --from=gfm+alerts \
-    --to=html5 --mathjax \
-    --metadata=pagetitle:ignored \
-    --metadata=standalone:true \
-    --lua-filter=lua/image-asset.lua \
-    -o test.html \
-    test.md
+       --to=html5 \
+       --lua-filter=lua/image-asset.lua \
+       -o test.html \
+       test.md
 ```

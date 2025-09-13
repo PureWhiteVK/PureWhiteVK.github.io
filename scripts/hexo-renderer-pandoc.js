@@ -10,7 +10,7 @@ const { yellow } = require('picocolors');
 hexo.config.pandoc = Object.assign({
     pandoc_bin: 'pandoc',
     math_engine: 'mathjax',
-    // https://pandoc.org/MANUAL.html#pandocs-markdown
+    // https://pandoc.org/MANUAL.html#extension-alerts
     markdown_mode: 'gfm+alerts',
     filters: [],
     lua_filters: [],
