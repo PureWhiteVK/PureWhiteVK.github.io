@@ -20,17 +20,31 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"purewhitevk.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.25.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":"default"},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false,"trigger":"auto"}}</script><script src="/js/config.js" defer></script>
 
-    <meta name="description" content="Note  Useful information that users should know, even when skimming content.     Tip  Helpful advice for doing things better or more easily.     Important  Key information users need to know to ach">
+    <meta name="description" content="最近写博客时，发现 github markdown 中提供的 Alerts 很有用，能够作为提示信息进行展示。 其实际上是在 引用文本（Quoting text） 的基础上添加了一个特殊的 tag，使其渲染时有特殊的显示效果，markdown 代码如下： 1234567891011121314&gt; [!NOTE]&gt; Useful information that users should">
 <meta property="og:type" content="article">
 <meta property="og:title" content="hexo支持Github Alerts">
 <meta property="og:url" content="https://purewhitevk.github.io/posts/dc23/">
 <meta property="og:site_name" content="PureWhiteVK&#39;s Blog">
-<meta property="og:description" content="Note  Useful information that users should know, even when skimming content.     Tip  Helpful advice for doing things better or more easily.     Important  Key information users need to know to ach">
+<meta property="og:description" content="最近写博客时，发现 github markdown 中提供的 Alerts 很有用，能够作为提示信息进行展示。 其实际上是在 引用文本（Quoting text） 的基础上添加了一个特殊的 tag，使其渲染时有特殊的显示效果，markdown 代码如下： 1234567891011121314&gt; [!NOTE]&gt; Useful information that users should">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/dc23/alerts-rendered.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/dc23/image-20250913134852416.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/dc23/image-20250913135022559.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/dc23/image-20250913135352763.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/dc23/image-20250913140150809.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/dc23/image-20250913145436237.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/dc23/image-20250913150129513.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/dc23/image-20250913150250308.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/dc23/image-20250913140150809.png">
 <meta property="article:published_time" content="2025-09-06T13:50:33.000Z">
 <meta property="article:modified_time" content="2025-09-06T13:50:33.000Z">
 <meta property="article:author" content="PureWhiteVK">
+<meta property="article:tag" content="hexo">
+<meta property="article:tag" content="pandoc">
+<meta property="article:tag" content="node.js">
+<meta property="article:tag" content="lua">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://purewhitevk.github.io/posts/dc23/alerts-rendered.png">
 
 
 <link rel="canonical" href="https://purewhitevk.github.io/posts/dc23/">
@@ -153,7 +167,7 @@
   
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-overview-active">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           文章目录
@@ -166,6 +180,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#alerts--quoting"><span class="nav-number">1.</span> <span class="nav-text">Alerts &amp; Quoting</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#html-%E5%B7%AE%E5%BC%82"><span class="nav-number">2.</span> <span class="nav-text">HTML 差异</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E6%A0%B7%E5%BC%8F"><span class="nav-number">3.</span> <span class="nav-text">添加样式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#hexo-%E9%9B%86%E6%88%90"><span class="nav-number">4.</span> <span class="nav-text">Hexo 集成</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -260,6 +275,15 @@
 
       <time title="创建时间：2025/09/06 21:50:33" itemprop="dateCreated datePublished" datetime="2025-09-06T21:50:33+08:00">2025/09/06</time>
     </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Hexo%E4%BD%BF%E7%94%A8%E8%AE%B0%E5%BD%95/" itemprop="url" rel="index"><span itemprop="name">Hexo使用记录</span></a>
+        </span>
+    </span>
 
   
     <span class="post-meta-break"></span>
@@ -268,14 +292,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>185</span>
+      <span>2.1k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>1 分钟</span>
+      <span>8 分钟</span>
     </span>
 </div>
 
@@ -285,7 +309,169 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><div class="markdown-alert markdown-alert-note">
+    <div class="post-body" itemprop="articleBody"><p>最近写博客时，发现 github markdown 中提供的 <a
+target="_blank" rel="noopener" href="https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax#alerts">Alerts</a>
+很有用，能够作为提示信息进行展示。</p>
+<p>其实际上是在 <strong>引用文本（Quoting text）</strong>
+的基础上添加了一个特殊的 tag，使其渲染时有特殊的显示效果，markdown
+代码如下：</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="quote">&gt; [!NOTE]</span></span><br><span class="line"><span class="quote">&gt; Useful information that users should know, even when skimming content.</span></span><br><span class="line"></span><br><span class="line"><span class="quote">&gt; [!TIP]</span></span><br><span class="line"><span class="quote">&gt; Helpful advice for doing things better or more easily.</span></span><br><span class="line"></span><br><span class="line"><span class="quote">&gt; [!IMPORTANT]</span></span><br><span class="line"><span class="quote">&gt; Key information users need to know to achieve their goal.</span></span><br><span class="line"></span><br><span class="line"><span class="quote">&gt; [!WARNING]</span></span><br><span class="line"><span class="quote">&gt; Urgent info that needs immediate user attention to avoid problems.</span></span><br><span class="line"></span><br><span class="line"><span class="quote">&gt; [!CAUTION]</span></span><br><span class="line"><span class="quote">&gt; Advises about risks or negative outcomes of certain actions.</span></span><br></pre></td></tr></table></figure>
+
+<p>渲染结果如下：</p>
+<p><img data-src="/posts/dc23/alerts-rendered.png" style="zoom: 50%;" /></p>
+<p>本来以为这是<a target="_blank" rel="noopener" href="https://github.github.com/gfm/"> gfm（GitHub
+Flavored Markdown Spec）规范</a>的一部分，但是发现这个功能是 Github
+单独实现的一个功能，hexo
+上默认是不支持的，不过搜了一下似乎实现起来并不复杂，就用一篇博客记录下如何实现的。</p>
+<span id="more"></span>
+
+<h1 id="alerts--quoting">Alerts &amp; Quoting</h1>
+<p>在 hexo 上，如果直接添加 alerts 的 markdown 代码（使用 pandoc 版本为
+3.0.1），其渲染效果如下：</p>
+<p><img data-src="/posts/dc23/image-20250913134852416.png"
+style="zoom: 67%;" /></p>
+<p>在 VS Code 上渲染时，也是类似的情况</p>
+<p><img data-src="/posts/dc23/image-20250913135022559.png"
+style="zoom: 80%;" /></p>
+<p>但是在 Typora 编辑器上是默认有支持的（<code>[!NOTE]</code> 说明这个
+Alert 是可编辑的），渲染效果如下：</p>
+<p><img data-src="/posts/dc23/image-20250913135352763.png"
+style="zoom: 67%;" /></p>
+<p>（就是因为 Typora 支持展示才会让我在编写文档是不自觉地加上了这个
+Alert，结果发现 hexo 和 vscode 都不支持
+😓，出于强迫症就把这个功能给他加上了，要不然太难看了）</p>
+<h1 id="html-差异">HTML 差异</h1>
+<p>既然想要支持类似的展示效果，首先分析 pandoc 转换的 html 代码和 github
+上展示的 html 代码有什么差异：</p>
+<p><strong>原始 markdown 代码</strong></p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="quote">&gt; [!NOTE]</span></span><br><span class="line"><span class="quote">&gt; The Markdown formatting will not be ignored in the title of an issue or a pull request.</span></span><br></pre></td></tr></table></figure>
+
+<p>渲染效果（<a
+target="_blank" rel="noopener" href="https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax#ignoring-markdown-formatting">原始文章</a>）：</p>
+<p><img data-src="/posts/dc23/image-20250913140150809.png"
+style="zoom: 80%;" /></p>
+<p><strong>github alerts</strong></p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;ghd-alert ghd-alert-accent&quot;</span> <span class="attr">data-container</span>=<span class="string">&quot;alert&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">p</span> <span class="attr">class</span>=<span class="string">&quot;ghd-alert-title&quot;</span>&gt;</span><span class="tag">&lt;<span class="name">svg</span> <span class="attr">version</span>=<span class="string">&quot;1.1&quot;</span> <span class="attr">width</span>=<span class="string">&quot;16&quot;</span> <span class="attr">height</span>=<span class="string">&quot;16&quot;</span> <span class="attr">viewBox</span>=<span class="string">&quot;0 0 16 16&quot;</span> <span class="attr">class</span>=<span class="string">&quot;octicon mr-2&quot;</span></span></span><br><span class="line"><span class="tag">            <span class="attr">aria-hidden</span>=<span class="string">&quot;&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">path</span></span></span><br><span class="line"><span class="tag">                <span class="attr">d</span>=<span class="string">&quot;M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">path</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">svg</span>&gt;</span>Note<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">p</span>&gt;</span></span><br><span class="line">        The Markdown formatting will not be ignored in the title of an issue or a pull request.<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>pandoc generated（pandoc version 3.0.1）</strong></p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">blockquote</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">p</span>&gt;</span>[!NOTE] The Markdown formatting will not be ignored in the title of</span><br><span class="line">an issue or a pull request.<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">blockquote</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>此时 pandoc 还并不支持 Alerts
+的解析，还是将其默认解析为块引用的格式。</p>
+<p>而根据 <a
+target="_blank" rel="noopener" href="https://pandoc.org/MANUAL.html#extension-alerts">pandoc 的最新版
+markdown 文档</a>，只需要在转换时启用 <code>alerts</code>
+扩展，就可以解析成上面 github alerts 的结构了，转换命令如下（pandoc
+version 3.8.0）</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pandoc -f gfm+alerts -t html5 -o test.html test.md</span><br></pre></td></tr></table></figure>
+
+<p>生成的 html 如下所示：</p>
+<p><strong>pandoc generated (pandoc version 3.8.0)</strong></p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;note&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;title&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">p</span>&gt;</span>Note<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">p</span>&gt;</span>The Markdown formatting will not be ignored in the title of an issue</span><br><span class="line">        or a pull request.</span><br><span class="line">    <span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>其将所有 alert 的内容放在 <code>div</code> 容器内，并将
+<code>[!NOTE]</code> 类型标记转换为外层 <code>div</code> 容器的
+class，且单独为标题创建了一个 <code>div</code> 容器，设置其 class 为
+title。</p>
+<p>对比 github 版的 html，有两个主要的差异，都体现在 title 部分：</p>
+<ol type="1">
+<li><p><strong>外层容器不同</strong>，github 版 title 的外层容器是
+<code>&lt;p&gt;</code>，而 pandoc 版外层容器是
+<code>&lt;div&gt;</code>。</p>
+<p>这是因为在 <a
+target="_blank" rel="noopener" href="https://pandoc.org/lua-filters.html#type-div">pandoc
+的元素</a>设计中，仅有部分标签可以设置 class 属性，默认的
+<code>Para</code> 元素并不支持设置 class 信息，好在
+<code>&lt;div&gt;</code> 标签和 <code>&lt;p&gt;</code>
+在使用上差异不大，更何况 pandoc 版内部还使用了 <code>&lt;p&gt;</code>
+进行包裹</p></li>
+<li><p>pandoc 版 <strong>缺少了 alert 的 svg 图标</strong></p></li>
+</ol>
+<p>第一个差异是由于 pandoc
+本身的设计有关，无法避免，但是第二点，可以结合 pandoc 的 lua-filter
+在转换过程中只要检测到
+<code>&lt;div class="title"&gt;&lt;p&gt;&lt;/p&gt;&lt;/div&gt;</code>
+这种类似结构，就可以在内部的 <code>&lt;p&gt;</code> 标签内插入 svg
+图标。</p>
+<p>代码实现如下（<a
+target="_blank" rel="noopener" href="https://github.com/PureWhiteVK/PureWhiteVK.github.io/blob/c94115e285449cb8e644e0e466c000dde51cfe47/lua/image-asset.lua">完整代码在这里</a>）：</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">local</span> <span class="function"><span class="keyword">function</span> <span class="title">Div</span><span class="params">(div)</span></span></span><br><span class="line">    <span class="comment">-- check class list of &lt;div&gt; element</span></span><br><span class="line">    <span class="keyword">local</span> curr_alert_type, curr_icon = get_alert_type(div)</span><br><span class="line">    <span class="comment">-- check title element</span></span><br><span class="line">    <span class="keyword">local</span> title_element = get_title_element(div)</span><br><span class="line">    <span class="keyword">if</span> (curr_alert_type == <span class="literal">nil</span> <span class="keyword">or</span> curr_icon == <span class="literal">nil</span> <span class="keyword">or</span> title_element == <span class="literal">nil</span>) <span class="keyword">then</span></span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">    <span class="comment">-- override markdown-alert and markdown-alert-* class</span></span><br><span class="line">    div.attr[<span class="string">&#x27;classes&#x27;</span>] = &#123; <span class="string">&#x27;markdown-alert&#x27;</span>, <span class="string">&#x27;markdown-alert-&#x27;</span> .. curr_alert_type &#125;</span><br><span class="line">    <span class="comment">-- construct new title element</span></span><br><span class="line">    div.content[<span class="number">1</span>] = pandoc.Div(</span><br><span class="line">        &#123; </span><br><span class="line">            pandoc.RawInline(<span class="string">&#x27;html&#x27;</span>, curr_icon), </span><br><span class="line">            pandoc.Str(capitalize_first(curr_alert_type)) </span><br><span class="line">        &#125;, </span><br><span class="line">        &#123;</span><br><span class="line">            class = <span class="string">&#x27;markdown-alert-title&#x27;</span></span><br><span class="line">    	&#125;</span><br><span class="line">    )</span><br><span class="line">    <span class="comment">-- logging.temp(&#x27;Div&#x27;,div)</span></span><br><span class="line">    <span class="keyword">return</span> div</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
+<p>其中：</p>
+<ul>
+<li><code>get_alert_type</code> 函数检查当前 <code>&lt;div&gt;</code>
+标签的 class，判断是否有类似 <code>&lt;div class="note"&gt;</code>
+的类型声明，并根据 alert 的类型返回对应类别的图标（原始的 svg
+代码）</li>
+<li><code>get_title_element</code> 函数遍历 <code>&lt;div&gt;</code>
+标签下的子元素，返回包含 <code>&lt;div class="title"&gt;</code>
+的元素</li>
+<li><code>capitalize_first</code> 函数将单词的首字母大写，例如
+<code>note</code> 转换为 <code>Note</code></li>
+</ul>
+<p>找到 alert 块的根容器和对应的alert 类别，就可以直接进行修改，插入 svg
+图标（这里必须使用 <code>pandoc.RawInline</code> 进行插入，否则 pandoc
+会解析 svg 文件，转换成 base64 图片）并设置 class
+信息（具体如何设置见下一节）。</p>
+<p>应用 lua filter 后转换得到的 html 如下：</p>
+<p><strong>pandoc generated (pandoc version 3.8.0 with
+lua-filter)</strong></p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;markdown-alert markdown-alert-note&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;markdown-alert-title&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">svg</span> <span class="attr">class</span>=<span class="string">&quot;octicon&quot;</span> <span class="attr">viewBox</span>=<span class="string">&quot;0 0 16 16&quot;</span> <span class="attr">width</span>=<span class="string">&quot;16&quot;</span> <span class="attr">height</span>=<span class="string">&quot;16&quot;</span> <span class="attr">aria-hidden</span>=<span class="string">&quot;true&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">path</span></span></span><br><span class="line"><span class="tag">                <span class="attr">d</span>=<span class="string">&quot;M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">path</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">svg</span>&gt;</span></span><br><span class="line">        Note</span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">p</span>&gt;</span>The Markdown formatting will not be ignored in the title of an issue</span><br><span class="line">        or a pull request.<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>此时，pandoc 生成的 html 和 github 版的差异就只剩下样式和 title
+的外层容器类型差异了，而 <code>&lt;div&gt;</code> 和
+<code>&lt;p&gt;</code> 的差异可以暂时忽略，那么就只剩下样式了。</p>
+<h1 id="添加样式">添加样式</h1>
+<p>原本想直接 copy github 版对 alert
+的样式，但是似乎杂揉了很多其他的样式，且个人对 CSS
+也不太熟悉，还是搜下是否有什么库可以提供这个样式吧。</p>
+<p>幸好，<a
+target="_blank" rel="noopener" href="https://www.npmjs.com/package/remark-github-blockquote-alert">remark-github-blockquote-alert</a>
+可以满足我们的需求（好耶！💃）。</p>
+<p><img data-src="/posts/dc23/image-20250913145436237.png"
+style="zoom: 67%;" /></p>
+<p>只需要在加载样式时，将
+<code>remark-github-blockquote-alert/alert.css</code>
+也加载上，并添加上指定的 class 即可。</p>
+<p>有两处需要添加：</p>
+<ol type="1">
+<li>alert 最外层容器需要设置
+<code>markdown-alert markdown-alert-&lt;alert-type&gt;</code>
+两个类</li>
+<li>title 的最外层容器需要设置 <code>markdown-alert-title</code> 类</li>
+</ol>
+<p>手动插入 css 文件到 pandoc 生成的 html 文件，检查一下渲染效果。</p>
+<p><strong>pandoc generated with css (pandoc version 3.8.0 with
+lua-filter)</strong></p>
+<p>（代码太长直接贴图了，style 块中就是库提供的 css 内容）</p>
+<p><img data-src="/posts/dc23/image-20250913150129513.png"
+style="zoom:67%;" /></p>
+<p>渲染效果如下：</p>
+<p><strong>pandoc generated with css</strong></p>
+<p><img data-src="/posts/dc23/image-20250913150250308.png" /></p>
+<p><strong>github alerts</strong></p>
+<p><img data-src="/posts/dc23/image-20250913140150809.png" /></p>
+<p>可以看到在字体上稍微有一些差异，但是整体已经满足需求了。（<code>&lt;div&gt;</code>
+和 <code>&lt;p&gt;</code> 的差异，确实不用管了ね😀）</p>
+<h1 id="hexo-集成">Hexo 集成</h1>
+<p>最后一步，只需要在 hexo 渲染时自动加载 css 文件，就可以在网页上展示
+Alert 了，这一步需要修改 next 的配置文件
+<code>_config.next.yml</code>，修改 <code>custom_file_path</code>
+，调整样式那一栏：</p>
+<figure class="highlight diff"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">diff --git a/_config.next.yml b/_config.next.yml</span></span><br><span class="line"><span class="comment">index 796984f..dfde0a4 100644</span></span><br><span class="line"><span class="comment">--- a/_config.next.yml</span></span><br><span class="line"><span class="comment">+++ b/_config.next.yml</span></span><br><span class="line"><span class="meta">@@ -28,7 +28,7 @@</span> custom_file_path:</span><br><span class="line">   #bodyEnd: source/_data/body-end.njk</span><br><span class="line">   #variable: source/_data/variables.styl</span><br><span class="line">   #mixin: source/_data/mixins.styl</span><br><span class="line"><span class="deletion">-  # style: source/_data/styles.styl</span></span><br><span class="line"><span class="addition">+  style: source/_data/styles.styl</span></span><br></pre></td></tr></table></figure>
+
+<p>同时确保 <code>source/_data/styles.styl</code>
+文件存在即可，为了避免手动拷贝，编写一个简单的 hexo
+插件，自动完成拷贝，代码如下：</p>
+<p><em><strong>hexo-copy-alert-css.js</strong></em></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&#x27;use strict&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> fs = <span class="built_in">require</span>(<span class="string">&#x27;node:fs&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> path = <span class="built_in">require</span>(<span class="string">&#x27;node:path&#x27;</span>)</span><br><span class="line"></span><br><span class="line">hexo.<span class="property">extend</span>.<span class="property">filter</span>.<span class="title function_">register</span>(<span class="string">&quot;after_init&quot;</span>, <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> &#123; log &#125; = hexo;</span><br><span class="line">  <span class="keyword">const</span> alert_css_path = <span class="string">&#x27;node_modules/remark-github-blockquote-alert/alert.css&#x27;</span>;</span><br><span class="line">  <span class="keyword">const</span> target_path = <span class="string">&#x27;source/_data/styles.styl&#x27;</span>;</span><br><span class="line">  <span class="keyword">const</span> target_dir = path.<span class="title function_">dirname</span>(target_path);</span><br><span class="line">  log.<span class="title function_">debug</span>(<span class="string">`Copy <span class="subst">$&#123;alert_css_path&#125;</span> to <span class="subst">$&#123;target_path&#125;</span>`</span>);</span><br><span class="line">  <span class="keyword">if</span> (!fs.<span class="title function_">existsSync</span>(target_dir)) &#123;</span><br><span class="line">    log.<span class="title function_">debug</span>(<span class="string">`Create dir <span class="subst">$&#123;target_dir&#125;</span>`</span>)</span><br><span class="line">    fs.<span class="title function_">mkdirSync</span>(target_dir);</span><br><span class="line">  &#125;</span><br><span class="line">  fs.<span class="title function_">copyFileSync</span>(alert_css_path, target_path);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>这样，只要在 <code>package.json</code> 中安装了
+<code>remark-github-blockquote-alert</code>
+依赖，就可以直接拷贝包中提供的 alert.css
+了，确保样式是最新的（虽然感觉一般不会变，但是有溯源保证还是更安心一点）。</p>
+<p>最后，直接在 markdown 中添加 alert 的展示，检查是否配置成功。</p>
+<div class="markdown-alert markdown-alert-note">
 <div class="markdown-alert-title">
 <svg class="octicon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>
 <strong>Note</strong>
@@ -322,16 +508,7 @@ problems.</p>
 </div>
 <p>Advises about risks or negative outcomes of certain actions.</p>
 </div>
-<span id="more"></span>
-
-<p><code>test.mjs</code></p>
-<blockquote>
-<p><a
-target="_blank" rel="noopener" href="https://www.npmjs.com/package/remark-github-blockquote-alert">https://www.npmjs.com/package/remark-github-blockquote-alert</a></p>
-</blockquote>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; remark &#125; <span class="keyword">from</span> <span class="string">&#x27;remark&#x27;</span></span><br><span class="line"><span class="keyword">import</span> remarkParse <span class="keyword">from</span> <span class="string">&#x27;remark-parse&#x27;</span></span><br><span class="line"><span class="keyword">import</span> remarkAlert <span class="keyword">from</span> <span class="string">&#x27;remark-github-blockquote-alert&#x27;</span></span><br><span class="line"><span class="keyword">import</span> remarkRehype <span class="keyword">from</span> <span class="string">&#x27;remark-rehype&#x27;</span></span><br><span class="line"><span class="keyword">import</span> rehypeStringify <span class="keyword">from</span> <span class="string">&#x27;rehype-stringify&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> markdown = <span class="string">`</span></span><br><span class="line"><span class="string">&gt; [!NOTE]</span></span><br><span class="line"><span class="string">&gt; Useful information that users should know, even when skimming content.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">&gt; [!TIP]</span></span><br><span class="line"><span class="string">&gt; Helpful advice for doing things better or more easily.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">&gt; [!IMPORTANT]</span></span><br><span class="line"><span class="string">&gt; Key information users need to know to achieve their goal.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">&gt; [!WARNING]</span></span><br><span class="line"><span class="string">&gt; Urgent info that needs immediate user attention to avoid problems.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">&gt; [!CAUTION]</span></span><br><span class="line"><span class="string">&gt; Advises about risks or negative outcomes of certain actions.</span></span><br><span class="line"><span class="string">`</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> htmlStr = <span class="title function_">remark</span>()</span><br><span class="line">    .<span class="title function_">use</span>(remarkParse)</span><br><span class="line">    .<span class="title function_">use</span>(remarkAlert)</span><br><span class="line">    .<span class="title function_">use</span>(remarkRehype)</span><br><span class="line">    .<span class="title function_">use</span>(rehypeStringify)</span><br><span class="line">    .<span class="title function_">processSync</span>(markdown).<span class="title function_">toString</span>()</span><br><span class="line"></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(htmlStr)</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> LUA_PATH=<span class="string">&quot;<span class="subst">$(pwd)</span>/lua/?.lua&quot;</span></span><br><span class="line"></span><br><span class="line">pandoc --from=gfm+alerts \</span><br><span class="line">    --to=html5 --mathjax \</span><br><span class="line">    --metadata=pagetitle:ignored \</span><br><span class="line">    --metadata=standalone:<span class="literal">true</span> \</span><br><span class="line">    --lua-filter=lua/image-asset.lua \</span><br><span class="line">    -o test.html \</span><br><span class="line">    test.md</span><br></pre></td></tr></table></figure>
+<p>如果可以看到文章开头展示的渲染效果，则说明配置成功（😎）。</p>
 
     </div>
 
@@ -357,6 +534,12 @@ target="_blank" rel="noopener" href="https://www.npmjs.com/package/remark-github
 </ul>
 </div>
 
+          <div class="post-tags">
+              <a href="/tags/hexo/" rel="tag"># hexo</a>
+              <a href="/tags/pandoc/" rel="tag"># pandoc</a>
+              <a href="/tags/node-js/" rel="tag"># node.js</a>
+              <a href="/tags/lua/" rel="tag"># lua</a>
+          </div>
 
         
 
@@ -397,13 +580,13 @@ target="_blank" rel="noopener" href="https://www.npmjs.com/package/remark-github
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">50k</span>
+    <span title="站点总字数">53k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">3:03</span>
+    <span title="站点阅读时长">3:12</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动

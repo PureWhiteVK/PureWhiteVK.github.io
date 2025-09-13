@@ -30,6 +30,8 @@
 <meta property="og:image" content="https://purewhitevk.github.io/posts/4af5/image-20250827211708072.png">
 <meta property="og:image" content="https://purewhitevk.github.io/posts/4af5/image-20250827212341633.png">
 <meta property="og:image" content="https://purewhitevk.github.io/posts/4af5/image-20250827212804711.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/4af5/image-20250912232211744.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/4af5/image-20250912232338114.png">
 <meta property="article:published_time" content="2025-08-27T13:14:04.000Z">
 <meta property="article:modified_time" content="2025-08-27T13:14:04.000Z">
 <meta property="article:author" content="PureWhiteVK">
@@ -171,7 +173,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#powershell-%E8%AE%BE%E7%BD%AE"><span class="nav-number">1.</span> <span class="nav-text">Powershell 设置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#bash-%E8%AE%BE%E7%BD%AE"><span class="nav-number">2.</span> <span class="nav-text">Bash 设置</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#powershell-%E8%AE%BE%E7%BD%AE"><span class="nav-number">1.</span> <span class="nav-text">Powershell 设置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#bash-%E8%AE%BE%E7%BD%AE"><span class="nav-number">2.</span> <span class="nav-text">Bash 设置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#wsl-%E8%AE%BE%E7%BD%AE"><span class="nav-number">2.1.</span> <span class="nav-text">WSL 设置</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -283,14 +285,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>278</span>
+      <span>546</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>1 分钟</span>
+      <span>2 分钟</span>
     </span>
 </div>
 
@@ -303,7 +305,8 @@
     <div class="post-body" itemprop="articleBody"><h1 id="powershell-设置">Powershell 设置</h1>
 <p>通过 <code>$PROFILE</code> 变量，可以查询到 Powershell
 默认加载的配置文件路径，如下所示</p>
-<p><img data-src="/posts/4af5/image-20250827211708072.png" /></p>
+<p><img data-src="/posts/4af5/image-20250827211708072.png"
+style="zoom: 67%;" /></p>
 <p>如果文件不存在，直接创建一个即可，然后填入下面两个预定义的函数（默认代理的地址为
 <code>127.0.0.1:7890</code>，纪念天国的CFW🙏）</p>
 <figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">proxy_on</span></span> &#123;</span><br><span class="line">    <span class="variable">$proxy</span>=<span class="string">&quot;http://127.0.0.1:7890&quot;</span></span><br><span class="line">    <span class="variable">$Env:http_proxy</span> = <span class="string">&quot;<span class="variable">$proxy</span>&quot;</span></span><br><span class="line">    <span class="variable">$Env:https_proxy</span> = <span class="string">&quot;<span class="variable">$proxy</span>&quot;</span></span><br><span class="line">    <span class="built_in">Write-Host</span> <span class="string">&quot;Proxy enabled: <span class="variable">$proxy</span>&quot;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">proxy_off</span></span> &#123;</span><br><span class="line">    <span class="built_in">Remove-Item</span> Env:\http_proxy <span class="literal">-ErrorAction</span> SilentlyContinue</span><br><span class="line">    <span class="built_in">Remove-Item</span> Env:\https_proxy <span class="literal">-ErrorAction</span> SilentlyContinue</span><br><span class="line">    <span class="built_in">Write-Host</span> <span class="string">&quot;Proxy disabled&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -313,7 +316,8 @@
 命令判断是否可用</p>
 <span id="more"></span>
 
-<p><img data-src="/posts/4af5/image-20250827212341633.png" /></p>
+<p><img data-src="/posts/4af5/image-20250827212341633.png"
+style="zoom: 50%;" /></p>
 <p>（由于 cmd 并不支持 profile
 ，就无法编写类似的函数了，不过其基本思路也就是设置
 <code>http_proxy</code> 和 删除 <code>http_proxy</code> 而已）</p>
@@ -324,7 +328,23 @@
 
 <p>更新完成后，使用 <code>source ~/.bashrc</code> （实际上也可以使用
 <code>. ~/.bashrc</code>） 加载更新后的配置文件，并进行简单的验证</p>
-<p><img data-src="/posts/4af5/image-20250827212804711.png" /></p>
+<p><img data-src="/posts/4af5/image-20250827212804711.png"
+style="zoom: 67%;" /></p>
+<h2 id="wsl-设置">WSL 设置</h2>
+<p>在 wsl 中设置代理和 bash
+的设置十分相似，但是有一点区别，就是当我们在宿主机（Windows
+机器）上开启了代理软件（例如
+CFW）后，可以通过局域网走宿主机的代理，只需要CFW上开启了允许局域网代理即可，如下所示</p>
+<p><img data-src="/posts/4af5/image-20250912232211744.png"
+style="zoom: 50%;" /></p>
+<p>之后要做的就是在 wsl 中查询到宿主机的局域网 ip 地址即可，这个在 <a
+target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/windows/wsl/networking#identify-ip-address">wsl
+的官方文档</a>中已经给出示例</p>
+<p><img data-src="/posts/4af5/image-20250912232338114.png"
+style="zoom: 67%;" /></p>
+<p>稍微修改一下 <code>proxy_on</code> 的代码就可以在 wsl
+上也设置好代理了，如下所示</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="title">proxy_on</span></span>() &#123;</span><br><span class="line">    <span class="built_in">local</span> hostip=<span class="string">&quot;<span class="subst">$(ip route show | grep -i default | awk &#x27;&#123; print $3&#125;&#x27;)</span>&quot;</span>  </span><br><span class="line">    <span class="built_in">local</span> proxy=<span class="string">&quot;http://<span class="variable">$hostip</span>:7890&quot;</span></span><br><span class="line">    <span class="built_in">export</span> http_proxy=<span class="string">&quot;<span class="variable">$proxy</span>&quot;</span></span><br><span class="line">    <span class="built_in">export</span> https_proxy=<span class="string">&quot;<span class="variable">$proxy</span>&quot;</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;Proxy enabled: <span class="variable">$proxy</span>&quot;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">proxy_off</span></span>() &#123;</span><br><span class="line">    <span class="built_in">unset</span> http_proxy</span><br><span class="line">    <span class="built_in">unset</span> https_proxy</span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;Proxy disabled&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
     </div>
 
@@ -396,13 +416,13 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">50k</span>
+    <span title="站点总字数">53k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">3:03</span>
+    <span title="站点阅读时长">3:12</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
