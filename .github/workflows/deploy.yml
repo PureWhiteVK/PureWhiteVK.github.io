@@ -13,14 +13,14 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           submodules: recursive
-      - name: Use Pandoc 3.7.0.2
+      - name: Use Pandoc 3.8
         uses: nikeee/setup-pandoc@v1
         with:
-          pandoc-version: "3.7.0.2"
-      - name: Use Node.js 18.12.1
+          pandoc-version: "3.8"
+      - name: Use Node.js 22.19.0
         uses: actions/setup-node@v3
         with:
-          node-version: "18.12.1"
+          node-version: "22.19.0"
           cache: 'npm'
       - name: Install Dependencies
         run: npm install
