@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width">
-<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 8.0.0">
 
   <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
@@ -31,8 +31,8 @@
 <meta property="article:published_time" content="2023-01-03T06:09:39.000Z">
 <meta property="article:modified_time" content="2023-01-03T06:09:39.000Z">
 <meta property="article:author" content="PureWhiteVK">
-<meta property="article:tag" content="mathjax">
 <meta property="article:tag" content="LaTex">
+<meta property="article:tag" content="mathjax">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://purewhitevk.github.io/posts/caff/no-physics-error.svg">
 
@@ -575,66 +575,66 @@ class="math inline">\(\underline{x}\)</span> ）等</p>
 </thead>
 <tbody>
 <tr>
-<td><code>a'</code> or <code>a^&#123;\prime&#125;</code></td>
+<td><code>a'</code> or <code>a^{\prime}</code></td>
 <td><span class="math inline">\(a&#39;\)</span></td>
 <td><code>a''</code></td>
 <td><span class="math inline">\(a&#39;&#39;\)</span></td>
 </tr>
 <tr>
-<td><code>\hat&#123;a&#125;</code></td>
+<td><code>\hat{a}</code></td>
 <td><span class="math inline">\(\hat{a}\)</span></td>
-<td><code>\bar&#123;a&#125;</code></td>
+<td><code>\bar{a}</code></td>
 <td><span class="math inline">\(\bar{a}\)</span></td>
 </tr>
 <tr>
-<td><code>\acute&#123;a&#125;</code></td>
+<td><code>\acute{a}</code></td>
 <td><span class="math inline">\(\acute{a}\)</span></td>
-<td><code>\check&#123;a&#125;</code></td>
+<td><code>\check{a}</code></td>
 <td><span class="math inline">\(\check{a}\)</span></td>
 </tr>
 <tr>
-<td><code>\grave&#123;a&#125;</code></td>
+<td><code>\grave{a}</code></td>
 <td><span class="math inline">\(\grave{a}\)</span></td>
-<td><code>\dot&#123;a&#125;</code></td>
+<td><code>\dot{a}</code></td>
 <td><span class="math inline">\(\dot{a}\)</span></td>
 </tr>
 <tr>
-<td><code>\mathring&#123;a&#125;</code></td>
+<td><code>\mathring{a}</code></td>
 <td><span class="math inline">\(\mathring{a}\)</span></td>
-<td><code>\breve&#123;a&#125;</code></td>
+<td><code>\breve{a}</code></td>
 <td><span class="math inline">\(\breve{a}\)</span></td>
 </tr>
 <tr>
-<td><code>\tilde&#123;a&#125;</code></td>
+<td><code>\tilde{a}</code></td>
 <td><span class="math inline">\(\tilde{a}\)</span></td>
-<td><code>\vec&#123;a&#125;</code></td>
+<td><code>\vec{a}</code></td>
 <td><span class="math inline">\(\vec{a}\)</span></td>
 </tr>
 <tr>
-<td><code>\underline&#123;a&#125;</code></td>
+<td><code>\underline{a}</code></td>
 <td><span class="math inline">\(\underline{a}\)</span></td>
-<td><code>\overline&#123;a&#125;</code></td>
+<td><code>\overline{a}</code></td>
 <td><span class="math inline">\(\overline{a}\)</span></td>
 </tr>
 <tr>
-<td><code>\overrightarrow&#123;AB&#125;</code></td>
+<td><code>\overrightarrow{AB}</code></td>
 <td><span class="math inline">\(\overrightarrow{AB}\)</span></td>
-<td><code>\overleftarrow&#123;AB&#125;</code></td>
+<td><code>\overleftarrow{AB}</code></td>
 <td><span class="math inline">\(\overleftarrow{AB}\)</span></td>
 </tr>
 <tr>
-<td><code>\widehat&#123;AB&#125;</code></td>
+<td><code>\widehat{AB}</code></td>
 <td><span class="math inline">\(\widehat{AB}\)</span></td>
-<td><code>\widetilde&#123;AB&#125;</code></td>
+<td><code>\widetilde{AB}</code></td>
 <td><span class="math inline">\(\widetilde{AB}\)</span></td>
 </tr>
 </tbody>
 </table>
 <h2 id="括号">括号</h2>
 <p>常见的括号 <code>()</code>、中括号 <code>[]</code>、以及大括号
-<code>&#123;&#125;</code> 都可以直接在键盘中输入，由于大括号在 LaTex
+<code>{}</code> 都可以直接在键盘中输入，由于大括号在 LaTex
 中的特殊含义（用来包裹一段公式），我们使用时需要添加 <code>\</code>
-进行转义，即 <code>\&#123;</code> 和 <code>\&#125;</code></p>
+进行转义，即 <code>\{</code> 和 <code>\}</code></p>
 <p>对于竖线 <code>|</code> ，我们可以直接从键盘中输入，也可以使用
 <code>\mid</code> 来表示，双竖线（范数的表示）可以使用 <code>\|</code>
 来表示（不能使用两个竖线，因为双竖线应该表示为一个字符），示例如下</p>
@@ -680,7 +680,7 @@ P\left(A=2\middle| \frac{A^2}{B}&gt;4\right)
 \]</span></p>
 <p>而对于花括号（curly
 braces）和方括号（brackets）时，需要使用转义符进行转义
-<code>\&#123;</code></p>
+<code>\{</code></p>
 <figure class="highlight latex"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">\left</span><span class="keyword">\&#123;</span><span class="keyword">\frac</span>&#123;x<span class="built_in">^</span>2&#125;&#123;y<span class="built_in">^</span>3&#125;<span class="keyword">\right</span><span class="keyword">\&#125;</span></span><br></pre></td></tr></table></figure>
 
 <p><span class="math display">\[
@@ -759,7 +759,7 @@ abc\)</span></td>
 abc\)</span></td>
 </tr>
 <tr>
-<td><code>\hspace&#123;3em&#125;</code></td>
+<td><code>\hspace{3em}</code></td>
 <td>自定义宽度空格</td>
 <td><span class="math inline">\(abc \rightarrow\hspace{3em}\leftarrow
 abc\)</span></td>
@@ -805,52 +805,52 @@ n / 2 &amp; \quad \text{if } n \text{ is even} \\
 <tbody>
 <tr>
 <td>Upright Roman Font</td>
-<td><code>\mathrm&#123;&#125;</code></td>
+<td><code>\mathrm{}</code></td>
 <td><span class="math inline">\(\mathrm{x}\)</span></td>
 </tr>
 <tr>
 <td>Normal Italic Font</td>
-<td><code>\mathnormal&#123;&#125;</code></td>
+<td><code>\mathnormal{}</code></td>
 <td><span class="math inline">\(\mathnormal{x}\)</span></td>
 </tr>
 <tr>
 <td>Calligraphic Font</td>
-<td><code>\mathcal&#123;&#125;</code></td>
+<td><code>\mathcal{}</code></td>
 <td><span class="math inline">\(\mathcal{X}\)</span></td>
 </tr>
 <tr>
 <td>Upright Roman Boldface</td>
-<td><code>\mathbf&#123;&#125;</code></td>
+<td><code>\mathbf{}</code></td>
 <td><span class="math inline">\(\mathbf{x}\)</span></td>
 </tr>
 <tr>
 <td>Upright Sans Serif</td>
-<td><code>\mathsf&#123;&#125;</code></td>
+<td><code>\mathsf{}</code></td>
 <td><span class="math inline">\(\mathsf{x}\)</span></td>
 </tr>
 <tr>
 <td>Italic Font</td>
-<td><code>\mathit&#123;&#125;</code></td>
+<td><code>\mathit{}</code></td>
 <td><span class="math inline">\(\mathit{x}\)</span></td>
 </tr>
 <tr>
 <td>Typewritter Font</td>
-<td><code>\mathtt&#123;&#125;</code></td>
+<td><code>\mathtt{}</code></td>
 <td><span class="math inline">\(\mathtt{x}\)</span></td>
 </tr>
 <tr>
 <td>Blackboard Bold Font</td>
-<td><code>\mathbb&#123;&#125;</code></td>
+<td><code>\mathbb{}</code></td>
 <td><span class="math inline">\(\mathbb{X}\)</span></td>
 </tr>
 <tr>
 <td>Eular Calligraphic Font</td>
-<td><code>\mathscr&#123;&#125;</code></td>
+<td><code>\mathscr{}</code></td>
 <td><span class="math inline">\(\mathscr{X}\)</span></td>
 </tr>
 <tr>
 <td>Fraktur(Gothic) Font</td>
-<td><code>\mathfrak&#123;&#125;</code></td>
+<td><code>\mathfrak{}</code></td>
 <td><span class="math inline">\(\mathfrak{X}\)</span></td>
 </tr>
 </tbody>
@@ -892,7 +892,7 @@ n / 2 &amp; \quad \text{if } n \text{ is even} \\
 \]</span></p>
 <h2 id="上下标">上下标</h2>
 <p>通过 <code>_</code> 表示下标，<code>^</code>
-表示上标，如果需要将一块一整体进行上标，需要使用 <code>&#123;&#125;</code>
+表示上标，如果需要将一块一整体进行上标，需要使用 <code>{}</code>
 进行包裹</p>
 <figure class="highlight latex"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">\begin</span>&#123;align&#125;</span><br><span class="line">n<span class="built_in">^</span>&#123;22&#125; <span class="built_in">&amp;</span> <span class="keyword">\\</span></span><br><span class="line">k<span class="built_in">_</span>&#123;n+1&#125; <span class="built_in">&amp;</span> = n<span class="built_in">^</span>2 + k<span class="built_in">_</span>n<span class="built_in">^</span>2 - k<span class="built_in">_</span>&#123;n-1&#125; <span class="keyword">\\</span></span><br><span class="line">f(n) <span class="built_in">&amp;</span> = <span class="keyword">\left</span>. n<span class="built_in">^</span>5 + 4n<span class="built_in">^</span>2 + 2 <span class="keyword">\right</span>|<span class="built_in">_</span>&#123;n=17&#125;</span><br><span class="line"><span class="keyword">\end</span>&#123;align&#125;</span><br></pre></td></tr></table></figure>
 
@@ -904,7 +904,7 @@ f(n) &amp; = \left. n^5 + 4n^2 + 2 \right|_{n=17}
 \end{align}
 \]</span></p>
 <h2 id="分数和二项式系数">分数和二项式系数</h2>
-<p>使用 <code>\frac&#123;numerator&#125;&#123;denominator&#125;</code>
+<p>使用 <code>\frac{numerator}{denominator}</code>
 来表示分数（numerator表示分子，denominator表示分母）</p>
 <figure class="highlight latex"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">\frac</span>&#123;n!&#125;&#123;k!(n-k)!&#125; = <span class="keyword">\binom</span>&#123;n&#125;&#123;k&#125;</span><br></pre></td></tr></table></figure>
 
@@ -922,7 +922,7 @@ f(n) &amp; = \left. n^5 + 4n^2 + 2 \right|_{n=17}
 
 <p><span class="math display">\[
 ^3/_7 \quad 3 / 7
-\]</span> 使用 <code>\frac&#123;...&#125;&#123;...&#125;</code>
+\]</span> 使用 <code>\frac{...}{...}</code>
 我们也可以表示其他内容，例如乘法和加法公式</p>
 <figure class="highlight latex"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">\frac</span>&#123;</span><br><span class="line">	<span class="keyword">\begin</span>&#123;array&#125;[b]&#123;r&#125;</span><br><span class="line">		<span class="keyword">\left</span>( x<span class="built_in">_</span>1 x<span class="built_in">_</span>2 <span class="keyword">\right</span>) <span class="keyword">\\</span></span><br><span class="line">		<span class="keyword">\times</span> <span class="keyword">\left</span>( x&#x27;<span class="built_in">_</span>1 x&#x27;<span class="built_in">_</span>2 <span class="keyword">\right</span>)</span><br><span class="line">	<span class="keyword">\end</span>&#123;array&#125;</span><br><span class="line">&#125;&#123;</span><br><span class="line">	<span class="keyword">\left</span>( y<span class="built_in">_</span>1 y<span class="built_in">_</span>2 y<span class="built_in">_</span>3 y<span class="built_in">_</span>4 <span class="keyword">\right</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -937,10 +937,10 @@ f(n) &amp; = \left. n^5 + 4n^2 + 2 \right|_{n=17}
 }
 \]</span></p>
 <p>其中对齐公式使用的 <code>\align</code> 以及
-<code>\begin&#123;&#125;...\end&#123;&#125;</code> 会单独进行详细地介绍。</p>
+<code>\begin{}...\end{}</code> 会单独进行详细地介绍。</p>
 <h2 id="根式">根式</h2>
-<p>使用 <code>\sqrt&#123;...&#125;</code>
-来表示根号，默认为2，也可以指定为其他幂次，通过<code>\sqrt[n]&#123;&#125;</code>
+<p>使用 <code>\sqrt{...}</code>
+来表示根号，默认为2，也可以指定为其他幂次，通过<code>\sqrt[n]{}</code>
 来指定</p>
 <figure class="highlight latex"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">\sqrt</span>[n]&#123;1 + x + x<span class="built_in">^</span>2 + x<span class="built_in">^</span>3 +<span class="keyword">\cdots</span> + x<span class="built_in">^</span>n&#125;</span><br></pre></td></tr></table></figure>
 
@@ -948,20 +948,20 @@ f(n) &amp; = \left. n^5 + 4n^2 + 2 \right|_{n=17}
 \sqrt[n]{1+x+x^2+x^3+\cdots+x^n}
 \]</span></p>
 <h2 id="求和乘积与积分">求和、乘积与积分</h2>
-<p>通过 <code>\sum _&#123;&#125; ^&#123;&#125; &#123;&#125;</code> 来表示大型加法表达式，如下</p>
+<p>通过 <code>\sum _{} ^{} {}</code> 来表示大型加法表达式，如下</p>
 <figure class="highlight latex"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">$</span><span class="built_in">$</span></span><br><span class="line"><span class="keyword">\sum</span> <span class="built_in">_</span>&#123;i=1&#125; <span class="built_in">^</span>&#123;<span class="keyword">\infty</span>&#125; x<span class="built_in">^</span>i</span><br><span class="line"><span class="built_in">$</span><span class="built_in">$</span></span><br></pre></td></tr></table></figure>
 
 <p><span class="math display">\[
 \sum _{i=1} ^{\infty} x^i
 \]</span></p>
-<p>对于连乘也是类似 <code>\prod _&#123;&#125; ^&#123;&#125; &#123;&#125;</code>
+<p>对于连乘也是类似 <code>\prod _{} ^{} {}</code>
 来表示大型乘法表达式，如下</p>
 <figure class="highlight latex"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">$</span><span class="built_in">$</span></span><br><span class="line"><span class="keyword">\prod</span> <span class="built_in">_</span>&#123;i=1&#125; <span class="built_in">^</span>&#123;n&#125; x<span class="built_in">^</span>i</span><br><span class="line"><span class="built_in">$</span><span class="built_in">$</span></span><br></pre></td></tr></table></figure>
 
 <p><span class="math display">\[
 \prod _{i=1} ^{n} x^i
 \]</span></p>
-<p>积分（integral），通过 <code>\int _&#123;&#125; ^&#123;&#125; &#123;&#125;</code>
+<p>积分（integral），通过 <code>\int _{} ^{} {}</code>
 来表示积分符号</p>
 <figure class="highlight latex"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">$</span><span class="built_in">$</span></span><br><span class="line"><span class="keyword">\int</span> <span class="built_in">_</span>&#123;0&#125; <span class="built_in">^</span>&#123;<span class="keyword">\pi</span>&#125; <span class="keyword">\sin</span> x <span class="keyword">\,</span><span class="keyword">\mathrm</span>&#123;d&#125;x</span><br><span class="line"><span class="built_in">$</span><span class="built_in">$</span></span><br></pre></td></tr></table></figure>
 
@@ -986,7 +986,7 @@ f(n) &amp; = \left. n^5 + 4n^2 + 2 \right|_{n=17}
 \end{align}
 \]</span></p>
 <h2 id="矩阵">矩阵</h2>
-<p>对于矩阵而言，需要使用 <code>\begin&#123;&#125;...\end&#123;&#125;</code>
+<p>对于矩阵而言，需要使用 <code>\begin{}...\end{}</code>
 来包裹（对齐）</p>
 <p>普通矩阵</p>
 <figure class="highlight latex"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">$</span><span class="built_in">$</span></span><br><span class="line"><span class="keyword">\begin</span>&#123;matrix&#125;</span><br><span class="line">1 <span class="built_in">&amp;</span> 2 <span class="built_in">&amp;</span> 3<span class="keyword">\\</span></span><br><span class="line">a <span class="built_in">&amp;</span> b <span class="built_in">&amp;</span> c</span><br><span class="line"><span class="keyword">\end</span>&#123;matrix&#125;</span><br><span class="line"><span class="built_in">$</span><span class="built_in">$</span></span><br></pre></td></tr></table></figure>
@@ -1302,7 +1302,7 @@ class="math inline">\(g&#39;(x)\)</span></td>
 \]</span></p>
 <h1 id="导入其他包">导入其他包</h1>
 <p>有时候我们想要在 MathJax 中使用其他宏包，例如 Physics
-宏，我们可以直接在 LaTex 代码中使用 <code>require&#123;...&#125;</code>
+宏，我们可以直接在 LaTex 代码中使用 <code>require{...}</code>
 来添加扩展。</p>
 <figure class="highlight latex"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">$</span><span class="built_in">$</span></span><br><span class="line"><span class="keyword">\require</span>&#123;physics&#125;</span><br><span class="line"><span class="keyword">\abs</span>&#123;a&#125; <span class="keyword">\quad</span> <span class="keyword">\grad</span>&#123;x&#125; <span class="keyword">\quad</span> <span class="keyword">\order</span>&#123;1&#125; <span class="keyword">\quad</span> <span class="keyword">\cross</span></span><br><span class="line"><span class="built_in">$</span><span class="built_in">$</span></span><br></pre></td></tr></table></figure>
 
@@ -1311,7 +1311,7 @@ class="math inline">\(g&#39;(x)\)</span></td>
 \abs{a} \quad \grad{x} \quad \order{1} \quad \cross
 \]</span> 如果加载失败，将会显示如下结果</p>
 <p><img data-src="/posts/caff/no-physics-error.svg" /></p>
-<p>不过感觉 <code>require&#123;&#125;</code> 功能在 mathjax
+<p>不过感觉 <code>require{}</code> 功能在 mathjax
 中还有点问题，最好还是在设置中手动开启。</p>
 <h1 id="参考">参考</h1>
 <ol type="1">

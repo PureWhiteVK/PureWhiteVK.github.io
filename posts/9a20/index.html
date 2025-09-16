@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width">
-<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 8.0.0">
 
   <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
@@ -36,9 +36,9 @@
 <meta property="article:modified_time" content="2023-01-05T04:20:55.000Z">
 <meta property="article:author" content="PureWhiteVK">
 <meta property="article:tag" content="hexo">
-<meta property="article:tag" content="pandoc">
-<meta property="article:tag" content="node.js">
 <meta property="article:tag" content="lua">
+<meta property="article:tag" content="node.js">
+<meta property="article:tag" content="pandoc">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://purewhitevk.github.io/posts/9a20/image-20230116112529108.png">
 
@@ -574,9 +574,9 @@ markdown 如下</p>
 效果。</p>
 <h3 id="filter-写法">filter 写法</h3>
 <p>上面的代码第一眼看上有点奇怪，怎么以来就是一个 <code>return</code>
-语句，返回的 <code>&#123;&#125;</code> 怎么直接套了一个
-<code>&#123;xxx = xxx&#125;</code></p>
-<p>首先解释后面一点，在 lua 中，列表和字典都使用 <code>&#123;&#125;</code>
+语句，返回的 <code>{}</code> 怎么直接套了一个
+<code>{xxx = xxx}</code></p>
+<p>首先解释后面一点，在 lua 中，列表和字典都使用 <code>{}</code>
 表示，那么最外层的就是一个列表，然后内层的是一个字典，我们可以看到其指定了一个键为
 <code>Strong</code> 的函数，表示对 <code>Strong</code>
 这个节点的处理函数。</p>
