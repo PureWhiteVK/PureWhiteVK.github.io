@@ -285,6 +285,54 @@ git push -f
 
    
 
+# fork 
+
+fork 是 github 或 gitlab 等代码托管平台提供的一个功能，可以在托管平台上复制一份现有仓库，到自己账户下。
+
+复制之后，我们会有两个基本操作，**同步** 和 **代码变更**。
+
+直接讲有点干巴巴的，下面给一个实际案例来解释：
+
+conan 包管理器中每一个包都有对应的构建脚本，这些构建脚本是开源的，维护在 [conan-center-index](https://github.com/conan-io/conan-center-index) 这个仓库里，但是这些构建脚本有时候更新不及时，在一些平台上可能出现编译问题，为了解决编译问题，就需要 fork conan-center-index 这个仓库，提交自己的改动。同时当 conan-center-index 出现其他更新的时候，我们 fork 的仓库也想同步这个改动。
+
+## 同步远程仓库
+
+还是以 conan-center-index 为例，将原始仓库记为 A 仓库，fork 之后的仓库记为 B 仓库。当我们拉取 B 仓库时，其 remote 链接对应的就是 B 仓库的 github 远程连接，例如 https://github.com/conan-io/conan-center-index 这种，此时我们想要拉取 A 仓库的代码更新，可以手动设置新的 remote，并手动拉取。
+
+具体操作如下：
+
+A. 添加 A 仓库 的 remote 链接，并将其命名为 repoA：
+
+```bash
+git remote add repoA <remote-url-of-A>
+```
+
+B. 拉取 A 仓库的代码改动，使用 repoA 指定我们需要从 repoA 这个 remote 拉取代码：
+
+```bash
+git fetch repoA
+```
+
+C. 当我们需要保持代码一直是基于最新的 repoA 主干（master）时，可以使用 rebase 操作，将所做的改动应用到 repoA 上：
+
+```bash
+git rebase repoA/master
+```
+
+其中 `repoA/master` 就代表 repoA 的 master 分支上。
+
+如果出现冲突就手动处理一下
+
+D. 最后，当我们需要提交到自己的远程仓库 repoB 时，需要使用 `-f` 进行强制推送，因为我们执行了 rebase 操作：
+
+```bash
+git push repoB HEAD:master -f
+```
+
+其中 `HEAD:master` 表示将当前分支提交到 `repoB/master` 分支上。
+
+
+
 # 说明
 
 上面介绍了一些常用的 git 命令，如果碰到其他的就直接使用 `git <command> --help` 查看相关文档，或者直接百度即可。

@@ -166,7 +166,7 @@ end
 - `get_title_element` 函数遍历 `<div>` 标签下的子元素，返回包含 `<div class="title">` 的元素
 - `capitalize_first` 函数将单词的首字母大写，例如 `note` 转换为 `Note` 
 
-找到 alert 块的根容器和对应的alert 类别，就可以直接进行修改，插入 svg 图标（这里必须使用 `pandoc.RawInline` 进行插入，否则 pandoc 会解析 svg 文件，转换成 base64 图片）并设置 class 信息（具体如何设置见下一节）。
+找到 alert 块的根容器和对应的alert 类别，就可以直接进行修改，插入 svg 图标（这里必须使用 `pandoc.RawInline` 进行插入，否则 pandoc 会解析 svg 文件，转换成 base64 图片）并设置 class 信息（具体如何使用见下一节）。
 
 应用 lua filter 后转换得到的 html 如下：
 
