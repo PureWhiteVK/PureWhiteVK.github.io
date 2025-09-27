@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 8.0.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.css" integrity="sha256-gkQVf8UKZgQ0HyuxL/VnacadJ+D2Kox2TCEBuNQg5+w=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"purewhitevk.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.25.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":"default"},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false,"trigger":"auto"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="Hello Projection 所谓投影，就是 将高维空间中的对象，通过某种方式映射到低维或另外一个空间中。如下图所示（图片来自网络）。  当在二维平面上展示三维物体时，其展示的是三维物体在二维空间上的一个投影，而这个三维到二维的转换过程就是投影变换。 如果投影过程是一个线性变换，则可以通过一个矩阵描述变换，如下式所示，其中 \(M_\text{projection}\) 就称为投影变换矩阵。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="投影变换矩阵">
+<meta property="og:url" content="https://purewhitevk.github.io/posts/7cfa/">
+<meta property="og:site_name" content="PureWhiteVK&#39;s Blog">
+<meta property="og:description" content="Hello Projection 所谓投影，就是 将高维空间中的对象，通过某种方式映射到低维或另外一个空间中。如下图所示（图片来自网络）。  当在二维平面上展示三维物体时，其展示的是三维物体在二维空间上的一个投影，而这个三维到二维的转换过程就是投影变换。 如果投影过程是一个线性变换，则可以通过一个矩阵描述变换，如下式所示，其中 \(M_\text{projection}\) 就称为投影变换矩阵。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/7cfa/3rd-angle-projection-1-1.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/7cfa/image-20220521170645438.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/7cfa/image-20250927171041250.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/7cfa/image-20250927191035306.png">
+<meta property="article:published_time" content="2025-09-27T07:35:40.000Z">
+<meta property="article:modified_time" content="2025-09-27T07:35:40.000Z">
+<meta property="article:author" content="PureWhiteVK">
+<meta property="article:tag" content="C++">
+<meta property="article:tag" content="OpenGL">
+<meta property="article:tag" content="线性代数">
+<meta property="article:tag" content="计算机图形学">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://purewhitevk.github.io/posts/7cfa/3rd-angle-projection-1-1.png">
+
+
+<link rel="canonical" href="https://purewhitevk.github.io/posts/7cfa/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://purewhitevk.github.io/posts/7cfa/","path":"posts/7cfa/","title":"投影变换矩阵"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>投影变换矩阵 | PureWhiteVK's Blog</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.umd.js" integrity="sha256-a+H7FYzJv6oU2hfsfDGM2Ohw/cR9v+hPfxHCLdmCrE8=" crossorigin="anonymous" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+  <script src="/js/third-party/fancybox.js" defer></script>
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js" defer></script>
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">PureWhiteVK's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">27</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">6</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">20</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#hello-projection"><span class="nav-number">1.</span> <span class="nav-text">Hello Projection</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%AD%A3%E4%BA%A4%E6%8A%95%E5%BD%B1"><span class="nav-number">2.</span> <span class="nav-text">正交投影</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%80%8F%E8%A7%86%E6%8A%95%E5%BD%B1"><span class="nav-number">3.</span> <span class="nav-text">透视投影</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B7%B1%E5%BA%A6%E8%BD%AC%E6%8D%A2"><span class="nav-number">3.1.</span> <span class="nav-text">深度转换</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="PureWhiteVK"
+      src="/images/Touma.Kazusa.256x256.png">
+  <p class="site-author-name" itemprop="name">PureWhiteVK</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">20</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/PureWhiteVK" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;PureWhiteVK" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:yl_xiao@outlook.com" title="E-Mail → mailto:yl_xiao@outlook.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://purewhitevk.github.io/posts/7cfa/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/Touma.Kazusa.256x256.png">
+      <meta itemprop="name" content="PureWhiteVK">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PureWhiteVK's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="投影变换矩阵 | PureWhiteVK's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          投影变换矩阵
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025/09/27 15:35:40" itemprop="dateCreated datePublished" datetime="2025-09-27T15:35:40+08:00">2025/09/27</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9B%BE%E5%BD%A2%E5%AD%A6/" itemprop="url" rel="index"><span itemprop="name">计算机图形学</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>2.5k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>9 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="hello-projection">Hello Projection</h1>
+<p>所谓投影，就是
+<strong>将高维空间中的对象，通过某种方式映射到低维或另外一个空间中</strong>。如下图所示（图片来自网络）。</p>
+<p><img data-src="/posts/7cfa/3rd-angle-projection-1-1.png"
+style="zoom:50%;" /></p>
+<p>当在二维平面上展示三维物体时，其展示的是三维物体在二维空间上的一个投影，而这个三维到二维的转换过程就是投影变换。</p>
+<p>如果投影过程是一个线性变换，则可以通过一个矩阵描述变换，如下式所示，其中
+<span class="math inline">\(M_\text{projection}\)</span>
+就称为投影变换矩阵。 <span class="math display">\[
+P^{\prime} = M_{\text{projection}} \cdot P
+\]</span></p>
+<span id="more"></span>
+
+<h1 id="正交投影">正交投影</h1>
+<p>正交投影的一个特点就是不会改变线之间的平行关系，因此<strong>待投影的区域一定会是一个长方体</strong>，可以通过六个坐标信息
+(l,r,t,b,n,f) 来代表这个长方体，分别代表 左，右，上，下，前，后
+面的坐标（left,right,top,bottom,near,far) 。</p>
+<p>满足（l&lt;r,b&lt;t,f&lt;n，此处f小于n是因为我们从z轴的负向看去）。</p>
+<p>投影目标是将其将这个长方体中心移动至原点并转换成单位正方体（也称为
+NDC，normalized device coordinate）。</p>
+<p>那么实际的正交投影矩阵就可由两个变换构成，平移变换和缩放变换。</p>
+<p>单位正方体坐标为 (l,b,n) = (-1,-1,-1) ，(r,t,f) =
+(1,1,1)，此处n坐标就小于f坐标，符合我们正常的认知（从z轴正向看去，离得越远z坐标越大）</p>
+<p>而实际待投影的长方体的长宽高和中心如下 <span class="math display">\[
+\begin{align*}
+&amp;(r-l,t-b,n-f) \\
+&amp;(\frac{r+l}{2},\frac{t+b}{2},\frac{n+f}{2})
+\end{align*}
+\]</span> 因此我们首先将其中心移动至(0,0,0)，对应的转移矩阵为 <span
+class="math display">\[
+T(\hat{t}) =
+\left[
+\begin{matrix}
+1 &amp; 0 &amp; 0 &amp; -\frac{r+l}{2} \\
+0 &amp; 1 &amp; 0 &amp; -\frac{t+b}{2} \\
+0 &amp; 0 &amp; 1 &amp; -\frac{n+f}{2} \\
+0 &amp; 0 &amp; 0 &amp; 1
+\end{matrix}
+\right]
+\]</span> 然后将长方体转换成标准正方体即可（正方体的边长为2） <span
+class="math display">\[
+S(\hat{s}) =
+\left[
+\begin{matrix}
+\frac{r-l}{2} &amp; 0 &amp; 0 &amp; 0 \\
+0 &amp; \frac{t-b}{2} &amp; 0 &amp; 0 \\
+0 &amp; 0 &amp; \frac{n-f}{2} &amp; 0 \\
+0 &amp; 0 &amp; 0 &amp; 1
+\end{matrix}
+\right]
+\]</span>
+经过这两步之后实际上得到的单位正方体的前后坐标还是n大于f（n=1，f=-1），不太符合日常认知，可以对其z坐标做一个镜像将其转换成
+n = -1,f = 1，只需要在z轴上取反即可 <span class="math display">\[
+M_z=
+\left[
+\begin{matrix}
+1 &amp; 0 &amp; 0 &amp; 0 \\
+0 &amp; 1 &amp; 0 &amp; 0 \\
+0 &amp; 0 &amp; -1 &amp; 0 \\
+0 &amp; 0 &amp; 0 &amp; 1
+\end{matrix}
+\right]
+\]</span> 最终组合这三个操作，就可以得到最终的正交投影矩阵 <span
+class="math display">\[
+\begin{align*}
+P_O = M_zS(\hat{s})T(\hat{t}) &amp; =
+\left[
+\begin{matrix}
+1 &amp; 0 &amp; 0 &amp; 0 \\
+0 &amp; 1 &amp; 0 &amp; 0 \\
+0 &amp; 0 &amp; -1 &amp; 0 \\
+0 &amp; 0 &amp; 0 &amp; 1
+\end{matrix}
+\right]
+\left[
+\begin{matrix}
+\frac{2}{r-l} &amp; 0 &amp; 0 &amp; 0 \\
+0 &amp; \frac{2}{t-b} &amp; 0 &amp; 0 \\
+0 &amp; 0 &amp; \frac{2}{n-f} &amp; 0 \\
+0 &amp; 0 &amp; 0 &amp; 1
+\end{matrix}
+\right]
+\left[
+\begin{matrix}
+1 &amp; 0 &amp; 0 &amp; -\frac{r+l}{2} \\
+0 &amp; 1 &amp; 0 &amp; -\frac{t+b}{2} \\
+0 &amp; 0 &amp; 1 &amp; -\frac{n+f}{2} \\
+0 &amp; 0 &amp; 0 &amp; 1
+\end{matrix}
+\right]
+\\
+&amp; =
+\left[
+\begin{matrix}
+\frac{2}{r-l} &amp; 0 &amp; 0 &amp; -\frac{r+l}{r-l} \\
+0 &amp; \frac{2}{t-b} &amp; 0 &amp; -\frac{t+b}{t-b} \\
+0 &amp; 0 &amp; \frac{2}{f-n} &amp; -\frac{n+f}{f-n} \\
+0 &amp; 0 &amp; 0 &amp; 1
+\end{matrix}
+\right]
+\end{align*}
+\]</span></p>
+<div class="markdown-alert markdown-alert-note">
+<div class="markdown-alert-title">
+<svg class="octicon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>
+<strong>Note</strong>
+</div>
+<p>上面写的稍微有点繁琐，此处 n 和 f ，默认假设视角从原点看向 z
+轴负向，因此 n 和 f 的坐标都是小于 0 ，且有 <span
+class="math inline">\(f&lt;n\)</span>。为保证长宽高的大小为正值，就会有
+<span class="math inline">\(n-f\)</span> 为缩放长度。</p>
+<p>实际上需要确保 <span class="math inline">\(n\)</span> 在 ndc 下的
+<span class="math inline">\(z=-1\)</span> 处，<span
+class="math inline">\(f\)</span> 在 ndc 下的 <span
+class="math inline">\(z = 1\)</span> 处，则直接使用 <span
+class="math inline">\(f-n\)</span> 即可，其几何意义就是将 <span
+class="math inline">\([n,f]\)</span> 区间直接缩放到 <span
+class="math inline">\([0,1]\)</span>区间，二者是一样的，只不过这样一步到位隐含了一个方向反转的过程。</p>
+</div>
+<h1 id="透视投影">透视投影</h1>
+<p>和正交投影相比，透视投影满足近大远小的效果，平行的线在透视投影中将不再平行，会相交于一点，能体现出深度变化情况，让人看起来更有立体感。</p>
+<p>因此，我们待投影的区域不再是一个长方体，而是一个平台锥（frustum，又称为视锥体），为了将这个锥体投影到2维平面中，我们首先需要将视锥体转换成长方体，之后再按照正交投影即可。</p>
+<p>下面展示了视锥体的示意图：</p>
+<p><img data-src="/posts/7cfa/image-20220521170645438.png"
+style="zoom: 25%;" /></p>
+<p>简单推导一下如何将视锥体转换成长方体，从图中可以观察到3个性质：</p>
+<ol type="1">
+<li><p>锥体中任意一点在n面上的投影为过原点和该点的连线同n面的交点，满足相似三角形性质，如下图所示：</p>
+<p><img data-src="/posts/7cfa/image-20250927171041250.png"
+style="zoom:50%;" /></p></li>
+<li><p>锥体的前面（n面，对应投影面）上的点坐标并不发生变化</p></li>
+<li><p>锥体的后面（f面）中心位置不会变化，即<span
+class="math inline">\((0,0,f)\)</span>投影后应该还是 <span
+class="math inline">\((0,0,f)\)</span></p></li>
+</ol>
+<p>首先根据<strong>观察1：相似三角形</strong>，满足如下公式 <span
+class="math display">\[
+\begin{align*}
+\frac{x}{z} = \frac{x_{\text{proj}}}{n} &amp; \quad x_{\text{proj}} =
+\frac{n}{z} \cdot x  \\
+\frac{y}{z} = \frac{y_{\text{proj}}}{n} &amp; \quad y_{\text{proj}} =
+\frac{n}{z} \cdot y\\
+\end{align*}
+\]</span> 可以得出投影区域内任意一点 <span
+class="math inline">\((x,y,z,1)\)</span> 在 n面上的投影为 <span
+class="math inline">\((\frac{n}{z}x,\frac{n}{z}y,?,1)\)</span>，同时乘上
+<span class="math inline">\(z\)</span> 写成 <span
+class="math inline">\((nx,ny,?,z)\)</span> ，此处投影后的 <span
+class="math inline">\(z\)</span> 值未知是因为投影到二维 <span
+class="math inline">\(xy\)</span> 平面上只需要<span
+class="math inline">\(x\)</span> 和 <span
+class="math inline">\(y\)</span> 即可，其 <span
+class="math inline">\(z\)</span>
+值具体是还不知，可以写出转换矩阵的第1、2、4行： <span
+class="math display">\[
+M_\text{perspective} =
+\left[
+\begin{matrix}
+n &amp; 0 &amp; 0 &amp; 0 \\
+0 &amp; n &amp; 0 &amp; 0 \\
+A &amp; B &amp; C &amp; D \\
+0 &amp; 0 &amp; 1 &amp; 0
+\end{matrix}
+\right]
+\]</span>
+接下来就只剩下矩阵的第三行，使用前两个特点可以得出第三行取值</p>
+<p>由<strong>观察2：n面上任意一点的坐标不会变化</strong>，因此有 <span
+class="math display">\[
+\begin{align*}
+P_1^{\prime}
+&amp; = (x,y,n,1) \\
+&amp; = M_\text{perspective} P_1 \\
+&amp; = (nx,ny,Ax+By+Cn+D,n) \\
+&amp; = (nx,ny,n^2,n)
+\end{align*}
+\]</span> 可得出等式 <span class="math display">\[
+Ax + By + Cn + D = n^2
+\]</span>
+又由于<strong>该等式对投影区域内任意一点都成立</strong>，因此A和B一定为0
+<span class="math display">\[
+\begin{cases}
+A = 0 \\
+B = 0 \\
+Cn + D = n^2
+\end{cases}
+\]</span> 再由<strong>观察3：f面中心坐标不变</strong>，则有 <span
+class="math display">\[
+\begin{align*}
+P_2^{\prime}
+&amp; = (0,0,f,1) \\
+&amp; = M_\text{perspective}P_2 \\
+&amp; = (0,0,Cf+D,f)\\
+&amp; = (0,0,f^2,f)
+\end{align*}
+\]</span> 即 <span class="math display">\[
+Cf + D = f^2
+\]</span> 联立两式可得 <span class="math display">\[
+\begin{cases}
+Cn+D = n^2 \\
+Cf+D = f^2
+\end{cases}
+\]</span> 可得A和B如下 <span class="math display">\[
+\left\{
+\begin{array}{ll}
+C = n+f\\
+D = -nf
+\end{array}
+\right.
+\]</span> 则可得完整的透视转换矩阵为 <span class="math display">\[
+\left[
+\begin{matrix}
+n &amp; 0 &amp; 0 &amp; 0 \\
+0 &amp; n &amp; 0 &amp; 0 \\
+0 &amp; 0 &amp; n+f &amp; -nf \\
+0 &amp; 0 &amp; 1 &amp; 0
+\end{matrix}
+\right]
+\]</span>
+经过转换之后，待投影区域已经变成一个长方体了，此时我们只需要使用正交投影将其转换为标准立方体即可
+<span class="math display">\[
+P_P = P_OM_\text{perspective} =
+\left[
+\begin{matrix}
+\frac{2n}{r-l} &amp; 0 &amp; 0 &amp; 0 \\
+0 &amp; \frac{2n}{t-b} &amp; 0 &amp; 0 \\
+0 &amp; 0 &amp; \frac{f+n}{f-n} &amp; -\frac{2nf}{f-n} \\
+0 &amp; 0 &amp; 1 &amp; 0
+\end{matrix}
+\right]
+\]</span></p>
+<p>此时矩阵的参数还有点多（6个），我们可以默认带投影区域是关于 <span
+class="math inline">\(z\)</span> 轴对称的，且观测点在原点，这样 <span
+class="math inline">\(r-l\)</span> 和 <span
+class="math inline">\(t-b\)</span> 就可以通过 aspect 和 fov
+两个参数代替： <span class="math display">\[
+\begin{align}
+\text{w} &amp; = r - l \\
+\text{h} &amp; = t - b \\
+\text{aspect} &amp; = \frac{\text{w}}{\text{h}} = \frac{r-l}{t-b} \\
+\text{fov} &amp; = 2 \arctan (\frac{\text{h}}{n}) \\
+c &amp;= \frac{2n}{t-b} = \frac{1}{\tan(\frac{\text{fov}}{2})} \\
+a &amp;= \text{aspect}
+\end{align}
+\]</span> 这样，只需要
+aspect，fov，near，far四个参数就可以得到最终的变换矩阵：</p>
+<p><span class="math display">\[
+P_P = P_OM_{perspective} =
+\left[
+\begin{matrix}
+\frac{c}{a} &amp; 0 &amp; 0 &amp; 0 \\
+0 &amp; c &amp; 0 &amp; 0 \\
+0 &amp; 0 &amp; \frac{f+n}{f-n} &amp; -\frac{2nf}{f-n} \\
+0 &amp; 0 &amp; 1 &amp; 0
+\end{matrix}
+\right]
+\]</span></p>
+<p>通过矩阵计算后得到的是齐次坐标，执行透视除法得到投影后的三维NDC坐标：
+<span class="math display">\[
+\begin{pmatrix}
+x_{ndc}\\
+y_{ndc}\\
+z_{ndc}
+\end{pmatrix}=
+\begin{pmatrix}
+{\tfrac {x_{c}}{w_{c}}}\\
+{\tfrac {y_{c}}{w_{c}}}\\
+{\tfrac {z_{c}}{w_{c}}}
+\end{pmatrix}
+\]</span></p>
+<p>此时 <span class="math inline">\(z_\text{ndc}\)</span> 的取值范围为
+<span class="math inline">\([-1,1]\)</span>，（原始 z 的取值范围为 <span
+class="math inline">\([n,f]\)</span> ），如果需要变成 z-buffer
+中实际存储的值，还需要进行一次线性变换（一般会自动在 viewport
+变换中执行），将 <span class="math inline">\([-1,1]\)</span> 区间转换到
+<span class="math inline">\([0,1]\)</span> 的区间内，变成 z-buffer
+中实际存储的值，如下式所示： <span class="math display">\[
+z_{\text{buffer}} = 0.5 * (z_{\text{ndc}} + 1)
+\]</span></p>
+<h2 id="深度转换">深度转换</h2>
+<p>在shader中常需要进行 <span
+class="math inline">\(z_{\text{ndc}}\)</span> 和原始坐标 <span
+class="math inline">\(z\)</span>
+的转换，可以根据上面矩阵公式计算出其关系： <span class="math display">\[
+\begin{align}
+z_\text{ndc} &amp; =
+\left(\frac{f+n}{f-n} \cdot z - \frac{2nf}{f-n}\right)
+\cdot \frac{1}{z} \\
+&amp; = \frac{f+n}{f-n} - \frac{2nf}{(f-n) \cdot z} \\
+z &amp; = \frac{2nf}{f+n - (f-n)\cdot z_\text{ndc}}
+\end{align}
+\]</span></p>
+<p>如果需要获得归一化的的线性深度，那么还需要将 <span
+class="math inline">\(z\)</span> 标准化到 <span
+class="math inline">\([0,1]\)</span> 区间内，即 <span
+class="math display">\[
+z_{\text{depth01}} = \frac{z-n}{f-n}
+\]</span> 在实际情况下 n是一个很小的值，基本可以忽略不计，因此可以简化为
+<span class="math inline">\(z_{\text{depth01}} = z / f\)</span>
+，这样我们计算公式可以简化为 $$ \begin{align*}</p>
+<p>z_\text{depth01} &amp;= \frac{\frac{2nf}{f+n - (f-n)\cdot
+z_\text{ndc}}-n}{f-n} \</p>
+<p>\tilde{z}<em>\text{depth01} &amp;= \frac{2n}{f+n-(f-n) \cdot
+z</em>{ndc}}</p>
+<p>\end{align*} $$ 根据 <span
+class="math inline">\(z_{\text{buffer}}\)</span> 、<span
+class="math inline">\(z_\text{depth01}\)</span> 和 <span
+class="math inline">\(z\)</span> 之间的关系，可以绘制如下曲线（<span
+class="math inline">\(n=1\)</span>，<span
+class="math inline">\(f=10\)</span>）</p>
+<p><img data-src="/posts/7cfa/image-20250927191035306.png"
+style="zoom:67%;" /></p>
+<p>其中</p>
+<ul>
+<li>灰色曲线代表 <span
+class="math inline">\(z_\text{buffer}\)</span></li>
+<li>绿色直线代表 <span
+class="math inline">\(z_{\text{depth01}}\)</span></li>
+<li>蓝色和红色竖线代表 <span class="math inline">\(n\)</span> 和 <span
+class="math inline">\(f\)</span></li>
+<li><span class="math inline">\(x\)</span> 轴对应原始的 <span
+class="math inline">\(z\)</span></li>
+</ul>
+<p><span class="math inline">\(z\)</span> 是线性增加的， <span
+class="math inline">\(z_\text{ndc}\)</span> 并不是线性增加的，而是随着
+<span class="math inline">\(z\)</span>
+的拉大，深度之间的差异越来越小。这也符合近大远小的要求（越近的物体对深度的精度要求越高）。</p>
+<p>而当我们需要进行深度比例的计算时，就需要使用线性深度值，此时就需要将
+<span class="math inline">\(z_\text{ndc}\)</span> 转换为 <span
+class="math inline">\(z_\text{depth01}\)</span> 后进行后续计算。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>PureWhiteVK
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://purewhitevk.github.io/posts/7cfa/" title="投影变换矩阵">https://purewhitevk.github.io/posts/7cfa/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/C/" rel="tag"># C++</a>
+              <a href="/tags/%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0/" rel="tag"># 线性代数</a>
+              <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9B%BE%E5%BD%A2%E5%AD%A6/" rel="tag"># 计算机图形学</a>
+              <a href="/tags/OpenGL/" rel="tag"># OpenGL</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/dc23/" rel="prev" title="hexo支持Github Alerts">
+                  <i class="fa fa-angle-left"></i> hexo支持Github Alerts
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">PureWhiteVK</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">56k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">3:23</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>
