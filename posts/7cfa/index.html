@@ -124,7 +124,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">27</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">6</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">20</span></a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">27</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">6</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">22</span></a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
         </a>
@@ -190,7 +190,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">20</span>
+          <span class="site-state-item-count">22</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -322,7 +322,7 @@ P^{\prime} = M_{\text{projection}} \cdot P
 (l,r,t,b,n,f) 来代表这个长方体，分别代表 左，右，上，下，前，后
 面的坐标（left,right,top,bottom,near,far) 。</p>
 <p>满足（l&lt;r,b&lt;t,f&lt;n，此处f小于n是因为我们从z轴的负向看去）。</p>
-<p>投影目标是将其将这个长方体中心移动至原点并转换成单位正方体（也称为
+<p><strong>投影目标是将其将这个长方体中心移动至原点并转换成单位正方体</strong>（也称为
 NDC，normalized device coordinate）。</p>
 <p>那么实际的正交投影矩阵就可由两个变换构成，平移变换和缩放变换。</p>
 <p>单位正方体坐标为 (l,b,n) = (-1,-1,-1) ，(r,t,f) =
@@ -411,17 +411,18 @@ P_O = M_zS(\hat{s})T(\hat{t}) &amp; =
 <svg class="octicon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>
 <strong>Note</strong>
 </div>
-<p>上面写的稍微有点繁琐，此处 n 和 f ，默认假设视角从原点看向 z
-轴负向，因此 n 和 f 的坐标都是小于 0 ，且有 <span
+<p>上面写的稍微有点繁琐，因为 <span class="math inline">\(n\)</span> 和
+<span class="math inline">\(f\)</span> 默认假设视角从原点看向 z
+轴负向，坐标值都是小于 0 ，有 <span
 class="math inline">\(f&lt;n\)</span>。为保证长宽高的大小为正值，就会有
 <span class="math inline">\(n-f\)</span> 为缩放长度。</p>
-<p>实际上需要确保 <span class="math inline">\(n\)</span> 在 ndc 下的
-<span class="math inline">\(z=-1\)</span> 处，<span
+<p>实际上要确保 <span class="math inline">\(n\)</span> 在 ndc 下的 <span
+class="math inline">\(z=-1\)</span> 处，<span
 class="math inline">\(f\)</span> 在 ndc 下的 <span
-class="math inline">\(z = 1\)</span> 处，则直接使用 <span
+class="math inline">\(z = 1\)</span> 处，直接使用 <span
 class="math inline">\(f-n\)</span> 即可，其几何意义就是将 <span
 class="math inline">\([n,f]\)</span> 区间直接缩放到 <span
-class="math inline">\([0,1]\)</span>区间，二者是一样的，只不过这样一步到位隐含了一个方向反转的过程。</p>
+class="math inline">\([-1,1]\)</span>区间，二者是一样的，只不过这样一步到位隐含了一个方向反转的过程。</p>
 </div>
 <h1 id="透视投影">透视投影</h1>
 <p>和正交投影相比，透视投影满足近大远小的效果，平行的线在透视投影中将不再平行，会相交于一点，能体现出深度变化情况，让人看起来更有立体感。</p>
@@ -601,21 +602,17 @@ class="math inline">\([0,1]\)</span> 区间内，即 <span
 class="math display">\[
 z_{\text{depth01}} = \frac{z-n}{f-n}
 \]</span> 在实际情况下 n是一个很小的值，基本可以忽略不计，因此可以简化为
-<span class="math inline">\(z_{\text{depth01}} = z / f\)</span>
-，这样我们计算公式可以简化为 $$ \begin{align*}</p>
-<p>z_\text{depth01} &amp;= \frac{\frac{2nf}{f+n - (f-n)\cdot
-z_\text{ndc}}-n}{f-n} \</p>
-<p>\tilde{z}<em>\text{depth01} &amp;= \frac{2n}{f+n-(f-n) \cdot
-z</em>{ndc}}</p>
-<p>\end{align*} $$ 根据 <span
-class="math inline">\(z_{\text{buffer}}\)</span> 、<span
-class="math inline">\(z_\text{depth01}\)</span> 和 <span
+<span class="math inline">\(\tilde{z}_{\text{depth01}} = z / f\)</span>
+，这样我们计算公式可以简化为 <span class="math display">\[
+\tilde{z}_\text{depth01} = \frac{2n}{f+n-(f-n) \cdot z_{ndc}}
+\]</span> 根据 <span class="math inline">\(z_{\text{buffer}}\)</span>
+、<span class="math inline">\(z_\text{depth01}\)</span> 和 <span
 class="math inline">\(z\)</span> 之间的关系，可以绘制如下曲线（<span
 class="math inline">\(n=1\)</span>，<span
 class="math inline">\(f=10\)</span>）</p>
 <p><img data-src="/posts/7cfa/image-20250927191035306.png"
 style="zoom:67%;" /></p>
-<p>其中</p>
+<p>其中：</p>
 <ul>
 <li>灰色曲线代表 <span
 class="math inline">\(z_\text{buffer}\)</span></li>
@@ -626,11 +623,11 @@ class="math inline">\(f\)</span></li>
 <li><span class="math inline">\(x\)</span> 轴对应原始的 <span
 class="math inline">\(z\)</span></li>
 </ul>
-<p><span class="math inline">\(z\)</span> 是线性增加的， <span
-class="math inline">\(z_\text{ndc}\)</span> 并不是线性增加的，而是随着
+<p>从图中可以看出，<span class="math inline">\(z\)</span> 是线性增加的，
+而 <span class="math inline">\(z_\text{ndc}\)</span> 并不是，而是随着
 <span class="math inline">\(z\)</span>
-的拉大，深度之间的差异越来越小。这也符合近大远小的要求（越近的物体对深度的精度要求越高）。</p>
-<p>而当我们需要进行深度比例的计算时，就需要使用线性深度值，此时就需要将
+的拉大，深度之间的差异越来越小。这也符合近大远小的要求（越近的物体对深度的精度要求更高）。</p>
+<p>当我们需要进行深度比例的计算时，就需要使用线性深度值，此时可以将
 <span class="math inline">\(z_\text{ndc}\)</span> 转换为 <span
 class="math inline">\(z_\text{depth01}\)</span> 后进行后续计算。</p>
 
@@ -674,6 +671,9 @@ class="math inline">\(z_\text{depth01}\)</span> 后进行后续计算。</p>
                 </a>
             </div>
             <div class="post-nav-item">
+                <a href="/posts/b93d/" rel="next" title="绘制 grid">
+                  绘制 grid <i class="fa fa-angle-right"></i>
+                </a>
             </div>
           </div>
     </footer>
@@ -710,7 +710,7 @@ class="math inline">\(z_\text{depth01}\)</span> 后进行后续计算。</p>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">3:23</span>
+    <span title="站点阅读时长">3:24</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
