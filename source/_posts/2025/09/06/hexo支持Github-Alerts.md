@@ -99,7 +99,7 @@ an issue or a pull request.</p>
 
 此时 pandoc 还并不支持 Alerts 的解析，还是将其默认解析为块引用的格式。
 
-而根据 [pandoc 的最新版 markdown 文档](https://pandoc.org/MANUAL.html#extension-alerts)，只需要在转换时启用 `alerts` 扩展，就可以解析成上面 github alerts 的结构了，转换命令如下（pandoc version 3.8.0）
+而根据 [pandoc 的最新版 markdown 文档](https://pandoc.org/MANUAL.html#extension-alerts)，只需要在转换时启用 `alerts` 扩展，就可以解析成上面 github alerts 的结构了，转换命令如下（pandoc version 3.8.0）：
 
 ```bash
 pandoc -f gfm+alerts -t html5 -o test.html test.md
@@ -126,9 +126,9 @@ pandoc -f gfm+alerts -t html5 -o test.html test.md
 
 1. **外层容器不同**，github 版 title 的外层容器是 `<p>`，而 pandoc 版外层容器是 `<div>`。
 
-   这是因为在 [pandoc 的元素](https://pandoc.org/lua-filters.html#type-div)设计中，仅有部分标签可以设置 class 属性，默认的 `Para` 元素并不支持设置 class 信息，好在 `<div>` 标签和 `<p>` 在使用上差异不大，更何况 pandoc 版内部还使用了 `<p>` 进行包裹
+   这是因为在 [pandoc 的元素](https://pandoc.org/lua-filters.html#type-div)设计中，仅有部分标签可以设置 class 属性，默认的 `Para` 元素并不支持设置 class 信息，好在 `<div>` 标签和 `<p>` 在使用上差异不大，更何况 pandoc 版内部还使用了 `<p>` 进行包裹。
 
-2. pandoc 版 **缺少了 alert 的 svg 图标**
+2. pandoc 版 **缺少了 alert 的 svg 图标**。
 
 第一个差异是由于 pandoc 本身的设计有关，无法避免，但是第二点，可以结合 pandoc 的 lua-filter 在转换过程中只要检测到 `<div class="title"><p></p></div>` 这种类似结构，就可以在内部的 `<p>` 标签内插入 svg 图标。
 
@@ -162,9 +162,9 @@ end
 
 其中：
 
-- `get_alert_type` 函数检查当前 `<div>` 标签的 class，判断是否有类似 `<div class="note">` 的类型声明，并根据 alert 的类型返回对应类别的图标（原始的 svg 代码）
-- `get_title_element` 函数遍历 `<div>` 标签下的子元素，返回包含 `<div class="title">` 的元素
-- `capitalize_first` 函数将单词的首字母大写，例如 `note` 转换为 `Note` 
+- `get_alert_type` 函数检查当前 `<div>` 标签的 class，判断是否有类似 `<div class="note">` 的类型声明，并根据 alert 的类型返回对应类别的图标（原始的 svg 代码）；
+- `get_title_element` 函数遍历 `<div>` 标签下的子元素，返回包含 `<div class="title">` 的元素；
+- `capitalize_first` 函数将单词的首字母大写，例如 `note` 转换为 `Note` 。
 
 找到 alert 块的根容器和对应的alert 类别，就可以直接进行修改，插入 svg 图标（这里必须使用 `pandoc.RawInline` 进行插入，否则 pandoc 会解析 svg 文件，转换成 base64 图片）并设置 class 信息（具体如何使用见下一节）。
 
@@ -203,8 +203,8 @@ end
 
 有两处需要添加：
 
-1. alert 最外层容器需要设置 `markdown-alert markdown-alert-<alert-type>` 两个类
-2. title 的最外层容器需要设置 `markdown-alert-title` 类
+1. alert 最外层容器需要设置 `markdown-alert markdown-alert-<alert-type>` 两个类；
+2. title 的最外层容器需要设置 `markdown-alert-title` 类。
 
 手动插入 css 文件到 pandoc 生成的 html 文件，检查一下渲染效果。
 

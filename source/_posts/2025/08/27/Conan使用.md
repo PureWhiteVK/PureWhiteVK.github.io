@@ -290,7 +290,7 @@ step6（代码行8）：执行程序
 
 这种丑陋的形式（在 c++ 中写正则表达式，也是需要多次转义，c++ 字符串本身的转义和正则表达式中的转义）
 
-不过最后发现，在命令行里指定 `tools.cmake.cmaketoolchain:extra_variables` ，无法实现跨平台，最后只能在 conanfile.py 中添加，里面也有点坑。
+**不过最后发现，在命令行里指定 `tools.cmake.cmaketoolchain:extra_variables` ，无法实现跨平台，最后只能在 conanfile.py 中添加，里面也有点坑。**
 
 默认的 conanfile.py 如下
 
@@ -502,10 +502,10 @@ conan new vscode_cmake_exe -d name=test
 
 > [!TIP]
 >
-> 个人也整理了一个自用的 VS Code CMake Conan 模板，并基于 Conan API 实现自动安装到对应路径。
+> 个人也整理了一个自用的 VS Code CMake Conan 模板，并基于 Conan API 实现自动安装到 Conan 的模版路径。
 >
 > 仓库地址：https://github.com/PureWhiteVK/ConanTemplates.git
 
-下载模板仓库后，使用命令 `python scripts/bootstrap_templates.py` 就可以自动创建VS Code的模板并拷贝模板到 Conan 用户目录下了
+下载模板仓库后，使用命令 `python scripts/bootstrap_templates.py` 就可以自动创建VS Code的模板并拷贝模板到 Conan 用户目录下了。
 
 <img src="Conan使用/image-20250907215036398.png" alt="image-20250907215036398" style="zoom: 50%;" />
