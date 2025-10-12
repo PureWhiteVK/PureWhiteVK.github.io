@@ -129,7 +129,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">27</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">6</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">22</span></a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">27</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">6</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">23</span></a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
         </a>
@@ -195,7 +195,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">22</span>
+          <span class="site-state-item-count">23</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -362,7 +362,7 @@ style="zoom: 80%;" /></p>
 target="_blank" rel="noopener" href="https://pandoc.org/MANUAL.html#extension-alerts">pandoc 的最新版
 markdown 文档</a>，只需要在转换时启用 <code>alerts</code>
 扩展，就可以解析成上面 github alerts 的结构了，转换命令如下（pandoc
-version 3.8.0）</p>
+version 3.8.0）：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pandoc -f gfm+alerts -t html5 -o test.html test.md</span><br></pre></td></tr></table></figure>
 
 <p>生成的 html 如下所示：</p>
@@ -384,8 +384,8 @@ target="_blank" rel="noopener" href="https://pandoc.org/lua-filters.html#type-di
 <code>Para</code> 元素并不支持设置 class 信息，好在
 <code>&lt;div&gt;</code> 标签和 <code>&lt;p&gt;</code>
 在使用上差异不大，更何况 pandoc 版内部还使用了 <code>&lt;p&gt;</code>
-进行包裹</p></li>
-<li><p>pandoc 版 <strong>缺少了 alert 的 svg 图标</strong></p></li>
+进行包裹。</p></li>
+<li><p>pandoc 版 <strong>缺少了 alert 的 svg 图标</strong>。</p></li>
 </ol>
 <p>第一个差异是由于 pandoc
 本身的设计有关，无法避免，但是第二点，可以结合 pandoc 的 lua-filter
@@ -402,12 +402,12 @@ target="_blank" rel="noopener" href="https://github.com/PureWhiteVK/PureWhiteVK.
 <li><code>get_alert_type</code> 函数检查当前 <code>&lt;div&gt;</code>
 标签的 class，判断是否有类似 <code>&lt;div class="note"&gt;</code>
 的类型声明，并根据 alert 的类型返回对应类别的图标（原始的 svg
-代码）</li>
+代码）；</li>
 <li><code>get_title_element</code> 函数遍历 <code>&lt;div&gt;</code>
 标签下的子元素，返回包含 <code>&lt;div class="title"&gt;</code>
-的元素</li>
+的元素；</li>
 <li><code>capitalize_first</code> 函数将单词的首字母大写，例如
-<code>note</code> 转换为 <code>Note</code></li>
+<code>note</code> 转换为 <code>Note</code> 。</li>
 </ul>
 <p>找到 alert 块的根容器和对应的alert 类别，就可以直接进行修改，插入 svg
 图标（这里必须使用 <code>pandoc.RawInline</code> 进行插入，否则 pandoc
@@ -437,8 +437,9 @@ style="zoom: 67%;" /></p>
 <ol type="1">
 <li>alert 最外层容器需要设置
 <code>markdown-alert markdown-alert-&lt;alert-type&gt;</code>
-两个类</li>
-<li>title 的最外层容器需要设置 <code>markdown-alert-title</code> 类</li>
+两个类；</li>
+<li>title 的最外层容器需要设置 <code>markdown-alert-title</code>
+类。</li>
 </ol>
 <p>手动插入 css 文件到 pandoc 生成的 html 文件，检查一下渲染效果。</p>
 <p><strong>pandoc generated with css (pandoc version 3.8.0 with
@@ -583,13 +584,13 @@ problems.</p>
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">56k</span>
+    <span title="站点总字数">57k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">3:24</span>
+    <span title="站点阅读时长">3:28</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动

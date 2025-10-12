@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 8.0.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.css" integrity="sha256-gkQVf8UKZgQ0HyuxL/VnacadJ+D2Kox2TCEBuNQg5+w=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"purewhitevk.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.25.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":"default"},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false,"trigger":"auto"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="Hello, Shader Toy Shader（着色器）简单来说就是运行在 GPU 上的一小段程序，用来控制图形渲染的方式。  在传统渲染管线中，GPU 会自动执行一套固定流程，但 shader 的出现让开发者能够自定义这些流程，从而实现更灵活和更复杂的图形效果。  Shader Toy 是一个在线的 Shader 变成和展示网站，可以展示实时的 Shader 编程效果。  在图形 API （O">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OpenGL Shader Toy">
+<meta property="og:url" content="https://purewhitevk.github.io/posts/7ced/">
+<meta property="og:site_name" content="PureWhiteVK&#39;s Blog">
+<meta property="og:description" content="Hello, Shader Toy Shader（着色器）简单来说就是运行在 GPU 上的一小段程序，用来控制图形渲染的方式。  在传统渲染管线中，GPU 会自动执行一套固定流程，但 shader 的出现让开发者能够自定义这些流程，从而实现更灵活和更复杂的图形效果。  Shader Toy 是一个在线的 Shader 变成和展示网站，可以展示实时的 Shader 编程效果。  在图形 API （O">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/7ced/image-20251002231848342.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/7ced/image-20251002232417558.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/7ced/image-20251002232755482.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/7ced/image-20251012133552643.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/7ced/live-preview.drawio-0249527.png">
+<meta property="article:published_time" content="2025-10-02T14:44:50.000Z">
+<meta property="article:modified_time" content="2025-10-02T14:44:50.000Z">
+<meta property="article:author" content="PureWhiteVK">
+<meta property="article:tag" content="C++">
+<meta property="article:tag" content="OpenGL">
+<meta property="article:tag" content="计算机图形学">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://purewhitevk.github.io/posts/7ced/image-20251002231848342.png">
+
+
+<link rel="canonical" href="https://purewhitevk.github.io/posts/7ced/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://purewhitevk.github.io/posts/7ced/","path":"posts/7ced/","title":"OpenGL Shader Toy"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>OpenGL Shader Toy | PureWhiteVK's Blog</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.umd.js" integrity="sha256-a+H7FYzJv6oU2hfsfDGM2Ohw/cR9v+hPfxHCLdmCrE8=" crossorigin="anonymous" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+  <script src="/js/third-party/fancybox.js" defer></script>
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js" defer></script>
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">PureWhiteVK's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">27</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">6</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">23</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#hello-shader-toy"><span class="nav-number">1.</span> <span class="nav-text">Hello, Shader Toy</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#full-screen-triangle"><span class="nav-number">2.</span> <span class="nav-text">Full Screen Triangle</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#example-fragment-shader"><span class="nav-number">3.</span> <span class="nav-text">Example Fragment Shader</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#live-preview"><span class="nav-number">4.</span> <span class="nav-text">Live Preview</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B4%E4%BD%93%E6%B5%81%E7%A8%8B"><span class="nav-number">4.1.</span> <span class="nav-text">整体流程</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="PureWhiteVK"
+      src="/images/Touma.Kazusa.256x256.png">
+  <p class="site-author-name" itemprop="name">PureWhiteVK</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">23</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/PureWhiteVK" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;PureWhiteVK" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:yl_xiao@outlook.com" title="E-Mail → mailto:yl_xiao@outlook.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://purewhitevk.github.io/posts/7ced/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/Touma.Kazusa.256x256.png">
+      <meta itemprop="name" content="PureWhiteVK">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PureWhiteVK's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="OpenGL Shader Toy | PureWhiteVK's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          OpenGL Shader Toy
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025/10/02 22:44:50" itemprop="dateCreated datePublished" datetime="2025-10-02T22:44:50+08:00">2025/10/02</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9B%BE%E5%BD%A2%E5%AD%A6/" itemprop="url" rel="index"><span itemprop="name">计算机图形学</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>1.2k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>4 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="hello-shader-toy">Hello, Shader Toy</h1>
+<p>Shader（着色器）简单来说就是<strong>运行在 GPU
+上的一小段程序</strong>，用来控制图形渲染的方式。</p>
+<blockquote>
+<p>在传统渲染管线中，GPU 会自动执行一套固定流程，但 shader
+的出现让开发者能够自定义这些流程，从而实现更灵活和更复杂的图形效果。</p>
+</blockquote>
+<p><a target="_blank" rel="noopener" href="https://www.shadertoy.com/">Shader Toy</a> 是一个在线的
+Shader 变成和展示网站，可以展示实时的 Shader 编程效果。</p>
+<p><img data-src="/posts/7ced/image-20251002231848342.png"
+style="zoom: 33%;" /></p>
+<p>在图形 API （OpenGL）中，支持多种 Shader 类型：</p>
+<ul>
+<li>Vertex Shader（顶点着色器）</li>
+<li>Tessellation Shader（细分着色器）</li>
+<li>Geometry Shader（几何着色器）</li>
+<li>Fragment Shader（片段着色器）</li>
+<li>Compute Shader（计算着色器）</li>
+</ul>
+<p>而在 Shader Toy 中的 Shader 特指 Fragment
+Shader，其输入的是一个覆盖整个显示区域的四边形，可以在 Fragment Shader
+中决定显示区域中每一个像素的颜色（rgba）。</p>
+<span id="more"></span>
+
+<h1 id="full-screen-triangle">Full Screen Triangle</h1>
+<p>由于 OpenGL 中会自动进行 clipping（丢弃不在显示区域内的
+fragment），在绘制的是并不需要真的绘制一个四边形（两个三角形），而是通过一个大的三角形覆盖屏幕区域即可，在
+NDC 坐标下，屏幕坐标的范围是 <span
+class="math inline">\([-1,1]^2\)</span>，可以通过一个巨大的直角三角形覆盖，如下
+<span class="math inline">\(\triangle{AEF}\)</span> 所示：</p>
+<p>其三个顶点坐标分别是： <span class="math display">\[
+\begin{align}
+A&amp;=(-1,-1)\\
+E&amp;=(3,-1)\\
+F&amp;=(-1,3)
+\end{align}
+\]</span></p>
+<p><img data-src="/posts/7ced/image-20251002232417558.png"
+style="zoom: 33%;" /></p>
+<p>使用这样一个三角形，还有一个好处就是无需准备额外的 VBO（但是还是需要
+VAO），直接将三角形的顶点坐标写在 Shader 代码里即可，如下所示：</p>
+<p><em>shader_toy.vert</em></p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#version 330 core</span></span><br><span class="line"><span class="comment">// one giant triangle that covers the screen</span></span><br><span class="line"><span class="keyword">const</span> <span class="type">vec2</span> gridPlane[<span class="number">3</span>] = <span class="type">vec2</span>[<span class="number">3</span>](</span><br><span class="line">  <span class="type">vec2</span>(<span class="number">-1.0</span>,<span class="number">-1.0</span>),</span><br><span class="line">  <span class="type">vec2</span>( <span class="number">3.0</span>,<span class="number">-1.0</span>),</span><br><span class="line">  <span class="type">vec2</span>(<span class="number">-1.0</span>, <span class="number">3.0</span>)</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> main() &#123;</span><br><span class="line">  <span class="type">vec2</span> p = gridPlane[<span class="built_in">gl_VertexID</span>];</span><br><span class="line">  <span class="built_in">gl_Position</span> = <span class="type">vec4</span>(p,<span class="number">0.0</span>, <span class="number">1.0</span>); <span class="comment">// using directly the clipped coordinates</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>通过 <code>gl_VertexID</code> 可以拿到当前顶点在 VBO 的
+index，如果仅绘制一个三角形，则 <code>gl_VertexID</code> 的取值就是
+<span class="math inline">\([0,1,2]\)</span>，对应三角形三个顶点。</p>
+<p>此处拿到三角形的顶点坐标后，直接通过 <code>gl_Position</code> 输出
+NDC 坐标即可，对于 z 坐标，其取值并不重要，这里就直接设为 0 了。</p>
+<div class="markdown-alert markdown-alert-tip">
+<div class="markdown-alert-title">
+<svg class="octicon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M8 1.5c-2.363 0-4 1.69-4 3.75 0 .984.424 1.625.984 2.304l.214.253c.223.264.47.556.673.848.284.411.537.896.621 1.49a.75.75 0 0 1-1.484.211c-.04-.282-.163-.547-.37-.847a8.456 8.456 0 0 0-.542-.68c-.084-.1-.173-.205-.268-.32C3.201 7.75 2.5 6.766 2.5 5.25 2.5 2.31 4.863 0 8 0s5.5 2.31 5.5 5.25c0 1.516-.701 2.5-1.328 3.259-.095.115-.184.22-.268.319-.207.245-.383.453-.541.681-.208.3-.33.565-.37.847a.751.751 0 0 1-1.485-.212c.084-.593.337-1.078.621-1.489.203-.292.45-.584.673-.848.075-.088.147-.173.213-.253.561-.679.985-1.32.985-2.304 0-2.06-1.637-3.75-4-3.75ZM5.75 12h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5ZM6 15.25a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75Z"></path></svg>
+<strong>Tip</strong>
+</div>
+<p>通过 <code>glDrawArrays(GL_TRIANGLES, 0, 3);</code>
+即可绘制单个三角形，但是还是需要提前分配一个空的 Vertex Array。</p>
+</div>
+<h1 id="example-fragment-shader">Example Fragment Shader</h1>
+<p>下面给出了一个最简单的 Fragment Shader 效果，根据 Vertex Shader
+的输出，其是一个大三角形，覆盖整个屏幕，那么最简单的 Fragment Shader
+就是坐标和颜色对应起来，例如 <span class="math inline">\((x,y,z) =
+(r,g,b)\)</span>，将 x 坐标值赋值为</p>
+<div class="markdown-alert markdown-alert-tip">
+<div class="markdown-alert-title">
+<svg class="octicon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M8 1.5c-2.363 0-4 1.69-4 3.75 0 .984.424 1.625.984 2.304l.214.253c.223.264.47.556.673.848.284.411.537.896.621 1.49a.75.75 0 0 1-1.484.211c-.04-.282-.163-.547-.37-.847a8.456 8.456 0 0 0-.542-.68c-.084-.1-.173-.205-.268-.32C3.201 7.75 2.5 6.766 2.5 5.25 2.5 2.31 4.863 0 8 0s5.5 2.31 5.5 5.25c0 1.516-.701 2.5-1.328 3.259-.095.115-.184.22-.268.319-.207.245-.383.453-.541.681-.208.3-.33.565-.37.847a.751.751 0 0 1-1.485-.212c.084-.593.337-1.078.621-1.489.203-.292.45-.584.673-.848.075-.088.147-.173.213-.253.561-.679.985-1.32.985-2.304 0-2.06-1.637-3.75-4-3.75ZM5.75 12h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5ZM6 15.25a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75Z"></path></svg>
+<strong>Tip</strong>
+</div>
+<p>在 Fragment Shader 中 <code>gl_FragCoord.xy</code> 已经是经过
+透视除法，clipping 和 viewport transform 后得到的坐标，其取值范围是
+<span class="math inline">\([0,w]\times[0,h]\)</span>，而 Fragment
+Shader 中要求输出的颜色值范围是 <span
+class="math inline">\([0,1]\)</span>，将其除以 frame buffer 大小就得到
+<span class="math inline">\([0,1]\)</span> 范围的坐标。</p>
+</div>
+<p><em>shader_toy.frag</em></p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#version 330 core</span></span><br><span class="line"><span class="keyword">out</span> <span class="type">vec4</span> FragColor;</span><br><span class="line"><span class="keyword">uniform</span> <span class="type">vec2</span> framebuffer_size;</span><br><span class="line"><span class="type">void</span> main()</span><br><span class="line">&#123;</span><br><span class="line">  <span class="type">vec2</span> coord = <span class="built_in">gl_FragCoord</span>.xy / framebuffer_size;</span><br><span class="line">  FragColor = <span class="type">vec4</span>(coord,<span class="number">0.0</span>,<span class="number">1.0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其作用就是读取每一个 Fragment 的坐标值，将其归一化后可视化出来。</p>
+<p>可视化效果如下（未经过 gamma 矫正）</p>
+<p><img data-src="/posts/7ced/image-20251002232755482.png"
+style="zoom:40%;" /></p>
+<h1 id="live-preview">Live Preview</h1>
+<p>在 Shader Toy 中，还有一个重要的功能就是实时预览，当我们修改 Fragment
+Shader 后，会自动编译 Shader 并将变化展示在网页上。</p>
+<p>在 OpenGL 中也可以实现类似的功能，如下图所示，左边是 Shader
+的代码编辑窗口，右边是实时预览的 OpenGL 程序。</p>
+<p>（代码在 <a
+target="_blank" rel="noopener" href="https://github.com/PureWhiteVK/OpenGL-Examples/blob/main/src/imgui-demo/shader_toy.cpp">这里</a>）</p>
+<p><img data-src="/posts/7ced/image-20251012133552643.png"
+style="zoom: 33%;" /></p>
+<h2 id="整体流程">整体流程</h2>
+<p>包含两个线程，主线程用来进行 OpenGL
+渲染和展示，文件监控线程用来监控文件变更并及时同时主线程重新加载
+Shader。</p>
+<p>下面展示了整个监控过程的时序图：</p>
+<p><img data-src="/posts/7ced/live-preview.drawio-0249527.png"
+style="zoom: 40%;" /></p>
+<ol type="1">
+<li><p>在主线程启动时同时启动监控线程，监控线程此时尚未设置监控文件，等待中；</p></li>
+<li><p>用户操作设置实时预览的 Shader
+文件，主线程发送消息给监控线程，设置待监控的文件；</p>
+<ul>
+<li>监控线程接收到消息后，开始监控文件系统变化；</li>
+</ul></li>
+<li><p>用户更改 Shader
+文件，监控线程捕获到文件变更事件，发送消息给主线程，通知文件变更情况；</p>
+<ul>
+<li>主线程接受到消息后，重新编译 Shader 并进行预览；</li>
+</ul></li>
+<li><p>停止监控时，主线程发送停止监控消息给监控线程；</p>
+<ul>
+<li>监控线程接收到消息后，移除文件监控事件，停止文件监控。</li>
+</ul></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>PureWhiteVK
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://purewhitevk.github.io/posts/7ced/" title="OpenGL Shader Toy">https://purewhitevk.github.io/posts/7ced/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/C/" rel="tag"># C++</a>
+              <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9B%BE%E5%BD%A2%E5%AD%A6/" rel="tag"># 计算机图形学</a>
+              <a href="/tags/OpenGL/" rel="tag"># OpenGL</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/285e/" rel="prev" title="通过曲面细分生成圆和球">
+                  <i class="fa fa-angle-left"></i> 通过曲面细分生成圆和球
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">PureWhiteVK</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">57k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">3:28</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>

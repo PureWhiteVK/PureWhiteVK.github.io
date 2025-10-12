@@ -141,7 +141,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">27</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">6</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">22</span></a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">27</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">6</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">23</span></a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
         </a>
@@ -207,7 +207,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">22</span>
+          <span class="site-state-item-count">23</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -516,9 +516,10 @@ json 中，还需要进行一次转义，就变成了最终 tasks.json 上的那
 
 <p>这种丑陋的形式（在 c++ 中写正则表达式，也是需要多次转义，c++
 字符串本身的转义和正则表达式中的转义）</p>
-<p>不过最后发现，在命令行里指定
+<p><strong>不过最后发现，在命令行里指定
 <code>tools.cmake.cmaketoolchain:extra_variables</code>
-，无法实现跨平台，最后只能在 conanfile.py 中添加，里面也有点坑。</p>
+，无法实现跨平台，最后只能在 conanfile.py
+中添加，里面也有点坑。</strong></p>
 <p>默认的 conanfile.py 如下</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">testRecipe</span>(<span class="title class_ inherited__">ConanFile</span>):</span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">layout</span>(<span class="params">self</span>):</span><br><span class="line">        cmake_layout(self)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">generate</span>(<span class="params">self</span>):</span><br><span class="line">        deps = CMakeDeps(self)</span><br><span class="line">        deps.generate()</span><br><span class="line">        tc = CMakeToolchain(self)</span><br><span class="line">        tc.generate()</span><br></pre></td></tr></table></figure>
 
@@ -666,13 +667,13 @@ style="zoom: 67%;" /></p>
 <strong>Tip</strong>
 </div>
 <p>个人也整理了一个自用的 VS Code CMake Conan 模板，并基于 Conan API
-实现自动安装到对应路径。</p>
+实现自动安装到 Conan 的模版路径。</p>
 <p>仓库地址：<a
 target="_blank" rel="noopener" href="https://github.com/PureWhiteVK/ConanTemplates.git">https://github.com/PureWhiteVK/ConanTemplates.git</a></p>
 </div>
 <p>下载模板仓库后，使用命令
 <code>python scripts/bootstrap_templates.py</code> 就可以自动创建VS
-Code的模板并拷贝模板到 Conan 用户目录下了</p>
+Code的模板并拷贝模板到 Conan 用户目录下了。</p>
 <p><img data-src="/posts/2944/image-20250907215036398.png"
 style="zoom: 50%;" /></p>
 
@@ -748,13 +749,13 @@ style="zoom: 50%;" /></p>
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">56k</span>
+    <span title="站点总字数">57k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">3:24</span>
+    <span title="站点阅读时长">3:28</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
