@@ -20,7 +20,7 @@ Shader（着色器）简单来说就是**运行在 GPU 上的一小段程序**�
 
 [Shader Toy](https://www.shadertoy.com/) 是一个在线的 Shader 变成和展示网站，可以展示实时的 Shader 编程效果。
 
-<img src="OpenGL-Shader-Toy/image-20251002231848342.png" alt="image-20251002231848342" style="zoom: 33%;" />
+<img src="OpenGL-Shader-Toy/image-20251002231848342.png" alt="image-20251002231848342" style="zoom: 67%;" />
 
 在图形 API （OpenGL）中，支持多种 Shader 类型：
 
@@ -36,7 +36,7 @@ Shader（着色器）简单来说就是**运行在 GPU 上的一小段程序**�
 
 # Full Screen Triangle
 
-由于 OpenGL 中会自动进行 clipping（丢弃不在显示区域内的 fragment），在绘制的是并不需要真的绘制一个四边形（两个三角形），而是通过一个大的三角形覆盖屏幕区域即可，在 NDC 坐标下，屏幕坐标的范围是 $[-1,1]^2$，可以通过一个巨大的直角三角形覆盖，如下 $\triangle{AEF}$ 所示：
+由于 OpenGL 中会自动进行 clipping（丢弃不在显示区域内的 fragment），在绘制时并不需要真的绘制一个四边形（两个三角形），而是通过一个大的三角形覆盖屏幕区域即可，在 NDC 坐标下，屏幕坐标的范围是 $[-1,1]^2$，可以通过一个巨大的直角三角形覆盖，如下 $\triangle{AEF}$ 所示：
 
 其三个顶点坐标分别是：
 $$
@@ -50,7 +50,7 @@ $$
 
 <img src="OpenGL-Shader-Toy/image-20251002232417558.png" alt="image-20251002232417558" style="zoom: 33%;" />
 
-使用这样一个三角形，还有一个好处就是无需准备额外的 VBO（但是还是需要 VAO），直接将三角形的顶点坐标写在 Shader 代码里即可，如下所示：
+使用三角形，还有一个好处就是无需准备额外的 VBO（但是还是需要 VAO），直接将三角形的顶点坐标写在 Shader 代码里即可，如下所示：
 
 *shader_toy.vert*
 
@@ -81,7 +81,7 @@ void main() {
 
 # Example Fragment Shader 
 
-下面给出了一个最简单的 Fragment Shader 效果，根据 Vertex Shader 的输出，其是一个大三角形，覆盖整个屏幕，那么最简单的 Fragment Shader 就是坐标和颜色对应起来，例如 $(x,y,z) = (r,g,b)$，将 x 坐标值赋值为
+下面给出了一个最简单的 Fragment Shader 效果，根据 Vertex Shader 的输出，其是一个大三角形，覆盖整个屏幕，那么最简单的 Fragment Shader 就是坐标和颜色对应起来，即 $(x,y,z) = (r,g,b)$
 
 > [!Tip]
 >
@@ -120,24 +120,29 @@ void main()
 
 <img src="OpenGL-Shader-Toy/image-20251012133552643.png" alt="image-20251012133552643" style="zoom: 33%;" />
 
-## 整体流程
+其核心思路就是**监听文件系统变更事件**，当指定的 shader 文件发生变化时，重新加载 shader 并预览在屏幕上，实现实时预览效果。
 
-包含两个线程，主线程用来进行 OpenGL 渲染和展示，文件监控线程用来监控文件变更并及时同时主线程重新加载 Shader。
-
-下面展示了整个监控过程的时序图：
-
-<img src="OpenGL-Shader-Toy/live-preview.drawio-0249527.png" alt="live-preview.drawio" style="zoom: 40%;" />
-
-1. 在主线程启动时同时启动监控线程，监控线程此时尚未设置监控文件，等待中；
-2. 用户操作设置实时预览的 Shader 文件，主线程发送消息给监控线程，设置待监控的文件；
-   - 监控线程接收到消息后，开始监控文件系统变化；
-3. 用户更改 Shader 文件，监控线程捕获到文件变更事件，发送消息给主线程，通知文件变更情况；
-   - 主线程接受到消息后，重新编译 Shader 并进行预览；
-
-4. 停止监控时，主线程发送停止监控消息给监控线程；
-   - 监控线程接收到消息后，移除文件监控事件，停止文件监控。
+为支持跨平台，通过 [libuv](https://libuv.org/) 库实现文件系统的监控，具体操作时序图如下所示：
 
 
 
+流程如下：
 
+1. 主线程（渲染线程）初始化 libuv 事件队列，并设置好文件系统变更的回调函数（即刷新 shader 文件的相关代码）；
+
+   子线程（监控线程）初始化子线程事件队列，设置好所需事件和回调；
+
+2. 用户点击主线程中的 Fragment Shader 按钮，弹出文件选择对话框，指定 shader 文件位置
+
+3. 指定完成后，触发 watcher 对象的 set_target_file 函数，更新监听文件路径，并通过 m_change_target_signal 发送消息给子线程；
+
+4. 子线程接收到 m_change_target_signal 的消息后，执行 on_change_target 回调，停止监控之前的文件系统事件，重新进行监听；
+
+5. 当监听到文件系统的变更后，会触发 on_fs_event 回调函数，为避免短时间内多次修改导致频繁刷新 shader，在 on_fs_event 中并不直接通知主线程刷新 shader，而是设置一个 debounce_timer，如果在 timeout 事件范围内有新的文件变更，则会重置 timer；
+
+6. 当 debounce_timer 超时后，触发 on_debounce_timer 回调，在该回调函数中发送消息给主线程事件队列
+
+7. 主线程事件队列收到 shader_file_change_signal 信号后，触发 on_shader_file_change_callback 回调，读取 shader file 文件并创建新的 shader，完成预览
+
+8. 当主线程退出后，调用 watcher 的 stop 函数，发送 stop signal 到子线程任务队列，通知子线程停止监控并退出执行。子线程在 on_stop_signal 回调函数中关闭各个事件，并关闭事件队列，退出线程
 
