@@ -122,9 +122,7 @@ void main()
 
 其核心思路就是**监听文件系统变更事件**，当指定的 shader 文件发生变化时，重新加载 shader 并预览在屏幕上，实现实时预览效果。
 
-为支持跨平台，通过 [libuv](https://libuv.org/) 库实现文件系统的监控，具体操作时序图如下所示：
-
-
+为支持跨平台，通过 [libuv](https://libuv.org/) 库实现文件系统的监控，具体流程如下所示：
 
 流程如下：
 
@@ -136,9 +134,9 @@ void main()
 
 3. 指定完成后，触发 watcher 对象的 set_target_file 函数，更新监听文件路径，并通过 m_change_target_signal 发送消息给子线程；
 
-4. 子线程接收到 m_change_target_signal 的消息后，执行 on_change_target 回调，停止监控之前的文件系统事件，重新进行监听；
+4. 子线程接收到 m_change_target_signal 信号后，执行 on_change_target 回调，停止监控之前的文件系统事件，重新进行监听；
 
-5. 当监听到文件系统的变更后，会触发 on_fs_event 回调函数，为避免短时间内多次修改导致频繁刷新 shader，在 on_fs_event 中并不直接通知主线程刷新 shader，而是设置一个 debounce_timer，如果在 timeout 事件范围内有新的文件变更，则会重置 timer；
+5. 当监听到文件系统的变更后，会触发 on_fs_event 回调函数，为避免短时间内多次修改导致频繁刷新 shader，在 on_fs_event 中并不直接通知主线程刷新 shader，而是设置一个 debounce_timer，如果在 timeout 事件范围内有新的文件变更，则会重置 timer，重新开始计时；
 
 6. 当 debounce_timer 超时后，触发 on_debounce_timer 回调，在该回调函数中发送消息给主线程事件队列
 
@@ -146,3 +144,4 @@ void main()
 
 8. 当主线程退出后，调用 watcher 的 stop 函数，发送 stop signal 到子线程任务队列，通知子线程停止监控并退出执行。子线程在 on_stop_signal 回调函数中关闭各个事件，并关闭事件队列，退出线程
 
+源代码见 [这里](https://github.com/PureWhiteVK/OpenGL-Examples/blob/main/src/imgui-demo/shader_toy.cpp)
