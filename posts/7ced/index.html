@@ -396,7 +396,7 @@ style="zoom: 33%;" /></p>
 <p>其核心思路就是<strong>监听文件系统变更事件</strong>，当指定的 shader
 文件发生变化时，重新加载 shader 并预览在屏幕上，实现实时预览效果。</p>
 <p>为支持跨平台，通过 <a target="_blank" rel="noopener" href="https://libuv.org/">libuv</a>
-库实现文件系统的监控，具体操作时序图如下所示：</p>
+库实现文件系统的监控，具体流程如下所示：</p>
 <p>流程如下：</p>
 <ol type="1">
 <li><p>主线程（渲染线程）初始化 libuv
@@ -408,13 +408,13 @@ shader 文件位置</p></li>
 <li><p>指定完成后，触发 watcher 对象的 set_target_file
 函数，更新监听文件路径，并通过 m_change_target_signal
 发送消息给子线程；</p></li>
-<li><p>子线程接收到 m_change_target_signal 的消息后，执行
-on_change_target
+<li><p>子线程接收到 m_change_target_signal 信号后，执行 on_change_target
 回调，停止监控之前的文件系统事件，重新进行监听；</p></li>
 <li><p>当监听到文件系统的变更后，会触发 on_fs_event
 回调函数，为避免短时间内多次修改导致频繁刷新 shader，在 on_fs_event
 中并不直接通知主线程刷新 shader，而是设置一个 debounce_timer，如果在
-timeout 事件范围内有新的文件变更，则会重置 timer；</p></li>
+timeout 事件范围内有新的文件变更，则会重置
+timer，重新开始计时；</p></li>
 <li><p>当 debounce_timer 超时后，触发 on_debounce_timer
 回调，在该回调函数中发送消息给主线程事件队列</p></li>
 <li><p>主线程事件队列收到 shader_file_change_signal 信号后，触发
@@ -424,6 +424,8 @@ shader，完成预览</p></li>
 到子线程任务队列，通知子线程停止监控并退出执行。子线程在 on_stop_signal
 回调函数中关闭各个事件，并关闭事件队列，退出线程</p></li>
 </ol>
+<p>源代码见 <a
+target="_blank" rel="noopener" href="https://github.com/PureWhiteVK/OpenGL-Examples/blob/main/src/imgui-demo/shader_toy.cpp">这里</a></p>
 
     </div>
 
@@ -486,7 +488,7 @@ shader，完成预览</p></li>
 
   <div class="copyright">
     &copy; 
-    <span itemprop="copyrightYear">2025</span>
+    <span itemprop="copyrightYear">2026</span>
     <span class="with-love">
       <i class="fa fa-heart"></i>
     </span>
@@ -497,13 +499,13 @@ shader，完成预览</p></li>
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">59k</span>
+    <span title="站点总字数">64k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">3:33</span>
+    <span title="站点阅读时长">3:51</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
