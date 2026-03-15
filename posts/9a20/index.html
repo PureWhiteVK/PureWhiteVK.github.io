@@ -367,10 +367,10 @@ hexo 相关变量。</p>
 指针，我们无法通过 this 来访问 hexo 的变量，但是可以直接通过 hexo
 全局变量来访问，对于普通函数（normal function）而言，可以通过 this
 来访问 hexo，也可以直接通过全局变量 hexo 来访问。</p>
-<p>由于脚本模式实际上实在 js 中通过字符串形式执行的，最好在开头处添加
+<p>由于脚本模式实际上是在 js 中通过字符串形式执行的，最好在开头处添加
 <code>use strict</code> 来标识，确保插件能正常执行。</p>
 <p>注：导入包的时候我们只能使用 common js 的包，并不支持 es6
-模式的包，即我们不能通过一下模式导入包</p>
+模式的包，即我们不能通过以下模式导入包</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; unified &#125; <span class="keyword">from</span> <span class="string">&#x27;unified&#x27;</span>;</span><br></pre></td></tr></table></figure>
 
 <p>(unified 是一个<a
@@ -522,7 +522,8 @@ hexo 中。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">➜  Node node test.js</span><br><span class="line">output from spawn:</span><br><span class="line">pandoc 3.0.1</span><br><span class="line">Features: +server +lua</span><br><span class="line">Scripting engine: Lua 5.4</span><br><span class="line">User data directory: /home/xiao/.local/share/pandoc</span><br><span class="line">Copyright (C) 2006-2023 John MacFarlane. Web:  https://pandoc.org</span><br><span class="line">This is free software; see the <span class="built_in">source</span> <span class="keyword">for</span> copying conditions. There is no</span><br><span class="line">warranty, not even <span class="keyword">for</span> merchantability or fitness <span class="keyword">for</span> a particular purpose.</span><br></pre></td></tr></table></figure>
 
 <p>上面的代码实际上就是调用了 <code>pandoc --version</code> 命令，并通过
-CacheStream 获取到了调用命令后的输出结果，以便进行下一步的调用。</p>
+<code>on('data',...)</code>
+回调函数获取到了调用命令后的输出结果，以便进行下一步的调用。</p>
 <p>如果我们需要向 pandoc 传输数据（例如待处理的 markdown
 文本流），我们可以直接在 <code>stdin</code>
 中直接写入，同时注意写入完成后<strong>记得关闭输入流</strong>，否则
@@ -573,7 +574,7 @@ markdown 如下</p>
 为其指定了一个 css 类名，通过类名这个我们可以手动实现 smallcaps
 效果。</p>
 <h3 id="filter-写法">filter 写法</h3>
-<p>上面的代码第一眼看上有点奇怪，怎么以来就是一个 <code>return</code>
+<p>上面的代码第一眼看上有点奇怪，怎么一来就是一个 <code>return</code>
 语句，返回的 <code>{}</code> 怎么直接套了一个
 <code>{xxx = xxx}</code></p>
 <p>首先解释后面一点，在 lua 中，列表和字典都使用 <code>{}</code>
@@ -697,8 +698,8 @@ contents</a></li>
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/posts/caff/" rel="prev" title="LaTex公式学习笔记">
-                  <i class="fa fa-angle-left"></i> LaTex公式学习笔记
+                <a href="/posts/caff/" rel="prev" title="LaTeX公式学习笔记">
+                  <i class="fa fa-angle-left"></i> LaTeX公式学习笔记
                 </a>
             </div>
             <div class="post-nav-item">
@@ -735,13 +736,13 @@ contents</a></li>
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">64k</span>
+    <span title="站点总字数">65k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">3:51</span>
+    <span title="站点阅读时长">3:58</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动

@@ -306,7 +306,7 @@ C++ 依赖解决方案，但是对于一些冷门的库可能就不支持，还�
 <p>最简单的办法就是通过 git
 的子模块将其添加到项目中，这种依赖管理方式确保可以访问到源代码，其缺点也很明显，我们在下载库的时候需要通过下载依赖库（也就是子模块），如果子模块较大可能下载起来比较耗时。</p>
 <p>前面一个笔记中也提到了，要想删除添加的 git submodule
-十分麻烦，没有一个简单的命令可以直接删除，需要手动调整需要文件才能删除干净。</p>
+十分麻烦，没有一个简单的命令可以直接删除，需要手动调整需要的文件才能删除干净。</p>
 <h1 id="fetchcontent-模块添加依赖">FetchContent 模块添加依赖</h1>
 <p>而 FetchContent 是 CMake 提供的一种新式依赖管理方案（在 3.11
 版本首次出现），其在 CMake
@@ -322,7 +322,7 @@ C++ 依赖解决方案，但是对于一些冷门的库可能就不支持，还�
 仓库地址或者 URL 链接，其会自动解压缩）</p></li>
 <li><p><code>FetchContent_MakeAvailable</code>：自动配置依赖库（相当于调用了
 <code>add_subdirectory</code>）</p></li>
-<li><p><code>FetchContent_Populate</code>：手动配置依赖库，这个函数会帮我们配置好一系列变量，然后由使用者自行管理如何编译）</p>
+<li><p><code>FetchContent_Populate</code>：手动配置依赖库，这个函数会帮我们配置好一系列变量，然后由使用者自行管理如何编译</p>
 <p>其会设置一些常用的变量</p>
 <ul>
 <li><code>&lt;lowercaseName&gt;_SOURCE_DIR</code>，指定的库源代码地址</li>
@@ -351,7 +351,7 @@ first before the dependencies get a chance to).</p>
 <p>我们需要添加四个依赖：<code>fmt</code>，<code>glfw</code>，<code>imgui</code>，<code>glad</code></p>
 <p>对于前三个，我们都可以使用 <code>FetchContent</code> 来添加，由于
 <code>glad</code>
-是使用网站生成的，我们需要手动将其将其添加到源代码库中。</p>
+是使用网站生成的，我们需要手动将其添加到源代码库中。</p>
 <p><code>fmt</code> 库的添加代码</p>
 <figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">FetchContent_Declare(</span><br><span class="line">    fmt</span><br><span class="line">    GIT_REPOSITORY https://github.com/fmtlib/fmt.git</span><br><span class="line">    GIT_TAG <span class="number">10.1</span>.<span class="number">0</span></span><br><span class="line">    GIT_SHALLOW <span class="keyword">ON</span></span><br><span class="line">)</span><br><span class="line">FetchContent_MakeAvailable(fmt)</span><br></pre></td></tr></table></figure>
 
@@ -483,8 +483,8 @@ target="_blank" rel="noopener" href="https://cmake.org/cmake/help/latest/manual/
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/posts/b5fa/" rel="next" title="Antlr4使用">
-                  Antlr4使用 <i class="fa fa-angle-right"></i>
+                <a href="/posts/b5fa/" rel="next" title="ANTLR4使用">
+                  ANTLR4使用 <i class="fa fa-angle-right"></i>
                 </a>
             </div>
           </div>
@@ -516,13 +516,13 @@ target="_blank" rel="noopener" href="https://cmake.org/cmake/help/latest/manual/
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">64k</span>
+    <span title="站点总字数">65k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">3:51</span>
+    <span title="站点阅读时长">3:58</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动

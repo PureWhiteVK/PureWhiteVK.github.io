@@ -192,7 +192,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-conan"><span class="nav-number">1.</span> <span class="nav-text">安装 Conan</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#conan-%E6%A8%A1%E6%9D%BF%E9%A1%B9%E7%9B%AE"><span class="nav-number">2.</span> <span class="nav-text">Conan 模板项目</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#hello-world"><span class="nav-number">3.</span> <span class="nav-text">Hello World</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#vs-code-%E6%94%AF%E6%8C%81"><span class="nav-number">4.</span> <span class="nav-text">VS Code 支持</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85c%E5%BC%80%E5%8F%91%E6%8F%92%E4%BB%B6"><span class="nav-number">4.1.</span> <span class="nav-text">安装C++开发插件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E8%87%AA%E5%AE%9A%E4%B9%89-tasks"><span class="nav-number">4.2.</span> <span class="nav-text">添加自定义 Tasks</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE-clangd"><span class="nav-number">4.3.</span> <span class="nav-text">配置 clangd</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E8%B0%83%E8%AF%95"><span class="nav-number">4.4.</span> <span class="nav-text">配置调试</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E4%BE%9D%E8%B5%96"><span class="nav-number">5.</span> <span class="nav-text">添加依赖</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89-conan-%E9%A1%B9%E7%9B%AE%E6%A8%A1%E6%9D%BF"><span class="nav-number">6.</span> <span class="nav-text">自定义 Conan 项目模板</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-conan"><span class="nav-number">1.</span> <span class="nav-text">安装 Conan</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#conan-%E6%A8%A1%E6%9D%BF%E9%A1%B9%E7%9B%AE"><span class="nav-number">2.</span> <span class="nav-text">Conan 模板项目</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#hello-world"><span class="nav-number">3.</span> <span class="nav-text">Hello World</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#vs-code-%E6%94%AF%E6%8C%81"><span class="nav-number">4.</span> <span class="nav-text">VS Code 支持</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-c-%E5%BC%80%E5%8F%91%E6%8F%92%E4%BB%B6"><span class="nav-number">4.1.</span> <span class="nav-text">安装 C++ 开发插件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E8%87%AA%E5%AE%9A%E4%B9%89-tasks"><span class="nav-number">4.2.</span> <span class="nav-text">添加自定义 Tasks</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE-clangd"><span class="nav-number">4.3.</span> <span class="nav-text">配置 clangd</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E8%B0%83%E8%AF%95"><span class="nav-number">4.4.</span> <span class="nav-text">配置调试</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E4%BE%9D%E8%B5%96"><span class="nav-number">5.</span> <span class="nav-text">添加依赖</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89-conan-%E9%A1%B9%E7%9B%AE%E6%A8%A1%E6%9D%BF"><span class="nav-number">6.</span> <span class="nav-text">自定义 Conan 项目模板</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -328,8 +328,8 @@ C++，都简单不到哪去，</del>学习成本还是有一点的，就用一�
 Conan 的基本使用。</p>
 <h1 id="安装-conan">安装 Conan</h1>
 <p>由于我们后面会大量使用 conanfile.py，且也可以借助 Python 插件实现
-<code>conanfile.py</code> 的代码补全，直接使用 python 库的方式安装
-conan，安装命令如下：</p>
+<code>conanfile.py</code> 的代码补全，直接使用 Python 库的方式安装
+Conan，安装命令如下：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python -m pip install conan</span><br></pre></td></tr></table></figure>
 
 <p>安装之后例行检查一下版本</p>
@@ -339,10 +339,10 @@ conan，安装命令如下：</p>
 <span id="more"></span>
 
 <h1 id="conan-模板项目">Conan 模板项目</h1>
-<p>通过 <code>conan new</code> 命令可以快速创建 c++ 模板项目</p>
-<p>对于基于 cmake 的 c++ 项目而言，可以使用 <code>cmake_exe</code> 和
-<code>cmake_lib</code>，conan 也支持自行指定代码模板，在本文的最后会结合
-VS Code 提供一个添加 vscode 支持的 conan cmake 模板。</p>
+<p>通过 <code>conan new</code> 命令可以快速创建 C++ 模板项目。</p>
+<p>对于基于 CMake 的 C++ 项目而言，可以使用 <code>cmake_exe</code> 和
+<code>cmake_lib</code>，Conan 也支持自行指定代码模板。在本文最后会结合
+VS Code 提供一个添加 VS Code 支持的 Conan CMake 模板。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">conan new cmake_exe -d name=hello-conan</span><br></pre></td></tr></table></figure>
 
 <p>执行命令后，其会自动创建好一些必要的文件，如下图所示：</p>
@@ -350,28 +350,29 @@ VS Code 提供一个添加 vscode 支持的 conan cmake 模板。</p>
 <p>其目录结构如下所示：</p>
 <p><img data-src="/posts/2944/image-20250905215605185.png"
 style="zoom: 80%;" /></p>
-<p>c++ 源码和头文件放在 <code>src</code> 目录下，同时还生成了一个
-test_package 目录，用于测试当前包，暂时用不上。</p>
+<p>C++ 源码和头文件放在 <code>src</code> 目录下，同时还生成了一个
+<code>test_package</code> 目录，用于测试当前包，暂时用不上。</p>
 <h1 id="hello-world">Hello World</h1>
 <p>依次输入以下命令，完成样例项目的编译和运行</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">conan profile detect --force</span><br><span class="line">conan install . --building=missing</span><br><span class="line">cmake --list-presets</span><br><span class="line">cmake . --preset conan-default</span><br><span class="line">cmake --list-presets build</span><br><span class="line">cmake --build --preset conan-release</span><br><span class="line">cmake --install build --prefix install</span><br><span class="line">./install/bin/hello-conan.exe</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">conan profile detect --force</span><br><span class="line">conan install . --build=missing</span><br><span class="line">cmake --list-presets</span><br><span class="line">cmake . --preset conan-default</span><br><span class="line">cmake --list-presets build</span><br><span class="line">cmake --build --preset conan-release</span><br><span class="line">cmake --install build --prefix install</span><br><span class="line">./install/bin/hello-conan.exe</span><br></pre></td></tr></table></figure>
 
 <p>简单介绍一下每一步在做什么</p>
 <p>step1（代码行1）：生成编译工具链配置</p>
-<p>step2（代码行2）：下载并安装三方库依赖</p>
-<p>step3（代码行3~4）：查看当前 cmake configure 预设配置，并进行
+<p>step2（代码行2）：下载并安装第三方库依赖</p>
+<p>step3（代码行3~4）：查看当前 CMake configure 预设配置，并进行
 configure，生成当前项目的编译配置</p>
-<p>step4（代码行5~6）：查看当前 cmake 的编译预设配置，并进行编译</p>
-<p>step5（代码行7）：执行 cmake 安装，将可执行文件安装到
+<p>step4（代码行5~6）：查看当前 CMake 的编译预设配置，并进行编译</p>
+<p>step5（代码行7）：执行 CMake 安装，将可执行文件安装到
 <code>install</code> 目录</p>
 <p>step6（代码行8）：执行程序</p>
 <p>程序执行输出如下：</p>
 <p><img data-src="/posts/2944/image-20250905222445701.png"
 style="zoom:67%;" /></p>
 <h1 id="vs-code-支持">VS Code 支持</h1>
-<p>目前我们都是使用命令行进行简单的操作，但是真正进行开发的时候还需要IDE的代码提示和调试功能才行，下面就介绍一下如何基于
-VS Code 配置一个支持 conan 和 cmake 的 c++ 开发环境。</p>
-<h2 id="安装c开发插件">安装C++开发插件</h2>
+<p>目前我们都是使用命令行进行简单操作，但真正进行开发时还需要 IDE
+的代码提示和调试功能。下面介绍如何基于 VS Code 配置一个支持 Conan 和
+CMake 的 C++ 开发环境。</p>
+<h2 id="安装-c-开发插件">安装 C++ 开发插件</h2>
 <ul>
 <li>C/C++ Extension Pack</li>
 <li>CMake Tools</li>
@@ -384,7 +385,7 @@ VS Code 配置一个支持 conan 和 cmake 的 c++ 开发环境。</p>
 <svg class="octicon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M8 1.5c-2.363 0-4 1.69-4 3.75 0 .984.424 1.625.984 2.304l.214.253c.223.264.47.556.673.848.284.411.537.896.621 1.49a.75.75 0 0 1-1.484.211c-.04-.282-.163-.547-.37-.847a8.456 8.456 0 0 0-.542-.68c-.084-.1-.173-.205-.268-.32C3.201 7.75 2.5 6.766 2.5 5.25 2.5 2.31 4.863 0 8 0s5.5 2.31 5.5 5.25c0 1.516-.701 2.5-1.328 3.259-.095.115-.184.22-.268.319-.207.245-.383.453-.541.681-.208.3-.33.565-.37.847a.751.751 0 0 1-1.485-.212c.084-.593.337-1.078.621-1.489.203-.292.45-.584.673-.848.075-.088.147-.173.213-.253.561-.679.985-1.32.985-2.304 0-2.06-1.637-3.75-4-3.75ZM5.75 12h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5ZM6 15.25a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75Z"></path></svg>
 <strong>Tip</strong>
 </div>
-<p>如何在 vscode 中添加自定义 task 可以参考 <a
+<p>如何在 VS Code 中添加自定义 task，可以参考 <a
 target="_blank" rel="noopener" href="https://code.visualstudio.com/docs/debugtest/tasks">tasks
 使用文档</a></p>
 </div>
@@ -393,8 +394,8 @@ target="_blank" rel="noopener" href="https://code.visualstudio.com/docs/debugtes
 "<em><strong>任务：配置任务</strong></em>"</p>
 <p><img data-src="/posts/2944/image-20250905225129587.png"
 style="zoom:67%;" /></p>
-<p>然后点击 "<em><strong>使用模板创建 tasks.json 文件</strong></em>"
-，这样就会自动创建一个可用的 tasks.json</p>
+<p>然后点击 "<em><strong>使用模板创建 tasks.json
+文件</strong></em>"，这样就会自动创建一个可用的 tasks.json。</p>
 <p><img data-src="/posts/2944/image-20250905225333434.png"
 style="zoom: 67%;" /></p>
 <p>之后选择 tasks 的模板，这里直接选择 “<em><strong>Others
@@ -492,11 +493,11 @@ Code 的 task 完成：</p>
 <li>调用 CMake 配置和编译</li>
 </ul>
 <p><em><strong>小插曲</strong></em></p>
-<p>在 tasks.json 中配置 conan 的命令时，想通过 conan conf的
+<p>在 tasks.json 中配置 Conan 命令时，想通过 Conan conf 的
 <code>tools.cmake.cmaketoolchain:extra_variables</code> 选项新增
-<code>CMAKE_EXPORT_COMPILE_COMMANDS</code> （不要问我为什么不在
-<code>conanfile.py</code> 中添加😎），让 cmake 自动导出
-compile_commands.json</p>
+<code>CMAKE_EXPORT_COMPILE_COMMANDS</code>（不要问我为什么不在
+<code>conanfile.py</code> 中添加😎），让 CMake 自动导出
+compile_commands.json。</p>
 <p>但是发现怎么配置也配不好，搞了半天发现是命令行命令对引号的转义导致的，需要写成这样的形式：</p>
 <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;label&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Conan: Install Dependency [Debug]&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;shell&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;command&quot;</span><span class="punctuation">:</span> <span class="string">&quot;conan&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;args&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">        <span class="string">&quot;install&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;--settings=&#x27;build_type=Debug&#x27;&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;--conf=&#x27;tools.cmake.cmaketoolchain:extra_variables=&#123;\\\&quot;CMAKE_EXPORT_COMPILE_COMMANDS\\\&quot;: \\\&quot;True\\\&quot;&#125;&#x27;&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;--conf=&#x27;tools.cmake.cmaketoolchain:generator=Ninja&#x27;&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;.&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;--build=missing&quot;</span></span><br><span class="line">    <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;hide&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span></span><br><span class="line"><span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br></pre></td></tr></table></figure>
 
@@ -514,19 +515,19 @@ cmake conf 文档</a> 后发现，conan 对
 json 中，还需要进行一次转义，就变成了最终 tasks.json 上的那种形式</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;\\\&quot;&lt;key&gt;\\\&quot;:\\\&quot;&lt;value&gt;\\\&quot;&#125;</span><br></pre></td></tr></table></figure>
 
-<p>这种丑陋的形式（在 c++ 中写正则表达式，也是需要多次转义，c++
-字符串本身的转义和正则表达式中的转义）</p>
+<p>这种丑陋的形式（在 C++ 中写正则表达式，也需要多次转义，C++
+字符串本身的转义和正则表达式中的转义会叠加）。</p>
 <p><strong>不过最后发现，在命令行里指定
 <code>tools.cmake.cmaketoolchain:extra_variables</code>
-，无法实现跨平台，最后只能在 conanfile.py
+无法实现跨平台，最后只能在 conanfile.py
 中添加，里面也有点坑。</strong></p>
 <p>默认的 conanfile.py 如下</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">testRecipe</span>(<span class="title class_ inherited__">ConanFile</span>):</span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">layout</span>(<span class="params">self</span>):</span><br><span class="line">        cmake_layout(self)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">generate</span>(<span class="params">self</span>):</span><br><span class="line">        deps = CMakeDeps(self)</span><br><span class="line">        deps.generate()</span><br><span class="line">        tc = CMakeToolchain(self)</span><br><span class="line">        tc.generate()</span><br></pre></td></tr></table></figure>
 
-<p>如果需要在 conanfile.py 中指定 cmake 的
+<p>如果需要在 conanfile.py 中指定 CMake 的
 generator，<strong>一定要同时修改 <code>layout</code> 和
 <code>generate</code> 两个函数</strong>，否则在 layout 获得的 build_dir
-是错误的，导致 conan 自动创建的 build 目录是有问题的，修改情况如下：</p>
+是错误的，导致 Conan 自动创建的 build 目录有问题，修改情况如下：</p>
 <figure class="highlight diff"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">--- &quot;a/.\\conanfile.py&quot;</span></span><br><span class="line"><span class="comment">+++ &quot;b/.\\conanfile.py&quot;</span></span><br><span class="line"><span class="meta">@@ -1,10 +1,11 @@</span></span><br><span class="line"> class testRecipe(ConanFile):</span><br><span class="line">     ...</span><br><span class="line">     def layout(self):</span><br><span class="line"><span class="deletion">-        cmake_layout(self)</span></span><br><span class="line"><span class="addition">+        self.cmake_generator = &quot;Ninja&quot;</span></span><br><span class="line"><span class="addition">+        cmake_layout(self,generator=self.cmake_generator)</span></span><br><span class="line"></span><br><span class="line">     def generate(self):</span><br><span class="line">         deps = CMakeDeps(self)</span><br><span class="line">         deps.generate()</span><br><span class="line"><span class="deletion">-        tc = CMakeToolchain(self)</span></span><br><span class="line"><span class="addition">+        tc = CMakeToolchain(self,generator=self.cmake_generator)</span></span><br><span class="line">         tc.generate()</span><br></pre></td></tr></table></figure>
 
 <h2 id="配置-clangd">配置 clangd</h2>
@@ -580,7 +581,7 @@ target="_blank" rel="noopener" href="https://cmake.org/cmake/help/latest/manual/
 <svg class="octicon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>
 <strong>Note</strong>
 </div>
-<p><code>editor.tabSize</code> 和 <code>C_Cpp.formating</code>
+<p><code>editor.tabSize</code> 和 <code>C_Cpp.formatting</code>
 是代码格式化的配置，可根据个人喜好进行配置</p>
 </div>
 <p>填写好相关配置后，可以重启 clangd（同样在命令面板中进行操作）</p>
@@ -592,14 +593,14 @@ style="zoom: 50%;" /></p>
 <p>如果看到 clangd 的相关日志中包含刚才配置好的命令行选项，并成功加载了
 compile_commands.json 文件，则说明已经配置完成。</p>
 <h2 id="配置调试">配置调试</h2>
-<p>还有最后一步，代码调试（已经感觉有点累了😫，VS Code
-的C++开发环境属实有点难配了），幸好，这一步只需要简单集成一下 cmake
+<p>还有最后一步，代码调试（已经感觉有点累了😫，VS Code 的 C++
+开发环境属实有点难配了）。幸好，这一步只需要简单集成一下 CMake
 的调用命令即可，创建
-<code>.vscode/launch.json</code>，并填写下列内容</p>
+<code>.vscode/launch.json</code>，并填写下列内容。</p>
 <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;configurations&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;lldb&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;request&quot;</span><span class="punctuation">:</span> <span class="string">&quot;launch&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Launch CMake Target&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;program&quot;</span><span class="punctuation">:</span> <span class="string">&quot;$&#123;command:cmake.launchTargetPath&#125;&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;args&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;cwd&quot;</span><span class="punctuation">:</span> <span class="string">&quot;$&#123;workspaceFolder&#125;&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
 
-<p>这里我们使用了<code>$&#123;command:cmake.launchTargetPath&#125;</code>
-来获取当前配置的启动程序，不用为每一个可执行程序都显式执行相应的运行配置，而且通过这个命令进行调试还可以在启动之前自动完成编译。</p>
+<p>这里我们使用了 <code>$&#123;command:cmake.launchTargetPath&#125;</code>
+来获取当前配置的启动程序，不用为每一个可执行程序都显式配置相应的运行项，而且通过这个命令进行调试还可以在启动之前自动完成编译。</p>
 <p>如果需要使用其他命令，可以在插件的详情面板查询插件提供的所有命令（不过当我们需要指定额外的运行参数时，还是直接创建新的
 launch target 比较好）</p>
 <p><img data-src="/posts/2944/image-20250906160212000.png"
@@ -607,7 +608,7 @@ style="zoom:50%;" /></p>
 <h1 id="添加依赖">添加依赖</h1>
 <p>到这里，我们就可以开始修改代码（可算是进入正题了😓），添加一些想要的依赖了（<del>调包侠
 yes！</del>），简单点，使用 Eigen 和 spdlog 做一个简单的矩阵运算吧。</p>
-<p>首先在 <a target="_blank" rel="noopener" href="https://conan.io/center">conan center</a>
+<p>首先在 <a target="_blank" rel="noopener" href="https://conan.io/center">Conan Center</a>
 网站上查询需要使用包的版本</p>
 <p><img data-src="/posts/2944/image-20250905223759007.png"
 style="zoom: 50%;" /></p>
@@ -619,7 +620,8 @@ style="zoom:50%;" /></p>
 函数，并填写依赖即可，对于 spdlog 也是如此。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">requirements</span>(<span class="params">self</span>):</span><br><span class="line">    self.requires(<span class="string">&quot;eigen/3.4.0&quot;</span>)</span><br><span class="line">    self.requires(<span class="string">&quot;spdlog/1.15.3&quot;</span>)</span><br></pre></td></tr></table></figure>
 
-<p>引入依赖后，需要重新调用一遍 conan install，会自动下载对应的包。</p>
+<p>引入依赖后，需要重新调用一遍
+<code>conan install</code>，会自动下载对应的包。</p>
 <p>使用时，需要更改 CMakeLists.txt，通过 cmake 的
 <code>find_package</code>
 找到对应的包，将其链接到可执行程序上即可，在指引中也同样有写</p>
@@ -633,25 +635,25 @@ style="zoom:50%;" /></p>
 style="zoom: 50%;" /></p>
 <h1 id="自定义-conan-项目模板">自定义 Conan 项目模板</h1>
 <p>从 VS Code 的配置过程可以发现，VS Code 作为一个文本编辑器，进行 C++
-的开发需要各种各样的配置，每次创建新项目十分繁琐，为了简化这一个配置过程，我们可以借助
-conan
-的模板项目，这样我们就可以减少重复操作，更加专注于代码本身了（想起了前端开发中各种代码模板生成工具）。</p>
+开发需要各种各样的配置，每次创建新项目都十分繁琐。为了简化这个配置过程，我们可以借助
+Conan
+的模板项目，这样就可以减少重复操作，更加专注于代码本身（想起了前端开发中各种代码模板生成工具）。</p>
 <blockquote>
 <p>参考 Conan <a
 target="_blank" rel="noopener" href="https://docs.conan.io/2/reference/commands/new.html#custom-templates">创建项目模板文档</a></p>
 </blockquote>
-<p>conan 内置了一系列模板，这一部分是直接写在 conan 源码里的（具体路径为
-<code>&lt;Python安装目录&gt;\Lib\site-packages\conaninternal\api\new</code>）</p>
+<p>Conan 内置了一系列模板，这一部分是直接写在 Conan 源码里的（具体路径为
+<code>&lt;Python安装目录&gt;\Lib\site-packages\conaninternal\api\new</code>）。</p>
 <p>以 cmake_exe
-为例，其模板目录结构如下（没错，<strong>文件名也是可以时模板形式的</strong>，便于使用
-Jinja2 进行字符串替换）</p>
+为例，其模板目录结构如下（没错，<strong>文件名也是可以是模板形式的</strong>，便于使用
+Jinja2 进行字符串替换）。</p>
 <p><img data-src="/posts/2944/image-20250907213750585.png"
 style="zoom:67%;" /></p>
 <p>如果需要新增模板，<strong>只需要拷贝整个模板目录文件夹至
 <code>.conan2/templates/command/new</code>
 目录下，然后使用模板目录的名称进行创建即可</strong>。</p>
-<p>例如我们创建了一个包含 vscode 相关配置的 cmake_exe 模板，命名为
-<code>vscode_cmake_exe</code>，其目录结构如下</p>
+<p>例如我们创建了一个包含 VS Code 相关配置的 cmake_exe 模板，命名为
+<code>vscode_cmake_exe</code>，其目录结构如下。</p>
 <p><img data-src="/posts/2944/image-20250907214611200.png"
 style="zoom: 67%;" /></p>
 <p>使用下面命令就可以导入模板并使用了</p>
@@ -672,8 +674,8 @@ style="zoom: 67%;" /></p>
 target="_blank" rel="noopener" href="https://github.com/PureWhiteVK/ConanTemplates.git">https://github.com/PureWhiteVK/ConanTemplates.git</a></p>
 </div>
 <p>下载模板仓库后，使用命令
-<code>python scripts/bootstrap_templates.py</code> 就可以自动创建VS
-Code的模板并拷贝模板到 Conan 用户目录下了。</p>
+<code>python scripts/bootstrap_templates.py</code> 就可以自动创建 VS
+Code 模板并将模板拷贝到 Conan 用户目录下。</p>
 <p><img data-src="/posts/2944/image-20250907215036398.png"
 style="zoom: 50%;" /></p>
 
@@ -749,13 +751,13 @@ style="zoom: 50%;" /></p>
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">64k</span>
+    <span title="站点总字数">65k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">3:51</span>
+    <span title="站点阅读时长">3:58</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动

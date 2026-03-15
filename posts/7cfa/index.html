@@ -20,12 +20,12 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"purewhitevk.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.27.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":"default"},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false,"trigger":"auto"}}</script><script src="/js/config.js" defer></script>
 
-    <meta name="description" content="Hello Projection 所谓投影，就是 将高维空间中的对象，通过某种方式映射到低维或另外一个空间中。如下图所示（图片来自网络）。  当在二维平面上展示三维物体时，其展示的是三维物体在二维空间上的一个投影，而这个三维到二维的转换过程就是投影变换。 如果投影过程是一个线性变换，则可以通过一个矩阵描述变换，如下式所示，其中 \(M_\text{projection}\) 就称为投影变换矩阵。">
+    <meta name="description" content="Hello Projection 所谓投影，就是 将高维空间中的对象通过某种方式映射到低维空间，或者映射到另一个空间中。如下图所示（图片来自网络）。  当我们在二维平面上展示三维物体时，看到的其实就是三维物体在二维空间中的一个投影，而这个从三维到二维的转换过程就是投影变换。 如果投影过程可以表示成线性变换，就可以用一个矩阵来描述它，如下式所示，其中 \(M_\text{projection}\)">
 <meta property="og:type" content="article">
 <meta property="og:title" content="投影变换矩阵">
 <meta property="og:url" content="https://purewhitevk.github.io/posts/7cfa/">
 <meta property="og:site_name" content="PureWhiteVK&#39;s Blog">
-<meta property="og:description" content="Hello Projection 所谓投影，就是 将高维空间中的对象，通过某种方式映射到低维或另外一个空间中。如下图所示（图片来自网络）。  当在二维平面上展示三维物体时，其展示的是三维物体在二维空间上的一个投影，而这个三维到二维的转换过程就是投影变换。 如果投影过程是一个线性变换，则可以通过一个矩阵描述变换，如下式所示，其中 \(M_\text{projection}\) 就称为投影变换矩阵。">
+<meta property="og:description" content="Hello Projection 所谓投影，就是 将高维空间中的对象通过某种方式映射到低维空间，或者映射到另一个空间中。如下图所示（图片来自网络）。  当我们在二维平面上展示三维物体时，看到的其实就是三维物体在二维空间中的一个投影，而这个从三维到二维的转换过程就是投影变换。 如果投影过程可以表示成线性变换，就可以用一个矩阵来描述它，如下式所示，其中 \(M_\text{projection}\)">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://purewhitevk.github.io/posts/7cfa/3rd-angle-projection-1-1.png">
 <meta property="og:image" content="https://purewhitevk.github.io/posts/7cfa/image-20220521170645438.png">
@@ -287,14 +287,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>2.5k</span>
+      <span>2.6k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>9 分钟</span>
+      <span>10 分钟</span>
     </span>
 </div>
 
@@ -306,11 +306,11 @@
     
     <div class="post-body" itemprop="articleBody"><h1 id="hello-projection">Hello Projection</h1>
 <p>所谓投影，就是
-<strong>将高维空间中的对象，通过某种方式映射到低维或另外一个空间中</strong>。如下图所示（图片来自网络）。</p>
+<strong>将高维空间中的对象通过某种方式映射到低维空间，或者映射到另一个空间中</strong>。如下图所示（图片来自网络）。</p>
 <p><img data-src="/posts/7cfa/3rd-angle-projection-1-1.png"
 style="zoom:50%;" /></p>
-<p>当在二维平面上展示三维物体时，其展示的是三维物体在二维空间上的一个投影，而这个三维到二维的转换过程就是投影变换。</p>
-<p>如果投影过程是一个线性变换，则可以通过一个矩阵描述变换，如下式所示，其中
+<p>当我们在二维平面上展示三维物体时，看到的其实就是三维物体在二维空间中的一个投影，而这个从三维到二维的转换过程就是投影变换。</p>
+<p>如果投影过程可以表示成线性变换，就可以用一个矩阵来描述它，如下式所示，其中
 <span class="math inline">\(M_\text{projection}\)</span>
 就称为投影变换矩阵。 <span class="math display">\[
 P^{\prime} = M_{\text{projection}} \cdot P
@@ -318,21 +318,31 @@ P^{\prime} = M_{\text{projection}} \cdot P
 <span id="more"></span>
 
 <h1 id="正交投影">正交投影</h1>
-<p>正交投影的一个特点就是不会改变线之间的平行关系，因此<strong>待投影的区域一定会是一个长方体</strong>，可以通过六个坐标信息
-(l,r,t,b,n,f) 来代表这个长方体，分别代表 左，右，上，下，前，后
-面的坐标（left,right,top,bottom,near,far) 。</p>
-<p>满足（l&lt;r,b&lt;t,f&lt;n，此处f小于n是因为我们从z轴的负向看去）。</p>
-<p><strong>投影目标是将其将这个长方体中心移动至原点并转换成单位正方体</strong>（也称为
-NDC，normalized device coordinate）。</p>
-<p>那么实际的正交投影矩阵就可由两个变换构成，平移变换和缩放变换。</p>
-<p>单位正方体坐标为 (l,b,n) = (-1,-1,-1) ，(r,t,f) =
-(1,1,1)，此处n坐标就小于f坐标，符合我们正常的认知（从z轴正向看去，离得越远z坐标越大）</p>
-<p>而实际待投影的长方体的长宽高和中心如下 <span class="math display">\[
+<p>正交投影的一个特点是不会改变直线之间的平行关系，因此<strong>待投影区域一定是一个长方体</strong>。我们可以用六个参数
+<span class="math inline">\((l,r,t,b,n,f)\)</span>
+来描述这个长方体，分别对应 left、right、top、bottom、near、far
+六个平面的位置。</p>
+<p>它们满足 <span class="math inline">\(l&lt;r\)</span>、<span
+class="math inline">\(b&lt;t\)</span>、<span
+class="math inline">\(f&lt;n\)</span>。这里之所以有 <span
+class="math inline">\(f&lt;n\)</span>，是因为我们假设观察方向沿着 z
+轴负方向。</p>
+<p><strong>投影的目标是把这个长方体的中心移动到原点，并进一步转换成单位正方体</strong>，也就是
+NDC（normalized device coordinates）。</p>
+<p>因此，正交投影矩阵可以拆成两个步骤：平移变换和缩放变换。</p>
+<p>标准正方体的两个对角点可以记为 <span
+class="math inline">\((l,b,n)=(-1,-1,-1)\)</span> 和 <span
+class="math inline">\((r,t,f)=(1,1,1)\)</span>。此时 <span
+class="math inline">\(n&lt;f\)</span>，更符合我们的日常直觉，也就是从 z
+轴正方向看去时，越远的点 z 坐标越大。</p>
+<p>而实际待投影长方体的长、宽、高以及中心位置分别为： <span
+class="math display">\[
 \begin{align*}
 &amp;(r-l,t-b,n-f) \\
 &amp;(\frac{r+l}{2},\frac{t+b}{2},\frac{n+f}{2})
 \end{align*}
-\]</span> 因此我们首先将其中心移动至(0,0,0)，对应的转移矩阵为 <span
+\]</span> 因此我们首先要把它的中心移动到 <span
+class="math inline">\((0,0,0)\)</span>，对应的平移矩阵为： <span
 class="math display">\[
 T(\hat{t}) =
 \left[
@@ -343,8 +353,9 @@ T(\hat{t}) =
 0 &amp; 0 &amp; 0 &amp; 1
 \end{matrix}
 \right]
-\]</span> 然后将长方体转换成标准正方体即可（正方体的边长为2） <span
-class="math display">\[
+\]</span>
+然后再通过缩放把这个长方体转换成标准正方体即可，其中标准正方体的边长为
+2： <span class="math display">\[
 S(\hat{s}) =
 \left[
 \begin{matrix}
@@ -354,9 +365,14 @@ S(\hat{s}) =
 0 &amp; 0 &amp; 0 &amp; 1
 \end{matrix}
 \right]
-\]</span>
-经过这两步之后实际上得到的单位正方体的前后坐标还是n大于f（n=1，f=-1），不太符合日常认知，可以对其z坐标做一个镜像将其转换成
-n = -1,f = 1，只需要在z轴上取反即可 <span class="math display">\[
+\]</span> 经过这两步之后，得到的标准正方体在 z 方向上的前后关系仍然是
+<span class="math inline">\(n&gt;f\)</span>，也就是 <span
+class="math inline">\(n=1\)</span>、<span
+class="math inline">\(f=-1\)</span>，这和我们平时的直觉不太一致。因此可以再对
+z 坐标做一次镜像变换，把它转换成 <span
+class="math inline">\(n=-1\)</span>、<span
+class="math inline">\(f=1\)</span>，也就是在 z 轴上取反： <span
+class="math display">\[
 M_z=
 \left[
 \begin{matrix}
@@ -366,7 +382,7 @@ M_z=
 0 &amp; 0 &amp; 0 &amp; 1
 \end{matrix}
 \right]
-\]</span> 最终组合这三个操作，就可以得到最终的正交投影矩阵 <span
+\]</span> 最后把这三个操作组合起来，就可以得到最终的正交投影矩阵： <span
 class="math display">\[
 \begin{align*}
 P_O = M_zS(\hat{s})T(\hat{t}) &amp; =
@@ -411,36 +427,39 @@ P_O = M_zS(\hat{s})T(\hat{t}) &amp; =
 <svg class="octicon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>
 <strong>Note</strong>
 </div>
-<p>上面写的稍微有点繁琐，因为 <span class="math inline">\(n\)</span> 和
-<span class="math inline">\(f\)</span> 默认假设视角从原点看向 z
-轴负向，坐标值都是小于 0 ，有 <span
-class="math inline">\(f&lt;n\)</span>。为保证长宽高的大小为正值，就会有
-<span class="math inline">\(n-f\)</span> 为缩放长度。</p>
-<p>实际上要确保 <span class="math inline">\(n\)</span> 在 ndc 下的 <span
-class="math inline">\(z=-1\)</span> 处，<span
-class="math inline">\(f\)</span> 在 ndc 下的 <span
-class="math inline">\(z = 1\)</span> 处，直接使用 <span
-class="math inline">\(f-n\)</span> 即可，其几何意义就是将 <span
+<p>上面的写法稍微有些繁琐，因为这里默认假设视角从原点看向 z
+轴负方向，所以 <span class="math inline">\(n\)</span> 和 <span
+class="math inline">\(f\)</span> 都是小于 0 的，并且满足 <span
+class="math inline">\(f&lt;n\)</span>。为了保证长、宽、高都是正值，缩放长度中就会出现
+<span class="math inline">\(n-f\)</span>。</p>
+<p>实际上，如果目标只是让 <span class="math inline">\(n\)</span> 在 NDC
+中对应到 <span class="math inline">\(z=-1\)</span>，让 <span
+class="math inline">\(f\)</span> 对应到 <span
+class="math inline">\(z=1\)</span>，那么直接使用 <span
+class="math inline">\(f-n\)</span> 也可以。它的几何意义就是把 <span
 class="math inline">\([n,f]\)</span> 区间直接缩放到 <span
-class="math inline">\([-1,1]\)</span>区间，二者是一样的，只不过这样一步到位隐含了一个方向反转的过程。</p>
+class="math inline">\([-1,1]\)</span>
+区间，两种写法本质上是等价的，只不过后一种把方向翻转的过程隐含进去了。</p>
 </div>
 <h1 id="透视投影">透视投影</h1>
-<p>和正交投影相比，透视投影满足近大远小的效果，平行的线在透视投影中将不再平行，会相交于一点，能体现出深度变化情况，让人看起来更有立体感。</p>
-<p>因此，我们待投影的区域不再是一个长方体，而是一个平台锥（frustum，又称为视锥体），为了将这个锥体投影到2维平面中，我们首先需要将视锥体转换成长方体，之后再按照正交投影即可。</p>
+<p>和正交投影相比，透视投影具有近大远小的效果。平行线在透视投影中不再保持平行，而是会相交于一点，因此更能体现深度变化，看起来也更有立体感。</p>
+<p>因此，待投影区域不再是一个长方体，而是一个视锥体（frustum）。为了把这个锥体最终投影到二维平面上，我们可以先把视锥体转换成长方体，再继续套用正交投影。</p>
 <p>下面展示了视锥体的示意图：</p>
 <p><img data-src="/posts/7cfa/image-20220521170645438.png"
 style="zoom: 25%;" /></p>
-<p>简单推导一下如何将视锥体转换成长方体，从图中可以观察到3个性质：</p>
+<p>下面简单推导一下如何把视锥体转换成长方体。从图中可以观察到 3
+个性质：</p>
 <ol type="1">
-<li><p>锥体中任意一点在n面上的投影为过原点和该点的连线同n面的交点，满足相似三角形性质，如下图所示：</p>
+<li><p>视锥体中任意一点在 n 面上的投影，都是“过原点和该点的连线”与 n
+面的交点，因此满足相似三角形性质，如下图所示：</p>
 <p><img data-src="/posts/7cfa/image-20250927171041250.png"
 style="zoom:50%;" /></p></li>
-<li><p>锥体的前面（n面，对应投影面）上的点坐标并不发生变化</p></li>
-<li><p>锥体的后面（f面）中心位置不会变化，即<span
-class="math inline">\((0,0,f)\)</span>投影后应该还是 <span
-class="math inline">\((0,0,f)\)</span></p></li>
+<li><p>锥体前面，也就是 n 面上的点，投影前后坐标不发生变化。</p></li>
+<li><p>锥体后面，也就是 f 面的中心位置不会变化，即 <span
+class="math inline">\((0,0,f)\)</span> 投影后仍然是 <span
+class="math inline">\((0,0,f)\)</span>。</p></li>
 </ol>
-<p>首先根据<strong>观察1：相似三角形</strong>，满足如下公式 <span
+<p>首先根据<strong>观察 1：相似三角形</strong>，有如下关系： <span
 class="math display">\[
 \begin{align*}
 \frac{x}{z} = \frac{x_{\text{proj}}}{n} &amp; \quad x_{\text{proj}} =
@@ -448,18 +467,18 @@ class="math display">\[
 \frac{y}{z} = \frac{y_{\text{proj}}}{n} &amp; \quad y_{\text{proj}} =
 \frac{n}{z} \cdot y\\
 \end{align*}
-\]</span> 可以得出投影区域内任意一点 <span
-class="math inline">\((x,y,z,1)\)</span> 在 n面上的投影为 <span
-class="math inline">\((\frac{n}{z}x,\frac{n}{z}y,?,1)\)</span>，同时乘上
-<span class="math inline">\(z\)</span> 写成 <span
-class="math inline">\((nx,ny,?,z)\)</span> ，此处投影后的 <span
-class="math inline">\(z\)</span> 值未知是因为投影到二维 <span
-class="math inline">\(xy\)</span> 平面上只需要<span
+\]</span> 这说明投影区域内任意一点 <span
+class="math inline">\((x,y,z,1)\)</span> 在 n 面上的投影可以写成 <span
+class="math inline">\((\frac{n}{z}x,\frac{n}{z}y,?,1)\)</span>。如果同时乘上
+<span class="math inline">\(z\)</span>，就可以写成齐次形式 <span
+class="math inline">\((nx,ny,?,z)\)</span>。这里投影后的 <span
+class="math inline">\(z\)</span> 值暂时未知，因为投影到二维 <span
+class="math inline">\(xy\)</span> 平面时只需要关心 <span
 class="math inline">\(x\)</span> 和 <span
-class="math inline">\(y\)</span> 即可，其 <span
+class="math inline">\(y\)</span>，而 <span
 class="math inline">\(z\)</span>
-值具体是多少还不知到，可以先写出转换矩阵的第1、2、4行： <span
-class="math display">\[
+的具体表达式还没有确定。于是我们可以先把变换矩阵的第 1、2、4 行写出来：
+<span class="math display">\[
 M_\text{perspective} =
 \left[
 \begin{matrix}
@@ -470,9 +489,9 @@ A &amp; B &amp; C &amp; D \\
 \end{matrix}
 \right]
 \]</span>
-接下来就只剩下矩阵的第三行，使用前两个特点可以得出第三行取值：</p>
-<p>由<strong>观察2：n面上任意一点的坐标不会变化</strong>，因此有 <span
-class="math display">\[
+接下来只剩下矩阵的第三行未知，我们可以利用前两个性质来确定它：</p>
+<p>由<strong>观察 2：n 面上任意一点的坐标不会变化</strong>，因此有：
+<span class="math display">\[
 \begin{align*}
 P_1^{\prime}
 &amp; = (x,y,n,1) \\
@@ -480,17 +499,19 @@ P_1^{\prime}
 &amp; = (nx,ny,Ax+By+Cn+D,n) \\
 &amp; = (nx,ny,n^2,n)
 \end{align*}
-\]</span> 可得出等式 <span class="math display">\[
+\]</span> 于是可以得到： <span class="math display">\[
 Ax + By + Cn + D = n^2
 \]</span>
-又由于<strong>该等式对投影区域内任意一点都成立</strong>，因此A和B一定为0
-<span class="math display">\[
+又由于<strong>这个等式对投影区域内任意一点都成立</strong>，因此 <span
+class="math inline">\(A\)</span> 和 <span
+class="math inline">\(B\)</span> 一定为 0： <span
+class="math display">\[
 \begin{cases}
 A = 0 \\
 B = 0 \\
 Cn + D = n^2
 \end{cases}
-\]</span> 再由<strong>观察3：f面中心坐标不变</strong>，则有 <span
+\]</span> 再由<strong>观察 3：f 面中心坐标不变</strong>，则有： <span
 class="math display">\[
 \begin{align*}
 P_2^{\prime}
@@ -501,19 +522,20 @@ P_2^{\prime}
 \end{align*}
 \]</span> 即 <span class="math display">\[
 Cf + D = f^2
-\]</span> 联立两式可得 <span class="math display">\[
+\]</span> 联立两式可得： <span class="math display">\[
 \begin{cases}
 Cn+D = n^2 \\
 Cf+D = f^2
 \end{cases}
-\]</span> 可得A和B如下 <span class="math display">\[
+\]</span> 从而可以解出 <span class="math inline">\(C\)</span> 和 <span
+class="math inline">\(D\)</span>： <span class="math display">\[
 \left\{
 \begin{array}{ll}
 C = n+f\\
 D = -nf
 \end{array}
 \right.
-\]</span> 则可得完整的透视转换矩阵为 <span class="math display">\[
+\]</span> 于是完整的透视变换矩阵为： <span class="math display">\[
 \left[
 \begin{matrix}
 n &amp; 0 &amp; 0 &amp; 0 \\
@@ -523,7 +545,7 @@ n &amp; 0 &amp; 0 &amp; 0 \\
 \end{matrix}
 \right]
 \]</span>
-经过转换之后，待投影区域已经变成一个长方体了，此时我们只需要使用正交投影将其转换为标准立方体即可
+经过这个变换之后，待投影区域就已经变成一个长方体了。此时只需要再施加一次正交投影，就可以把它转换成标准立方体：
 <span class="math display">\[
 P_P = P_OM_\text{perspective} =
 \left[
@@ -535,21 +557,21 @@ P_P = P_OM_\text{perspective} =
 \end{matrix}
 \right]
 \]</span></p>
-<p>此时矩阵的参数还有点多（6个），我们可以默认带投影区域是关于 <span
-class="math inline">\(z\)</span> 轴对称的，且观测点在原点，这样 <span
+<p>此时矩阵参数仍然比较多，一共有 6 个。我们可以进一步假设待投影区域关于
+z 轴对称，并且观察点位于原点。这样一来，<span
 class="math inline">\(r-l\)</span> 和 <span
-class="math inline">\(t-b\)</span> 就可以通过 aspect 和 fov
-两个参数代替： <span class="math display">\[
+class="math inline">\(t-b\)</span> 就可以用 aspect 和 fov
+两个参数来替代： <span class="math display">\[
 \begin{align}
 \text{w} &amp; = r - l \\
 \text{h} &amp; = t - b \\
 \text{aspect} &amp; = \frac{\text{w}}{\text{h}} = \frac{r-l}{t-b} \\
-\text{fov} &amp; = 2 \arctan (\frac{\text{h}}{n}) \\
+ext{fov} &amp; = 2 \arctan (\frac{\text{h}}{2n}) \\
 c &amp;= \frac{2n}{t-b} = \frac{1}{\tan(\frac{\text{fov}}{2})} \\
 a &amp;= \text{aspect}
 \end{align}
-\]</span> 这样，只需要
-aspect，fov，near，far四个参数就可以得到最终的变换矩阵：</p>
+\]</span> 这样一来，只需要 aspect、fov、near、far 这 4
+个参数，就可以写出最终的透视投影矩阵：</p>
 <p><span class="math display">\[
 P_P = P_OM_\text{perspective} =
 \left[
@@ -561,8 +583,8 @@ P_P = P_OM_\text{perspective} =
 \end{matrix}
 \right]
 \]</span></p>
-<p>通过矩阵计算后得到的是齐次坐标，执行透视除法得到投影后的三维NDC坐标：
-<span class="math display">\[
+<p>通过矩阵计算后得到的是齐次坐标，再执行透视除法，就能得到投影后的三维
+NDC 坐标： <span class="math display">\[
 \begin{pmatrix}
 x_\text{ndc}\\
 y_\text{ndc}\\
@@ -575,19 +597,20 @@ z_\text{ndc}
 \end{pmatrix}
 \]</span></p>
 <p>此时 <span class="math inline">\(z_\text{ndc}\)</span> 的取值范围为
-<span class="math inline">\([-1,1]\)</span>，（原始 z 的取值范围为 <span
-class="math inline">\([n,f]\)</span> ），如果需要变成 z-buffer
-中实际存储的值，还需要进行一次线性变换（一般会自动在 viewport
-变换中执行），将 <span class="math inline">\([-1,1]\)</span> 区间转换到
-<span class="math inline">\([0,1]\)</span> 的区间内，变成 z-buffer
-中实际存储的值，如下式所示： <span class="math display">\[
+<span class="math inline">\([-1,1]\)</span>，而原始 z 的取值范围为 <span
+class="math inline">\([n,f]\)</span>。如果还需要得到 z-buffer
+中实际存储的值，则要再做一次线性变换。这个过程通常会在 viewport
+变换中自动完成，也就是把 <span class="math inline">\([-1,1]\)</span>
+区间映射到 <span class="math inline">\([0,1]\)</span>： <span
+class="math display">\[
 z_{\text{buffer}} = 0.5 * (z_{\text{ndc}} + 1)
 \]</span></p>
 <h2 id="深度转换">深度转换</h2>
-<p>在shader中常需要进行 <span
+<p>在 shader 中，经常需要在 <span
 class="math inline">\(z_{\text{ndc}}\)</span> 和原始坐标 <span
 class="math inline">\(z\)</span>
-的转换，可以根据上面矩阵公式计算出其关系： <span class="math display">\[
+之间来回转换。根据上面的矩阵公式，可以直接推导出它们之间的关系： <span
+class="math display">\[
 \begin{align}
 z_\text{ndc} &amp; =
 \left(\frac{f+n}{f-n} \cdot z - \frac{2nf}{f-n}\right)
@@ -596,20 +619,22 @@ z_\text{ndc} &amp; =
 z &amp; = \frac{2nf}{f+n - (f-n)\cdot z_\text{ndc}}
 \end{align}
 \]</span></p>
-<p>如果需要获得归一化的的线性深度，那么还需要将 <span
-class="math inline">\(z\)</span> 标准化到 <span
-class="math inline">\([0,1]\)</span> 区间内，即 <span
+<p>如果需要获得归一化的线性深度，还需要进一步把 <span
+class="math inline">\(z\)</span> 归一化到 <span
+class="math inline">\([0,1]\)</span> 区间内，即： <span
 class="math display">\[
 z_{\text{depth01}} = \frac{z-n}{f-n}
-\]</span> 在实际情况下 n是一个很小的值，基本可以忽略不计，因此可以简化为
-<span class="math inline">\(\tilde{z}_{\text{depth01}} = z / f\)</span>
-，这样我们计算公式可以简化为 <span class="math display">\[
+\]</span> 在实际情况下，<span class="math inline">\(n\)</span>
+往往是一个很小的值，很多时候可以近似忽略，因此上式可以进一步简化为 <span
+class="math inline">\(\tilde{z}_{\text{depth01}} = z /
+f\)</span>。这样计算公式就可以写成： <span class="math display">\[
 \tilde{z}_\text{depth01} = \frac{2n}{f+n-(f-n) \cdot z_{ndc}}
-\]</span> 根据 <span class="math inline">\(z_{\text{buffer}}\)</span>
-、<span class="math inline">\(z_\text{depth01}\)</span> 和 <span
-class="math inline">\(z\)</span> 之间的关系，可以绘制如下曲线（<span
+\]</span> 根据 <span
+class="math inline">\(z_{\text{buffer}}\)</span>、<span
+class="math inline">\(z_\text{depth01}\)</span> 和 <span
+class="math inline">\(z\)</span> 之间的关系，可以画出如下曲线（<span
 class="math inline">\(n=1\)</span>，<span
-class="math inline">\(f=10\)</span>）</p>
+class="math inline">\(f=10\)</span>）：</p>
 <p><img data-src="/posts/7cfa/image-20250927191035306.png"
 style="zoom:67%;" /></p>
 <p>其中：</p>
@@ -623,10 +648,10 @@ class="math inline">\(f\)</span></li>
 <li><span class="math inline">\(x\)</span> 轴对应原始的 <span
 class="math inline">\(z\)</span></li>
 </ul>
-<p>从图中可以看出，<span class="math inline">\(z\)</span> 是线性增加的，
-而 <span class="math inline">\(z_\text{ndc}\)</span> 并不是，而是随着
-<span class="math inline">\(z\)</span>
-的拉大，深度之间的差异越来越小。这也符合近大远小的要求（越近的物体对深度的精度要求更高）。</p>
+<p>从图中可以看出，<span class="math inline">\(z\)</span>
+本身是线性增加的，而 <span class="math inline">\(z_\text{ndc}\)</span>
+并不是。随着 <span class="math inline">\(z\)</span>
+逐渐增大，深度之间的差异会越来越小。这也符合近大远小的特性，因为越靠近相机的物体，对深度精度的要求越高。</p>
 <p>当我们需要进行深度比例的计算时，就需要使用线性深度值，此时可以将
 <span class="math inline">\(z_\text{ndc}\)</span> 转换为 <span
 class="math inline">\(z_\text{depth01}\)</span> 后进行后续计算。</p>
@@ -704,13 +729,13 @@ class="math inline">\(z_\text{depth01}\)</span> 后进行后续计算。</p>
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">64k</span>
+    <span title="站点总字数">65k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">3:51</span>
+    <span title="站点阅读时长">3:58</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动

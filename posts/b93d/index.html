@@ -20,12 +20,12 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"purewhitevk.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.27.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":"default"},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false,"trigger":"auto"}}</script><script src="/js/config.js" defer></script>
 
-    <meta name="description" content="之前一直想知道各种三维软件中虚拟网格是怎么绘制的，就上网搜了一下相关实现，没想到里面小细节还挺多的，就用一篇博客记录一下吧 ( •̀ ω •́ )。 下图展示了 blender 中网格的效果：  从图中可以看到几个基本特征：  网格绘制在世界坐标系下的底面（在一般的右手系坐标系中，Z轴向上，X轴向前，Y轴向右），则对应 XY 平面；  x 轴标记为红色 \((1,0,0)\)，y轴标记为绿色 \(">
+    <meta name="description" content="之前一直想知道各种三维软件中的虚拟网格是怎么绘制的，于是上网搜了一下相关实现。没想到里面的小细节还挺多，就用一篇博客记录一下吧 ( •̀ ω •́ )。 下图展示了 Blender 中网格的效果：  从图中可以看到几个基本特征：  网格绘制在世界坐标系下的底面（在一般的右手系坐标系中，Z轴向上，X轴向前，Y轴向右），则对应 XY 平面；  x 轴标记为红色 \((1,0,0)\)，y 轴标记为绿色">
 <meta property="og:type" content="article">
 <meta property="og:title" content="绘制 grid">
 <meta property="og:url" content="https://purewhitevk.github.io/posts/b93d/">
 <meta property="og:site_name" content="PureWhiteVK&#39;s Blog">
-<meta property="og:description" content="之前一直想知道各种三维软件中虚拟网格是怎么绘制的，就上网搜了一下相关实现，没想到里面小细节还挺多的，就用一篇博客记录一下吧 ( •̀ ω •́ )。 下图展示了 blender 中网格的效果：  从图中可以看到几个基本特征：  网格绘制在世界坐标系下的底面（在一般的右手系坐标系中，Z轴向上，X轴向前，Y轴向右），则对应 XY 平面；  x 轴标记为红色 \((1,0,0)\)，y轴标记为绿色 \(">
+<meta property="og:description" content="之前一直想知道各种三维软件中的虚拟网格是怎么绘制的，于是上网搜了一下相关实现。没想到里面的小细节还挺多，就用一篇博客记录一下吧 ( •̀ ω •́ )。 下图展示了 Blender 中网格的效果：  从图中可以看到几个基本特征：  网格绘制在世界坐标系下的底面（在一般的右手系坐标系中，Z轴向上，X轴向前，Y轴向右），则对应 XY 平面；  x 轴标记为红色 \((1,0,0)\)，y 轴标记为绿色">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://purewhitevk.github.io/posts/b93d/image-20250928224630319.png">
 <meta property="og:image" content="https://purewhitevk.github.io/posts/b93d/xyz_coordinate_frame.png">
@@ -300,14 +300,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>6.1k</span>
+      <span>6.2k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>22 分钟</span>
+      <span>23 分钟</span>
     </span>
 </div>
 
@@ -317,9 +317,9 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><p>之前一直想知道各种三维软件中虚拟网格是怎么绘制的，就上网搜了一下相关实现，没想到里面小细节还挺多的，就用一篇博客记录一下吧
+    <div class="post-body" itemprop="articleBody"><p>之前一直想知道各种三维软件中的虚拟网格是怎么绘制的，于是上网搜了一下相关实现。没想到里面的小细节还挺多，就用一篇博客记录一下吧
 ( •̀ ω •́ )。</p>
-<p>下图展示了 blender 中网格的效果：</p>
+<p>下图展示了 Blender 中网格的效果：</p>
 <p><img data-src="/posts/b93d/image-20250928224630319.png"
 style="zoom: 33%;" /></p>
 <p>从图中可以看到几个基本特征：</p>
@@ -327,9 +327,8 @@ style="zoom: 33%;" /></p>
 <li><p>网格绘制在世界坐标系下的底面（在一般的右手系坐标系中，Z轴向上，X轴向前，Y轴向右），则对应
 XY 平面；</p>
 <p><img data-src="/posts/b93d/xyz_coordinate_frame.png" /></p></li>
-<li><p>x 轴标记为红色 <span
-class="math inline">\((1,0,0)\)</span>，y轴标记为绿色 <span
-class="math inline">\((0,1,0)\)</span></p></li>
+<li><p>x 轴标记为红色 <span class="math inline">\((1,0,0)\)</span>，y
+轴标记为绿色 <span class="math inline">\((0,1,0)\)</span></p></li>
 <li><p>按照固定间隔绘制网格</p></li>
 </ol>
 <span id="more"></span>
@@ -337,24 +336,25 @@ class="math inline">\((0,1,0)\)</span></p></li>
 <p><span class="math inline">\(\require{physics}\)</span></p>
 <h1 id="绘制二维网格">绘制二维网格</h1>
 <ol type="1">
-<li><p>在世界坐标系下添加一个超级大的三维实体平面（例如 100x100
-的平面），再通过网格图样生成平面的 texture，完成网格的绘制</p></li>
-<li><p>在屏幕空间中绘制虚拟平面，在虚拟平面上绘制网格图样。</p></li>
+<li><p>在世界坐标系下添加一个超级大的三维实体平面（例如一个 <span
+class="math inline">\(100  \times 100\)</span>
+的平面），再通过网格图样生成平面的 texture，完成网格绘制。</p></li>
+<li><p>在屏幕空间中绘制一个虚拟平面，再在虚拟平面上绘制网格图样。</p></li>
 </ol>
-<p>其实第一种和第二种的思路都差不多，关键在于找到网格所在平面，并在平面上绘制网格样式。</p>
-<p>两种方式最终都会回到网格图样的绘制，那么我们先考虑如何在二维平面上绘制网格。在二维平面上绘制东西，这不是又回到了
+<p>这两种思路都差不多，关键在于找到网格所在的平面，并在该平面上绘制网格样式。</p>
+<p>两种方式最终都会回到网格图样本身的绘制，因此我们先考虑如何在二维平面上绘制网格。而在二维平面上绘制图样，这不是又回到了
 <a href="https://purewhitevk.github.io/posts/7ced/">之前介绍的 Shader
-Toy</a> 吗，在那篇文章中也通过 Shader Toy
-展示了二维网格的绘制效果，但并没有介绍其绘制的原理，这次就详细介绍一下具体是如何绘制的。</p>
+Toy</a> 吗？在那篇文章中我们通过 Shader Toy
+展示了二维网格的绘制效果，但并没有介绍其原理，这次就详细说明一下具体是如何绘制的。</p>
 <p><img data-src="/posts/b93d/image-20251012133552643.png"
 style="zoom:40%;" /></p>
 <h2 id="绘制直线">绘制直线</h2>
-<p>网格是由一条一条平行于坐标轴的直线构成的，每条直线的函数都类似于
-<span class="math inline">\(y=1\)</span> 和 <span
-class="math inline">\(x=2\)</span> 这种。但要在二维空间中绘制 <span
+<p>网格是由一条条平行于坐标轴的直线构成的，每条直线的函数都类似于 <span
+class="math inline">\(y=1\)</span> 或 <span
+class="math inline">\(x=2\)</span>。但要在二维空间中绘制 <span
 class="math inline">\(x=1\)</span>
-这条直线，除了函数定义外，还需要指定直线的宽度，例如宽度为
-1个像素、2个像素，又或者是相对于屏幕宽度的百分比（例如 <span
+这条直线，除了函数定义之外，还需要指定直线的宽度，例如 1 个像素、2
+个像素，或者相对于屏幕宽度的百分比（例如 <span
 class="math inline">\(0.1\%\)</span>）等。</p>
 <p>设直线的宽度为 <span
 class="math inline">\(w\)</span>，我们要绘制的实际上是由 <span
@@ -368,26 +368,26 @@ L(x) =
 0, &amp; \text{else}
 \end{cases}
 \]</span> 而在绘制直线时，只需要根据 <span
-class="math inline">\(w(x)\)</span> 的函数值进行绘制即可，值为 1
-时绘制直线，值为0 时不绘制。</p>
+class="math inline">\(L(x)\)</span> 的函数值进行绘制即可：值为 1
+时绘制直线，值为 0 时不绘制。</p>
 <p>对于 <span
 class="math inline">\(x=1,w=0.02\)</span>，直线的可视化效果如下：</p>
 <p><img data-src="/posts/b93d/image-20251012231207527.png"
 style="zoom:67%;" /></p>
-<p>其中 eq1（中间绿色直线） 为目标直线 <span
-class="math inline">\(x=1\)</span>，eq2（右边蓝色直线） <span
-class="math inline">\(x=0.99\)</span> 和 eq3（左边红色直线） <span
-class="math inline">\(x=1.01\)</span> 为实际用于判断的边界直线。</p>
+<p>其中 eq1（中间绿色直线）为目标直线 <span
+class="math inline">\(x=1\)</span>，eq2（右边蓝色直线）<span
+class="math inline">\(x=0.99\)</span> 和 eq3（左边红色直线）<span
+class="math inline">\(x=1.01\)</span> 是实际用于判断的边界直线。</p>
 <p>对应到 fragment shader 中，直接根据 <span
 class="math inline">\(w(x)\)</span> 函数进行绘制即可，代码如下：</p>
 <p><em>2d_line.frag</em></p>
 <figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#version 330 core</span></span><br><span class="line"><span class="keyword">out</span> <span class="type">vec4</span> FragColor;</span><br><span class="line"><span class="keyword">uniform</span> <span class="type">vec2</span> framebuffer_size;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> main()</span><br><span class="line">&#123;</span><br><span class="line">  <span class="type">vec2</span> coord = <span class="built_in">gl_FragCoord</span>.xy / framebuffer_size;</span><br><span class="line">  <span class="type">float</span> target_coord = <span class="number">0.5</span>;</span><br><span class="line">  <span class="type">float</span> line_width = <span class="number">0.01</span>;</span><br><span class="line">  <span class="type">float</span> draw_line = <span class="type">float</span>(coord.x &gt;= target_coord - line_width * <span class="number">0.5</span> &amp;&amp; coord.x &lt;= target_coord + line_width * <span class="number">0.5</span>);</span><br><span class="line">  FragColor = <span class="type">vec4</span>(draw_line,<span class="number">0.0</span>,<span class="number">0.0</span>,<span class="number">1.0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>其在 <span class="math inline">\(x=0.5\)</span> 处绘制了一条宽度为
+<p>它在 <span class="math inline">\(x=0.5\)</span> 处绘制了一条宽度为
 <span class="math inline">\(0.01\)</span>
-的直线，此处宽度是相对于屏幕宽度而言的（其实际像素宽度为 <span
-class="math inline">\(\text{width} * 0.01\)</span>），在不同的
-framebuffer 大小下，直线的宽度会随之发生变化。</p>
+的直线。这里的宽度是相对于屏幕宽度而言的，因此其实际像素宽度为 <span
+class="math inline">\(\text{width} * 0.01\)</span>。在不同的 framebuffer
+大小下，直线宽度也会随之变化。</p>
 <p><img data-src="/posts/b93d/image-20251012232908442.png"
 style="zoom:50%;" /></p>
 <p>如果需要将其宽度指定为像素宽度，只需要在计算前将 line_width
@@ -395,40 +395,41 @@ style="zoom:50%;" /></p>
 <p><em>2d_line_fixed_width.frag</em></p>
 <figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#version 330 core</span></span><br><span class="line"><span class="keyword">out</span> <span class="type">vec4</span> FragColor;</span><br><span class="line"><span class="keyword">uniform</span> <span class="type">vec2</span> framebuffer_size;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> main()</span><br><span class="line">&#123;</span><br><span class="line">  <span class="type">vec2</span> coord = <span class="built_in">gl_FragCoord</span>.xy / framebuffer_size;</span><br><span class="line">  <span class="type">float</span> target_coord = <span class="number">0.5</span>;</span><br><span class="line">  <span class="type">float</span> line_width = <span class="number">1</span> / framebuffer_size.x;</span><br><span class="line">  <span class="type">float</span> draw_line = <span class="type">float</span>(coord.x &gt;= target_coord - line_width * <span class="number">0.5</span> &amp;&amp; coord.x &lt;= target_coord + line_width * <span class="number">0.5</span>);</span><br><span class="line">  FragColor = <span class="type">vec4</span>(draw_line,<span class="number">0.0</span>,<span class="number">0.0</span>,<span class="number">1.0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>其中 <code>1 / framebuffer_size.x</code> 表示直线宽度为 1
-个像素时，对应屏幕百分比宽度是多少，这样就可以确保直线的宽度不随 frame
-buffer 大小改变了。</p>
+<p>其中 <code>1 / framebuffer_size.x</code> 表示当直线宽度为 1
+个像素时，对应的屏幕归一化宽度是多少，这样就可以确保直线宽度不随
+framebuffer 大小变化。</p>
 <h2 id="绘制网格">绘制网格</h2>
-<p>网格的绘制实际上就是在 x 轴方向和 y
-轴方向按照重复绘制多次直线即可，有两种方式可以实现重复绘制。</p>
+<p>网格的绘制本质上就是在 x 轴方向和 y
+轴方向重复绘制多条直线，常见有两种实现方式。</p>
 <p>第一种就是通过 for 循环方式，手动展开绘制，如下所示：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">for X in [ 0.1,0.3,0.5,0.7,0.9 ]:</span><br><span class="line">	draw_line x=X</span><br><span class="line">for Y in [ 0.1,0.3,0.5,0.7,0.9 ]:</span><br><span class="line">	draw_line y=Y</span><br></pre></td></tr></table></figure>
 
 <p>这种方式通过两个 for 循环，在 x 轴方向和 y 轴方向分别绘制 5
-条直线，实现 grid 效果，对应的 shader 和渲染结果如下：</p>
+条直线，从而实现 grid 效果，对应的 shader 和渲染结果如下：</p>
 <p><em>2d_grid_for_loop.frag</em></p>
 <figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#version 330 core</span></span><br><span class="line"><span class="keyword">out</span> <span class="type">vec4</span> FragColor;</span><br><span class="line"><span class="keyword">uniform</span> <span class="type">vec2</span> framebuffer_size;</span><br><span class="line"></span><br><span class="line"><span class="type">float</span> draw_x_line(<span class="type">vec2</span> coord,<span class="type">float</span> x,<span class="type">float</span> line_width) &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="type">float</span>(coord.x &gt;= x - line_width * <span class="number">0.5</span> &amp;&amp; coord.x &lt;= x + line_width * <span class="number">0.5</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">float</span> draw_y_line(<span class="type">vec2</span> coord,<span class="type">float</span> y,<span class="type">float</span> line_width) &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="type">float</span>(coord.y &gt;= y - line_width * <span class="number">0.5</span> &amp;&amp; coord.y &lt;= y + line_width * <span class="number">0.5</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> main()</span><br><span class="line">&#123;</span><br><span class="line">  <span class="type">vec2</span> coord = <span class="built_in">gl_FragCoord</span>.xy / framebuffer_size;</span><br><span class="line">  <span class="type">float</span> line_width = <span class="number">4</span> / framebuffer_size.x;</span><br><span class="line">  <span class="type">float</span> draw = <span class="number">0.0</span>;</span><br><span class="line">  draw += draw_x_line(coord,<span class="number">0.1</span>,line_width);</span><br><span class="line">  draw += draw_x_line(coord,<span class="number">0.3</span>,line_width);</span><br><span class="line">  draw += draw_x_line(coord,<span class="number">0.5</span>,line_width);</span><br><span class="line">  draw += draw_x_line(coord,<span class="number">0.7</span>,line_width);</span><br><span class="line">  draw += draw_x_line(coord,<span class="number">0.9</span>,line_width);</span><br><span class="line"></span><br><span class="line">  draw += draw_y_line(coord,<span class="number">0.1</span>,line_width);</span><br><span class="line">  draw += draw_y_line(coord,<span class="number">0.3</span>,line_width);</span><br><span class="line">  draw += draw_y_line(coord,<span class="number">0.5</span>,line_width);</span><br><span class="line">  draw += draw_y_line(coord,<span class="number">0.7</span>,line_width);</span><br><span class="line">  draw += draw_y_line(coord,<span class="number">0.9</span>,line_width);</span><br><span class="line"></span><br><span class="line">  </span><br><span class="line">  FragColor = <span class="type">vec4</span>(<span class="built_in">clamp</span>(draw,<span class="number">0.0</span>,<span class="number">1.0</span>),<span class="number">0.0</span>,<span class="number">0.0</span>,<span class="number">1.0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>渲染结果如下</p>
+<p>渲染结果如下：</p>
 <p><img data-src="/posts/b93d/image-20260113211547040.png"
 style="zoom:50%;" /></p>
 <p>这种方式通过硬编码方式指定网格的分辨率，但写起来很臃肿，有没有其他办法呢？</p>
-<p>当然是有的，我们假设网格的宽度固定为 <span class="math inline">\(s =
-0.1\)</span>（也就是两条 grid line 之间距离为 10% 屏幕宽度），可以将 x
-轴（<span class="math inline">\([-0.05,1.05]\)</span>）划分成 11
-个区间，每个区间宽度为 0.1，具体如下所示：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[-0.05,0.05] ,  [0.05,0,15] , [0.15,0.25],</span><br><span class="line">[ 0.25,0.35] ,  [0.35,0.45] , [0.45,0.55],</span><br><span class="line">[ 0.55,0.65] ,  [0.65,0.75] , [0.75,0.85],</span><br><span class="line">[ 0.85,0.95] ,  [0.95,1.05]</span><br></pre></td></tr></table></figure>
+<p>当然是有的。我们假设网格间距固定为 <span class="math inline">\(s =
+0.1\)</span>（也就是两条 grid line 之间的距离为屏幕宽度的 10%），可以将
+x 轴区间 <span class="math inline">\([-0.05,1.05]\)</span> 划分成 11
+个宽度为 0.1 的子区间，具体如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[-0.05,0.05] ,  [0.05,0.15] , [0.15,0.25],</span><br><span class="line">[ 0.25,0.35] ,  [0.35,0.45] , [0.45,0.55],</span><br><span class="line">[ 0.55,0.65] ,  [0.65,0.75] , [0.75,0.85],</span><br><span class="line">[ 0.85,0.95] ,  [0.95,1.05]</span><br></pre></td></tr></table></figure>
 
-<p>可以推导处每个区间的左边界和右边界公式如下： <span
+<p>可以推导出每个区间左右边界的统一表达式如下： <span
 class="math display">\[
 [(k-0.5) \cdot s   ,(k+0.5) \cdot s] , k \in \mathcal{Z}
-\]</span> 而我们需要绘制的就是区间中心 <span class="math inline">\(x = k
-\cdot s\)</span> 或者 <span class="math inline">\(y = k\cdot
-s\)</span>，直线的绘制区间如下所示（ <span
+\]</span> 而我们需要绘制的就是这些区间的中心，也就是 <span
+class="math inline">\(x = k \cdot s\)</span> 或 <span
+class="math inline">\(y = k \cdot
+s\)</span>。因此直线的绘制区间可以写成如下形式，其中 <span
 class="math inline">\(t\)</span> 表示 <span
-class="math inline">\(x\)</span> 或者 <span
+class="math inline">\(x\)</span> 或 <span
 class="math inline">\(y\)</span>，<span class="math inline">\(w\)</span>
-表示直线宽度）： <span class="math display">\[
+表示直线宽度： <span class="math display">\[
 k \cdot s - w \cdot 0.5 &lt; t &lt; k \cdot s + w \cdot 0.5
 \]</span></p>
 <div class="markdown-alert markdown-alert-tip">
@@ -437,18 +438,17 @@ k \cdot s - w \cdot 0.5 &lt; t &lt; k \cdot s + w \cdot 0.5
 <strong>Tip</strong>
 </div>
 <p>此时绘制的 grid 会将 <span class="math inline">\([0,1]\)</span>
-均分为 <span class="math inline">\(1/s\)</span> 份，直线坐标为 <span
-class="math inline">\([0,1/s,2/s,\cdots]\)</span> 。</p>
+均分为 <span class="math inline">\(1/s\)</span> 份，对应的直线坐标为
+<span class="math inline">\([0,1/s,2/s,\cdots]\)</span>。</p>
 <p>如果需要绘制经过 <span class="math inline">\((0.5,0.5)\)</span> 的
-grid，只需要将 <span class="math inline">\((x,y)\)</span> 偏移 0.5
-即可，即 <span class="math inline">\(x^{\prime} = x + 0.5,
+grid，只需要将 <span class="math inline">\((x,y)\)</span> 整体偏移 0.5
+即可，也就是令 <span class="math inline">\(x^{\prime} = x + 0.5,
 y^{\prime}=y+0.5\)</span>。</p>
 </div>
-<p>此时如果想要判断一个 fragment 坐标 <span
-class="math inline">\((x,y)\)</span>（已经缩放到 <span
-class="math inline">\([0,1]^2\)</span> ） 是否应该绘制，即判断该
-fragment
-是否在任意一条直线的绘制区间内，可以对上述绘制区间进行一些变换，如下所示：
+<p>此时如果想判断一个已经归一化到 <span
+class="math inline">\([0,1]^2\)</span> 的 fragment 坐标 <span
+class="math inline">\((x,y)\)</span>
+是否应该被绘制，本质上就是判断它是否落在任意一条直线的绘制区间内。对此，可以对上面的不等式做如下变形：
 <span class="math display">\[
 \begin{align}
 &amp;k \cdot s - w \cdot 0.5
@@ -462,9 +462,13 @@ w \cdot 0.5  \\
 \left| t - k \cdot s \right|  &lt; w \cdot 0.5
 \end{align}
 \]</span></p>
-<p>下一步就是找到 t 和 k 的关系，得到仅关于 t
-的不等式，还是通过上述例子进行分析，通过归纳法不难得到 t 和 k
-之间可以使用 floor 操作进行转换：</p>
+<p>下一步就是找到 <span class="math inline">\(t\)</span> 和 <span
+class="math inline">\(k\)</span> 的关系，把不等式进一步化成只关于 <span
+class="math inline">\(t\)</span>
+的形式。还是沿用上面的例子，通过归纳不难发现，<span
+class="math inline">\(t\)</span> 和 <span
+class="math inline">\(k\)</span> 之间可以通过 floor
+操作建立对应关系：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">当 k = 0  时，t 位于 -0.05 到 0.05 间，中心为 0.0</span><br><span class="line">当 k = 1  时，t 位于  0.05 到 0.15 间，中心为 0.1</span><br><span class="line">当 k = 2  时，t 位于  0.15 到 0.25 间，中心为 0.2</span><br><span class="line">当 k = 3  时，t 位于  0.25 到 0.35 间，中心为 0.3</span><br><span class="line">...</span><br><span class="line">当 k = 10 时，t 位于  0.95 到 1.05 间，中心为 1.0</span><br></pre></td></tr></table></figure>
 
 <p><span class="math inline">\(t\)</span> 的取值范围为 <span
@@ -475,16 +479,17 @@ class="math display">\[
 k = \left\lfloor \frac{t}{0.1} + 0.5\right\rfloor
 \]</span> 其中 <span class="math inline">\(\lfloor x \rfloor\)</span>
 表示向下取整操作，例如 <span
-class="math inline">\(\lfloor0.1\rfloor=0\)</span>，<span
-class="math inline">\(\lfloor2.1\rfloor=2\)</span>，对于任意指定的网格宽度，可总结
+class="math inline">\(\lfloor0.1\rfloor=0\)</span>、<span
+class="math inline">\(\lfloor2.1\rfloor=2\)</span>。对于任意指定的网格宽度，都可以将
 <span class="math inline">\(k\)</span> 和 <span
-class="math inline">\(t\)</span> 的关系如下所示： <span
+class="math inline">\(t\)</span> 的关系总结为： <span
 class="math display">\[
 k = \left\lfloor\frac{t}{s} + 0.5\right\rfloor
 \]</span> 将 <span class="math inline">\(k\)</span> 和 <span
 class="math inline">\(t\)</span>
-的关系带入上面的不等式，可以得到最终的判断不等式，令 $s^{\prime}=1/s $
-，有： <span class="math display">\[
+的关系代入上面的不等式，就可以得到最终的判定条件。令 <span
+class="math inline">\(s^{\prime}=1/s\)</span>，有： <span
+class="math display">\[
 \left|
 t \cdot s^\prime -
 \left\lfloor t \cdot {s^\prime} + 0.5\right\rfloor
@@ -495,92 +500,95 @@ w \cdot s^\prime
 <p><em>2d_grid.frag</em></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">#version 330 core</span><br><span class="line">out vec4 FragColor;</span><br><span class="line">uniform vec2 framebuffer_size;</span><br><span class="line"></span><br><span class="line">void main()</span><br><span class="line">&#123;</span><br><span class="line">  vec2 inv_scale = 1.0 / framebuffer_size;</span><br><span class="line">  vec2 coord = gl_FragCoord.xy * inv_scale;</span><br><span class="line">  float line_width = 2.0 * inv_scale.x;</span><br><span class="line">  float draw = 0.0;</span><br><span class="line">  vec2 grid_scale = vec2(20,20);</span><br><span class="line">  vec2 range = line_width * grid_scale * 0.5;</span><br><span class="line">  vec2 scaled_coord = (coord + 0.5) * grid_scale;</span><br><span class="line">  vec2 coord_new = abs(scaled_coord - floor(scaled_coord + 0.5));</span><br><span class="line">  draw = float(</span><br><span class="line">    (abs(coord_new.x) &lt; range.x) || </span><br><span class="line">    (abs(coord_new.y) &lt; range.y)</span><br><span class="line">  );</span><br><span class="line">  FragColor = vec4(draw,0.0,0.0,1.0);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>下图展示了 shader 的绘制效果</p>
+<p>下图展示了 shader 的绘制效果：</p>
 <p><img data-src="/posts/b93d/image-20260114214845075.png"
 style="zoom:50%;" /></p>
 <h1 id="回到三维">回到三维</h1>
-<p>在三维空间中，只需要准备一个三维平面，然后使用 uv
-坐标即可绘制。这里三维平面可以在 shader 中生成，也可以使用一个长方形的
-mesh 进行绘制。</p>
+<p>在三维空间中，只需要准备一个三维平面，再配合 uv
+坐标即可完成绘制。这个三维平面既可以在 shader
+中生成，也可以通过一个长方形 mesh 来绘制。</p>
 <h2 id="绘制三维平面">绘制三维平面</h2>
-<p>绘制 mesh 的方式实现很简单，但是需要一直调整 mesh
-的大小，确保其在视野范围内一直可见，那么有没有什么更好的方式呢？</p>
-<p>当然也是有的，这种绘制方式称为 infinite grid，只需要一个 DrawCall
-就可以绘制一个无限大（看起来）的网格。</p>
-<p>其绘制过程包含4步：</p>
+<p>直接绘制 mesh 的方式实现起来很简单，但是需要不断调整 mesh
+的大小，才能确保它始终处于视野范围内。那么有没有更好的方式呢？</p>
+<p>当然有。这种绘制方式通常称为 infinite grid，只需要一个 Draw Call
+就可以绘制一个看起来无限大的网格。</p>
+<p>其绘制过程包含 4 步：</p>
 <ol type="1">
 <li>绘制一个 覆盖全屏幕的长方形</li>
 <li>对于屏幕空间上每一个像素点，构造一条从近平面经过该像素射向远平面的射线，并将其逆变换到世界坐标系下</li>
 <li>判断射线是否和世界坐标系下某个平面相交（例如 xz 平面）</li>
 <li>如果射线和平面相交，计算交点处的坐标和纹理坐标，通过二维网格绘制方法绘制网格</li>
 </ol>
-<p>对于第1步和第4步，我们都已经知道怎么做了，这里主要详细说明如何进行坐标的逆变换和射线与平面求交。</p>
-<p>对于世界坐标系下一点，在指定观察视角下，通过透视投影绘制到屏幕空间中，其会经过两个变换，视角变换（View
+<p>对于第 1 步和第 4
+步，我们已经知道怎么做了。这里主要详细说明如何进行坐标逆变换，以及如何计算射线与平面的交点。</p>
+<p>对于世界坐标系中的一点，在指定观察视角下通过透视投影绘制到屏幕空间时，会依次经过两个变换：视图变换（View
 transform）和投影变换（Projection transform），如下所示： <span
 class="math display">\[
 p_{\text{NDC}} = P \cdot V \cdot p_{\text{world}}
-\]</span> 如果已知 NDC
-下一个点，可以通过矩阵的逆求出该点在世界坐标系下的坐标： <span
+\]</span> 如果已知一个点在 NDC
+下的坐标，就可以通过矩阵求逆来恢复它在世界坐标系中的坐标： <span
 class="math display">\[
 p_{\text{world}} = V^{-1}\cdot P^{-1} \cdot p_{\text{NDC}}
-\]</span> 设屏幕（NDC）上一点坐标为 <span
-class="math inline">\((x,y)\)</span>，其在近平面点坐标为 <span
-class="math inline">\(p_0=(x,y,-1,1)\)</span>，在远平面点坐标为 <span
-class="math inline">\(p_1=(x,y,1,1)\)</span>，经过逆变换可得两点世界坐标为
+\]</span> 设屏幕空间（NDC）上一点的坐标为 <span
+class="math inline">\((x,y)\)</span>，则它在近平面上的齐次坐标可写为
+<span
+class="math inline">\(p_0=(x,y,-1,1)\)</span>，在远平面上的齐次坐标可写为
+<span
+class="math inline">\(p_1=(x,y,1,1)\)</span>。经过逆变换后，可得到它们在世界坐标系中的位置
 <span
 class="math inline">\(p^{\prime}_0=(x_0^\prime,y_0^\prime,z_0^\prime)\)</span>
 和 <span
-class="math inline">\(p^{\prime}_1=(x^\prime_1,y^\prime_1,z^\prime_1)\)</span>。此时可得直线参数方程如下：
+class="math inline">\(p^{\prime}_1=(x_1^\prime,y_1^\prime,z_1^\prime)\)</span>。于是直线的参数方程为：
 <span class="math display">\[
 l(t) = p^{\prime}_0 + t \cdot (p^{\prime}_{1} - p^{\prime}_{0})
 \]</span> 对于平面而言，其定义为： <span class="math display">\[
 n \cdot (p-d) = 0
 \]</span> 其中 <span class="math inline">\(n\)</span>
 表示平面的法向量，<span class="math inline">\(d\)</span>
-表示平面上一点，<span class="math inline">\(p\)</span>
-表示世界坐标系上任意一点</p>
-<p>将直线的参数方程带入平面方程，可求出交点的参数 t： <span
-class="math display">\[
+表示平面上的一个已知点，<span class="math inline">\(p\)</span>
+表示世界坐标系中的任意一点。</p>
+<p>将直线的参数方程代入平面方程，就可以求出交点对应的参数 <span
+class="math inline">\(t\)</span>： <span class="math display">\[
 \begin{align}
 n \cdot (p^{\prime}_0 + t &amp; \cdot (p^{\prime}_{1} -
 p^{\prime}_{0})-d) = 0 \\
 t&amp; = \frac{d - n\cdot p^{\prime}_0}{p^{\prime}_{1} - p^{\prime}_{0}}
 \end{align}
-\]</span> 以平面 XoZ 为例，其法向量为 <span
-class="math inline">\((0,1,0)\)</span> 且过原点 <span
-class="math inline">\((0,0,0)\)</span>，带入公式，可交点 <span
-class="math inline">\(p_{\text{i}}\)</span> 的参数<span
+\]</span> 以 XoZ 平面为例，它的法向量为 <span
+class="math inline">\((0,1,0)\)</span>，并且过原点 <span
+class="math inline">\((0,0,0)\)</span>。将其代入上式，可以得到交点 <span
+class="math inline">\(p_{\text{i}}\)</span> 对应的参数 <span
 class="math inline">\(t_i\)</span>： <span class="math display">\[
 t = - \frac{y^{\prime}_0}{y^{\prime}_1 - y^\prime_0} =
 \frac{y^{\prime}_0}{y^{\prime}_0 - y^\prime_1} \\
 \]</span>
-这样我们就算出了射线和平面的交点，之后直接使用世界坐标进行绘制即可（以
-XoZ 平面为例，将交点处的 xz 坐标作为 uv
-值，按照一定缩放比例使用前面提到的二维网格绘制方式进行绘制）。</p>
-<p>下面给出第一版 三维 grid 的完整代码</p>
+这样我们就求出了射线与平面的交点，之后直接使用世界坐标进行绘制即可。以
+XoZ 平面为例，可以将交点处的 xz 坐标作为 uv
+值，再按照一定缩放比例套用前面提到的二维网格绘制方法。</p>
+<p>下面给出第一版三维 grid 的完整代码。</p>
 <p><em>3d-grid-v1.vert</em></p>
 <figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#version 330 core</span></span><br><span class="line"><span class="keyword">uniform</span> <span class="type">mat4</span> inv_view_proj;</span><br><span class="line"><span class="comment">// one giant triangle that covers the screen</span></span><br><span class="line"><span class="keyword">const</span> <span class="type">vec2</span> gridPlane[<span class="number">3</span>] = <span class="type">vec2</span>[<span class="number">3</span>](</span><br><span class="line">  <span class="type">vec2</span>(<span class="number">-1.0</span>,<span class="number">-1.0</span>),</span><br><span class="line">  <span class="type">vec2</span>( <span class="number">3.0</span>,<span class="number">-1.0</span>),</span><br><span class="line">  <span class="type">vec2</span>(<span class="number">-1.0</span>, <span class="number">3.0</span>)</span><br><span class="line">);</span><br><span class="line"><span class="keyword">out</span> <span class="type">vec3</span> near_point;</span><br><span class="line"><span class="keyword">out</span> <span class="type">vec3</span> far_point;</span><br><span class="line"><span class="type">void</span> main() &#123;</span><br><span class="line">    <span class="type">vec2</span> p = gridPlane[<span class="built_in">gl_VertexID</span>];</span><br><span class="line">    <span class="comment">// near point in ndc coordinate</span></span><br><span class="line">    <span class="type">vec4</span> point = inv_view_proj * <span class="type">vec4</span>(p,<span class="number">-1.0</span>,<span class="number">1.0</span>);</span><br><span class="line">    near_point = point.xyz / point.w;</span><br><span class="line">    <span class="comment">// far point in ndc corrdinate</span></span><br><span class="line">    point = inv_view_proj * <span class="type">vec4</span>(p,<span class="number">1.0</span>,<span class="number">1.0</span>);</span><br><span class="line">    far_point = point.xyz / point.w;</span><br><span class="line">    <span class="built_in">gl_Position</span> = <span class="type">vec4</span>(p,<span class="number">0.0</span>, <span class="number">1.0</span>); <span class="comment">// using directly the clipped coordinates</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p><em>3d-grid-v1.frag</em></p>
 <figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#version 330 core</span></span><br><span class="line"><span class="keyword">in</span> <span class="type">vec3</span> near_point;</span><br><span class="line"><span class="keyword">in</span> <span class="type">vec3</span> far_point;</span><br><span class="line"><span class="keyword">out</span> <span class="type">vec4</span> out_color;</span><br><span class="line"></span><br><span class="line"><span class="keyword">uniform</span> <span class="type">mat4</span> proj_view;</span><br><span class="line"><span class="keyword">uniform</span> <span class="type">float</span> near;</span><br><span class="line"><span class="keyword">uniform</span> <span class="type">float</span> far;</span><br><span class="line"></span><br><span class="line"><span class="keyword">uniform</span> <span class="type">vec3</span> grid_color = <span class="type">vec3</span>(<span class="number">0.1</span>,<span class="number">0.1</span>,<span class="number">0.1</span>);</span><br><span class="line"><span class="keyword">uniform</span> <span class="type">float</span> grid_size = <span class="number">0.5</span>;</span><br><span class="line"><span class="keyword">uniform</span> <span class="type">float</span> grid_thickness = <span class="number">1.5</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">vec4</span> draw_grid(<span class="type">vec3</span> world_pos, <span class="type">float</span> grid_size, <span class="type">float</span> grid_thickness, <span class="type">bool</span> draw_axis)&#123;</span><br><span class="line">  <span class="type">vec2</span> grid_coord = world_pos.xz / grid_size;</span><br><span class="line">  <span class="type">vec2</span> grid_dist_world = <span class="built_in">abs</span>(grid_coord - <span class="built_in">floor</span>(grid_coord + <span class="number">0.5</span>));</span><br><span class="line">  <span class="type">float</span> draw = <span class="type">float</span>( </span><br><span class="line">    (<span class="built_in">abs</span>(grid_dist_world.x) &lt; grid_thickness) ||</span><br><span class="line">    (<span class="built_in">abs</span>(grid_dist_world.y) &lt; grid_thickness)</span><br><span class="line">  );</span><br><span class="line">  <span class="keyword">return</span> <span class="type">vec4</span>(grid_color,draw);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> main() &#123;</span><br><span class="line">    <span class="type">float</span> t = -near_point.y / (far_point.y - near_point.y);</span><br><span class="line">    <span class="type">vec3</span> world_pos = near_point + t * (far_point - near_point);</span><br><span class="line">    <span class="type">float</span> draw_plane = <span class="type">float</span>(t&gt;<span class="number">0.0</span>);</span><br><span class="line">    <span class="type">vec4</span> color = draw_grid(world_pos,grid_size,grid_thickness,<span class="literal">true</span>);</span><br><span class="line">    out_color = <span class="type">vec4</span>(color.xyz,draw_plane * color.w);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>cpp 绘制部分，只需要准备 shader 对应的 uniform
+<p>C++ 侧的绘制部分只需要准备 shader 对应的 uniform
 变量即可，如下所示：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (draw_grid) &#123;</span><br><span class="line">  glm::mat4 proj_view = projection * view;</span><br><span class="line">  glm::mat4 inv_view_proj = glm::<span class="built_in">inverse</span>(proj_view);</span><br><span class="line">  grid_shader.<span class="built_in">use</span>();</span><br><span class="line">  grid_shader.<span class="built_in">set_uniform</span>(<span class="string">&quot;proj_view&quot;</span>, proj_view);</span><br><span class="line">  grid_shader.<span class="built_in">set_uniform</span>(<span class="string">&quot;inv_view_proj&quot;</span>, inv_view_proj);</span><br><span class="line">  grid_shader.<span class="built_in">set_uniform</span>(<span class="string">&quot;near&quot;</span>, near);</span><br><span class="line">  grid_shader.<span class="built_in">set_uniform</span>(<span class="string">&quot;far&quot;</span>, far);</span><br><span class="line">  grid_shader.<span class="built_in">set_uniform</span>(<span class="string">&quot;set_depth&quot;</span>, <span class="built_in">static_cast</span>&lt;<span class="type">float</span>&gt;(set_depth));</span><br><span class="line">  grid_shader.<span class="built_in">set_uniform</span>(<span class="string">&quot;grid_size&quot;</span>, grid_size);</span><br><span class="line">  grid_shader.<span class="built_in">set_uniform</span>(<span class="string">&quot;grid_thickness&quot;</span>, grid_thickness1);</span><br><span class="line">  <span class="built_in">glBindVertexArray</span>(dummy_vao);</span><br><span class="line">  <span class="built_in">glDrawArrays</span>(GL_TRIANGLES, <span class="number">0</span>, <span class="number">3</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>由于我们在 vertex shader
-中使用了一个覆盖整块屏幕的大三角形，这里就只需要一个 Draw Call
-就可以完成网格的绘制。</p>
+中使用了一个覆盖整块屏幕的大三角形，因此这里只需要一个 Draw Call
+就可以完成网格绘制。</p>
 <p>最终效果如下图所示（固定 <code>grid_size</code> 为
 0.5，<code>grid_thickness</code> 为 0.01）：</p>
 <p><img data-src="/posts/b93d/image-20260116230801587.png"
 style="zoom: 50%;" /></p>
-<p>从图中可以看到几个需要改善的点：</p>
+<p>从图中可以看到还有几个需要改进的点：</p>
 <p><img data-src="/posts/b93d/image-20260116230749090.png"
 style="zoom:50%;" /></p>
 <ol type="1">
-<li><p>线宽不统一，似乎是靠近相机的更粗，而远方的几乎看不见</p></li>
-<li><p>没有正确处理深度关系，立体感不强</p></li>
+<li><p>线宽不统一，靠近相机的位置更粗，而远处几乎看不见。</p></li>
+<li><p>没有正确处理深度关系，立体感不强。</p></li>
 </ol>
 <h2 id="固定线宽">固定线宽</h2>
 <p>从二维网格的绘制原理可以知道，其关键在于下面这个公式： <span
@@ -593,42 +601,42 @@ c -
 d
 \]</span> 其中 <span class="math inline">\(c\)</span> 为某个二维坐标，而
 <span class="math inline">\(d\)</span> 为网格的线宽。</p>
-<p>为了更直观的理解这个公式，可绘制函数 <span
+<p>为了更直观地理解这个公式，可以先画出函数 <span
 class="math inline">\(y=\left|x-\left\lfloor{x}+0.5\right\rfloor\right|\)</span>
-的函数图像如下图所示：</p>
+的图像，如下图所示：</p>
 <p><img data-src="/posts/b93d/image-20260116231824055.png"
 style="zoom:50%;" /></p>
-<p>从图中可以看到，这个函数是一个周期为1的一个锯齿状函数（后续简称为
-<span class="math inline">\(\text{grid}(x)\)</span>）。而其峰值为
-0.5，当 <span class="math inline">\(y=0\)</span> 时为需要绘制 grid
+<p>从图中可以看到，这是一个周期为 1 的锯齿状函数（后文简称为 <span
+class="math inline">\(\text{grid}(x)\)</span>）。它的峰值为 0.5，而当
+<span class="math inline">\(y=0\)</span> 时，对应的就是需要绘制 grid
 的位置。</p>
 <p>假设 <span
 class="math inline">\(d=0.1\)</span>，我们实际需要绘制直线的区间就是下图中倒立的小三角形区域：</p>
 <p><img data-src="/posts/b93d/image-20260116232451559.png"
 style="zoom: 67%;" /></p>
-<p>通过 <span
-class="math inline">\(\text{grid}(x)\)</span>的函数图象不难观察发现，其几何意义就是
-<strong>任意一点 <span class="math inline">\(x\)</span>
-到其最近的整数（<span
-class="math inline">\(0,1,\cdots\)</span>）的距离</strong>，这也是为什么
+<p>通过观察 <span class="math inline">\(\text{grid}(x)\)</span>
+的函数图像，不难发现它的几何意义其实就是 <strong>任意一点 <span
+class="math inline">\(x\)</span> 到最近整数（<span
+class="math inline">\(0,1,\cdots\)</span>）的距离</strong>。这也是为什么
 <span class="math inline">\(d\)</span>
-可以用来控制网格线宽的原因（实际线宽为 <span
-class="math inline">\(2d\)</span>）。</p>
+可以用来控制网格线宽的原因，因为实际线宽就是 <span
+class="math inline">\(2d\)</span>。</p>
 <p>那么为什么在三维场景下线宽看上去并不统一呢？</p>
 <p>在透视投影下，天然有近大远小的特性，距离相机越近，看上去越大。对于网格也是一样，如果我们在近处和远处都使用相同的线宽，就会出现线宽不一致的问题。</p>
-<p>为了让我们在观测视角下看起来一直，就需要根据当前视角动态调整线宽，<strong>这就涉及到屏幕坐标系和世界坐标系下的尺度转换</strong>，也就是回答这么一个问题：</p>
+<p>为了让网格在当前观察视角下看起来始终保持一致，就需要根据视角动态调整线宽。<strong>这就涉及屏幕坐标系和世界坐标系之间的尺度转换</strong>，也就是要回答这样一个问题：</p>
 <p><strong>在世界坐标系下的某一个点绘制直线时，需要绘制多宽的直线才能在屏幕上看起来宽度是
 2 个像素？</strong></p>
-<p>这一个可以通过屏幕空间的偏导数 <span
+<p>这个问题可以通过屏幕空间偏导数 <span
 class="math inline">\(\frac{\partial f}{\partial u}\)</span> 和 <span
 class="math inline">\(\frac{\partial f}{\partial v}\)</span>
-进行计算，以世界坐标 <span class="math inline">\((x,y,z)\)</span>
-为例，设 <span class="math inline">\(f(x,y,z) = (x,y,z)\)</span>，则
-<span class="math inline">\(\frac{\partial f}{\partial u}\)</span> 和
-<span class="math inline">\(\frac{\partial f}{\partial v}\)</span>
-分别表示沿着屏幕空间 <span class="math inline">\(u\)</span>
+来估计。以世界坐标 <span class="math inline">\((x,y,z)\)</span> 为例，设
+<span class="math inline">\(f(x,y,z) = (x,y,z)\)</span>，则 <span
+class="math inline">\(\frac{\partial f}{\partial u}\)</span> 和 <span
+class="math inline">\(\frac{\partial f}{\partial v}\)</span>
+分别表示沿屏幕空间 <span class="math inline">\(u\)</span>、<span
+class="math inline">\(v\)</span>
 方向变化一个像素时，世界坐标的变化情况。</p>
-<p>而利用其倒数可以推导出，当世界坐标变化一个单位时，会在屏幕空间上变化多少个像素。</p>
+<p>反过来，利用它们的倒数就可以估计：当世界坐标变化一个单位时，屏幕空间上大约会变化多少个像素。</p>
 <p>那么我们的目标函数 <span class="math inline">\(\text{dist}\)</span>
 就可以转换成屏幕空间下的距离函数 <span
 class="math inline">\(\text{dist}_{\text{s}}\)</span> ： <span
@@ -647,7 +655,7 @@ class="math display">\[
 u},\frac{\partial f}{\partial v}\right)$ 的 <span
 class="math inline">\(L^2\)</span>
 范数（梯度向量在二维空间上的长度，可以理解为是在梯度方向上的变化率是多少）。</p>
-<p>在实际计算过程中，可以差分方式进行近似，利用相邻像素之间的值计算，即
+<p>在实际计算过程中，可以用差分方式近似，也就是利用相邻像素之间的值来计算：
 <span class="math display">\[
 \begin{align}
 \frac{\partial f}{\partial u} &amp;\sim f(u+1,v) - f(u,v) \;\; \text{or}
@@ -660,39 +668,40 @@ class="math inline">\(L^2\)</span>
 进行近似： <span class="math display">\[
 \norm { \grad f}_2 \sim \abs{\frac{\partial f}{\partial u}}
 +  \abs{\frac{\partial f}{\partial v}}
-\]</span> 这三个值可分别在 shader 中使用 <code>dFdx</code>
-、<code>dFdy</code> 和 <code>fwidth</code> 进行计算，利用
-<code>fwidth</code>，就可以实现固定线宽的grid绘制，代码如下：</p>
+\]</span> 这三个值分别可以在 shader 中通过
+<code>dFdx</code>、<code>dFdy</code> 和 <code>fwidth</code> 来计算。利用
+<code>fwidth</code>，就可以实现固定线宽的 grid 绘制，代码如下：</p>
 <p><em>3d-grid-v2.frag</em></p>
 <figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#version 330 core</span></span><br><span class="line"><span class="keyword">in</span> <span class="type">vec3</span> near_point;</span><br><span class="line"><span class="keyword">in</span> <span class="type">vec3</span> far_point;</span><br><span class="line"><span class="keyword">out</span> <span class="type">vec4</span> out_color;</span><br><span class="line"></span><br><span class="line"><span class="keyword">uniform</span> <span class="type">mat4</span> proj_view;</span><br><span class="line"><span class="keyword">uniform</span> <span class="type">float</span> near;</span><br><span class="line"><span class="keyword">uniform</span> <span class="type">float</span> far;</span><br><span class="line"></span><br><span class="line"><span class="keyword">uniform</span> <span class="type">vec3</span> grid_color = <span class="type">vec3</span>(<span class="number">0.1</span>,<span class="number">0.1</span>,<span class="number">0.1</span>);</span><br><span class="line"><span class="keyword">uniform</span> <span class="type">float</span> grid_size = <span class="number">0.5</span>;</span><br><span class="line"><span class="keyword">uniform</span> <span class="type">float</span> grid_thickness = <span class="number">1.5</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">vec4</span> draw_grid(<span class="type">vec3</span> world_pos, <span class="type">float</span> grid_size, <span class="type">float</span> grid_thickness, <span class="type">bool</span> draw_axis)&#123;</span><br><span class="line">  <span class="type">vec2</span> grid_coord = world_pos.xz / grid_size;</span><br><span class="line">  <span class="type">vec2</span> grid_dist_world = <span class="built_in">abs</span>(grid_coord - <span class="built_in">floor</span>(grid_coord + <span class="number">0.5</span>));</span><br><span class="line">  <span class="type">vec2</span> grid_dist_screen = grid_dist_world / <span class="built_in">fwidth</span>(grid_coord);</span><br><span class="line">  <span class="type">float</span> draw = <span class="type">float</span>(</span><br><span class="line">    (<span class="built_in">abs</span>(grid_dist_screen.x) &lt; grid_thickness) ||</span><br><span class="line">    (<span class="built_in">abs</span>(grid_dist_screen.y) &lt; grid_thickness)</span><br><span class="line">  );</span><br><span class="line">  <span class="keyword">return</span> <span class="type">vec4</span>(grid_color,draw);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> main() &#123;</span><br><span class="line">    <span class="type">float</span> t = -near_point.y / (far_point.y - near_point.y);</span><br><span class="line">    <span class="type">vec3</span> world_pos = near_point + t * (far_point - near_point);</span><br><span class="line">    <span class="type">float</span> draw_plane = <span class="type">float</span>(t&gt;<span class="number">0.0</span>);</span><br><span class="line">    <span class="type">vec4</span> color = draw_grid(world_pos,grid_size,grid_thickness,<span class="literal">true</span>);</span><br><span class="line">    out_color = <span class="type">vec4</span>(color.xyz,draw_plane * color.w);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>绘制效果如下：</p>
 <p><img data-src="/posts/b93d/image-20260118100152799.png"
 style="zoom:50%;" /></p>
-<p>可以看到，此时线宽是固定了，但是远处的grid直接变成一片黑了，看起来效果非常差。</p>
+<p>可以看到，此时线宽虽然固定了，但远处的 grid
+直接变成了一片黑，看起来效果非常差。</p>
 <h2 id="深度处理">深度处理</h2>
-<p>为了更好呈现三维效果，我们需要确保网格可以被正常的遮挡，不然看起来就和平面一样。</p>
-<p>这就需要我们可以正常的输出平面上的深度信息，只需要在交点处重新计算深度即可：</p>
-<p>按照正常投影过程，经过 View Transform 和 Project Transform 得到 NDC
-坐标，将深度信息设置到 <code>gl_FragDepth</code> 。</p>
+<p>为了更好地呈现三维效果，我们需要确保网格能够被正常遮挡，不然看起来就和一张平面贴图差不多。</p>
+<p>这就要求我们能够正确输出平面上的深度信息。做法也很直接，只需要在交点处重新计算深度即可：</p>
+<p>按照正常的投影流程，先经过 View Transform 和 Project Transform 得到
+NDC 坐标，再把深度信息写入 <code>gl_FragDepth</code>。</p>
 <div class="markdown-alert markdown-alert-tip">
 <div class="markdown-alert-title">
 <svg class="octicon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M8 1.5c-2.363 0-4 1.69-4 3.75 0 .984.424 1.625.984 2.304l.214.253c.223.264.47.556.673.848.284.411.537.896.621 1.49a.75.75 0 0 1-1.484.211c-.04-.282-.163-.547-.37-.847a8.456 8.456 0 0 0-.542-.68c-.084-.1-.173-.205-.268-.32C3.201 7.75 2.5 6.766 2.5 5.25 2.5 2.31 4.863 0 8 0s5.5 2.31 5.5 5.25c0 1.516-.701 2.5-1.328 3.259-.095.115-.184.22-.268.319-.207.245-.383.453-.541.681-.208.3-.33.565-.37.847a.751.751 0 0 1-1.485-.212c.084-.593.337-1.078.621-1.489.203-.292.45-.584.673-.848.075-.088.147-.173.213-.253.561-.679.985-1.32.985-2.304 0-2.06-1.637-3.75-4-3.75ZM5.75 12h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5ZM6 15.25a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75Z"></path></svg>
 <strong>Tip</strong>
 </div>
-<p>稍微需要注意的是，在 OpenGL 中，需要将 NDC 输出的深度范围是 <span
-class="math inline">\([0,1]\)</span>，即 z 轴坐标需要从 <span
-class="math inline">\([-1,1]\)</span> 调整至 <span
-class="math inline">\([0,1]\)</span></p>
+<p>稍微需要注意的是，在 OpenGL 中，最终输出到深度缓冲的范围是 <span
+class="math inline">\([0,1]\)</span>，因此这里需要把 NDC 中的 z 坐标从
+<span class="math inline">\([-1,1]\)</span> 映射到 <span
+class="math inline">\([0,1]\)</span>。</p>
 </div>
 <p>相关 shader 代码如下：</p>
 <figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">float</span> compute_depth(<span class="type">vec3</span> pos) &#123;</span><br><span class="line">    <span class="type">vec4</span> clip_space_pos = proj_view * <span class="type">vec4</span>(pos.xyz, <span class="number">1.0</span>);</span><br><span class="line">    <span class="comment">// re-arrange depth to 0~1</span></span><br><span class="line">    <span class="keyword">return</span> (clip_space_pos.z / clip_space_pos.w) * <span class="number">0.5</span> + <span class="number">0.5</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>利用深度信息，还可以解决前面提到的远处 grid
-看起来一片黑的问题，只需要将深度 clip
-在一定范围内，为了避免过渡太生硬，可以设置grid的透明度随深度不断增加即可。</p>
-<p>由于默认输出的深度值并不是线性深度，当需要对深度进行线性插值，需要将原本对数深度转换成线性深度后再做计算，对应的
-shader 代码如下</p>
+<p>利用深度信息，还可以解决前面提到的“远处 grid
+看起来一片黑”的问题。只需要把深度裁剪在一定范围内，并且为了避免过渡过于生硬，可以让
+grid 的透明度随着深度逐渐变化。</p>
+<p>由于默认输出的深度值并不是线性的，因此当我们需要基于深度做线性插值时，需要先把原始深度转换成线性深度，再进行计算。对应的
+shader 代码如下：</p>
 <figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">float</span> compute_linear_depth01(<span class="type">float</span> zndc) &#123;</span><br><span class="line">  <span class="type">float</span> z01 = (<span class="number">2.0</span> * near) / (near + far - (far - near) * zndc);</span><br><span class="line">  <span class="keyword">return</span> z01;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <div class="markdown-alert markdown-alert-note">
@@ -700,15 +709,16 @@ shader 代码如下</p>
 <svg class="octicon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>
 <strong>Note</strong>
 </div>
-<p>此处使用的是 NDC 坐标（即坐标范围是 <span
-class="math inline">\([-1,1]\)</span> ，如果已经调整至 <span
-class="math inline">\([0,1]\)</span>，则需要重新进行缩放，确保输入是
-<span class="math inline">\([-1,1]\)</span></p>
+<p>此处使用的是 NDC 坐标，也就是坐标范围为 <span
+class="math inline">\([-1,1]\)</span>。如果你手头的深度值已经被映射到了
+<span
+class="math inline">\([0,1]\)</span>，则需要先重新缩放，确保输入仍然落在
+<span class="math inline">\([-1,1]\)</span>。</p>
 </div>
 <p>对深度进行透明度插值的代码如下：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">float depth_alpha = mix(max_depth,0.0,depth01);</span><br></pre></td></tr></table></figure>
 
-<p>最终完整代码如下</p>
+<p>最终完整代码如下：</p>
 <p><em>3d-grid-v3.frag</em></p>
 <figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#version 330 core</span></span><br><span class="line"><span class="keyword">in</span> <span class="type">vec3</span> near_point;</span><br><span class="line"><span class="keyword">in</span> <span class="type">vec3</span> far_point;</span><br><span class="line"><span class="keyword">out</span> <span class="type">vec4</span> out_color;</span><br><span class="line"></span><br><span class="line"><span class="keyword">uniform</span> <span class="type">mat4</span> proj_view;</span><br><span class="line"><span class="keyword">uniform</span> <span class="type">float</span> near;</span><br><span class="line"><span class="keyword">uniform</span> <span class="type">float</span> far;</span><br><span class="line"></span><br><span class="line"><span class="keyword">uniform</span> <span class="type">vec3</span> grid_color = <span class="type">vec3</span>(<span class="number">0.1</span>,<span class="number">0.1</span>,<span class="number">0.1</span>);</span><br><span class="line"><span class="keyword">uniform</span> <span class="type">float</span> grid_size = <span class="number">0.5</span>;</span><br><span class="line"><span class="keyword">uniform</span> <span class="type">float</span> grid_thickness = <span class="number">1.5</span>;</span><br><span class="line"><span class="keyword">uniform</span> <span class="type">float</span> max_depth = <span class="number">0.5</span>;</span><br><span class="line"><span class="keyword">uniform</span> <span class="type">float</span> set_depth = <span class="number">0.0</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">float</span> compute_depth(<span class="type">vec3</span> pos) &#123;</span><br><span class="line">    <span class="type">vec4</span> clip_space_pos = proj_view * <span class="type">vec4</span>(pos.xyz, <span class="number">1.0</span>);</span><br><span class="line">    <span class="comment">// re-arrange depth to 0~1</span></span><br><span class="line">    <span class="keyword">return</span> (clip_space_pos.z / clip_space_pos.w) * <span class="number">0.5</span> + <span class="number">0.5</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">float</span> compute_linear_depth01(<span class="type">float</span> zndc) &#123;</span><br><span class="line">  <span class="type">float</span> z01 = (<span class="number">2.0</span> * near) / (near + far - (far - near) * zndc);</span><br><span class="line">  <span class="keyword">return</span> z01;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">vec4</span> draw_grid(<span class="type">vec3</span> world_pos, <span class="type">float</span> grid_size, <span class="type">float</span> grid_thickness, <span class="type">bool</span> draw_axis)&#123;</span><br><span class="line">  <span class="type">vec2</span> grid_coord = world_pos.xz / grid_size;</span><br><span class="line">  <span class="type">vec2</span> grid_dist_world = <span class="built_in">abs</span>(grid_coord - <span class="built_in">floor</span>(grid_coord + <span class="number">0.5</span>));</span><br><span class="line">  <span class="type">vec2</span> grid_dist_screen = <span class="built_in">abs</span>(grid_dist_world / <span class="built_in">fwidth</span>(grid_coord));</span><br><span class="line">  <span class="type">float</span> min_grid_dist_screen = <span class="built_in">min</span>(grid_dist_screen.x, grid_dist_screen.y);</span><br><span class="line">  <span class="type">float</span> draw = <span class="type">float</span>(min_grid_dist_screen &lt; grid_thickness);</span><br><span class="line">  <span class="keyword">return</span> <span class="type">vec4</span>(grid_color,draw);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> main() &#123;</span><br><span class="line">    <span class="type">float</span> t = -near_point.y / (far_point.y - near_point.y);</span><br><span class="line">    <span class="type">vec3</span> world_pos = near_point + t * (far_point - near_point);</span><br><span class="line">    <span class="type">float</span> depth = compute_depth(world_pos);</span><br><span class="line">    <span class="built_in">gl_FragDepth</span> = set_depth * depth;</span><br><span class="line">    <span class="type">float</span> depth01 = compute_linear_depth01(depth * <span class="number">2.0</span> - <span class="number">1.0</span>);</span><br><span class="line">    <span class="type">float</span> draw_depth = <span class="built_in">mix</span>(max_depth,<span class="number">0.0</span>,depth01);</span><br><span class="line">    <span class="type">float</span> draw_plane = <span class="type">float</span>(t&gt;<span class="number">0.0</span>);</span><br><span class="line">    <span class="type">vec4</span> color = draw_grid(world_pos,grid_size,grid_thickness,<span class="literal">true</span>);</span><br><span class="line">    out_color = <span class="type">vec4</span>(color.xyz,draw_depth * draw_plane * color.w);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -717,66 +727,67 @@ class="math inline">\([0,1]\)</span>，则需要重新进行缩放，确保输�
 style="zoom:50%;" /></p>
 <h2 id="抗锯齿">抗锯齿</h2>
 <p>可以看到，在远处的 grid
-中，出现了摩尔纹，局部放大图像时也可以看到锯齿状的图样</p>
+中出现了摩尔纹，局部放大后也能看到明显的锯齿状图样。</p>
 <p><img data-src="/posts/b93d/image-20260118110324765.png"
 style="zoom:50%;" /></p>
-<p>这是因为我们使用的是 clip 的方式进行绘制，只要 <span
+<p>这是因为我们使用的是 clip 的方式进行绘制。只要 <span
 class="math inline">\(\text{dist}_\text{s}\)</span>
-在指定宽度范围内，就会绘制整个像素。如果绘制区域仅覆盖了一个像素中的一部分，却将整个像素都绘制，就会出现锯齿（alias），在高频区域则会出现摩尔纹现象。</p>
-<p>为实现抗锯齿，也就是需要估计网格在绘制边界的像素覆盖率，当网格边界仅覆盖一部分像素时，将返回的颜色（或alpha值）设置为实际覆盖的比例。</p>
-<p>覆盖率计算如下图所示，在当前像素（红色方块）计算的距离为
-2.7，由于此时使用的是像素中心点进行计算，实际像素的范围是<span
-class="math inline">\((2.2,3.2)\)</span></p>
+落在指定宽度范围内，就会把整个像素都绘制出来。如果实际绘制区域只覆盖了像素中的一部分，却把整个像素都点亮，就会出现锯齿（alias）；在高频区域中，则会进一步表现为摩尔纹。</p>
+<p>要实现抗锯齿，本质上就是要估计网格在边界处对当前像素的覆盖率。当网格边界只覆盖了像素的一部分时，就把返回的颜色（或
+alpha 值）设置为实际覆盖比例。</p>
+<p>覆盖率计算如下图所示。在当前像素（红色方块）处，计算得到的距离为
+2.7。由于这里使用的是像素中心点进行计算，因此实际像素对应的范围是 <span
+class="math inline">\((2.2,3.2)\)</span>。</p>
 <p><img data-src="/posts/b93d/image-20260118183601820.png"
 style="zoom: 50%;" /></p>
-<p>再结合网格线宽为 6 ，可以计算该像素的覆盖率为 <span
-class="math inline">\(6 * 0.5 - 2.7 + 0.5 = 0.8\)</span></p>
-<p>此处多加的 0.5 是像素本身被覆盖的部分。</p>
+<p>再结合网格线宽为 6，可以计算出该像素的覆盖率为 <span
+class="math inline">\(6 * 0.5 - 2.7 + 0.5 = 0.8\)</span>。</p>
+<p>这里额外加上的 0.5，对应的是像素自身被覆盖的那一部分。</p>
 <p>将覆盖率的计算公式一般化，如下式所示： <span class="math display">\[
 \text{cov} = \left(\frac{l}{2} -\text{dist}_{\text{s}} \right) + 0.5 \\
-\]</span> 当 cov 大于 1时，说明像素一定被完全覆盖，当 cov
-小于1时，说明像素一定不会被覆盖。</p>
-<p>那么可以加上一个 clamp 以确保结果范围，由于我们的 grid
-包含两个方向，取 cov 最大的一个方向作为最终 cov
-的估计值，可以写出添加上抗锯齿实现后的 shader 代码</p>
+\]</span> 当 cov 大于 1 时，说明像素一定被完全覆盖；当 cov 小于 0
+时，说明像素一定不会被覆盖。</p>
+<p>因此可以再加上一层 clamp 来限制结果范围。由于我们的 grid
+同时包含两个方向的线，取两个方向中较大的 cov
+作为最终覆盖率估计值，就可以写出加入抗锯齿之后的 shader 代码：</p>
 <p><em>3d-grid-v4.frag</em></p>
 <figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#version 330 core</span></span><br><span class="line"><span class="keyword">in</span> <span class="type">vec3</span> near_point;</span><br><span class="line"><span class="keyword">in</span> <span class="type">vec3</span> far_point;</span><br><span class="line"><span class="keyword">out</span> <span class="type">vec4</span> out_color;</span><br><span class="line"></span><br><span class="line"><span class="keyword">uniform</span> <span class="type">mat4</span> proj_view;</span><br><span class="line"><span class="keyword">uniform</span> <span class="type">float</span> near;</span><br><span class="line"><span class="keyword">uniform</span> <span class="type">float</span> far;</span><br><span class="line"></span><br><span class="line"><span class="keyword">uniform</span> <span class="type">vec3</span> grid_color = <span class="type">vec3</span>(<span class="number">0.1</span>,<span class="number">0.1</span>,<span class="number">0.1</span>);</span><br><span class="line"><span class="keyword">uniform</span> <span class="type">float</span> grid_size = <span class="number">0.5</span>;</span><br><span class="line"><span class="keyword">uniform</span> <span class="type">float</span> grid_thickness = <span class="number">2.0</span>;</span><br><span class="line"><span class="keyword">uniform</span> <span class="type">float</span> max_depth = <span class="number">0.5</span>;</span><br><span class="line"><span class="keyword">uniform</span> <span class="type">float</span> set_depth = <span class="number">0.0</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">float</span> compute_depth(<span class="type">vec3</span> pos) &#123;</span><br><span class="line">    <span class="type">vec4</span> clip_space_pos = proj_view * <span class="type">vec4</span>(pos.xyz, <span class="number">1.0</span>);</span><br><span class="line">    <span class="comment">// re-arrange depth to 0~1</span></span><br><span class="line">    <span class="keyword">return</span> (clip_space_pos.z / clip_space_pos.w) * <span class="number">0.5</span> + <span class="number">0.5</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">float</span> compute_linear_depth01(<span class="type">float</span> zndc) &#123;</span><br><span class="line">  <span class="type">float</span> z01 = (<span class="number">2.0</span> * near) / (near + far - (far - near) * zndc);</span><br><span class="line">  <span class="keyword">return</span> z01;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">vec4</span> draw_grid(<span class="type">vec3</span> world_pos, <span class="type">float</span> grid_size, <span class="type">float</span> grid_thickness, <span class="type">bool</span> draw_axis)&#123;</span><br><span class="line">  <span class="type">vec2</span> grid_coord = world_pos.xz / grid_size;</span><br><span class="line">  <span class="type">vec2</span> grid_dist_world = <span class="built_in">abs</span>(grid_coord - <span class="built_in">floor</span>(grid_coord + <span class="number">0.5</span>));</span><br><span class="line">  <span class="type">vec2</span> grid_dist_screen = grid_dist_world / <span class="built_in">fwidth</span>(grid_coord);</span><br><span class="line">  <span class="type">vec2</span> cov = <span class="built_in">clamp</span>((grid_thickness * <span class="number">0.5</span> - grid_dist_screen) + <span class="number">0.5</span>,<span class="number">0.0</span>,<span class="number">1.0</span>);</span><br><span class="line">  <span class="type">float</span> draw4 = <span class="built_in">max</span>(cov.x,cov.y);</span><br><span class="line">  <span class="keyword">return</span> <span class="type">vec4</span>(grid_color,draw4);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> main() &#123;</span><br><span class="line">    <span class="type">float</span> t = -near_point.y / (far_point.y - near_point.y);</span><br><span class="line">    <span class="type">vec3</span> world_pos = near_point + t * (far_point - near_point);</span><br><span class="line">    <span class="type">float</span> depth = compute_depth(world_pos);</span><br><span class="line">    <span class="built_in">gl_FragDepth</span> = set_depth * depth;</span><br><span class="line">    <span class="type">float</span> depth01 = compute_linear_depth01(depth * <span class="number">2.0</span> - <span class="number">1.0</span>);</span><br><span class="line">    <span class="type">float</span> draw_depth = <span class="built_in">mix</span>(max_depth,<span class="number">0.0</span>,depth01);</span><br><span class="line">    <span class="type">float</span> draw_plane = <span class="type">float</span>(t&gt;<span class="number">0.0</span>);</span><br><span class="line">    <span class="type">vec4</span> color = draw_grid(world_pos,grid_size,grid_thickness,<span class="literal">true</span>);</span><br><span class="line">    out_color = <span class="type">vec4</span>(color.xyz,draw_depth * draw_plane * color.w);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>对比没开启抗锯齿之前的绘制效果如下</p>
+<p>和未开启抗锯齿之前的绘制效果对比如下：</p>
 <p><img data-src="/posts/b93d/image-20260118185443403.png"
 style="zoom: 33%;" /></p>
 <h2 id="细节处理">细节处理</h2>
-<p>到此为止，我们绘制的 grid 已经算基本可以看了，对比 blender
-中的网格，还剩最后3个细节：</p>
+<p>到此为止，我们绘制的 grid 已经基本能看了。对比 Blender
+中的网格效果，还剩下最后 3 个细节：</p>
 <ol type="1">
-<li>在 x = 0 和 y = 0 处的grid颜色有区别</li>
-<li>每个大 grid 中包含若干小 grid，且大 grid 的线宽更宽</li>
-<li>远处的 grid 会渐渐的消失（区别于 前面提到的depth fading）</li>
+<li>在 <span class="math inline">\(x = 0\)</span> 和 <span
+class="math inline">\(y = 0\)</span> 处，grid 的颜色需要有所区别。</li>
+<li>每个大 grid 中包含若干小 grid，并且大 grid 的线宽更宽。</li>
+<li>远处的 grid 会逐渐消失，这一点不同于前面提到的 depth fading。</li>
 </ol>
-<p>为实现第一个效果，我们需要在绘制中判断当前绘制的直线是否在特殊网格线上。以
+<p>为了实现第一个效果，我们需要在绘制时判断当前直线是否位于特殊网格线上。以
 <span class="math inline">\(x=0\)</span>
-为例，只要判断当前世界坐标是否在 <span
-class="math inline">\(x=0\)</span> 的绘制范围即可，如下所示： <span
+为例，只要判断当前世界坐标是否落在 <span
+class="math inline">\(x=0\)</span> 的绘制范围内即可，如下所示： <span
 class="math display">\[
 \begin{align}
 \frac{\abs{x}}{w} &amp;&lt; \frac{l}{2} \\
 \abs{x} &amp;&lt; \frac{l}{2} \cdot w
 \end{align}
 \]</span> 其中 <span class="math inline">\(w\)</span> 就是之前利用
-<code>fwidth</code> 计算得到的一个像素对应 grid 的长度，<span
-class="math inline">\(l\)</span> 为线宽（单位为像素）</p>
-<p>对于第二个效果，我们只需要使用不同分辨率的 grid
-绘制变量，然后将结果通过 alpha 混合即可。</p>
-<p>对于第三个效果，是为了解决远处的 grid 糊在一块的问题。对于远处的
-grid，其大小非常小，导致一个像素会覆盖多个 grid
-直线。为此，我们可以在绘制时判断 grid 在屏幕空间的大小，如果 grid
-太小（例如小于 1 px），就直接不绘制即可（也可以通过 smoothstep
-实现光滑的过度）。</p>
+<code>fwidth</code> 计算得到的“一个像素对应的 grid 长度”，<span
+class="math inline">\(l\)</span> 为线宽，单位是像素。</p>
+<p>对于第二个效果，我们只需要分别绘制不同分辨率的 grid，再把结果通过
+alpha 混合起来即可。</p>
+<p>对于第三个效果，本质上是为了解决远处 grid 糊成一片的问题。由于远处的
+grid 非常密，一个像素可能同时覆盖多条网格线，因此我们可以在绘制时判断
+grid 在屏幕空间中的大小。如果 grid 太小（例如小于 1
+px），就直接不绘制；当然，也可以通过 smoothstep 实现更平滑的过渡。</p>
 <p>最终完整代码如下：</p>
 <p><em>3d-grid-v5.frag</em></p>
 <figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#version 330 core</span></span><br><span class="line"><span class="keyword">in</span> <span class="type">vec3</span> near_point;</span><br><span class="line"><span class="keyword">in</span> <span class="type">vec3</span> far_point;</span><br><span class="line"><span class="keyword">out</span> <span class="type">vec4</span> out_color;</span><br><span class="line"></span><br><span class="line"><span class="keyword">uniform</span> <span class="type">mat4</span> proj_view;</span><br><span class="line"><span class="keyword">uniform</span> <span class="type">float</span> near;</span><br><span class="line"><span class="keyword">uniform</span> <span class="type">float</span> far;</span><br><span class="line"></span><br><span class="line"><span class="keyword">uniform</span> <span class="type">vec3</span> grid_color = <span class="type">vec3</span>(<span class="number">0.1</span>,<span class="number">0.1</span>,<span class="number">0.1</span>);</span><br><span class="line"><span class="keyword">uniform</span> <span class="type">float</span> grid_size = <span class="number">0.5</span>;</span><br><span class="line"><span class="keyword">uniform</span> <span class="type">float</span> minor_grid_scale = <span class="number">5</span>;</span><br><span class="line"><span class="keyword">uniform</span> <span class="type">float</span> grid_fade_size = <span class="number">5.0</span>;</span><br><span class="line"><span class="keyword">uniform</span> <span class="type">float</span> grid_thickness = <span class="number">2.0</span>;</span><br><span class="line"><span class="keyword">uniform</span> <span class="type">float</span> max_depth = <span class="number">0.5</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">float</span> compute_depth(<span class="type">vec3</span> pos) &#123;</span><br><span class="line">    <span class="type">vec4</span> clip_space_pos = proj_view * <span class="type">vec4</span>(pos.xyz, <span class="number">1.0</span>);</span><br><span class="line">    <span class="comment">// re-arrange depth to 0~1</span></span><br><span class="line">    <span class="keyword">return</span> (clip_space_pos.z / clip_space_pos.w) * <span class="number">0.5</span> + <span class="number">0.5</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">float</span> compute_linear_depth01(<span class="type">float</span> zndc) &#123;</span><br><span class="line">  <span class="type">float</span> z01 = (<span class="number">2.0</span> * near) / (near + far - (far - near) * zndc);</span><br><span class="line">  <span class="keyword">return</span> z01;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">vec4</span> draw_grid(<span class="type">vec3</span> world_pos, <span class="type">float</span> grid_size, <span class="type">float</span> grid_thickness, <span class="type">float</span> fade_size)&#123;</span><br><span class="line">  <span class="type">vec2</span> grid_coord = world_pos.xz / grid_size;</span><br><span class="line">  <span class="type">vec2</span> grid_dist_world = <span class="built_in">abs</span>(grid_coord - <span class="built_in">floor</span>(grid_coord + <span class="number">0.5</span>));</span><br><span class="line">  <span class="type">vec2</span> grid_size_scaler = <span class="built_in">fwidth</span>(grid_coord);</span><br><span class="line">  <span class="comment">// grid size in screen space</span></span><br><span class="line">  <span class="type">vec2</span> grid_size_pixel = <span class="number">1.0</span> / grid_size_scaler;</span><br><span class="line">  <span class="type">float</span> min_spacing = <span class="built_in">min</span>(grid_size_pixel.x,grid_size_pixel.y);</span><br><span class="line">  <span class="type">float</span> size_fade = <span class="built_in">smoothstep</span>(<span class="number">0.0</span>,fade_size,min_spacing);</span><br><span class="line">  <span class="type">vec2</span> grid_dist_screen = grid_dist_world * grid_size_pixel;</span><br><span class="line">  <span class="type">float</span> half_grid_thickness = <span class="number">0.5</span> * grid_thickness;</span><br><span class="line">  <span class="type">vec2</span> cov = <span class="built_in">clamp</span>((half_grid_thickness - grid_dist_screen) + <span class="number">0.5</span>,<span class="number">0.0</span>,<span class="number">1.0</span>);</span><br><span class="line">  <span class="type">float</span> draw = <span class="built_in">max</span>(cov.x,cov.y);</span><br><span class="line">  <span class="type">float</span> x_axis = <span class="type">float</span>(<span class="built_in">abs</span>(grid_coord.x) &lt; half_grid_thickness * grid_size_scaler.x);</span><br><span class="line">  <span class="type">float</span> z_axis = <span class="type">float</span>(<span class="built_in">abs</span>(grid_coord.y) &lt; half_grid_thickness * grid_size_scaler.y);</span><br><span class="line">  <span class="type">vec3</span> color = x_axis * (<span class="number">1.0</span> - z_axis) * <span class="type">vec3</span>(<span class="number">1.0</span>,<span class="number">0.0</span>,<span class="number">0.0</span>) + </span><br><span class="line">               z_axis * (<span class="number">1.0</span> - x_axis) * <span class="type">vec3</span>(<span class="number">0.0</span>,<span class="number">0.0</span>,<span class="number">1.0</span>) + </span><br><span class="line">               <span class="built_in">step</span>(x_axis + z_axis,<span class="number">0.5</span>) * grid_color;</span><br><span class="line">  <span class="keyword">return</span> <span class="type">vec4</span>(color, draw * size_fade);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">vec4</span> alpha_blend(<span class="type">vec4</span> fg, <span class="type">vec4</span> bg) &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="type">vec4</span>(</span><br><span class="line">    fg.rgb * fg.a + bg.rgb * (<span class="number">1.0</span> - fg.a),</span><br><span class="line">    fg.a + bg.a * (<span class="number">1.0</span> - fg.a)</span><br><span class="line">  );</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> main() &#123;</span><br><span class="line">    <span class="type">float</span> t = -near_point.y / (far_point.y - near_point.y);</span><br><span class="line">    <span class="type">vec3</span> world_pos = near_point + t * (far_point - near_point);</span><br><span class="line">    <span class="type">float</span> depth = compute_depth(world_pos);</span><br><span class="line">    <span class="type">float</span> linear_depth = compute_linear_depth01(depth * <span class="number">2.0</span> - <span class="number">1.0</span>);</span><br><span class="line">    <span class="built_in">gl_FragDepth</span> = depth;</span><br><span class="line">    <span class="type">float</span> draw_depth = <span class="built_in">mix</span>(<span class="number">1.0</span>,<span class="number">0.0</span>,<span class="built_in">max</span>(linear_depth,max_depth));</span><br><span class="line">    <span class="type">float</span> draw_plane = <span class="type">float</span>(t&gt;<span class="number">0.0</span>);</span><br><span class="line">    <span class="comment">// minor grid</span></span><br><span class="line">    <span class="type">vec4</span> color1 = draw_grid(</span><br><span class="line">        world_pos,grid_size, grid_thickness * <span class="number">0.5</span>, grid_fade_size);</span><br><span class="line">    <span class="comment">// major grid</span></span><br><span class="line">    <span class="type">vec4</span> color2 = draw_grid(</span><br><span class="line">        world_pos,grid_size * minor_grid_scale, </span><br><span class="line">        grid_thickness, grid_fade_size * minor_grid_scale);</span><br><span class="line">    <span class="comment">// alpha blend two color (color1 is base, and color2 is foreground)</span></span><br><span class="line">    <span class="type">vec4</span> color = alpha_blend(color2, color1);</span><br><span class="line">    out_color = <span class="type">vec4</span>(</span><br><span class="line">      color.rgb,</span><br><span class="line">      draw_depth * draw_plane * color.a</span><br><span class="line">    );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>最后给一个完整的效果</p>
+<p>最后给一个完整效果：</p>
 <p><img data-src="/posts/b93d/image-20260118212249774.png"
 style="zoom:50%;" /></p>
 
@@ -850,13 +861,13 @@ style="zoom:50%;" /></p>
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">64k</span>
+    <span title="站点总字数">65k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">3:51</span>
+    <span title="站点阅读时长">3:58</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动

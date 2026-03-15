@@ -20,12 +20,12 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"purewhitevk.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.27.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":"default"},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false,"trigger":"auto"}}</script><script src="/js/config.js" defer></script>
 
-    <meta name="description" content="git clone 1git clone &lt;repo-url&gt;  示例命令如下 1git clone https:&#x2F;&#x2F;github.com&#x2F;boostorg&#x2F;boost.git  一些常用的参数（全部参数选项可以通过 git clone --help 查看）  --recursive 或 --recurse-submodules（在较新版本的 git 中使用，命令的语义更加清晰）：当要">
+    <meta name="description" content="git clone 1git clone &lt;repo-url&gt;  示例命令如下 1git clone https:&#x2F;&#x2F;github.com&#x2F;boostorg&#x2F;boost.git  一些常用的参数（全部参数选项可以通过 git clone --help 查看）  --recursive 或 --recurse-submodules（在较新版本的 git 中使用，命令语义更加清晰）：当要拉">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Git 常用操作">
 <meta property="og:url" content="https://purewhitevk.github.io/posts/8de3/">
 <meta property="og:site_name" content="PureWhiteVK&#39;s Blog">
-<meta property="og:description" content="git clone 1git clone &lt;repo-url&gt;  示例命令如下 1git clone https:&#x2F;&#x2F;github.com&#x2F;boostorg&#x2F;boost.git  一些常用的参数（全部参数选项可以通过 git clone --help 查看）  --recursive 或 --recurse-submodules（在较新版本的 git 中使用，命令的语义更加清晰）：当要">
+<meta property="og:description" content="git clone 1git clone &lt;repo-url&gt;  示例命令如下 1git clone https:&#x2F;&#x2F;github.com&#x2F;boostorg&#x2F;boost.git  一些常用的参数（全部参数选项可以通过 git clone --help 查看）  --recursive 或 --recurse-submodules（在较新版本的 git 中使用，命令语义更加清晰）：当要拉">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://purewhitevk.github.io/posts/8de3/image-20240907110021863.png">
 <meta property="og:image" content="https://purewhitevk.github.io/posts/8de3/image-20240907110149847.png">
@@ -172,7 +172,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#git-clone"><span class="nav-number">1.</span> <span class="nav-text">git clone</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0-ssh-%E5%AF%86%E9%92%A5"><span class="nav-number">1.1.</span> <span class="nav-text">添加 SSH 密钥</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#git-branch"><span class="nav-number">2.</span> <span class="nav-text">git branch</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA"><span class="nav-number">2.1.</span> <span class="nav-text">创建</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%A0%E9%99%A4"><span class="nav-number">2.2.</span> <span class="nav-text">删除</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%87%8D%E5%91%BD%E5%90%8D"><span class="nav-number">2.3.</span> <span class="nav-text">重命名</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%90%88%E5%B9%B6"><span class="nav-number">3.</span> <span class="nav-text">合并</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%8B%89%E5%8F%96"><span class="nav-number">4.</span> <span class="nav-text">拉取</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#git-fetch"><span class="nav-number">4.1.</span> <span class="nav-text">git fetch</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#git-pull"><span class="nav-number">4.2.</span> <span class="nav-text">git pull</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%AC%E5%9C%B0%E5%BC%BA%E8%A1%8C%E5%90%8C%E6%AD%A5%E8%BF%9C%E7%AB%AF%E5%88%86%E6%94%AF"><span class="nav-number">4.3.</span> <span class="nav-text">本地强行同步远端分支</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#git-push"><span class="nav-number">5.</span> <span class="nav-text">git push</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%BA%E8%A1%8C%E6%8E%A8%E9%80%81%E8%BF%9C%E7%AB%AF%E5%88%86%E6%94%AF"><span class="nav-number">5.1.</span> <span class="nav-text">强行推送远端分支</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#git-stash"><span class="nav-number">6.</span> <span class="nav-text">git stash</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#fork"><span class="nav-number">7.</span> <span class="nav-text">fork</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%8C%E6%AD%A5%E8%BF%9C%E7%A8%8B%E4%BB%93%E5%BA%93"><span class="nav-number">7.1.</span> <span class="nav-text">同步远程仓库</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AF%B4%E6%98%8E"><span class="nav-number">8.</span> <span class="nav-text">说明</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#git-clone"><span class="nav-number">1.</span> <span class="nav-text">git clone</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9-refspec"><span class="nav-number">1.1.</span> <span class="nav-text">修改 refspec</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%87%8D%E6%96%B0%E6%8B%89%E5%8F%96%E5%AE%8C%E6%95%B4%E5%8E%86%E5%8F%B2"><span class="nav-number">1.2.</span> <span class="nav-text">重新拉取完整历史</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0-ssh-%E5%AF%86%E9%92%A5"><span class="nav-number">1.3.</span> <span class="nav-text">添加 SSH 密钥</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#git-branch"><span class="nav-number">2.</span> <span class="nav-text">git branch</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA"><span class="nav-number">2.1.</span> <span class="nav-text">创建</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%A0%E9%99%A4"><span class="nav-number">2.2.</span> <span class="nav-text">删除</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%87%8D%E5%91%BD%E5%90%8D"><span class="nav-number">2.3.</span> <span class="nav-text">重命名</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%90%88%E5%B9%B6"><span class="nav-number">3.</span> <span class="nav-text">合并</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%8B%89%E5%8F%96"><span class="nav-number">4.</span> <span class="nav-text">拉取</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#git-fetch"><span class="nav-number">4.1.</span> <span class="nav-text">git fetch</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#git-pull"><span class="nav-number">4.2.</span> <span class="nav-text">git pull</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%AC%E5%9C%B0%E5%BC%BA%E8%A1%8C%E5%90%8C%E6%AD%A5%E8%BF%9C%E7%AB%AF%E5%88%86%E6%94%AF"><span class="nav-number">4.3.</span> <span class="nav-text">本地强行同步远端分支</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#git-push"><span class="nav-number">5.</span> <span class="nav-text">git push</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%BA%E8%A1%8C%E6%8E%A8%E9%80%81%E8%BF%9C%E7%AB%AF%E5%88%86%E6%94%AF"><span class="nav-number">5.1.</span> <span class="nav-text">强行推送远端分支</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E8%BF%9C%E7%AB%AF%E5%88%86%E6%94%AF"><span class="nav-number">5.2.</span> <span class="nav-text">删除远端分支</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#git-stash"><span class="nav-number">6.</span> <span class="nav-text">git stash</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#fork"><span class="nav-number">7.</span> <span class="nav-text">fork</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%8C%E6%AD%A5%E8%BF%9C%E7%A8%8B%E4%BB%93%E5%BA%93"><span class="nav-number">7.1.</span> <span class="nav-text">同步远程仓库</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AF%B4%E6%98%8E"><span class="nav-number">8.</span> <span class="nav-text">说明</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -284,14 +284,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>2.4k</span>
+      <span>2.7k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>9 分钟</span>
+      <span>10 分钟</span>
     </span>
 </div>
 
@@ -312,14 +312,14 @@
 <ul>
 <li><p><code>--recursive</code> 或
 <code>--recurse-submodules</code>（在较新版本的 git
-中使用，命令的语义更加清晰）：当要拉取的仓库中包含 submodule
-时，是默认不会拉取子仓库的，而指定这个参数即可拉取所有的子仓库。</p>
+中使用，命令语义更加清晰）：当要拉取的仓库中包含 submodule
+时，默认不会拉取子仓库，而指定这个参数即可拉取所有的子仓库。</p>
 <p>如果我们在下载的时候忘记指定
 <code>--recursive</code>，也可以通过下面命令重新拉取子仓库</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git submodule update --init --recursive</span><br></pre></td></tr></table></figure>
 </li>
-<li><p><code>--depth</code>：当我们只想下载指定更新次数的分支（这样可以减少下载的大小，在我们只需要最新的提交记录时很有用，当然也可以直接下载
-zip 或 tar.gz 等压缩文件来解决。</p></li>
+<li><p><code>--depth</code>：当我们只想下载指定数量的提交历史时，这个参数可以减少下载体积；如果只需要源码，也可以直接下载
+zip 或 tar.gz 等压缩文件。</p></li>
 <li><p><code>-b</code> 或者
 <code>--branch</code>：指定要拉取的分支名称，例如下载 boost-1.86.0
 （这个实际上是一个 tag，但也可以通过这种方式下载）。</p>
@@ -327,6 +327,22 @@ zip 或 tar.gz 等压缩文件来解决。</p></li>
 </li>
 </ul>
 <span id="more"></span>
+
+<h2 id="修改-refspec">修改 refspec</h2>
+<p>使用 shallow clone 时，会出现无法下载远程其他分支的情况，此时需要重设
+refspec，命令如下：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1) 查看当前 fetch 配置</span></span><br><span class="line">git config --get-all remote.origin.fetch</span><br><span class="line"></span><br><span class="line"><span class="comment"># 2) 清理旧的 fetch 规则（有些 shallow clone 只会保留单分支规则）</span></span><br><span class="line">git config --unset-all remote.origin.fetch</span><br><span class="line"></span><br><span class="line"><span class="comment"># 3) 重新设置为“拉取所有远程分支”</span></span><br><span class="line">git config --add remote.origin.fetch <span class="string">&quot;+refs/heads/*:refs/remotes/origin/*&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 4) 重新拉取远程引用</span></span><br><span class="line">git fetch origin</span><br></pre></td></tr></table></figure>
+
+<p>执行完成后，可以通过下面命令确认远程分支是否已经可见：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git branch -r</span><br></pre></td></tr></table></figure>
+
+<p>如果在克隆时就希望浅克隆但拉取所有分支，可以直接使用
+<code>--no-single-branch</code> 选项，具体命令示例如下 ：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> --depth 1 --no-single-branch &lt;repo-url&gt;</span><br></pre></td></tr></table></figure>
+
+<h2 id="重新拉取完整历史">重新拉取完整历史</h2>
+<p>如果仓库本身是浅克隆，想继续查看更完整历史，可以再执行：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 拉取完整历史</span></span><br><span class="line">git fetch --unshallow</span><br><span class="line"></span><br><span class="line"><span class="comment"># 或者仅补充到指定深度</span></span><br><span class="line">git fetch --depth=1000</span><br></pre></td></tr></table></figure>
 
 <h2 id="添加-ssh-密钥">添加 SSH 密钥</h2>
 <ol type="1">
@@ -384,7 +400,7 @@ style="zoom: 50%;" /></p>
 <p>通过下面命令重命名分支（实际上是移动或者拷贝，这两种方式都可以实现重命名效果）</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git branch -m &lt;old-branch&gt; &lt;new-branch&gt;</span><br></pre></td></tr></table></figure>
 
-<p>此处的 <code>-m</code> 表示 move，和 Linux 上 <code>move</code>
+<p>此处的 <code>-m</code> 表示 move，和 Linux 上 <code>mv</code>
 命令一致，就是移动分支到新的标识符下。</p>
 <p>也可以使用 <code>-c</code> ，其表示 copy，和 Linux 上 <code>cp</code>
 命令一致，其好处就是不会丢弃原有的分支</p>
@@ -397,10 +413,10 @@ commit</strong>，将分支1的改动和分支2的改动合并，记录在此 co
 <p>优点是能完整的记录所有的改动历史</p>
 <p>缺点是主干的历史并不是完全线性的，在版本回退时不太方便（通过 github
 的 PR 或者 gitlab 的 MR 都可以确保主干线性历史）</p></li>
-<li><p>rebase：将分支1中的相对于分支2不同的 commit 在 分支2
-上重新提交一遍，<strong>不会创建新的
+<li><p>rebase：将分支1中相对于分支2不同的 commit
+在分支2上重新提交一遍，<strong>不会创建新的
 commit</strong>，但是分支1中改动部分的 commit
-的哈希值会发生改变（因为相当于在分支2上重新做了一遍）</p>
+哈希值会发生改变（因为相当于在分支2上重新做了一遍）</p>
 <p>优点是能保证改动历史完全线性</p>
 <p>缺点是记录的历史实际上是改动过的（因为哈希值发生变化）</p></li>
 </ul>
@@ -410,17 +426,17 @@ Branching</a> 网站通过图形化方式加深对 <code>git merge</code> 和
 <code>git rebase</code> 的理解。</p>
 <h1 id="拉取">拉取</h1>
 <h2 id="git-fetch">git fetch</h2>
-<p>通过 <code>git clone</code> 下载到本地的分支，实际上<code>git</code>
+<p>通过 <code>git clone</code> 下载到本地后，实际上 <code>git</code>
 会帮我们自动创建一个 <code>origin/xxx</code> 分支（可以通过
-<code>git branch -a</code> 查看所有的分支），而 <code>git fetch</code>
-做的就是将远端的更新同步到本地的 <code>origin/xxx</code>
+<code>git branch -a</code> 查看所有分支），而 <code>git fetch</code>
+做的就是将远端更新同步到本地的 <code>origin/xxx</code>
 分支中，如下所示</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">PS D:\Code\Git\Learn-Git&gt; git branch -a</span><br><span class="line">* main</span><br><span class="line">  remotes/origin/HEAD -&gt; origin/main</span><br><span class="line">  remotes/origin/main</span><br></pre></td></tr></table></figure>
 
 <h2 id="git-pull">git pull</h2>
-<p><code>pull</code> 想对于 <code>fetch</code>
-的区别就是其默认会将远端分支 merge
-到本地分支（如果远端分支和本地分支存在冲突的话），如果没有的话就直接
+<p><code>pull</code> 相对于 <code>fetch</code>
+的区别是其默认会将远端分支 merge
+到本地分支（如果远端分支和本地分支存在冲突的话），如果没有冲突就直接
 fast-forward 即可</p>
 <h2 id="本地强行同步远端分支">本地强行同步远端分支</h2>
 <p>当远端分支进行过 rebase
@@ -453,17 +469,23 @@ origin 的分支（即远端分支），并通过 <code>--soft</code>
 
 <p>一般这个命令仅在个人的分支使用（例如
 <code>bugfix/xxx</code>或<code>feature/xxx</code>）</p>
+<h2 id="删除远端分支">删除远端分支</h2>
+<p>使用 <code>--delete</code> 可以删除远端分支，示例如下：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git push --delete origin old-branch</span><br></pre></td></tr></table></figure>
+
 <h1 id="git-stash">git stash</h1>
-<p>当我们本地分支有改动尚未提交（未通过 git add 和 git commit
-时）但是需要切换分支时，git 会提示有改动未暂存，此时我们可以通过
-<code>git stash</code> 命令暂存，其就使用起来就相当于一个栈，</p>
+<p>当我们本地分支有改动尚未提交（未通过 git add 和 git
+commit）但需要切换分支时，git 会提示有改动未暂存，此时可以通过
+<code>git stash</code> 命令暂存，其使用起来相当于一个栈。</p>
 <ol type="1">
 <li><p>入栈操作：就是将当前所有的改动暂存起来</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git stash</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>出栈操作：就是将当前暂存的改动释放出来，应用到当前分支中</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git stash pop</span><br></pre></td></tr></table></figure>
-</li>
+
+<p>也可以使用
+<code>git stash apply</code>，这个相当于查看栈顶元素内容，但是不出栈。</p></li>
 </ol>
 <h1 id="fork">fork</h1>
 <p>fork 是 github 或 gitlab
@@ -481,12 +503,11 @@ conan-center-index 出现其他更新的时候，我们 fork
 <h2 id="同步远程仓库">同步远程仓库</h2>
 <p>还是以 conan-center-index 为例，将原始仓库记为 A 仓库，fork
 之后的仓库记为 B 仓库。当我们拉取 B 仓库时，其 remote 链接对应的就是 B
-仓库的 github 远程连接，例如 <a
-target="_blank" rel="noopener" href="https://github.com/conan-io/conan-center-index">https://github.com/conan-io/conan-center-index</a>
-这种，此时我们想要拉取 A 仓库的代码更新，可以手动设置新的
-remote，并手动拉取。</p>
+仓库的 GitHub 远程链接，例如 <a
+target="_blank" rel="noopener" href="https://github.com/conan-io/conan-center-index，此时我们想要拉取">https://github.com/conan-io/conan-center-index，此时我们想要拉取</a>
+A 仓库的代码更新，可以手动设置新的 remote，并手动拉取。</p>
 <p>具体操作如下：</p>
-<p>A. 添加 A 仓库 的 remote 链接，并将其命名为 repoA：</p>
+<p>A. 添加 A 仓库的 remote 链接，并将其命名为 repoA：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git remote add repoA &lt;remote-url-of-A&gt;</span><br></pre></td></tr></table></figure>
 
 <p>B. 拉取 A 仓库的代码改动，使用 repoA 指定我们需要从 repoA 这个 remote
@@ -581,13 +602,13 @@ remote，并手动拉取。</p>
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">64k</span>
+    <span title="站点总字数">65k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">3:51</span>
+    <span title="站点阅读时长">3:58</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动

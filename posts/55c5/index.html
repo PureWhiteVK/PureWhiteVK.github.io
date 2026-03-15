@@ -323,7 +323,7 @@ A 类时调用 <code>A::func3</code>，是 B 类时调用
 <code>B::func3</code>），且需要调用的函数在编译期间就已经确定好了。</p>
 <h2 id="成员函数指针">成员函数指针</h2>
 <p>例子就介绍到这，下面我们要简单理解 C++
-中实现原理，首先从成员函数指针来看，对于任意一个类别的成员函数，我们可以使用类似与函数指针的表达方式，即<code>void(T::*)()</code>，写成模板形式的话如下（当然，使用
+中实现原理，首先从成员函数指针来看，对于任意一个类别的成员函数，我们可以使用类似于函数指针的表达方式，即<code>void(T::*)()</code>，写成模板形式的话如下（当然，使用
 <code>auto</code> 是最简单的，就是容易变成 auto
 script，然后导致代码理解起来有困难）</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> <span class="title class_">T</span>, <span class="keyword">typename</span> R, <span class="keyword">typename</span>... Args&gt; <span class="keyword">struct</span> <span class="title class_">MemberFuncPtr</span> &#123;</span><br><span class="line">  <span class="keyword">using</span> type = <span class="built_in">R</span> (T::*)(Args...);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
@@ -441,7 +441,7 @@ MSVC C++ 中称为 vftable 和 vfptr）</p>
 <p><code>uintptr_t</code> 表示和指针大小一致的整型数，在 64 位平台上就为
 <code>uint64_t</code>，使用这个方便跨平台使用</p>
 </blockquote>
-<p>如果调用调用正确，我们可以看到两行一样的输出</p>
+<p>如果调用正确，我们可以看到两行一样的输出</p>
 <p><img data-src="/posts/55c5/image-20230202183658979.png" /></p>
 <p>输出的确如我们所愿（x86-64 msvc 19.25.28614）</p>
 <p>再在 compiler explorer 上跑下 GCC 和 Clang 的结果</p>
@@ -543,7 +543,7 @@ ABI，也就是 GCC 和 Clang，对于 MSVC
 <p>对于 clang 也是一样</p>
 <p><img data-src="/posts/55c5/image-20230202223902378.png" /></p>
 <h2 id="总结">总结</h2>
-<p><strong>虚函数的出现是因为我们无法在静态编译过程中确定要执行的函数，需要动态查找待执行的函数</strong>。具体而言就是通过对象示例中存储的一个指向虚函数表（vtable）的虚指针（vptr），结合待调用的虚函数信息（在
+<p><strong>虚函数的出现是因为我们无法在静态编译过程中确定要执行的函数，需要动态查找待执行的函数</strong>。具体而言就是通过对象实例中存储的一个指向虚函数表（vtable）的虚指针（vptr），结合待调用的虚函数信息（在
 vtable 上的偏移量）获取到实际的函数地址，最后调用函数。</p>
 <p>对于普通的函数而言，在静态编译过程中能够获取到函数地址，而虚函数则多了一个查找的过程（虚继承情况可能还要再多一次虚基的寻址过程）。</p>
 
@@ -618,13 +618,13 @@ vtable 上的偏移量）获取到实际的函数地址，最后调用函数。<
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">64k</span>
+    <span title="站点总字数">65k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">3:51</span>
+    <span title="站点阅读时长">3:58</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动

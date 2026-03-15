@@ -333,7 +333,7 @@ style="zoom:67%;" /></p>
 <p>首先我们使用 docker 跑一个 ubuntu 的镜像看下基本情况：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -it --<span class="built_in">rm</span> ubuntu:20.04 /bin/bash</span><br></pre></td></tr></table></figure>
 
-<p>注：后面也会出写一个笔记记录常用的 docker 命令。</p>
+<p>注：后面也会写一个笔记记录常用的 docker 命令。</p>
 <p>在 ubuntu 下使用 <code>sudo apt-get install xxx</code> 安装软件，所有
 <code>apt</code> 相关的配置项存储在 <code>/etc/apt</code>
 文件夹下，其内容如下</p>
@@ -354,7 +354,7 @@ style="zoom:67%;" /></p>
 <p>我们可以看到其软件源就是通过以下格式指定的</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">deb &lt;apt source&gt;</span><br></pre></td></tr></table></figure>
 
-<p>从源的URL链接中不难发现，这些链接实际上都是同一个域名底下的，我们换源是可以只更换前面的域名（即最后一个<code>/</code>之前的所有即可）。</p>
+<p>从源的URL链接中不难发现，这些链接实际上都是同一个域名下的，我们换源是可以只更换前面的域名（即最后一个<code>/</code>之前的所有即可）。</p>
 <p>既然都是替换了，那么肯定不能使用文本编辑器一个一个替换，最好的办法就是通过
 <code>sed</code> 命令进行替换</p>
 <h3 id="sed-命令简单介绍"><code>sed</code> 命令简单介绍</h3>
@@ -384,7 +384,7 @@ editor.</p>
 <p>测试如下</p>
 <p><img data-src="/posts/4a2b/image-20230626225349769.png" /></p>
 <h3 id="替换链接">替换链接</h3>
-<p>那么这样我们就可以我们通过文本替换实现换源，命令如下</p>
+<p>那么这样我们就可以通过文本替换实现换源，命令如下</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sed -i s/archive.ubuntu.com/mirrors.aliyun.com/g /etc/apt/sources.list</span><br></pre></td></tr></table></figure>
 
 <p>这条命令将所有的 <code>archive.ubuntu.com</code> 替换为
@@ -478,10 +478,10 @@ style="zoom:80%;" /></p>
 账户的密码，这就意味着我们永远无法连接到容器</p>
 <p><img data-src="/posts/4a2b/image-20230627000040652.png"
 style="zoom:80%;" /></p>
-<p>我们可以通过一下命令连接到容器进行修改</p>
+<p>我们可以通过以下命令连接到容器进行修改</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker exec -it &lt;container-id&gt; /bin/bash</span><br></pre></td></tr></table></figure>
 
-<p>然后输入一下命令设置明文密码</p>
+<p>然后输入以下命令设置明文密码</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;root:123&quot; | chpasswd</span><br></pre></td></tr></table></figure>
 
 <p>之后我们再尝试通过 SSH 进行连接，结果如下</p>
@@ -526,7 +526,7 @@ style="zoom:67%;" /></p>
 style="zoom:67%;" /></p>
 <p>每次登录都输入密码还是有点麻烦（可以通过 <code>sshd_config</code>
 设置密码可为空来绕过，但是还会提示用户进行交互，无法实现自动化远程登录），为此我们需要配置远程登录，首先通过
-<code>ssh-keygen</code> 创建一对秘钥</p>
+<code>ssh-keygen</code> 创建一对密钥</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen -t rsa -f ~/key -N <span class="string">&quot;&quot;</span></span><br></pre></td></tr></table></figure>
 
 <p><img data-src="/posts/4a2b/image-20230627094530454.png"
@@ -534,11 +534,11 @@ style="zoom:67%;" /></p>
 <p>其中 <code>-t rsa</code> 指定加密算法为 rsa，<code>-N ""</code>
 表示私钥密码为空 ，输出私钥路径为 <code>~/key</code>
 ，公钥路径会在私钥后添加 <code>.pub</code>，即 <code>~/key.pub</code>
-，此处创建的秘钥是可以复用的，不过不推荐这么做，安全性较低。</p>
+，此处创建的密钥是可以复用的，不过不推荐这么做，安全性较低。</p>
 <p>然后将公钥信息拷贝到 <code>~/.ssh/authorized_keys</code> 里即可</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">mkdir</span> ~/.ssh</span><br><span class="line"><span class="built_in">cat</span> ~/key.pub &gt;&gt; ~/.ssh/authorized_keys</span><br></pre></td></tr></table></figure>
 
-<p>然后再重启一下 ssh，最终使用私钥登录测试</p>
+<p>然后再重启一下 ssh，最终使用密钥登录测试</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh -p 54132 -i key root@localhost</span><br></pre></td></tr></table></figure>
 
 <p>测试结果如下</p>
@@ -548,7 +548,7 @@ style="zoom:67%;" /></p>
 的权限，按照下面的方式调整权限即可（适用于Windows，对于 macos 直接使用
 <code>chmod</code> 命令修改权限即可）</p>
 <p><img data-src="/posts/4a2b/modify-windows-privilege.png" /></p>
-<p>再尝试登录的时候就可以登陆了</p>
+<p>再尝试登录的时候就可以登录了</p>
 <p><img data-src="/posts/4a2b/image-20230627101433963.png"
 style="zoom:67%;" /></p>
 <p>最后给出完整的 Dockerfile</p>
@@ -558,7 +558,7 @@ style="zoom:67%;" /></p>
 <p>跑深度学习时经常需要配环境，需要安装 cuda 驱动、pytorch
 等必要的软件库，虽然使用 anaconda 已经可以很好的管理 python 环境，使用
 docker 来运行可以确保代码的可移植性，便于在另外一台机器上跑代码。</p>
-<p>anaconda 官方起始有 docker 镜像，但是只有 debian 和
+<p>anaconda 官方其实有 docker 镜像，但是只有 debian 和
 alpine，且通常我们会在 nvidia 的 cuda
 容器中进行安装，可以参考官方的安装脚本进行配置，仓库地址：<a
 target="_blank" rel="noopener" href="https://github.com/ContinuumIO/docker-images/blob/master/miniconda3/debian/Dockerfile">docker-images/miniconda3/debian/Dockerfile
@@ -689,8 +689,8 @@ shm_Adenialzz的博客-CSDN博客</a></li>
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/posts/d235/" rel="next" title="CMake项目结构模版">
-                  CMake项目结构模版 <i class="fa fa-angle-right"></i>
+                <a href="/posts/d235/" rel="next" title="CMake项目结构模板">
+                  CMake项目结构模板 <i class="fa fa-angle-right"></i>
                 </a>
             </div>
           </div>
@@ -722,13 +722,13 @@ shm_Adenialzz的博客-CSDN博客</a></li>
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">64k</span>
+    <span title="站点总字数">65k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">3:51</span>
+    <span title="站点阅读时长">3:58</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动

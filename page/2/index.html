@@ -242,7 +242,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/posts/b5fa/" class="post-title-link" itemprop="url">Antlr4使用</a>
+          <a href="/posts/b5fa/" class="post-title-link" itemprop="url">ANTLR4使用</a>
         </h2>
 
         <div class="post-meta-container">
@@ -411,7 +411,7 @@ C++ 依赖解决方案，但是对于一些冷门的库可能就不支持，还�
 <p>最简单的办法就是通过 git
 的子模块将其添加到项目中，这种依赖管理方式确保可以访问到源代码，其缺点也很明显，我们在下载库的时候需要通过下载依赖库（也就是子模块），如果子模块较大可能下载起来比较耗时。</p>
 <p>前面一个笔记中也提到了，要想删除添加的 git submodule
-十分麻烦，没有一个简单的命令可以直接删除，需要手动调整需要文件才能删除干净。</p>
+十分麻烦，没有一个简单的命令可以直接删除，需要手动调整需要的文件才能删除干净。</p>
 <h1 id="fetchcontent-模块添加依赖">FetchContent 模块添加依赖</h1>
 <p>而 FetchContent 是 CMake 提供的一种新式依赖管理方案（在 3.11
 版本首次出现），其在 CMake
@@ -523,7 +523,7 @@ C++ 依赖解决方案，但是对于一些冷门的库可能就不支持，还�
 的全排列变成了求 <code>[2,3,4]</code> 全排列，当序列长度为 1
 时其排列就为其本身，递归终止。</p>
 <p>根据这个思路我们就可以写出所有的全排列了</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">permutations</span><span class="params">(<span class="type">const</span> std::vector&lt;<span class="type">int</span>&gt;&amp; numbers,</span></span></span><br><span class="line"><span class="params"><span class="function">                  std::vector&lt;<span class="type">int</span>&gt;&amp; curr,</span></span></span><br><span class="line"><span class="params"><span class="function">                  std::vector&lt;<span class="type">int</span>&gt;&amp; visited,</span></span></span><br><span class="line"><span class="params"><span class="function">                  <span class="type">const</span> std::vector&lt;std::vector&lt;<span class="type">int</span>&gt;&gt;&amp; output)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(curr.<span class="built_in">size</span>() == <span class="built_in">numbers</span>().<span class="built_in">size</span>()) &#123;</span><br><span class="line">        output.<span class="built_in">emplece_back</span>(curr);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;numbers.<span class="built_in">size</span>();i++) &#123;</span><br><span class="line">        <span class="keyword">if</span>(visited[i]) &#123;</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        visited[i] = <span class="literal">true</span>;</span><br><span class="line">        curr.<span class="built_in">emplace_back</span>(numbers[i]);</span><br><span class="line">        <span class="built_in">permutations</span>(numbers,curr,visited,output);</span><br><span class="line">        curr.<span class="built_in">pop_back</span>();</span><br><span class="line">        visited[i] = <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">permutations</span><span class="params">(<span class="type">const</span> std::vector&lt;<span class="type">int</span>&gt;&amp; numbers,</span></span></span><br><span class="line"><span class="params"><span class="function">                  std::vector&lt;<span class="type">int</span>&gt;&amp; curr,</span></span></span><br><span class="line"><span class="params"><span class="function">                  std::vector&lt;<span class="type">int</span>&gt;&amp; visited,</span></span></span><br><span class="line"><span class="params"><span class="function">                  std::vector&lt;std::vector&lt;<span class="type">int</span>&gt;&gt;&amp; output)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(curr.<span class="built_in">size</span>() == numbers.<span class="built_in">size</span>()) &#123;</span><br><span class="line">        output.<span class="built_in">emplace_back</span>(curr);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;numbers.<span class="built_in">size</span>();i++) &#123;</span><br><span class="line">        <span class="keyword">if</span>(visited[i]) &#123;</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        visited[i] = <span class="literal">true</span>;</span><br><span class="line">        curr.<span class="built_in">emplace_back</span>(numbers[i]);</span><br><span class="line">        <span class="built_in">permutations</span>(numbers,curr,visited,output);</span><br><span class="line">        curr.<span class="built_in">pop_back</span>();</span><br><span class="line">        visited[i] = <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/posts/454a/#more" rel="contents">
@@ -682,7 +682,7 @@ C++ 依赖解决方案，但是对于一些冷门的库可能就不支持，还�
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/posts/d235/" class="post-title-link" itemprop="url">CMake项目结构模版</a>
+          <a href="/posts/d235/" class="post-title-link" itemprop="url">CMake项目结构模板</a>
         </h2>
 
         <div class="post-meta-container">
@@ -843,7 +843,7 @@ style="zoom:67%;" /></p>
 <p>首先我们使用 docker 跑一个 ubuntu 的镜像看下基本情况：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -it --<span class="built_in">rm</span> ubuntu:20.04 /bin/bash</span><br></pre></td></tr></table></figure>
 
-<p>注：后面也会出写一个笔记记录常用的 docker 命令。</p>
+<p>注：后面也会写一个笔记记录常用的 docker 命令。</p>
 <p>在 ubuntu 下使用 <code>sudo apt-get install xxx</code> 安装软件，所有
 <code>apt</code> 相关的配置项存储在 <code>/etc/apt</code>
 文件夹下，其内容如下</p>
@@ -1170,7 +1170,7 @@ target="_blank" rel="noopener" href="https://www.zerotier.com/">https://www.zero
     
     
     <div class="post-body" itemprop="articleBody">
-          <p>在 WIndows 下跑 Python 深度学习代码时，需要编译 C++ 库（点名
+          <p>在 Windows 下跑 Python 深度学习代码时，需要编译 C++ 库（点名
 Pytorch3d），但是使用最新版本的 MSVC 进行编译的时候会报错，去 Github 看
 Issue 时有提到降级可能有效，我们可以通过添加组件的方式直接下载指定版本的
 MSVC
@@ -1330,13 +1330,13 @@ MSVC
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">64k</span>
+    <span title="站点总字数">65k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">3:51</span>
+    <span title="站点阅读时长">3:58</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动

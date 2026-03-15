@@ -322,7 +322,7 @@
 中链接问题，但是在调试代码的过程中发现了一个问题，在不同的 shell 中执行
 lua
 脚本时，输出中文有时会乱码，有时又不会乱码，搞得有点烦，本篇就针对字符串问题做一个探究，搞清楚乱码的源头以及解决方案。</p>
-<p>首先看一个简单的示例，下面是一段简单的 c 语言 hello world</p>
+<p>首先看一个简单的示例，下面是一段简单的 C 语言 hello world</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">int</span> argc,<span class="type">char</span>** argv)</span> &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;你好，世界！😉&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>文件保存格式为：<code>UTF-8</code>（注意看 vscode 的右下角，写着
@@ -331,12 +331,12 @@ UTF-8）</p>
 style="zoom:50%;" /></p>
 <span id="more"></span>
 
-<p>使用 msvc 编译后，分别在 git
+<p>使用 MSVC 编译后，分别在 git
 bash、msys2、powershell上运行后输出结果如下</p>
 <p><img data-src="/posts/c4ef/image-20230117150241891.png"
 style="zoom: 67%;" /></p>
 <blockquote>
-<p>注：使用 msvc 编译 UTF-8 文件时，需要添加 <code>/utf-8</code>
+<p>注：使用 MSVC 编译 UTF-8 文件时，需要添加 <code>/utf-8</code>
 参数，否则会使用本机默认编码进行编译，有可能导致编译失败。</p>
 <p><img data-src="/posts/c4ef/image-20230119233748271.png" /></p>
 </blockquote>
@@ -385,7 +385,7 @@ style="zoom: 25%;" /></p>
 <code>65</code>，也即二进制的 <code>0b01000001</code> 和十六进制的
 <code>0x41</code>。</p>
 <p>从表中可以看到，仅包含大小写字母，而中文、俄语等文字并不包括在内。为了解决这个问题，一些厂家就自定义了一套编码格式，从而支持其他语言的字符显示。但是厂家自定义的编码并不能跨平台，例如在
-IBM 上编写的文档就有可能无法在 Mach 上打开，因为他们使用的编码不同。</p>
+IBM 上编写的文档就有可能无法在 Mac 上打开，因为他们使用的编码不同。</p>
 <h3 id="ansi">ANSI</h3>
 <p>厂家自定义编码太杂乱，为了实现跨平台，后来就统一了编码（车同轨，书同文？），称为
 ANSI 编码。ANSI 编码并不将所有的字符都编码到一张表上，其仅确保前 128
@@ -436,7 +436,7 @@ style="zoom:50%;" /></p>
 <p>在 GBK 编码中，烫的编码为 <code>[0xCC,0xCC]</code>，在 MSVC
 的调试模式下，会自动将未初始化的内存设置为
 <code>0xCC</code>（字节），用来进行 <a
-target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-cn/cpp/build/reference/rtc-run-time-error-checks?view=msvc-170">运行时错误检查</a>。</p>
+target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-cn/cpp/build/reference/rtc-run-time-error-checks?view=MSVC-170">运行时错误检查</a>。</p>
 <p>添加 <code>/RTC1</code>
 编译标志即可开启检查功能，我们进行调试时，就会看到如下字样</p>
 <p><img data-src="/posts/c4ef/image-20230120002426547.png"
@@ -494,7 +494,7 @@ Unicode，中文称为 <strong>统一码</strong>，不过一般直接说 Unicod
 的排列顺序永远都是从低位到高位</strong></p>
 <blockquote>
 <p>大端和小端出自 Jonathan Swift 的《格列佛游记》（Gulliver's
-Trabels）一书，其中交战的两个派别无法就应该从哪一端（小端还是大端）打开一个半熟的鸡蛋达成一致。</p>
+Travels）一书，其中交战的两个派别无法就应该从哪一端（小端还是大端）打开一个半熟的鸡蛋达成一致。</p>
 <p>一下是 Jonathan Swift 在1726年关于大小端之争的历史描述：</p>
 <p><em>“......下面要告诉你的是，Lilliput 和 Blefuscu
 这两大强国在过去36个月里一直在苦战。战争开始是由于以下的原因：我们大家都认为，吃鸡蛋前，原始的方法是打破鸡蛋较大的一端，可是当今皇帝的祖父小时候吃鸡蛋，一次按古法打鸡蛋是碰巧将一个手指弄破了，因此他的父亲，当时的皇帝，就下了一道敕令，命令全体臣民吃鸡蛋时打破鸡蛋较小的一端，违令者重罚。老百姓们对这项命令极为反感。历史告诉我们，由此曾发生过六次叛乱，其中一个皇帝送了命，另一个丢了王位。这些叛乱大多都是由
@@ -626,7 +626,7 @@ style="zoom:50%;" /></p>
 位，4字节。</p>
 <blockquote>
 <p>注：编码单位（code
-uint）是编码中每个字符编码的基本元素，对于定长编码中，编码单位大小就等于字符大小，例如
+unit）是编码中每个字符编码的基本元素，对于定长编码中，编码单位大小就等于字符大小，例如
 GBK 中编码单位为 2 字节，其可表示的所有字符都是 2
 字节；对于变长编码，一个字符的编码可以由多个编码单位进行表示。</p>
 </blockquote>
@@ -844,13 +844,13 @@ actually do? - Stack Overflow</a></li>
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">64k</span>
+    <span title="站点总字数">65k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">3:51</span>
+    <span title="站点阅读时长">3:58</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
