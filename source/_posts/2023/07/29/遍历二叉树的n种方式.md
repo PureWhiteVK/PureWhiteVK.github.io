@@ -126,7 +126,7 @@ template<typename T> void preorder_iter(TreeNode<T>* root) {
   while(!stack.empty()) {
     node_ptr curr = stack.top();
     stack.pop();
-    visit(node_ptr);
+    visit(curr);
     if(curr->right) {
       stack.emplace(curr->right);
     }
@@ -226,16 +226,16 @@ template<typename T> void level_order_iter(TreeNode<T>* root) {
   using node_ptr = typename TreeNode<T>::ptr_type;
   std::queue<node_ptr> queue;
   queue.emplace(root);
-  while(!stack.empty()) {
+  while(!queue.empty()) {
     // 相应的替换成 queue 对应的队首和弹出函数
     node_ptr curr = queue.front();
     queue.pop();
-    visit(node_ptr);
+    visit(curr);
     if(curr->right) {
-      stack.emplace(curr->right);
+      queue.emplace(curr->right);
     }
     if(curr->left) {
-      stack.emplace(curr->left);
+      queue.emplace(curr->left);
     }
   }
 }

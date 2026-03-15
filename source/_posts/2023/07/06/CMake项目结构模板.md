@@ -1,5 +1,5 @@
 ---
-title: CMake项目结构模版
+title: CMake项目结构模板
 mathjax: false
 abbrlink: d235
 date: 2023-07-06 20:35:20
@@ -176,7 +176,7 @@ git checkout v1.89.7-docking
 
 **文件名**
 
-小写下划线，例如 `image_utils.h`，`imgae_utils.cpp`
+小写下划线，例如 `image_utils.h`，`image_utils.cpp`
 
 **命名空间**
 

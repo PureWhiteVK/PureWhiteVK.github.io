@@ -152,7 +152,7 @@ ztppixkcjv: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 2800
         TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
 ```
 
-其中那个 zt 开头的就是我们添加的虚拟网络了，我们可以查看到分配好的虚拟网络地址，此时我们可以使用 ping 来测试虚拟区域网中设备的连通性
+其中那个 zt 开头的就是我们添加的虚拟网络了，我们可以查看到分配好的虚拟网络地址，此时我们可以使用 ping 来测试虚拟局域网中设备的连通性
 
 ```bash
 root@VM-0-17-ubuntu:/home/ubuntu# ping 172.27.58.47

@@ -144,7 +144,7 @@ if __name__ == '__main__':
 
 ## nohup 简单使用
 
-`nohuo` 命令使用起来很简单，在待执行的命令之前添加一个 `nohup` 即可
+`nohup` 命令使用起来很简单，在待执行的命令之前添加一个 `nohup` 即可
 
 ```bash
 nohup <your-command>
@@ -374,7 +374,7 @@ python main.py > stdout.log 2>&1
 
 
 
-而对于 `|` ，一个很常用的例子就是检索（通过 `grep` 实现），例如我们想查询当前 python 环境中是否安装 `numpy`，可以使用一下命令进行查看
+而对于 `|` ，一个很常用的例子就是检索（通过 `grep` 实现），例如我们想查询当前 python 环境中是否安装 `numpy`，可以使用以下命令进行查看
 
 ```bash
 python -m pip list | grep numpy

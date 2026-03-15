@@ -144,9 +144,9 @@ hexo.extend.filter.register('before_post_render', normal_function2);
 
 从执行结果中可以看到，在箭头函数（arrow function）中不包含 this 指针，我们无法通过 this 来访问 hexo 的变量，但是可以直接通过 hexo 全局变量来访问，对于普通函数（normal function）而言，可以通过 this 来访问 hexo，也可以直接通过全局变量 hexo 来访问。
 
-由于脚本模式实际上实在 js 中通过字符串形式执行的，最好在开头处添加 `use strict` 来标识，确保插件能正常执行。
+由于脚本模式实际上是在 js 中通过字符串形式执行的，最好在开头处添加 `use strict` 来标识，确保插件能正常执行。
 
-注：导入包的时候我们只能使用 common js 的包，并不支持 es6 模式的包，即我们不能通过一下模式导入包
+注：导入包的时候我们只能使用 common js 的包，并不支持 es6 模式的包，即我们不能通过以下模式导入包
 
 ```js
 import { unified } from 'unified';
@@ -447,7 +447,7 @@ This is free software; see the source for copying conditions. There is no
 warranty, not even for merchantability or fitness for a particular purpose.
 ```
 
-上面的代码实际上就是调用了 `pandoc --version` 命令，并通过 CacheStream 获取到了调用命令后的输出结果，以便进行下一步的调用。
+上面的代码实际上就是调用了 `pandoc --version` 命令，并通过 `on('data',...)` 回调函数获取到了调用命令后的输出结果，以便进行下一步的调用。
 
 如果我们需要向 pandoc 传输数据（例如待处理的 markdown 文本流），我们可以直接在 `stdin` 中直接写入，同时注意写入完成后**记得关闭输入流**，否则 pandoc 进程会一直等待输入。
 
@@ -535,7 +535,7 @@ pandoc --lua-filter=smallcaps.lua -o test.html test.md
 
 ### filter 写法
 
-上面的代码第一眼看上有点奇怪，怎么以来就是一个 `return` 语句，返回的 `{}` 怎么直接套了一个 `{xxx = xxx}`
+上面的代码第一眼看上有点奇怪，怎么一来就是一个 `return` 语句，返回的 `{}` 怎么直接套了一个 `{xxx = xxx}`
 
 首先解释后面一点，在 lua 中，列表和字典都使用 `{}` 表示，那么最外层的就是一个列表，然后内层的是一个字典，我们可以看到其指定了一个键为 `Strong` 的函数，表示对 `Strong` 这个节点的处理函数。
 

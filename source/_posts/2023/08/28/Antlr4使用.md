@@ -1,5 +1,5 @@
 ---
-title: Antlr4使用
+title: ANTLR4使用
 mathjax: false
 abbrlink: b5fa
 tags:
@@ -67,7 +67,7 @@ prog 对应于 `startRuleName`
 10*(5*2)
 ```
 
-然后输入 <kbd>Ctrl</kbd> + <kbd>D</kbd>（Unix系统）或者 <kbd>Ctrl</kbd> +<kbd>Z</kbd>（Windows系统）来终止输入，此时就可以看到输出结果
+然后输入 <kbd>Ctrl</kbd> + <kbd>D</kbd>（Unix系统）或者 <kbd>Ctrl</kbd> + <kbd>Z</kbd>（Windows系统）来终止输入，此时就可以看到输出结果
 
 （由于是在 Python 中调用 Java 命令行，可以有点慢）
 
@@ -77,7 +77,7 @@ prog 对应于 `startRuleName`
 (prog:1 (expr:1 (expr:3 10) * (expr:4 ( (expr:2 (expr:3 5) + (expr:3 2)) ))) <EOF>)
 ```
 
-可以看到其成功对我们的文法进行分析，并通过嵌套关系表示出语法分析树，这样用只是展示 ANTLR 的分析效果，但是实际我们需要将其和应用集成起来，那么就需要使用 ANTLR 编译文法文件后生成不同语言的分析代码，从而实现高效的分析（最开始本来想用 ANTLR来进行 HTTP 报文的解析的，但是好像有点杀鸡用牛刀的意思，而且其无法支持流式输入，后面就自行写了一个简单的），不过对于 URL 解析或者 MySQL 语句的解析倒是挺好用的。
+可以看到其成功对我们的文法进行分析，并通过嵌套关系表示出语法分析树，这样只是展示 ANTLR 的分析效果，但是实际我们需要将其和应用集成起来，那么就需要使用 ANTLR 编译文法文件后生成不同语言的分析代码，从而实现高效的分析（最开始本来想用 ANTLR来进行 HTTP 报文的解析的，但是好像有点杀鸡用牛刀的意思，而且其无法支持流式输入，后面就自行写了一个简单的），不过对于 URL 解析或者 MySQL 语句的解析倒是挺好用的。
 
 > [antlr4/doc/getting-started.md at dev · antlr/antlr4 (github.com)](https://github.com/antlr/antlr4/blob/dev/doc/getting-started.md)
 
@@ -438,7 +438,7 @@ endfunction(add_antlr4_parser)
 
 - `LEXER`、`PARSER`、`LISTENER`、`VISITOR` 都是 BOOL 类型，表示是否开启对应的代码生成
 
-  lexer 对应词法分析器，parser 对应语法分析其，listener 和 visitor 是用来遍历语法树的两种方式（当然也可以自行实现语法树的遍历）
+  lexer 对应词法分析器，parser 对应语法分析器，listener 和 visitor 是用来遍历语法树的两种方式（当然也可以自行实现语法树的遍历）
 
 - `NAMESPACE`：生成的分析器所属命名空间，例如 `parser`，对应的语法分析器就是 `parser::ExprParser` 
 

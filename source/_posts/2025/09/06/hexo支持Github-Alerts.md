@@ -11,9 +11,9 @@ tags:
 category: Hexo使用记录
 ---
 
-最近写博客时，发现 github markdown 中提供的 [Alerts](https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax#alerts) 很有用，能够作为提示信息进行展示。
+最近写博客时，我发现 GitHub Markdown 中提供的 [Alerts](https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax#alerts) 很有用，可以作为提示信息来展示。
 
-其实际上是在 **引用文本（Quoting text）** 的基础上添加了一个特殊的 tag，使其渲染时有特殊的显示效果，markdown 代码如下：
+它本质上是在 **引用文本（Quoting text）** 的基础上增加了一个特殊标记，从而在渲染时呈现出特殊的显示效果，对应的 Markdown 代码如下：
 
 ```markdown
 > [!NOTE]
@@ -36,31 +36,31 @@ category: Hexo使用记录
 
 <img src="hexo支持Github-Alerts/alerts-rendered.png" style="zoom: 50%;" />
 
-本来以为这是[ gfm（GitHub Flavored Markdown Spec）规范](https://github.github.com/gfm/)的一部分，但是发现这个功能是 Github 单独实现的一个功能，hexo 上默认是不支持的，不过搜了一下似乎实现起来并不复杂，就用一篇博客记录下如何实现的。
+本来我以为这是 [gfm（GitHub Flavored Markdown Spec）规范](https://github.github.com/gfm/)的一部分，后来才发现这其实是 GitHub 单独实现的功能，Hexo 默认并不支持。不过搜了一下，发现实现起来并不复杂，于是就用这篇博客记录一下实现过程。
 
 <!-- more -->
 
 # Alerts & Quoting
 
-在 hexo 上，如果直接添加 alerts 的 markdown 代码（使用 pandoc 版本为 3.0.1），其渲染效果如下：
+在 Hexo 中，如果直接添加 Alerts 的 Markdown 代码（使用的 Pandoc 版本为 3.0.1），渲染效果如下：
 
 <img src="hexo支持Github-Alerts/image-20250913134852416.png" alt="image-20250913134852416" style="zoom: 67%;" />
 
-在 VS Code 上渲染时，也是类似的情况
+在 VS Code 中渲染时，情况也类似：
 
 <img src="hexo支持Github-Alerts/image-20250913135022559.png" alt="image-20250913135022559" style="zoom: 80%;" />
 
-但是在 Typora 编辑器上是默认有支持的（`[!NOTE]` 说明这个 Alert 是可编辑的），渲染效果如下：
+但是 Typora 编辑器默认支持这一语法（`[!NOTE]` 说明这个 Alert 仍然可编辑），渲染效果如下：
 
 <img src="hexo支持Github-Alerts/image-20250913135352763.png" alt="image-20250913135352763" style="zoom: 67%;" />
 
-（就是因为 Typora 支持展示才会让我在编写文档是不自觉地加上了这个 Alert，结果发现 hexo 和 vscode 都不支持 😓，出于强迫症就把这个功能给他加上了，要不然太难看了）
+（正是因为 Typora 支持这种展示效果，才让我在编写文档时不自觉地加上了这个 Alert。结果发现 Hexo 和 VS Code 都不支持 😓，出于强迫症就把这个功能给它补上了，不然看着实在难受。）
 
 
 
 # HTML 差异
 
-既然想要支持类似的展示效果，首先分析 pandoc 转换的 html 代码和 github 上展示的 html 代码有什么差异：
+既然想要支持类似的展示效果，首先要分析 Pandoc 转换得到的 HTML 代码与 GitHub 上展示的 HTML 代码之间有什么差异：
 
 **原始 markdown 代码**
 
@@ -97,9 +97,9 @@ an issue or a pull request.</p>
 </blockquote>
 ```
 
-此时 pandoc 还并不支持 Alerts 的解析，还是将其默认解析为块引用的格式。
+此时 Pandoc 还不支持对 Alerts 的解析，仍然会将其按普通块引用来处理。
 
-而根据 [pandoc 的最新版 markdown 文档](https://pandoc.org/MANUAL.html#extension-alerts)，只需要在转换时启用 `alerts` 扩展，就可以解析成上面 github alerts 的结构了，转换命令如下（pandoc version 3.8.0）：
+而根据 [Pandoc 最新版的 Markdown 文档](https://pandoc.org/MANUAL.html#extension-alerts)，只需要在转换时启用 `alerts` 扩展，就可以将其解析成上面 GitHub Alerts 的结构，转换命令如下（Pandoc version 3.8.0）：
 
 ```bash
 pandoc -f gfm+alerts -t html5 -o test.html test.md
@@ -120,17 +120,17 @@ pandoc -f gfm+alerts -t html5 -o test.html test.md
 </div>
 ```
 
-其将所有 alert 的内容放在 `div` 容器内，并将 `[!NOTE]` 类型标记转换为外层 `div` 容器的 class，且单独为标题创建了一个 `div` 容器，设置其 class 为 title。
+它会将整个 Alert 的内容放进一个 `div` 容器中，并将 `[!NOTE]` 这类类型标记转换为外层 `div` 容器的 class，同时单独为标题创建一个 `div` 容器，并将其 class 设置为 `title`。
 
-对比 github 版的 html，有两个主要的差异，都体现在 title 部分：
+对比 GitHub 版的 HTML，可以看到两个主要差异，都体现在 title 部分：
 
-1. **外层容器不同**，github 版 title 的外层容器是 `<p>`，而 pandoc 版外层容器是 `<div>`。
+1. **外层容器不同**。GitHub 版 title 的外层容器是 `<p>`，而 Pandoc 版外层容器是 `<div>`。
 
-   这是因为在 [pandoc 的元素](https://pandoc.org/lua-filters.html#type-div)设计中，仅有部分标签可以设置 class 属性，默认的 `Para` 元素并不支持设置 class 信息，好在 `<div>` 标签和 `<p>` 在使用上差异不大，更何况 pandoc 版内部还使用了 `<p>` 进行包裹。
+    这是因为在 [Pandoc 的元素设计](https://pandoc.org/lua-filters.html#type-div)中，只有部分标签可以设置 class 属性，默认的 `Para` 元素并不支持附加 class 信息。好在 `<div>` 和 `<p>` 在这里的使用差异并不大，而且 Pandoc 版内部依然用 `<p>` 做了一层包裹。
 
-2. pandoc 版 **缺少了 alert 的 svg 图标**。
+2. Pandoc 版 **缺少 Alert 的 SVG 图标**。
 
-第一个差异是由于 pandoc 本身的设计有关，无法避免，但是第二点，可以结合 pandoc 的 lua-filter 在转换过程中只要检测到 `<div class="title"><p></p></div>` 这种类似结构，就可以在内部的 `<p>` 标签内插入 svg 图标。
+第一个差异和 Pandoc 本身的设计有关，基本无法避免；但第二点可以结合 Pandoc 的 Lua filter 来处理。只要在转换过程中检测到 `<div class="title"><p></p></div>` 这一类结构，就可以在内部的 `<p>` 标签里插入 SVG 图标。
 
 代码实现如下（[完整代码在这里](https://github.com/PureWhiteVK/PureWhiteVK.github.io/blob/c94115e285449cb8e644e0e466c000dde51cfe47/lua/image-asset.lua)）：
 
@@ -162,11 +162,11 @@ end
 
 其中：
 
-- `get_alert_type` 函数检查当前 `<div>` 标签的 class，判断是否有类似 `<div class="note">` 的类型声明，并根据 alert 的类型返回对应类别的图标（原始的 svg 代码）；
-- `get_title_element` 函数遍历 `<div>` 标签下的子元素，返回包含 `<div class="title">` 的元素；
+- `get_alert_type` 函数检查当前 `<div>` 标签的 class，判断是否有类似 `<div class="note">` 的类型声明，并根据 Alert 的类型返回对应类别的图标（原始的 SVG 代码）；
+- `get_title_element` 函数遍历 `<div>` 标签下的子元素，返回包含 `<div class="title">` 的那个元素；
 - `capitalize_first` 函数将单词的首字母大写，例如 `note` 转换为 `Note` 。
 
-找到 alert 块的根容器和对应的alert 类别，就可以直接进行修改，插入 svg 图标（这里必须使用 `pandoc.RawInline` 进行插入，否则 pandoc 会解析 svg 文件，转换成 base64 图片）并设置 class 信息（具体如何使用见下一节）。
+找到 Alert 块的根容器以及对应的 Alert 类型之后，就可以直接进行修改，插入 SVG 图标。这里必须使用 `pandoc.RawInline` 进行插入，否则 Pandoc 会把 SVG 解析成 base64 图片。之后再补上相应的 class 信息即可，具体如何使用见下一节。
 
 应用 lua filter 后转换得到的 html 如下：
 
@@ -187,26 +187,26 @@ end
 </div>
 ```
 
-此时，pandoc 生成的 html 和 github 版的差异就只剩下样式和 title 的外层容器类型差异了，而 `<div>` 和 `<p>` 的差异可以暂时忽略，那么就只剩下样式了。
+此时，Pandoc 生成的 HTML 与 GitHub 版之间就只剩下样式以及 title 外层容器类型的差异了，而 `<div>` 和 `<p>` 的区别可以暂时忽略，因此接下来只需要处理样式问题。
 
  
 
 # 添加样式
 
-原本想直接 copy github 版对 alert 的样式，但是似乎杂揉了很多其他的样式，且个人对 CSS 也不太熟悉，还是搜下是否有什么库可以提供这个样式吧。
+原本我想直接照搬 GitHub 版的 Alert 样式，但里面似乎混杂了不少其他样式，而且我对 CSS 也不算熟，还是先看看有没有现成的库可以直接复用。
 
 幸好，[remark-github-blockquote-alert](https://www.npmjs.com/package/remark-github-blockquote-alert) 可以满足我们的需求（好耶！💃）。
 
 <img src="hexo支持Github-Alerts/image-20250913145436237.png" alt="image-20250913145436237" style="zoom: 67%;" />
 
-只需要在加载样式时，将 `remark-github-blockquote-alert/alert.css` 也加载上，并添加上指定的 class 即可。
+只需要在加载样式时一并引入 `remark-github-blockquote-alert/alert.css`，再补上指定的 class 即可。
 
 有两处需要添加：
 
 1. alert 最外层容器需要设置 `markdown-alert markdown-alert-<alert-type>` 两个类；
 2. title 的最外层容器需要设置 `markdown-alert-title` 类。
 
-手动插入 css 文件到 pandoc 生成的 html 文件，检查一下渲染效果。
+先手动把 CSS 内容插入到 Pandoc 生成的 HTML 文件中，检查一下渲染效果。
 
 **pandoc generated with css (pandoc version 3.8.0 with lua-filter)**
 
@@ -224,11 +224,11 @@ end
 
 ![image-20250913140150809](hexo支持Github-Alerts/image-20250913140150809.png)
 
-可以看到在字体上稍微有一些差异，但是整体已经满足需求了。（`<div>` 和 `<p>` 的差异，确实不用管了ね😀）
+可以看到字体上还有一点细微差异，但整体已经足够满足需求了。（`<div>` 和 `<p>` 的差异，确实可以先不管了ね😀）
 
 # Hexo 集成
 
-最后一步，只需要在 hexo 渲染时自动加载 css 文件，就可以在网页上展示 Alert 了，这一步需要修改 next 的配置文件 `_config.next.yml`，修改 `custom_file_path` ，调整样式那一栏：
+最后一步，只需要让 Hexo 在渲染时自动加载这个 CSS 文件，就可以在网页上展示 Alert 了。这一步需要修改 Next 的配置文件 `_config.next.yml`，在 `custom_file_path` 中启用样式文件配置：
 
 ```diff
 diff --git a/_config.next.yml b/_config.next.yml
@@ -243,7 +243,7 @@ index 796984f..dfde0a4 100644
 +  style: source/_data/styles.styl
 ```
 
-同时确保 `source/_data/styles.styl` 文件存在即可，为了避免手动拷贝，编写一个简单的 hexo 插件，自动完成拷贝，代码如下：
+同时确保 `source/_data/styles.styl` 文件存在即可。为了避免手动拷贝，我又写了一个简单的 Hexo 插件来自动完成复制，代码如下：
 
 ***hexo-copy-alert-css.js***
 
@@ -267,9 +267,9 @@ hexo.extend.filter.register("after_init", function () {
 });
 ```
 
-这样，只要在 `package.json` 中安装了 `remark-github-blockquote-alert` 依赖，就可以直接拷贝包中提供的 alert.css 了，确保样式是最新的（虽然感觉一般不会变，但是有溯源保证还是更安心一点）。
+这样一来，只要在 `package.json` 中安装了 `remark-github-blockquote-alert` 依赖，就可以直接拷贝包里提供的 alert.css，确保使用的是最新样式。（虽然感觉它大概率不会频繁变动，但有明确来源总归更安心一些。）
 
-最后，直接在 markdown 中添加 alert 的展示，检查是否配置成功。
+最后，直接在 Markdown 中写一段 Alert 内容，检查配置是否生效。
 
 
 
@@ -290,4 +290,4 @@ hexo.extend.filter.register("after_init", function () {
 
 
 
-如果可以看到文章开头展示的渲染效果，则说明配置成功（😎）。
+如果能看到和文章开头一致的渲染效果，就说明配置成功了（😎）。

@@ -27,7 +27,7 @@ git clone https://github.com/boostorg/boost.git
 
 一些常用的参数（全部参数选项可以通过 `git clone --help`  查看）
 
-- `--recursive` 或 `--recurse-submodules`（在较新版本的 git 中使用，命令的语义更加清晰）：当要拉取的仓库中包含 submodule 时，是默认不会拉取子仓库的，而指定这个参数即可拉取所有的子仓库。
+- `--recursive` 或 `--recurse-submodules`（在较新版本的 git 中使用，命令语义更加清晰）：当要拉取的仓库中包含 submodule 时，默认不会拉取子仓库，而指定这个参数即可拉取所有的子仓库。
 
   如果我们在下载的时候忘记指定 `--recursive`，也可以通过下面命令重新拉取子仓库
 
@@ -35,7 +35,7 @@ git clone https://github.com/boostorg/boost.git
   git submodule update --init --recursive
   ```
 
-- `--depth`：当我们只想下载指定更新次数的分支（这样可以减少下载的大小，在我们只需要最新的提交记录时很有用，当然也可以直接下载 zip 或 tar.gz 等压缩文件来解决。
+- `--depth`：当我们只想下载指定数量的提交历史时，这个参数可以减少下载体积；如果只需要源码，也可以直接下载 zip 或 tar.gz 等压缩文件。
 
 - `-b` 或者 `--branch`：指定要拉取的分支名称，例如下载 boost-1.86.0 （这个实际上是一个 tag，但也可以通过这种方式下载）。
 
@@ -45,7 +45,46 @@ git clone https://github.com/boostorg/boost.git
 
 <!-- more -->
 
+## 修改 refspec
 
+使用 shallow clone 时，会出现无法下载远程其他分支的情况，此时需要重设 refspec，命令如下：
+
+```sh
+# 1) 查看当前 fetch 配置
+git config --get-all remote.origin.fetch
+
+# 2) 清理旧的 fetch 规则（有些 shallow clone 只会保留单分支规则）
+git config --unset-all remote.origin.fetch
+
+# 3) 重新设置为“拉取所有远程分支”
+git config --add remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
+
+# 4) 重新拉取远程引用
+git fetch origin
+```
+
+执行完成后，可以通过下面命令确认远程分支是否已经可见：
+
+```sh
+git branch -r
+```
+
+如果在克隆时就希望浅克隆但拉取所有分支，可以直接使用 `--no-single-branch` 选项，具体命令示例如下 ：
+
+```sh
+git clone --depth 1 --no-single-branch <repo-url>
+```
+
+## 重新拉取完整历史
+如果仓库本身是浅克隆，想继续查看更完整历史，可以再执行：
+
+```sh
+# 拉取完整历史
+git fetch --unshallow
+
+# 或者仅补充到指定深度
+git fetch --depth=1000
+```
 
 ## 添加 SSH 密钥
 
@@ -170,7 +209,7 @@ git push origin --delete <branch-name>
 git branch -m <old-branch> <new-branch>
 ```
 
-此处的 `-m` 表示 move，和 Linux 上 `move` 命令一致，就是移动分支到新的标识符下。
+此处的 `-m` 表示 move，和 Linux 上 `mv` 命令一致，就是移动分支到新的标识符下。
 
 也可以使用 `-c` ，其表示 copy，和 Linux 上 `cp` 命令一致，其好处就是不会丢弃原有的分支
 
@@ -186,7 +225,7 @@ git branch -m <old-branch> <new-branch>
 
   缺点是主干的历史并不是完全线性的，在版本回退时不太方便（通过 github 的 PR 或者 gitlab 的 MR 都可以确保主干线性历史）
 
-- rebase：将分支1中的相对于分支2不同的 commit 在 分支2 上重新提交一遍，**不会创建新的 commit**，但是分支1中改动部分的 commit 的哈希值会发生改变（因为相当于在分支2上重新做了一遍）
+- rebase：将分支1中相对于分支2不同的 commit 在分支2上重新提交一遍，**不会创建新的 commit**，但是分支1中改动部分的 commit 哈希值会发生改变（因为相当于在分支2上重新做了一遍）
 
   优点是能保证改动历史完全线性
 
@@ -200,7 +239,7 @@ git branch -m <old-branch> <new-branch>
 
 ## git fetch
 
-通过 `git clone` 下载到本地的分支，实际上`git` 会帮我们自动创建一个 `origin/xxx` 分支（可以通过 `git branch -a` 查看所有的分支），而 `git fetch` 做的就是将远端的更新同步到本地的 `origin/xxx` 分支中，如下所示
+通过 `git clone` 下载到本地后，实际上 `git` 会帮我们自动创建一个 `origin/xxx` 分支（可以通过 `git branch -a` 查看所有分支），而 `git fetch` 做的就是将远端更新同步到本地的 `origin/xxx` 分支中，如下所示
 
 ```c++ 
 PS D:\Code\Git\Learn-Git> git branch -a
@@ -211,7 +250,7 @@ PS D:\Code\Git\Learn-Git> git branch -a
 
 ## git pull
 
-`pull` 想对于 `fetch` 的区别就是其默认会将远端分支 merge 到本地分支（如果远端分支和本地分支存在冲突的话），如果没有的话就直接 fast-forward 即可
+`pull` 相对于 `fetch` 的区别是其默认会将远端分支 merge 到本地分支（如果远端分支和本地分支存在冲突的话），如果没有冲突就直接 fast-forward 即可
 
 ## 本地强行同步远端分支
 
@@ -265,11 +304,18 @@ git push -f
 
 一般这个命令仅在个人的分支使用（例如 `bugfix/xxx`或`feature/xxx`）
 
+## 删除远端分支
+
+使用 `--delete` 可以删除远端分支，示例如下：
+
+```sh
+git push --delete origin old-branch
+```
 
 
 # git stash
 
-当我们本地分支有改动尚未提交（未通过 git add 和 git commit 时）但是需要切换分支时，git 会提示有改动未暂存，此时我们可以通过 `git stash` 命令暂存，其就使用起来就相当于一个栈，
+当我们本地分支有改动尚未提交（未通过 git add 和 git commit）但需要切换分支时，git 会提示有改动未暂存，此时可以通过 `git stash` 命令暂存，其使用起来相当于一个栈。
 
 1. 入栈操作：就是将当前所有的改动暂存起来
 
@@ -283,9 +329,11 @@ git push -f
    git stash pop
    ```
 
+   也可以使用 `git stash apply`，这个相当于查看栈顶元素内容，但是不出栈。
+
    
 
-# fork 
+# fork
 
 fork 是 github 或 gitlab 等代码托管平台提供的一个功能，可以在托管平台上复制一份现有仓库，到自己账户下。
 
@@ -297,11 +345,11 @@ conan 包管理器中每一个包都有对应的构建脚本，这些构建脚�
 
 ## 同步远程仓库
 
-还是以 conan-center-index 为例，将原始仓库记为 A 仓库，fork 之后的仓库记为 B 仓库。当我们拉取 B 仓库时，其 remote 链接对应的就是 B 仓库的 github 远程连接，例如 https://github.com/conan-io/conan-center-index 这种，此时我们想要拉取 A 仓库的代码更新，可以手动设置新的 remote，并手动拉取。
+还是以 conan-center-index 为例，将原始仓库记为 A 仓库，fork 之后的仓库记为 B 仓库。当我们拉取 B 仓库时，其 remote 链接对应的就是 B 仓库的 GitHub 远程链接，例如 https://github.com/conan-io/conan-center-index，此时我们想要拉取 A 仓库的代码更新，可以手动设置新的 remote，并手动拉取。
 
 具体操作如下：
 
-A. 添加 A 仓库 的 remote 链接，并将其命名为 repoA：
+A. 添加 A 仓库的 remote 链接，并将其命名为 repoA：
 
 ```bash
 git remote add repoA <remote-url-of-A>

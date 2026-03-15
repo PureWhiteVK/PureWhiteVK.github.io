@@ -9,9 +9,9 @@ category: 技术笔记
 ---
 
 
-# Powershell 设置
+# PowerShell 设置
 
-通过 `$PROFILE` 变量，可以查询到 Powershell 默认加载的配置文件路径，如下所示
+通过 `$PROFILE` 变量，可以查询到 PowerShell 默认加载的配置文件路径，如下所示
 
 <img src="命令行设置-Proxy/image-20250827211708072.png" alt="image-20250827211708072" style="zoom: 67%;" />
 
@@ -38,11 +38,11 @@ function proxy_off {
 
 <img src="命令行设置-Proxy/image-20250827212341633.png" alt="image-20250827212341633" style="zoom: 50%;" />
 
-（由于 cmd 并不支持 profile ，就无法编写类似的函数了，不过其基本思路也就是设置 `http_proxy` 和 删除 `http_proxy` 而已）
+（由于 cmd 并不支持 profile，就无法编写类似的函数了，不过其基本思路也就是设置 `http_proxy` 和删除 `http_proxy` 而已）
 
 # Bash 设置
 
-对于 bash 文件，也可以编写类似的脚本，修改 `~/.bashrc`，并插入如下内容
+对于 Bash，也可以编写类似的脚本，修改 `~/.bashrc`，并插入如下内容
 
 ```bash
 proxy_on() {
@@ -67,21 +67,21 @@ proxy_off() {
 
 ## WSL 设置
 
-在 wsl 中设置代理和 bash 的设置十分相似，但是有一点区别，就是当我们在宿主机（Windows 机器）上开启了代理软件（例如 CFW）后，可以通过局域网走宿主机的代理，只需要CFW上开启了允许局域网代理即可，如下所示
+在 WSL 中设置代理和 Bash 的设置十分相似，但是有一点区别：当我们在宿主机（Windows 机器）上开启了代理软件（例如 CFW）后，可以通过局域网走宿主机代理，只需要在 CFW 上开启允许局域网代理即可，如下所示
 
 
 
 <img src="命令行设置-Proxy/image-20250912232211744.png" alt="image-20250912232211744" style="zoom: 50%;" />
 
-之后要做的就是在 wsl 中查询到宿主机的局域网 ip 地址即可，这个在 [wsl 的官方文档](https://learn.microsoft.com/en-us/windows/wsl/networking#identify-ip-address)中已经给出示例
+之后要做的就是在 WSL 中查询宿主机的局域网 IP 地址，这个在 [WSL 的官方文档](https://learn.microsoft.com/en-us/windows/wsl/networking#identify-ip-address) 中已经给出示例。
 
 <img src="命令行设置-Proxy/image-20250912232338114.png" alt="image-20250912232338114" style="zoom: 67%;" />
 
-稍微修改一下 `proxy_on` 的代码就可以在 wsl 上也设置好代理了，如下所示
+稍微修改一下 `proxy_on` 的代码，就可以在 WSL 上设置好代理了，如下所示
 
 ```bash
 proxy_on() {
-    local hostip="$(ip route show | grep -i default | awk '{ print $3}')"  
+    local hostip="$(ip route show | grep -i default | awk '{ print $3 }')"
     local proxy="http://$hostip:7890"
     export http_proxy="$proxy"
     export https_proxy="$proxy"

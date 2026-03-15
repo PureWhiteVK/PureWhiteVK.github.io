@@ -1,16 +1,16 @@
 ---
-title: LaTex公式学习笔记
+title: LaTeX公式学习笔记
 mathjax: true
 abbrlink: caff
 date: 2023-01-03 14:09:39
 tags:
 - mathjax
-- LaTex
+- LaTeX
 category: Hexo使用记录
 ---
 
 
-之前我们已经配置好了 hexo 对 LaTex 公式的支持（在 markdown 的 Front Matter 中添加 `mathjax: true` 开启 LaTex 公式渲染支持），支持两种形式的公式输入
+之前我们已经配置好了 hexo 对 LaTeX 公式的支持（在 markdown 的 Front Matter 中添加 `mathjax: true` 开启 LaTeX 公式渲染支持），支持两种形式的公式输入
 
 - 内联公式（inline），通过 `$...$` 进行包裹（必须在同一行）
 
@@ -22,7 +22,7 @@ category: Hexo使用记录
 
   例：markdown 代码
 
-  ```latex
+  ```lateX
   $$
   \int _0 ^\pi \sin(x) = 2
   $$
@@ -39,7 +39,7 @@ category: Hexo使用记录
 
 # 常用符号
 
-可以使用在线的[LaTex公式编辑器](https://www.latexlive.com/)来手动选取，下面列举了一些常用的符号
+可以使用在线的[LaTeX公式编辑器](https://www.lateXlive.com/)来手动选取，下面列举了一些常用的符号
 
 ## 关系和运算符号
 
@@ -160,7 +160,7 @@ $$
 
 
 
-注：当我们需要表示当且仅当关系是常用 `\Longleftrightarrow` ，为了简写，也可以使用 `\iff` （if and only if, 当且仅当) 来简化 
+注：当我们需要表示当且仅当关系时，常用 `\Longleftrightarrow` ，为了简写，也可以使用 `\iff` （if and only if, 当且仅当) 来简化 
 
 
 
@@ -305,11 +305,11 @@ $$
 
 ## 括号
 
-常见的括号 `()`、中括号 `[]`、以及大括号 `{}` 都可以直接在键盘中输入，由于大括号在 LaTex 中的特殊含义（用来包裹一段公式），我们使用时需要添加 `\` 进行转义，即 `\{` 和 `\}`
+常见的括号 `()`、中括号 `[]`、以及大括号 `{}` 都可以直接在键盘中输入，由于大括号在 LaTeX 中的特殊含义（用来包裹一段公式），我们使用时需要添加 `\` 进行转义，即 `\{` 和 `\}`
 
 对于竖线 `|` ，我们可以直接从键盘中输入，也可以使用 `\mid` 来表示，双竖线（范数的表示）可以使用 `\|` 来表示（不能使用两个竖线，因为双竖线应该表示为一个字符），示例如下
 
-```latex
+```lateX
 \|x\|_2
 ```
 
@@ -338,7 +338,7 @@ $$
 
 当我们使用这些括号包裹一个大的公式时，如下所示
 
-```latex
+```lateX
 (\frac{x^2}{y^3})
 ```
 
@@ -348,7 +348,7 @@ $$
 
 我们可以发现这个括号（parentheses）不能完全的包裹住公式，此时我们需要使用 `\left(...\right)` 来自动调整括号的大小
 
-```latex
+```lateX
 \left(\frac{x^2}{y^3}\right)
 ```
 
@@ -358,7 +358,7 @@ $$
 
 除此之外，在中间表示时还可以使用 `\middle` 来进行控制（条件概率时）
 
-```latex
+```lateX
 P\left(A=2\middle|\frac{A^2}{B}>4\right)
 ```
 
@@ -368,7 +368,7 @@ $$
 
 而对于花括号（curly braces）和方括号（brackets）时，需要使用转义符进行转义 `\{`
 
-```latex
+```lateX
 \left\{\frac{x^2}{y^3}\right\}
 ```
 
@@ -378,7 +378,7 @@ $$
 
 我们还可以使用 `.` 来忽略左侧或右侧符号
 
-```latex
+```lateX
 \left. \frac{x^3}{3} \right| _0 ^1
 ```
 
@@ -388,7 +388,7 @@ $$
 
 最终，如果我们还是不满意，可以手动调整符号的大小
 
-```latex
+```lateX
 ( \big( \Big( \bigg( \Bigg(
 ```
 
@@ -402,7 +402,7 @@ $$
 
 ## 空格
 
-如果我们直接在公式中输入空格，如果直接在字母中间插入空格，会被直接忽略掉，如果我们明确需要插入空格，需要通过指令形式显式给出，在 LaTex 中空格相关的指令总结如下
+如果我们直接在公式中输入空格，如果直接在字母中间插入空格，会被直接忽略掉，如果我们明确需要插入空格，需要通过指令形式显式给出，在 LaTeX 中空格相关的指令总结如下
 
 | 指令           | 描述                 | 示例                                        |
 | -------------- | -------------------- | ------------------------------------------- |
@@ -416,11 +416,11 @@ $$
 | `\qquad`       | 2字宽空格(2 em)      | $abc \rightarrow\qquad\leftarrow abc$       |
 | `\hspace{3em}` | 自定义宽度空格       | $abc \rightarrow\hspace{3em}\leftarrow abc$ |
 
-注：em 是一种长度单位，和 px 意义，但是其是相对字宽来度量的，1 em 就表示一个字宽
+注：em 是一种长度单位，和 px 类似，但是其是相对字宽来度量的，1 em 就表示一个字宽
 
 空格在积分公式的书写上十分有用，如果我们直接写的话，如下所示
 
-```latex
+```lateX
 \int y \mathrm{d} x
 ```
 
@@ -430,7 +430,7 @@ $$
 
 我们可以看到被积函数 $y$ 和微元 $\mathrm{d}x$ 之间距离太短，看起来不是很自然，此时我们就可以在二者之间插入一个小的空白，如下所示
 
-```latex
+```lateX
 \int y \,\mathrm{d} x
 ```
 
@@ -442,7 +442,7 @@ $$
 
 另外一个示例就是分段函数的表示
 
-```latex
+```lateX
 $$
 f(n) = 
 \begin{cases}
@@ -472,7 +472,7 @@ $$
 | Upright Roman Boldface  | `\mathbf{}`     | $\mathbf{x}$     |
 | Upright Sans Serif      | `\mathsf{}`     | $\mathsf{x}$     |
 | Italic Font             | `\mathit{}`     | $\mathit{x}$     |
-| Typewritter Font        | `\mathtt{}`     | $\mathtt{x}$     |
+| Typewriter Font        | `\mathtt{}`     | $\mathtt{x}$     |
 | Blackboard Bold Font    | `\mathbb{}`     | $\mathbb{X}$     |
 | Eular Calligraphic Font | `\mathscr{}`    | $\mathscr{X}$    |
 | Fraktur(Gothic) Font    | `\mathfrak{}`   | $\mathfrak{X}$   |
@@ -491,7 +491,7 @@ $$
 
 ## 三角函数
 
-```latex
+```lateX
 \cos (2\theta) = \cos^2 \theta - \sin^2 \theta
 ```
 
@@ -501,7 +501,7 @@ $$
 
 ## 极限
 
-```latex
+```lateX
 \lim\limits_{x \to \infty} \exp(-x) = 0
 ```
 
@@ -513,7 +513,7 @@ $$
 
 ## 取模
 
-```latex
+```lateX
 \begin{align}
 & a \bmod b \\
 & x \equiv a \pmod{b} 
@@ -531,7 +531,7 @@ $$
 
 通过 `_` 表示下标，`^` 表示上标，如果需要将一块一整体进行上标，需要使用 `{}`  进行包裹
 
-```latex
+```lateX
 \begin{align}
 n^{22} & \\
 k_{n+1} & = n^2 + k_n^2 - k_{n-1} \\
@@ -551,7 +551,7 @@ $$
 
 使用 `\frac{numerator}{denominator}` 来表示分数（numerator表示分子，denominator表示分母）
 
-```latex
+```lateX
 \frac{n!}{k!(n-k)!} = \binom{n}{k}
 ```
 
@@ -561,7 +561,7 @@ $$
 
 分数也可以进行嵌套
 
-```latex
+```lateX
 \frac{\frac{1}{x}+\frac{1}{y}}{y-z}
 ```
 
@@ -571,7 +571,7 @@ $$
 
 为了在一行表示分数，我们也可以将分数表示为斜线形式
 
-```latex
+```lateX
 ^3/_7 \quad 3 / 7
 ```
 
@@ -581,7 +581,7 @@ $$
 $$
 使用 `\frac{...}{...}` 我们也可以表示其他内容，例如乘法和加法公式
 
-```latex
+```lateX
 \frac{
 	\begin{array}[b]{r}
 		\left( x_1 x_2 \right) \\
@@ -609,7 +609,7 @@ $$
 
 使用 `\sqrt{...}` 来表示根号，默认为2，也可以指定为其他幂次，通过`\sqrt[n]{}` 来指定
 
-```latex
+```lateX
 \sqrt[n]{1 + x + x^2 + x^3 +\cdots + x^n}
 ```
 
@@ -622,7 +622,7 @@ $$
 
 通过 `\sum _{} ^{} {}` 来表示大型加法表达式，如下
 
-```latex
+```lateX
 $$
 \sum _{i=1} ^{\infty} x^i
 $$
@@ -634,7 +634,7 @@ $$
 
 对于连乘也是类似 `\prod _{} ^{} {}` 来表示大型乘法表达式，如下
 
-```latex
+```lateX
 $$
 \prod _{i=1} ^{n} x^i
 $$
@@ -646,7 +646,7 @@ $$
 
 积分（integral），通过 `\int _{} ^{} {}` 来表示积分符号
 
-```latex
+```lateX
 $$
 \int _{0} ^{\pi} \sin x \,\mathrm{d}x
 $$
@@ -658,7 +658,7 @@ $$
 
 除了一重积分外，我们还有各种各样的积分符号，如二重积分、三重积分、曲面积分等等，其使用的积分符号也有相应的变化
 
-```latex
+```lateX
 $$
 \begin{align}
 & \iint \limits _V \mu(u,v) \,\mathrm{d}u\,\mathrm{d}v
@@ -692,7 +692,7 @@ $$
 
 普通矩阵
 
-```latex
+```lateX
 $$
 \begin{matrix}
 1 & 2 & 3\\
@@ -710,7 +710,7 @@ $$
 
 括号矩阵（`pmatrix`）
 
-```latex
+```lateX
 $$
 \begin{pmatrix}
 1 & 2 & 3\\
@@ -728,7 +728,7 @@ $$
 
 方括号矩阵（`bmatrix`）
 
-```latex
+```lateX
 $$
 \begin{bmatrix}
 1 & 2 & 3\\
@@ -746,7 +746,7 @@ $$
 
 花括号矩阵（`Bmatrix`）
 
-```latex
+```lateX
 $$
 \begin{Bmatrix}
 1 & 2 & 3\\
@@ -764,7 +764,7 @@ $$
 
 竖线矩阵（`vmatrix`）
 
-```latex
+```lateX
 $$
 \begin{vmatrix}
 1 & 2 & 3\\
@@ -784,7 +784,7 @@ $$
 
 双数竖线矩阵（`Vmatrix`）
 
-```latex
+```lateX
 $$
 \begin{Vmatrix}
 1 & 2 & 3\\
@@ -804,7 +804,7 @@ $$
 
 我们也可以使用其他分界符搭配 `\left ... \right` 来构造其他形式，例如
 
-```latex
+```lateX
 $$
 \left\langle
 \begin{matrix}
@@ -826,7 +826,7 @@ $$
 
 如果想在一行显示矩阵，我们可以使用 `smallmatrix` 布局
 
-```latex
+```lateX
 $ \big(\begin{smallmatrix}
   a & b\\
   c & d
@@ -847,7 +847,7 @@ $ \big(\begin{smallmatrix}
 
 使用 `align` 来表示多行对齐公式（还有一个 `align` ，其效果和 `align` 类似，只不过二者使用场景不一样，在 markdown 需要对齐的话使用 `align` 基本就可以了），使用 `\\` 来换行，`&` 来指示需要对齐的位置
 
-```latex
+```lateX
 $$
 \begin{align}
 A & = \frac{\pi r^2}{2} \\
@@ -867,7 +867,7 @@ $$
 
 我们也可以使用 `align` 实现表格式的对齐，示例如下：
 
-```latex
+```lateX
 $$
 \begin{align}
 f(x) = a x^2 + b x + c \quad  g(x) = d x^3 \\
@@ -887,7 +887,7 @@ $$
 
 首先观察一下其对齐情况，可以看到两行公式目前在末尾处是对齐的，这就相当于我们在末尾加上了一个 `&`
 
-```latex
+```lateX
 $$
 \begin{align}
 f(x) = a x^2 + b x + c \quad  g(x) = d x^3 & \\
@@ -912,7 +912,7 @@ $$
 
 如果我们想要公式在第一个等于号时对齐，那么在等号前加上 `&`，如下
 
-```latex
+```lateX
 $$
 \begin{align}
 f(x) &= a x^2 + b x + c \quad  g(x) = d x^3 & \\
@@ -941,7 +941,7 @@ $$
 
 我们继续对公式进行修改，将 `\quad` 替换为 `&`
 
-```latex
+```lateX
 $$
 \begin{align}
 f(x) &= a x^2 + b x + c &  g(x) = d x^3 \\
@@ -966,7 +966,7 @@ $$
 
 最后我们在 $g(x)$ 和 $g'(x)$ 后添加 `&`
 
-```latex
+```lateX
 $$
 \begin{align}
 f(x) &= a x^2 + b x + c &  g(x) & = d x^3 \\
@@ -998,7 +998,7 @@ $$
 
 Tips：如果想实现列表形式的公式展示，可以将 `&` 作为列的分割符，对于一列，我们直接使用 `& a &` 包裹即可（左对齐）
 
-```latex
+```lateX
 $$
 \begin{align}
 & a & & b & & c & d & \\
@@ -1020,7 +1020,7 @@ $$
 
 相比于自定义对齐，居中显示就显得简单很多，使用 `gather` 即可
 
-```latex
+```lateX
 $$
 \begin{gather}
 2x - 5y =  8 \\ 
@@ -1038,9 +1038,9 @@ $$
 
 # 导入其他包
 
-有时候我们想要在 MathJax 中使用其他宏包，例如 Physics 宏，我们可以直接在 LaTex 代码中使用 `require{...}` 来添加扩展。
+有时候我们想要在 MathJax 中使用其他宏包，例如 Physics 宏，我们可以直接在 LaTeX 代码中使用 `require{...}` 来添加扩展。
 
-```latex
+```lateX
 $$
 \require{physics}
 \abs{a} \quad \grad{x} \quad \order{1} \quad \cross
@@ -1054,7 +1054,7 @@ $$
 $$
 如果加载失败，将会显示如下结果
 
-![](LaTex公式学习笔记/no-physics-error.svg)
+![](LaTeX公式学习笔记/no-physics-error.svg)
 
 不过感觉 `require{}` 功能在 mathjax 中还有点问题，最好还是在设置中手动开启。
 
@@ -1065,5 +1065,5 @@ $$
 1. [LaTeX/Mathematics - Wikibooks, open books for an open world](https://en.wikibooks.org/wiki/LaTeX/Mathematics)
 2. [LaTeX/Advanced Mathematics - Wikibooks, open books for an open world](https://en.wikibooks.org/wiki/LaTeX/Advanced_Mathematics)
 3. [LaTeX Math Symbols Cheat Sheet - Kapeli](https://kapeli.com/cheat_sheets/LaTeX_Math_Symbols.docset/Contents/Resources/Documents/index)
-4. [Mathematical expressions - Overleaf, Online LaTeX Editor](https://www.overleaf.com/learn/latex/Mathematical_expressions)
+4. [Mathematical expressions - Overleaf, Online LaTeX Editor](https://www.overleaf.com/learn/lateX/Mathematical_expressions)
 

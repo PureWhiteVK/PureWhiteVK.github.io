@@ -16,7 +16,7 @@ date: 2025-08-27 21:32:59
 
 # 安装 Conan
 
-由于我们后面会大量使用 conanfile.py，且也可以借助 Python 插件实现 `conanfile.py` 的代码补全，直接使用 python 库的方式安装 conan，安装命令如下：
+由于我们后面会大量使用 conanfile.py，且也可以借助 Python 插件实现 `conanfile.py` 的代码补全，直接使用 Python 库的方式安装 Conan，安装命令如下：
 
 ```bash
 python -m pip install conan
@@ -34,9 +34,9 @@ conan --version
 
 # Conan 模板项目
 
-通过 `conan new` 命令可以快速创建 c++ 模板项目
+通过 `conan new` 命令可以快速创建 C++ 模板项目。
 
-对于基于 cmake 的 c++ 项目而言，可以使用 `cmake_exe` 和 `cmake_lib`，conan 也支持自行指定代码模板，在本文的最后会结合 VS Code 提供一个添加 vscode 支持的 conan cmake 模板。
+对于基于 CMake 的 C++ 项目而言，可以使用 `cmake_exe` 和 `cmake_lib`，Conan 也支持自行指定代码模板。在本文最后会结合 VS Code 提供一个添加 VS Code 支持的 Conan CMake 模板。
 
 ```bash
 conan new cmake_exe -d name=hello-conan
@@ -50,7 +50,7 @@ conan new cmake_exe -d name=hello-conan
 
 <img src="Conan使用/image-20250905215605185.png" alt="image-20250905215605185" style="zoom: 80%;" />
 
-c++ 源码和头文件放在 `src` 目录下，同时还生成了一个 test_package 目录，用于测试当前包，暂时用不上。
+C++ 源码和头文件放在 `src` 目录下，同时还生成了一个 `test_package` 目录，用于测试当前包，暂时用不上。
 
 # Hello World
 
@@ -58,7 +58,7 @@ c++ 源码和头文件放在 `src` 目录下，同时还生成了一个 test_pac
 
 ```bash
 conan profile detect --force
-conan install . --building=missing
+conan install . --build=missing
 cmake --list-presets
 cmake . --preset conan-default
 cmake --list-presets build
@@ -71,13 +71,13 @@ cmake --install build --prefix install
 
 step1（代码行1）：生成编译工具链配置
 
-step2（代码行2）：下载并安装三方库依赖
+step2（代码行2）：下载并安装第三方库依赖
 
-step3（代码行3~4）：查看当前 cmake configure 预设配置，并进行 configure，生成当前项目的编译配置
+step3（代码行3~4）：查看当前 CMake configure 预设配置，并进行 configure，生成当前项目的编译配置
 
-step4（代码行5~6）：查看当前 cmake 的编译预设配置，并进行编译
+step4（代码行5~6）：查看当前 CMake 的编译预设配置，并进行编译
 
-step5（代码行7）：执行 cmake 安装，将可执行文件安装到 `install` 目录
+step5（代码行7）：执行 CMake 安装，将可执行文件安装到 `install` 目录
 
 step6（代码行8）：执行程序
 
@@ -89,9 +89,9 @@ step6（代码行8）：执行程序
 
 # VS Code 支持
 
-目前我们都是使用命令行进行简单的操作，但是真正进行开发的时候还需要IDE的代码提示和调试功能才行，下面就介绍一下如何基于 VS Code 配置一个支持 conan 和 cmake 的 c++ 开发环境。
+目前我们都是使用命令行进行简单操作，但真正进行开发时还需要 IDE 的代码提示和调试功能。下面介绍如何基于 VS Code 配置一个支持 Conan 和 CMake 的 C++ 开发环境。
 
-## 安装C++开发插件
+## 安装 C++ 开发插件
 
 - C/C++ Extension Pack
 - CMake Tools
@@ -102,13 +102,13 @@ step6（代码行8）：执行程序
 
 > [!TIP]
 >
-> 如何在 vscode 中添加自定义 task 可以参考 [tasks 使用文档](https://code.visualstudio.com/docs/debugtest/tasks)
+> 如何在 VS Code 中添加自定义 task，可以参考 [tasks 使用文档](https://code.visualstudio.com/docs/debugtest/tasks)
 
 通过快捷键 <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd> 打开配置面板，输入 `task`，选择 "***任务：配置任务***"
 
 <img src="Conan使用/image-20250905225129587.png" alt="image-20250905225129587" style="zoom:67%;" />
 
-然后点击 "***使用模板创建 tasks.json 文件***" ，这样就会自动创建一个可用的 tasks.json 
+然后点击 "***使用模板创建 tasks.json 文件***"，这样就会自动创建一个可用的 tasks.json。
 
 <img src="Conan使用/image-20250905225333434.png" alt="image-20250905225333434" style="zoom: 67%;" />
 
@@ -261,7 +261,7 @@ step6（代码行8）：执行程序
 
 ***小插曲***
 
-在 tasks.json 中配置 conan 的命令时，想通过 conan conf的 `tools.cmake.cmaketoolchain:extra_variables` 选项新增 `CMAKE_EXPORT_COMPILE_COMMANDS` （不要问我为什么不在 `conanfile.py` 中添加😎），让 cmake 自动导出 compile_commands.json 
+在 tasks.json 中配置 Conan 命令时，想通过 Conan conf 的 `tools.cmake.cmaketoolchain:extra_variables` 选项新增 `CMAKE_EXPORT_COMPILE_COMMANDS`（不要问我为什么不在 `conanfile.py` 中添加😎），让 CMake 自动导出 compile_commands.json。
 
 但是发现怎么配置也配不好，搞了半天发现是命令行命令对引号的转义导致的，需要写成这样的形式：
 
@@ -288,9 +288,9 @@ step6（代码行8）：执行程序
 {\\\"<key>\\\":\\\"<value>\\\"}
 ```
 
-这种丑陋的形式（在 c++ 中写正则表达式，也是需要多次转义，c++ 字符串本身的转义和正则表达式中的转义）
+这种丑陋的形式（在 C++ 中写正则表达式，也需要多次转义，C++ 字符串本身的转义和正则表达式中的转义会叠加）。
 
-**不过最后发现，在命令行里指定 `tools.cmake.cmaketoolchain:extra_variables` ，无法实现跨平台，最后只能在 conanfile.py 中添加，里面也有点坑。**
+**不过最后发现，在命令行里指定 `tools.cmake.cmaketoolchain:extra_variables` 无法实现跨平台，最后只能在 conanfile.py 中添加，里面也有点坑。**
 
 默认的 conanfile.py 如下
 
@@ -307,7 +307,7 @@ class testRecipe(ConanFile):
         tc.generate()
 ```
 
-如果需要在 conanfile.py 中指定 cmake 的 generator，**一定要同时修改 `layout` 和 `generate` 两个函数**，否则在 layout 获得的 build_dir 是错误的，导致 conan 自动创建的 build 目录是有问题的，修改情况如下：
+如果需要在 conanfile.py 中指定 CMake 的 generator，**一定要同时修改 `layout` 和 `generate` 两个函数**，否则在 layout 获得的 build_dir 是错误的，导致 Conan 自动创建的 build 目录有问题，修改情况如下：
 
 ```diff
 --- "a/.\\conanfile.py"
@@ -388,7 +388,7 @@ class testRecipe(ConanFile):
 
 > [!NOTE]
 >
-> `editor.tabSize` 和 `C_Cpp.formating` 是代码格式化的配置，可根据个人喜好进行配置
+> `editor.tabSize` 和 `C_Cpp.formatting` 是代码格式化的配置，可根据个人喜好进行配置
 
 填写好相关配置后，可以重启 clangd（同样在命令面板中进行操作）
 
@@ -404,7 +404,7 @@ class testRecipe(ConanFile):
 
 ## 配置调试
 
-还有最后一步，代码调试（已经感觉有点累了😫，VS Code 的C++开发环境属实有点难配了），幸好，这一步只需要简单集成一下 cmake 的调用命令即可，创建 `.vscode/launch.json`，并填写下列内容
+还有最后一步，代码调试（已经感觉有点累了😫，VS Code 的 C++ 开发环境属实有点难配了）。幸好，这一步只需要简单集成一下 CMake 的调用命令即可，创建 `.vscode/launch.json`，并填写下列内容。
 
 ```json
 {
@@ -421,7 +421,7 @@ class testRecipe(ConanFile):
 }
 ```
 
-这里我们使用了`${command:cmake.launchTargetPath}` 来获取当前配置的启动程序，不用为每一个可执行程序都显式执行相应的运行配置，而且通过这个命令进行调试还可以在启动之前自动完成编译。
+这里我们使用了 `${command:cmake.launchTargetPath}` 来获取当前配置的启动程序，不用为每一个可执行程序都显式配置相应的运行项，而且通过这个命令进行调试还可以在启动之前自动完成编译。
 
 如果需要使用其他命令，可以在插件的详情面板查询插件提供的所有命令（不过当我们需要指定额外的运行参数时，还是直接创建新的 launch target 比较好）
 
@@ -433,7 +433,7 @@ class testRecipe(ConanFile):
 
 到这里，我们就可以开始修改代码（可算是进入正题了😓），添加一些想要的依赖了（<del>调包侠 yes！</del>），简单点，使用 Eigen 和 spdlog 做一个简单的矩阵运算吧。
 
-首先在 [conan center](https://conan.io/center) 网站上查询需要使用包的版本
+首先在 [Conan Center](https://conan.io/center) 网站上查询需要使用包的版本
 
 <img src="Conan使用/image-20250905223759007.png" alt="image-20250905223759007" style="zoom: 50%;" />
 
@@ -449,7 +449,7 @@ def requirements(self):
     self.requires("spdlog/1.15.3")
 ```
 
-引入依赖后，需要重新调用一遍 conan install，会自动下载对应的包。
+引入依赖后，需要重新调用一遍 `conan install`，会自动下载对应的包。
 
 使用时，需要更改 CMakeLists.txt，通过 cmake 的 `find_package` 找到对应的包，将其链接到可执行程序上即可，在指引中也同样有写
 
@@ -470,19 +470,19 @@ target_link_libraries(${PROJECT_NAME} PRIVATE  Eigen3::Eigen spdlog::spdlog)
 
 # 自定义 Conan 项目模板
 
-从 VS Code 的配置过程可以发现，VS Code 作为一个文本编辑器，进行 C++ 的开发需要各种各样的配置，每次创建新项目十分繁琐，为了简化这一个配置过程，我们可以借助 conan 的模板项目，这样我们就可以减少重复操作，更加专注于代码本身了（想起了前端开发中各种代码模板生成工具）。
+从 VS Code 的配置过程可以发现，VS Code 作为一个文本编辑器，进行 C++ 开发需要各种各样的配置，每次创建新项目都十分繁琐。为了简化这个配置过程，我们可以借助 Conan 的模板项目，这样就可以减少重复操作，更加专注于代码本身（想起了前端开发中各种代码模板生成工具）。
 
 > 参考 Conan [创建项目模板文档](https://docs.conan.io/2/reference/commands/new.html#custom-templates)
 
-conan 内置了一系列模板，这一部分是直接写在 conan 源码里的（具体路径为 `<Python安装目录>\Lib\site-packages\conaninternal\api\new`）
+Conan 内置了一系列模板，这一部分是直接写在 Conan 源码里的（具体路径为 `<Python安装目录>\Lib\site-packages\conaninternal\api\new`）。
 
-以 cmake_exe 为例，其模板目录结构如下（没错，**文件名也是可以时模板形式的**，便于使用 Jinja2 进行字符串替换）
+以 cmake_exe 为例，其模板目录结构如下（没错，**文件名也是可以是模板形式的**，便于使用 Jinja2 进行字符串替换）。
 
 <img src="Conan使用/image-20250907213750585.png" alt="image-20250907213750585" style="zoom:67%;" />
 
 如果需要新增模板，**只需要拷贝整个模板目录文件夹至 `.conan2/templates/command/new` 目录下，然后使用模板目录的名称进行创建即可**。
 
-例如我们创建了一个包含 vscode 相关配置的 cmake_exe 模板，命名为 `vscode_cmake_exe`，其目录结构如下
+例如我们创建了一个包含 VS Code 相关配置的 cmake_exe 模板，命名为 `vscode_cmake_exe`，其目录结构如下。
 
 <img src="Conan使用/image-20250907214611200.png" alt="image-20250907214611200" style="zoom: 67%;" />
 
@@ -506,6 +506,6 @@ conan new vscode_cmake_exe -d name=test
 >
 > 仓库地址：https://github.com/PureWhiteVK/ConanTemplates.git
 
-下载模板仓库后，使用命令 `python scripts/bootstrap_templates.py` 就可以自动创建VS Code的模板并拷贝模板到 Conan 用户目录下了。
+下载模板仓库后，使用命令 `python scripts/bootstrap_templates.py` 就可以自动创建 VS Code 模板并将模板拷贝到 Conan 用户目录下。
 
 <img src="Conan使用/image-20250907215036398.png" alt="image-20250907215036398" style="zoom: 50%;" />

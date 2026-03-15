@@ -25,7 +25,7 @@ date: 2023-06-26 21:32:06
 docker run -it --rm ubuntu:20.04 /bin/bash
 ```
 
-注：后面也会出写一个笔记记录常用的 docker 命令。
+注：后面也会写一个笔记记录常用的 docker 命令。
 
 在 ubuntu 下使用 `sudo apt-get install xxx` 安装软件，所有 `apt` 相关的配置项存储在 `/etc/apt` 文件夹下，其内容如下
 
@@ -60,7 +60,7 @@ deb http://security.ubuntu.com/ubuntu/ focal-security multiverse
 deb <apt source>
 ```
 
-从源的URL链接中不难发现，这些链接实际上都是同一个域名底下的，我们换源是可以只更换前面的域名（即最后一个`/`之前的所有即可）。
+从源的URL链接中不难发现，这些链接实际上都是同一个域名下的，我们换源是可以只更换前面的域名（即最后一个`/`之前的所有即可）。
 
 既然都是替换了，那么肯定不能使用文本编辑器一个一个替换，最好的办法就是通过 `sed` 命令进行替换
 
@@ -108,7 +108,7 @@ sed -i s@a/f/g@e/f/g@g test.txt
 
 ### 替换链接
 
-那么这样我们就可以我们通过文本替换实现换源，命令如下
+那么这样我们就可以通过文本替换实现换源，命令如下
 
 ```bash
 sed -i s/archive.ubuntu.com/mirrors.aliyun.com/g /etc/apt/sources.list
@@ -228,13 +228,13 @@ ssh -p 54132 root@localhost
 
 <img src="Dockerfile常见环境使用/image-20230627000040652.png" alt="image-20230627000040652" style="zoom:80%;" />
 
-我们可以通过一下命令连接到容器进行修改
+我们可以通过以下命令连接到容器进行修改
 
 ```
 docker exec -it <container-id> /bin/bash
 ```
 
-然后输入一下命令设置明文密码
+然后输入以下命令设置明文密码
 
 ```
 echo "root:123" | chpasswd
@@ -282,7 +282,7 @@ service ssh restart
 
 <img src="Dockerfile常见环境使用/image-20230627093607706.png" alt="image-20230627093607706" style="zoom:67%;" />
 
-每次登录都输入密码还是有点麻烦（可以通过 `sshd_config` 设置密码可为空来绕过，但是还会提示用户进行交互，无法实现自动化远程登录），为此我们需要配置远程登录，首先通过 `ssh-keygen` 创建一对秘钥 	
+每次登录都输入密码还是有点麻烦（可以通过 `sshd_config` 设置密码可为空来绕过，但是还会提示用户进行交互，无法实现自动化远程登录），为此我们需要配置远程登录，首先通过 `ssh-keygen` 创建一对密钥 	
 
 ```bash
 ssh-keygen -t rsa -f ~/key -N ""
@@ -290,7 +290,7 @@ ssh-keygen -t rsa -f ~/key -N ""
 
 <img src="Dockerfile常见环境使用/image-20230627094530454.png" alt="image-20230627094530454" style="zoom:67%;" />
 
-其中 `-t rsa` 指定加密算法为 rsa，`-N ""` 表示私钥密码为空 ，输出私钥路径为 `~/key` ，公钥路径会在私钥后添加 `.pub`，即 `~/key.pub`  ，此处创建的秘钥是可以复用的，不过不推荐这么做，安全性较低。
+其中 `-t rsa` 指定加密算法为 rsa，`-N ""` 表示私钥密码为空 ，输出私钥路径为 `~/key` ，公钥路径会在私钥后添加 `.pub`，即 `~/key.pub`  ，此处创建的密钥是可以复用的，不过不推荐这么做，安全性较低。
 
 然后将公钥信息拷贝到 `~/.ssh/authorized_keys` 里即可
 
@@ -299,7 +299,7 @@ mkdir ~/.ssh
 cat ~/key.pub >> ~/.ssh/authorized_keys
 ```
 
-然后再重启一下 ssh，最终使用私钥登录测试
+然后再重启一下 ssh，最终使用密钥登录测试
 
 ```bash
 ssh -p 54132 -i key root@localhost
@@ -313,7 +313,7 @@ ssh -p 54132 -i key root@localhost
 
 ![modify-windows-privilege](Dockerfile常见环境使用/modify-windows-privilege.png)
 
-再尝试登录的时候就可以登陆了
+再尝试登录的时候就可以登录了
 
 <img src="Dockerfile常见环境使用/image-20230627101433963.png" alt="image-20230627101433963" style="zoom:67%;" />
 
@@ -353,7 +353,7 @@ CMD [ "service","ssh","start","-D" ]
 
 跑深度学习时经常需要配环境，需要安装 cuda 驱动、pytorch 等必要的软件库，虽然使用 anaconda 已经可以很好的管理 python 环境，使用 docker 来运行可以确保代码的可移植性，便于在另外一台机器上跑代码。
 
-anaconda 官方起始有 docker 镜像，但是只有 debian 和 alpine，且通常我们会在 nvidia 的 cuda 容器中进行安装，可以参考官方的安装脚本进行配置，仓库地址：[docker-images/miniconda3/debian/Dockerfile at master · ContinuumIO/docker-images · GitHub](https://github.com/ContinuumIO/docker-images/blob/master/miniconda3/debian/Dockerfile)
+anaconda 官方其实有 docker 镜像，但是只有 debian 和 alpine，且通常我们会在 nvidia 的 cuda 容器中进行安装，可以参考官方的安装脚本进行配置，仓库地址：[docker-images/miniconda3/debian/Dockerfile at master · ContinuumIO/docker-images · GitHub](https://github.com/ContinuumIO/docker-images/blob/master/miniconda3/debian/Dockerfile)
 
 代码如下
 
