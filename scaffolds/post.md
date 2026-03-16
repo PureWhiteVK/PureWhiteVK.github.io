@@ -6,4 +6,7 @@ tags:
 category:
 mathjax: false
 ---
+
 <!-- more -->
+
+$\require{physics}$
