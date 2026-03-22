@@ -2159,181 +2159,6 @@ actually do? - Stack Overflow</a></li>
       </tags>
   </entry>
   <entry>
-    <title>zerotier实现内网穿透</title>
-    <url>/posts/f9ab/</url>
-    <content><![CDATA[<p>zerotier
-可以将不同局域网下的主机连接到同一个虚拟局域网内（即内网穿透），使用之前需要注册一个
-zerotier账号，所有对虚拟网络的操作（设备管理、ip设置等）都需要在 web
-端进行。官方网址：<a
-href="https://www.zerotier.com/">https://www.zerotier.com/</a></p>
-<h2 id="注册-zerotier-账号">注册 Zerotier 账号</h2>
-<blockquote>
-<p>注：zerotier 服务器在国外，访问的时候可能需要挂梯子。</p>
-</blockquote>
-<p>进入<a href="https://www.zerotier.com/">官网</a></p>
-<p><img data-src="/posts/f9ab/zerotier-website.jpg" style="zoom:50%;" /></p>
-<p>点击右上角的 Sign Up 按钮就可以进入注册页面</p>
-<span id="more"></span>
-
-<p><img data-src="/posts/f9ab/zerotier-signup.jpg" style="zoom:50%;" /></p>
-<p>填写好相关信息后就会收到确认邮件，点击邮件中的链接即可激活账号。之后就可以创建虚拟网络进行相关配置了。</p>
-<h2 id="创建虚拟局域网">创建虚拟局域网</h2>
-<p>登入账号后我们会直接进入虚拟网络管理界面：<a
-href="https://my.zerotier.com/">ZeroTier Central</a></p>
-<p><img data-src="/posts/f9ab/zerotier-center.jpg" style="zoom:50%;" /></p>
-<p>点击黄色按钮就可以创建一个新的虚拟局域网</p>
-<p><img data-src="/posts/f9ab/zerotier-center-after.jpg"
-style="zoom:50%;" /></p>
-<p>网络名称是随机生成的，但网络ID是唯一的。点击网络名称便可以进入网络管理页面，我们可以进行相关的设置</p>
-<p><img data-src="/posts/f9ab/zerotier-network-info.jpg"
-style="zoom:50%;" /></p>
-<p>主要包括：</p>
-<ul>
-<li>网络相关信息修改（名称，描述，IP区段）</li>
-<li>节点的添加和删除</li>
-<li>路由规则</li>
-</ul>
-<p>一般而言，如果不需要将虚拟网络和外网联通，并不需要设置路由规则，因此只需要管理成员的加入（分配
-ip 地址）即可</p>
-<h2 id="客户端安装">客户端安装</h2>
-<p>对 windows 端和 macos
-端，安装起来很方便，只需要从官网下载对应的安装包即可。</p>
-<p>对于 Linux
-端而言，稍微复杂一点，不过官网也直接给出了安装命令，我们按照命令进行安装即可。</p>
-<p>option 1: ssl 命令安装</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">curl -s https://install.zerotier.com | sudo bash</span><br></pre></td></tr></table></figure>
-
-<p>option 2: 添加 apt 软件源安装（支持更新）</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">curl -s <span class="string">&#x27;https://raw.githubusercontent.com/zerotier/ZeroTierOne/master/doc/contact%40zerotier.com.gpg&#x27;</span> | gpg --import &amp;&amp; \</span><br><span class="line"><span class="keyword">if</span> z=$(curl -s <span class="string">&#x27;https://install.zerotier.com/&#x27;</span> | gpg); <span class="keyword">then</span> <span class="built_in">echo</span> <span class="string">&quot;<span class="variable">$z</span>&quot;</span> | sudo bash; <span class="keyword">fi</span></span><br></pre></td></tr></table></figure>
-
-<p>第二种方式我们可以通过 apt 进行软件的更新，因此较为推荐使用。</p>
-<p>添加软件源之后使用 <code>sudo apt update</code>
-更新软件源，然后使用下列命令搜索 zerotier</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo apt search zerotier</span><br></pre></td></tr></table></figure>
-
-<p>如果运行结果类似如下，则说明我们添加成功，使用
-<code>sudo apt install zerotier-one</code> 即可完成安装</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">(base) ➜  ~ sudo apt search zerotier</span><br><span class="line">Sorting... Done</span><br><span class="line">Full Text Search... Done</span><br><span class="line">zerotier-one/bionic,now 1.10.3 amd64 [installed]</span><br><span class="line">  ZeroTier network virtualization service</span><br></pre></td></tr></table></figure>
-
-<p>安装完成后我们可以使用下列命令查看（必须要添加 sudo，否则会报错）</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo zerotier-cli info</span><br></pre></td></tr></table></figure>
-
-<p>运行结果</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">(base) ➜  ~ sudo zerotier-cli info</span><br><span class="line">200 info 86dcfa11b5 1.10.3 ONLINE</span><br></pre></td></tr></table></figure>
-
-<p>如果不添加 sudo，运行如下</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">(base) ➜  ~ zerotier-cli info</span><br><span class="line">zerotier-cli: authtoken.secret not found or readable <span class="keyword">in</span> /var/lib/zerotier-one (try again as root)</span><br></pre></td></tr></table></figure>
-
-<p>提示我们无法读取 <code>authtoken.secret</code> 文件，要求使用 root
-再次尝试</p>
-<h2 id="加入虚拟局域网">加入虚拟局域网</h2>
-<p>zerotier上加入网络也十分简单，需要两步</p>
-<ol type="1">
-<li>客户端发起加入网络请求</li>
-<li>web 端网络管理界面通过请求</li>
-</ol>
-<p>在任意一个平台下都可以使用下面命令发起加入网络请求（linux 和 macos
-有可能需要添加 sudo）</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">zerotier-cli <span class="built_in">join</span> &lt;network ID&gt;</span><br></pre></td></tr></table></figure>
-
-<p>例如</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">root@VM-0-17-ubuntu:/home/ubuntu# zerotier-cli join e5cd7a9e1c0f9729</span><br><span class="line">200 join OK</span><br></pre></td></tr></table></figure>
-
-<p>然后需要在web端同意加入网络</p>
-<p><img data-src="/posts/f9ab/zerotier-members.jpg" style="zoom:50%;" /></p>
-<p>其中没有打勾的那一个节点就是等待添加的节点，打上勾就会自动添加并分配ip地址，在主机上使用<code>ifconfig</code>
-（linux,macos）/ <code>ipconfig</code> (windows)
-命令查看分配到的ip地址</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">root@VM-0-17-ubuntu:/home/ubuntu<span class="comment"># ifconfig</span></span><br><span class="line">...</span><br><span class="line">ztppixkcjv: flags=4163&lt;UP,BROADCAST,RUNNING,MULTICAST&gt;  mtu 2800</span><br><span class="line">        inet 172.27.98.228  netmask 255.255.0.0  broadcast 172.27.255.255</span><br><span class="line">        inet6 fe80::fa:60ff:fe11:d5b3  prefixlen 64  scopeid 0x20&lt;<span class="built_in">link</span>&gt;</span><br><span class="line">        ether 2a:c8:16:2e:89:37  txqueuelen 1000  (Ethernet)</span><br><span class="line">        RX packets 0  bytes 0 (0.0 B)</span><br><span class="line">        RX errors 0  dropped 0  overruns 0  frame 0</span><br><span class="line">        TX packets 11  bytes 866 (866.0 B)</span><br><span class="line">        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0</span><br></pre></td></tr></table></figure>
-
-<p>其中那个 zt
-开头的就是我们添加的虚拟网络了，我们可以查看到分配好的虚拟网络地址，此时我们可以使用
-ping 来测试虚拟局域网中设备的连通性</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">root@VM-0-17-ubuntu:/home/ubuntu<span class="comment"># ping 172.27.58.47</span></span><br><span class="line">PING 172.27.58.47 (172.27.58.47) 56(84) bytes of data.</span><br><span class="line">64 bytes from 172.27.58.47: icmp_seq=1 ttl=64 time=1729 ms</span><br><span class="line">64 bytes from 172.27.58.47: icmp_seq=2 ttl=64 time=728 ms</span><br><span class="line">64 bytes from 172.27.58.47: icmp_seq=3 ttl=64 time=353 ms</span><br><span class="line">64 bytes from 172.27.58.47: icmp_seq=4 ttl=64 time=349 ms</span><br><span class="line">64 bytes from 172.27.58.47: icmp_seq=5 ttl=64 time=346 ms</span><br><span class="line">64 bytes from 172.27.58.47: icmp_seq=6 ttl=64 time=344 ms</span><br><span class="line">^C</span><br><span class="line">--- 172.27.58.47 ping statistics ---</span><br><span class="line">7 packets transmitted, 6 received, 14.2857% packet loss, time 6007ms</span><br><span class="line">rtt min/avg/max/mdev = 343.977/641.470/1728.966/505.726 ms, pipe 2</span><br></pre></td></tr></table></figure>
-
-<p>其中 <code>172.27.58.47</code>
-是运行在本地虚拟机的节点，由于zerotier根服务器设置在国外，第一次连接时需要通过根服务器找到对应主机信息，通过
-UDP 建立连接，建立 P2P
-网络，因此第一次连接较慢，但整体时延仍然很高，国内可以通过添加
-<code>MOON</code> 节点来加速网络连接。</p>
-<h2 id="optional-添加-moon-节点">(optional) 添加 MOON 节点</h2>
-<h3 id="云服务器配置">云服务器配置</h3>
-<p>由于zerotier的根服务器设置在国外，在国内组网时网络时延较高，因此可以通过设置
-<strong>带有公网IP的云服务器</strong> 作为 <code>MOON</code>
-节点作为根节点，降低网络时延</p>
-<p>官网教程：<a href="https://docs.zerotier.com/zerotier/moons/">Private
-Root Servers | ZeroTier
-Documentation</a>（有一说一，官网这个教程写的真是...，第一次搞硬是没搞对，看了别人的教程才知道哪里有问题）</p>
-<p>对于云服务器的配置和带宽，由于 MOON
-节点仅用来建立连接，并不参与实际的网络数据交换，选择最丐的1核2G+1mbps带宽足够了。</p>
-<p>配置过程分为以下4步：（在 zerotier 根目录下执行，全程 sudo）</p>
-<ol type="1">
-<li><p>根据本机 <code>identity.public</code>生成
-<code>moon.json</code></p></li>
-<li><p>修改 <code>moon.json</code> 文件，添加主机公网IP</p></li>
-<li><p>从 <code>moon.json</code> 生成 <code>moon</code> 文件，并拷贝到
-<code>moons.d</code> 文件夹下</p></li>
-<li><p>重启 zerotier 服务</p></li>
-</ol>
-<p>zerotier应用的根目录（linux下）位于<code>/var/lib/zerotier</code>，其目录内容如下</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">➜  ~ <span class="built_in">ls</span> /var/lib/zerotier-one</span><br><span class="line">authtoken.secret  identity.public  moons.d     peers.d  zerotier-cli     zerotier-one      zerotier-one.port</span><br><span class="line">controller.d      identity.secret  networks.d  planet   zerotier-idtool  zerotier-one.pid  zerotier-one.te</span><br></pre></td></tr></table></figure>
-
-<p>其中 <code>identity.public</code> 以及 <code>identity.secret</code>
-就是用来表示本机的公钥和私钥了，使用这个 <code>identity.public</code>
-我们就可以生成 <code>moon.json</code>，调用命令</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo zerotier-idtool initmoon identity.public &gt;&gt; moon.json</span><br></pre></td></tr></table></figure>
-
-<p>生成的 moon.json 内容如下</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line"> <span class="string">&quot;id&quot;</span>: <span class="string">&quot;5f1932174d&quot;</span>,</span><br><span class="line"> <span class="string">&quot;objtype&quot;</span>: <span class="string">&quot;world&quot;</span>,</span><br><span class="line"> <span class="string">&quot;roots&quot;</span>: [</span><br><span class="line">  &#123;</span><br><span class="line">   <span class="string">&quot;identity&quot;</span>: <span class="string">&quot;5f1932174d:0:cf7728b3e66e4f207e537bfdee885c736d3430806c6cb279ce345103cef2302f42891547b73425793d0ea5cd7f18fd4c4a3aabf75193a23a609641d472ca01c6&quot;</span>,</span><br><span class="line">   <span class="string">&quot;stableEndpoints&quot;</span>: []</span><br><span class="line">  &#125;</span><br><span class="line"> ],</span><br><span class="line"> <span class="string">&quot;signingKey&quot;</span>: <span class="string">&quot;03f731a23d88171014e862dc222745b02f263eb58f72637a12a00a60175cd41dac20b91be0dc69ac233da8d8f119a3d4397228f89036d651d179469e373a8285&quot;</span>,</span><br><span class="line"> <span class="string">&quot;signingKey_SECRET&quot;</span>: <span class="string">&quot;76e23ef7ba06eeec08c85592bff86415143fd27c89efd0009a64ae0be864a9ba5ba592a8262cfe55210371499849a6c725eecaaf17e88d9ee2293a9eceb50dad&quot;</span>,</span><br><span class="line"> <span class="string">&quot;updatesMustBeSignedBy&quot;</span>: <span class="string">&quot;03f731a23d88171014e862dc222745b02f263eb58f72637a12a00a60175cd41dac20b91be0dc69ac233da8d8f119a3d4397228f89036d651d179469e373a8285&quot;</span>,</span><br><span class="line"> <span class="string">&quot;worldType&quot;</span>: <span class="string">&quot;moon&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>然后在 <code>stableEndpoints</code>
-一栏处填写服务器的公网IP以及端口号（一定要在云服务器中放通端口，具体百度即可，关键词：<strong>服务器安全组</strong>）</p>
-<p>数据格式为</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;xxx.xxx.xxx.xxx/xxxx&quot;</span><br></pre></td></tr></table></figure>
-
-<p>完整示例如下</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line"> <span class="string">&quot;id&quot;</span>: <span class="string">&quot;5f1932174d&quot;</span>,</span><br><span class="line"> <span class="string">&quot;objtype&quot;</span>: <span class="string">&quot;world&quot;</span>,</span><br><span class="line"> <span class="string">&quot;roots&quot;</span>: [</span><br><span class="line">  &#123;</span><br><span class="line">   <span class="string">&quot;identity&quot;</span>: <span class="string">&quot;5f1932174d:0:cf7728b3e66e4f207e537bfdee885c736d3430806c6cb279ce345103cef2302f42891547b73425793d0ea5cd7f18fd4c4a3aabf75193a23a609641d472ca01c6&quot;</span>,</span><br><span class="line">   <span class="string">&quot;stableEndpoints&quot;</span>: [<span class="string">&quot;49.235.186.44/9993&quot;</span>]    &lt;-- 修改此处</span><br><span class="line">  &#125;</span><br><span class="line"> ],</span><br><span class="line"> <span class="string">&quot;signingKey&quot;</span>: <span class="string">&quot;03f731a23d88171014e862dc222745b02f263eb58f72637a12a00a60175cd41dac20b91be0dc69ac233da8d8f119a3d4397228f89036d651d179469e373a8285&quot;</span>,</span><br><span class="line"> <span class="string">&quot;signingKey_SECRET&quot;</span>: <span class="string">&quot;76e23ef7ba06eeec08c85592bff86415143fd27c89efd0009a64ae0be864a9ba5ba592a8262cfe55210371499849a6c725eecaaf17e88d9ee2293a9eceb50dad&quot;</span>,</span><br><span class="line"> <span class="string">&quot;updatesMustBeSignedBy&quot;</span>: <span class="string">&quot;03f731a23d88171014e862dc222745b02f263eb58f72637a12a00a60175cd41dac20b91be0dc69ac233da8d8f119a3d4397228f89036d651d179469e373a8285&quot;</span>,</span><br><span class="line"> <span class="string">&quot;worldType&quot;</span>: <span class="string">&quot;moon&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>最后保存，使用下列命令生成 moon 文件</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">zerotier-idtool genmoon moon.json </span><br></pre></td></tr></table></figure>
-
-<p>执行结果</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">root@VM-0-17-ubuntu:/var/lib/zerotier-one<span class="comment"># zerotier-idtool genmoon moon.json </span></span><br><span class="line">wrote 0000005f1932174d.moon (signed world with timestamp 1617851943432)</span><br></pre></td></tr></table></figure>
-
-<p>然后将该文件拷贝到 <code>moons.d</code> 文件夹下</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">mkdir</span> -p moons.d &amp;&amp; <span class="built_in">mv</span> moon moons.d/</span><br></pre></td></tr></table></figure>
-
-<p>最后重启一下服务</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo service zerotier-one restart</span><br></pre></td></tr></table></figure>
-
-<h3 id="客户端配置">客户端配置</h3>
-<p>在客户端上直接使用 <code>orbit</code> 即可</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">zerotier-cli orbit 5f1932174d 5f1932174d</span><br></pre></td></tr></table></figure>
-
-<p>然后使用</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">zerotier-cli peers</span><br></pre></td></tr></table></figure>
-
-<p>查看我们是否配置成功（是否有 MOON 节点出现，且能否显示 MOON
-节点的公网 IP）</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">root@VM-0-4-ubuntu:/var/lib/zerotier-one<span class="comment"># zerotier-cli orbit 5f1932174d 5f1932174d</span></span><br><span class="line">200 orbit OK</span><br><span class="line">root@VM-0-4-ubuntu:/var/lib/zerotier-one<span class="comment"># zerotier-cli peers</span></span><br><span class="line">200 peers</span><br><span class="line">&lt;ztaddr&gt;   &lt;ver&gt;  &lt;role&gt; &lt;lat&gt; &lt;<span class="built_in">link</span>&gt; &lt;lastTX&gt; &lt;lastRX&gt; &lt;path&gt;</span><br><span class="line">3a46f1bf30 -      PLANET   135 DIRECT 2209     2073     185.180.13.82/9993</span><br><span class="line">5f1932174d 1.6.4  MOON       4 DIRECT 159      155      49.235.186.44/38167</span><br><span class="line">62f865ae71 -      PLANET   206 DIRECT 2209     2007     50.7.252.138/9993</span><br><span class="line">778cde7190 -      PLANET   213 DIRECT 2209     1995     103.195.103.66/9993</span><br><span class="line">992fcf1db7 -      PLANET   225 DIRECT 2209     1968     195.181.173.159/9993</span><br><span class="line">c3a0da579a 1.6.4  LEAF      42 DIRECT 2560     2516     222.178.10.188/48425</span><br><span class="line">e5cd7a9e1c 1.6.4  LEAF     329 DIRECT 2209     10660    35.236.84.174/32150</span><br><span class="line">fa2671ab8a 1.6.4  LEAF      41 DIRECT 2943     2902     222.178.10.188/63370</span><br></pre></td></tr></table></figure>
-
-<p>可以看到peers中第二个的role已经变成了MOON，此时再来ping，可以发现网络延时降低很多</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">root@VM-0-17-ubuntu:/var/lib/zerotier-one<span class="comment"># ping 172.27.126.84</span></span><br><span class="line">PING 172.27.126.84 (172.27.126.84) 56(84) bytes of data.</span><br><span class="line">64 bytes from 172.27.126.84: icmp_seq=1 ttl=64 time=16.8 ms</span><br><span class="line">64 bytes from 172.27.126.84: icmp_seq=2 ttl=64 time=4.37 ms</span><br><span class="line">64 bytes from 172.27.126.84: icmp_seq=3 ttl=64 time=4.49 ms</span><br><span class="line">64 bytes from 172.27.126.84: icmp_seq=4 ttl=64 time=4.53 ms</span><br><span class="line">64 bytes from 172.27.126.84: icmp_seq=5 ttl=64 time=4.55 ms</span><br><span class="line">^C</span><br><span class="line">--- 172.27.126.84 ping statistics ---</span><br><span class="line">5 packets transmitted, 5 received, 0% packet loss, time 4009ms</span><br><span class="line">rtt min/avg/max/mdev = 4.368/6.955/16.842/4.943 ms</span><br></pre></td></tr></table></figure>
-
-<p>原本 ping 是 300+ ms 的时延，配置了 moon 节点后直接 10ms 以内</p>
-<p><strong>注：两个 MOON 节点不要互相 orbit</strong></p>
-<p>使用 zerotier-one
-的主要目的就是在宿舍远程控制实验室的服务器（虽然有很多现成的远程控制软件，但是大多都是远程图形界面的，写起来还是卡卡的，这种搞法既支持远程控制，也支持
-ssh 直连）</p>
-]]></content>
-      <categories>
-        <category>技术笔记</category>
-      </categories>
-      <tags>
-        <tag>内网穿透</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>虚函数执行原理理解</title>
     <url>/posts/55c5/</url>
     <content><![CDATA[<p>刷牛客时经常能刷到面向对象相关的题目，多态作为面向对象中的一个重要特性（封装，继承和多态），在八股中经常考察其实现原理。为了方便理解，我们给出一个简单的多态样例</p>
@@ -2650,6 +2475,181 @@ href="https://cmake.org/cmake/help/latest/variable/MSVC_VERSION.html">MSVC_VERSI
       <tags>
         <tag>C++</tag>
         <tag>MSVC</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>zerotier实现内网穿透</title>
+    <url>/posts/f9ab/</url>
+    <content><![CDATA[<p>zerotier
+可以将不同局域网下的主机连接到同一个虚拟局域网内（即内网穿透），使用之前需要注册一个
+zerotier账号，所有对虚拟网络的操作（设备管理、ip设置等）都需要在 web
+端进行。官方网址：<a
+href="https://www.zerotier.com/">https://www.zerotier.com/</a></p>
+<h2 id="注册-zerotier-账号">注册 Zerotier 账号</h2>
+<blockquote>
+<p>注：zerotier 服务器在国外，访问的时候可能需要挂梯子。</p>
+</blockquote>
+<p>进入<a href="https://www.zerotier.com/">官网</a></p>
+<p><img data-src="/posts/f9ab/zerotier-website.jpg" style="zoom:50%;" /></p>
+<p>点击右上角的 Sign Up 按钮就可以进入注册页面</p>
+<span id="more"></span>
+
+<p><img data-src="/posts/f9ab/zerotier-signup.jpg" style="zoom:50%;" /></p>
+<p>填写好相关信息后就会收到确认邮件，点击邮件中的链接即可激活账号。之后就可以创建虚拟网络进行相关配置了。</p>
+<h2 id="创建虚拟局域网">创建虚拟局域网</h2>
+<p>登入账号后我们会直接进入虚拟网络管理界面：<a
+href="https://my.zerotier.com/">ZeroTier Central</a></p>
+<p><img data-src="/posts/f9ab/zerotier-center.jpg" style="zoom:50%;" /></p>
+<p>点击黄色按钮就可以创建一个新的虚拟局域网</p>
+<p><img data-src="/posts/f9ab/zerotier-center-after.jpg"
+style="zoom:50%;" /></p>
+<p>网络名称是随机生成的，但网络ID是唯一的。点击网络名称便可以进入网络管理页面，我们可以进行相关的设置</p>
+<p><img data-src="/posts/f9ab/zerotier-network-info.jpg"
+style="zoom:50%;" /></p>
+<p>主要包括：</p>
+<ul>
+<li>网络相关信息修改（名称，描述，IP区段）</li>
+<li>节点的添加和删除</li>
+<li>路由规则</li>
+</ul>
+<p>一般而言，如果不需要将虚拟网络和外网联通，并不需要设置路由规则，因此只需要管理成员的加入（分配
+ip 地址）即可</p>
+<h2 id="客户端安装">客户端安装</h2>
+<p>对 windows 端和 macos
+端，安装起来很方便，只需要从官网下载对应的安装包即可。</p>
+<p>对于 Linux
+端而言，稍微复杂一点，不过官网也直接给出了安装命令，我们按照命令进行安装即可。</p>
+<p>option 1: ssl 命令安装</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">curl -s https://install.zerotier.com | sudo bash</span><br></pre></td></tr></table></figure>
+
+<p>option 2: 添加 apt 软件源安装（支持更新）</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">curl -s <span class="string">&#x27;https://raw.githubusercontent.com/zerotier/ZeroTierOne/master/doc/contact%40zerotier.com.gpg&#x27;</span> | gpg --import &amp;&amp; \</span><br><span class="line"><span class="keyword">if</span> z=$(curl -s <span class="string">&#x27;https://install.zerotier.com/&#x27;</span> | gpg); <span class="keyword">then</span> <span class="built_in">echo</span> <span class="string">&quot;<span class="variable">$z</span>&quot;</span> | sudo bash; <span class="keyword">fi</span></span><br></pre></td></tr></table></figure>
+
+<p>第二种方式我们可以通过 apt 进行软件的更新，因此较为推荐使用。</p>
+<p>添加软件源之后使用 <code>sudo apt update</code>
+更新软件源，然后使用下列命令搜索 zerotier</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo apt search zerotier</span><br></pre></td></tr></table></figure>
+
+<p>如果运行结果类似如下，则说明我们添加成功，使用
+<code>sudo apt install zerotier-one</code> 即可完成安装</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">(base) ➜  ~ sudo apt search zerotier</span><br><span class="line">Sorting... Done</span><br><span class="line">Full Text Search... Done</span><br><span class="line">zerotier-one/bionic,now 1.10.3 amd64 [installed]</span><br><span class="line">  ZeroTier network virtualization service</span><br></pre></td></tr></table></figure>
+
+<p>安装完成后我们可以使用下列命令查看（必须要添加 sudo，否则会报错）</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo zerotier-cli info</span><br></pre></td></tr></table></figure>
+
+<p>运行结果</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">(base) ➜  ~ sudo zerotier-cli info</span><br><span class="line">200 info 86dcfa11b5 1.10.3 ONLINE</span><br></pre></td></tr></table></figure>
+
+<p>如果不添加 sudo，运行如下</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">(base) ➜  ~ zerotier-cli info</span><br><span class="line">zerotier-cli: authtoken.secret not found or readable <span class="keyword">in</span> /var/lib/zerotier-one (try again as root)</span><br></pre></td></tr></table></figure>
+
+<p>提示我们无法读取 <code>authtoken.secret</code> 文件，要求使用 root
+再次尝试</p>
+<h2 id="加入虚拟局域网">加入虚拟局域网</h2>
+<p>zerotier上加入网络也十分简单，需要两步</p>
+<ol type="1">
+<li>客户端发起加入网络请求</li>
+<li>web 端网络管理界面通过请求</li>
+</ol>
+<p>在任意一个平台下都可以使用下面命令发起加入网络请求（linux 和 macos
+有可能需要添加 sudo）</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">zerotier-cli <span class="built_in">join</span> &lt;network ID&gt;</span><br></pre></td></tr></table></figure>
+
+<p>例如</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">root@VM-0-17-ubuntu:/home/ubuntu# zerotier-cli join e5cd7a9e1c0f9729</span><br><span class="line">200 join OK</span><br></pre></td></tr></table></figure>
+
+<p>然后需要在web端同意加入网络</p>
+<p><img data-src="/posts/f9ab/zerotier-members.jpg" style="zoom:50%;" /></p>
+<p>其中没有打勾的那一个节点就是等待添加的节点，打上勾就会自动添加并分配ip地址，在主机上使用<code>ifconfig</code>
+（linux,macos）/ <code>ipconfig</code> (windows)
+命令查看分配到的ip地址</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">root@VM-0-17-ubuntu:/home/ubuntu<span class="comment"># ifconfig</span></span><br><span class="line">...</span><br><span class="line">ztppixkcjv: flags=4163&lt;UP,BROADCAST,RUNNING,MULTICAST&gt;  mtu 2800</span><br><span class="line">        inet 172.27.98.228  netmask 255.255.0.0  broadcast 172.27.255.255</span><br><span class="line">        inet6 fe80::fa:60ff:fe11:d5b3  prefixlen 64  scopeid 0x20&lt;<span class="built_in">link</span>&gt;</span><br><span class="line">        ether 2a:c8:16:2e:89:37  txqueuelen 1000  (Ethernet)</span><br><span class="line">        RX packets 0  bytes 0 (0.0 B)</span><br><span class="line">        RX errors 0  dropped 0  overruns 0  frame 0</span><br><span class="line">        TX packets 11  bytes 866 (866.0 B)</span><br><span class="line">        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0</span><br></pre></td></tr></table></figure>
+
+<p>其中那个 zt
+开头的就是我们添加的虚拟网络了，我们可以查看到分配好的虚拟网络地址，此时我们可以使用
+ping 来测试虚拟局域网中设备的连通性</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">root@VM-0-17-ubuntu:/home/ubuntu<span class="comment"># ping 172.27.58.47</span></span><br><span class="line">PING 172.27.58.47 (172.27.58.47) 56(84) bytes of data.</span><br><span class="line">64 bytes from 172.27.58.47: icmp_seq=1 ttl=64 time=1729 ms</span><br><span class="line">64 bytes from 172.27.58.47: icmp_seq=2 ttl=64 time=728 ms</span><br><span class="line">64 bytes from 172.27.58.47: icmp_seq=3 ttl=64 time=353 ms</span><br><span class="line">64 bytes from 172.27.58.47: icmp_seq=4 ttl=64 time=349 ms</span><br><span class="line">64 bytes from 172.27.58.47: icmp_seq=5 ttl=64 time=346 ms</span><br><span class="line">64 bytes from 172.27.58.47: icmp_seq=6 ttl=64 time=344 ms</span><br><span class="line">^C</span><br><span class="line">--- 172.27.58.47 ping statistics ---</span><br><span class="line">7 packets transmitted, 6 received, 14.2857% packet loss, time 6007ms</span><br><span class="line">rtt min/avg/max/mdev = 343.977/641.470/1728.966/505.726 ms, pipe 2</span><br></pre></td></tr></table></figure>
+
+<p>其中 <code>172.27.58.47</code>
+是运行在本地虚拟机的节点，由于zerotier根服务器设置在国外，第一次连接时需要通过根服务器找到对应主机信息，通过
+UDP 建立连接，建立 P2P
+网络，因此第一次连接较慢，但整体时延仍然很高，国内可以通过添加
+<code>MOON</code> 节点来加速网络连接。</p>
+<h2 id="optional-添加-moon-节点">(optional) 添加 MOON 节点</h2>
+<h3 id="云服务器配置">云服务器配置</h3>
+<p>由于zerotier的根服务器设置在国外，在国内组网时网络时延较高，因此可以通过设置
+<strong>带有公网IP的云服务器</strong> 作为 <code>MOON</code>
+节点作为根节点，降低网络时延</p>
+<p>官网教程：<a href="https://docs.zerotier.com/zerotier/moons/">Private
+Root Servers | ZeroTier
+Documentation</a>（有一说一，官网这个教程写的真是...，第一次搞硬是没搞对，看了别人的教程才知道哪里有问题）</p>
+<p>对于云服务器的配置和带宽，由于 MOON
+节点仅用来建立连接，并不参与实际的网络数据交换，选择最丐的1核2G+1mbps带宽足够了。</p>
+<p>配置过程分为以下4步：（在 zerotier 根目录下执行，全程 sudo）</p>
+<ol type="1">
+<li><p>根据本机 <code>identity.public</code>生成
+<code>moon.json</code></p></li>
+<li><p>修改 <code>moon.json</code> 文件，添加主机公网IP</p></li>
+<li><p>从 <code>moon.json</code> 生成 <code>moon</code> 文件，并拷贝到
+<code>moons.d</code> 文件夹下</p></li>
+<li><p>重启 zerotier 服务</p></li>
+</ol>
+<p>zerotier应用的根目录（linux下）位于<code>/var/lib/zerotier</code>，其目录内容如下</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">➜  ~ <span class="built_in">ls</span> /var/lib/zerotier-one</span><br><span class="line">authtoken.secret  identity.public  moons.d     peers.d  zerotier-cli     zerotier-one      zerotier-one.port</span><br><span class="line">controller.d      identity.secret  networks.d  planet   zerotier-idtool  zerotier-one.pid  zerotier-one.te</span><br></pre></td></tr></table></figure>
+
+<p>其中 <code>identity.public</code> 以及 <code>identity.secret</code>
+就是用来表示本机的公钥和私钥了，使用这个 <code>identity.public</code>
+我们就可以生成 <code>moon.json</code>，调用命令</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo zerotier-idtool initmoon identity.public &gt;&gt; moon.json</span><br></pre></td></tr></table></figure>
+
+<p>生成的 moon.json 内容如下</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line"> <span class="string">&quot;id&quot;</span>: <span class="string">&quot;5f1932174d&quot;</span>,</span><br><span class="line"> <span class="string">&quot;objtype&quot;</span>: <span class="string">&quot;world&quot;</span>,</span><br><span class="line"> <span class="string">&quot;roots&quot;</span>: [</span><br><span class="line">  &#123;</span><br><span class="line">   <span class="string">&quot;identity&quot;</span>: <span class="string">&quot;5f1932174d:0:cf7728b3e66e4f207e537bfdee885c736d3430806c6cb279ce345103cef2302f42891547b73425793d0ea5cd7f18fd4c4a3aabf75193a23a609641d472ca01c6&quot;</span>,</span><br><span class="line">   <span class="string">&quot;stableEndpoints&quot;</span>: []</span><br><span class="line">  &#125;</span><br><span class="line"> ],</span><br><span class="line"> <span class="string">&quot;signingKey&quot;</span>: <span class="string">&quot;03f731a23d88171014e862dc222745b02f263eb58f72637a12a00a60175cd41dac20b91be0dc69ac233da8d8f119a3d4397228f89036d651d179469e373a8285&quot;</span>,</span><br><span class="line"> <span class="string">&quot;signingKey_SECRET&quot;</span>: <span class="string">&quot;76e23ef7ba06eeec08c85592bff86415143fd27c89efd0009a64ae0be864a9ba5ba592a8262cfe55210371499849a6c725eecaaf17e88d9ee2293a9eceb50dad&quot;</span>,</span><br><span class="line"> <span class="string">&quot;updatesMustBeSignedBy&quot;</span>: <span class="string">&quot;03f731a23d88171014e862dc222745b02f263eb58f72637a12a00a60175cd41dac20b91be0dc69ac233da8d8f119a3d4397228f89036d651d179469e373a8285&quot;</span>,</span><br><span class="line"> <span class="string">&quot;worldType&quot;</span>: <span class="string">&quot;moon&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后在 <code>stableEndpoints</code>
+一栏处填写服务器的公网IP以及端口号（一定要在云服务器中放通端口，具体百度即可，关键词：<strong>服务器安全组</strong>）</p>
+<p>数据格式为</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;xxx.xxx.xxx.xxx/xxxx&quot;</span><br></pre></td></tr></table></figure>
+
+<p>完整示例如下</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line"> <span class="string">&quot;id&quot;</span>: <span class="string">&quot;5f1932174d&quot;</span>,</span><br><span class="line"> <span class="string">&quot;objtype&quot;</span>: <span class="string">&quot;world&quot;</span>,</span><br><span class="line"> <span class="string">&quot;roots&quot;</span>: [</span><br><span class="line">  &#123;</span><br><span class="line">   <span class="string">&quot;identity&quot;</span>: <span class="string">&quot;5f1932174d:0:cf7728b3e66e4f207e537bfdee885c736d3430806c6cb279ce345103cef2302f42891547b73425793d0ea5cd7f18fd4c4a3aabf75193a23a609641d472ca01c6&quot;</span>,</span><br><span class="line">   <span class="string">&quot;stableEndpoints&quot;</span>: [<span class="string">&quot;49.235.186.44/9993&quot;</span>]    &lt;-- 修改此处</span><br><span class="line">  &#125;</span><br><span class="line"> ],</span><br><span class="line"> <span class="string">&quot;signingKey&quot;</span>: <span class="string">&quot;03f731a23d88171014e862dc222745b02f263eb58f72637a12a00a60175cd41dac20b91be0dc69ac233da8d8f119a3d4397228f89036d651d179469e373a8285&quot;</span>,</span><br><span class="line"> <span class="string">&quot;signingKey_SECRET&quot;</span>: <span class="string">&quot;76e23ef7ba06eeec08c85592bff86415143fd27c89efd0009a64ae0be864a9ba5ba592a8262cfe55210371499849a6c725eecaaf17e88d9ee2293a9eceb50dad&quot;</span>,</span><br><span class="line"> <span class="string">&quot;updatesMustBeSignedBy&quot;</span>: <span class="string">&quot;03f731a23d88171014e862dc222745b02f263eb58f72637a12a00a60175cd41dac20b91be0dc69ac233da8d8f119a3d4397228f89036d651d179469e373a8285&quot;</span>,</span><br><span class="line"> <span class="string">&quot;worldType&quot;</span>: <span class="string">&quot;moon&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>最后保存，使用下列命令生成 moon 文件</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">zerotier-idtool genmoon moon.json </span><br></pre></td></tr></table></figure>
+
+<p>执行结果</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">root@VM-0-17-ubuntu:/var/lib/zerotier-one<span class="comment"># zerotier-idtool genmoon moon.json </span></span><br><span class="line">wrote 0000005f1932174d.moon (signed world with timestamp 1617851943432)</span><br></pre></td></tr></table></figure>
+
+<p>然后将该文件拷贝到 <code>moons.d</code> 文件夹下</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">mkdir</span> -p moons.d &amp;&amp; <span class="built_in">mv</span> moon moons.d/</span><br></pre></td></tr></table></figure>
+
+<p>最后重启一下服务</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo service zerotier-one restart</span><br></pre></td></tr></table></figure>
+
+<h3 id="客户端配置">客户端配置</h3>
+<p>在客户端上直接使用 <code>orbit</code> 即可</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">zerotier-cli orbit 5f1932174d 5f1932174d</span><br></pre></td></tr></table></figure>
+
+<p>然后使用</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">zerotier-cli peers</span><br></pre></td></tr></table></figure>
+
+<p>查看我们是否配置成功（是否有 MOON 节点出现，且能否显示 MOON
+节点的公网 IP）</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">root@VM-0-4-ubuntu:/var/lib/zerotier-one<span class="comment"># zerotier-cli orbit 5f1932174d 5f1932174d</span></span><br><span class="line">200 orbit OK</span><br><span class="line">root@VM-0-4-ubuntu:/var/lib/zerotier-one<span class="comment"># zerotier-cli peers</span></span><br><span class="line">200 peers</span><br><span class="line">&lt;ztaddr&gt;   &lt;ver&gt;  &lt;role&gt; &lt;lat&gt; &lt;<span class="built_in">link</span>&gt; &lt;lastTX&gt; &lt;lastRX&gt; &lt;path&gt;</span><br><span class="line">3a46f1bf30 -      PLANET   135 DIRECT 2209     2073     185.180.13.82/9993</span><br><span class="line">5f1932174d 1.6.4  MOON       4 DIRECT 159      155      49.235.186.44/38167</span><br><span class="line">62f865ae71 -      PLANET   206 DIRECT 2209     2007     50.7.252.138/9993</span><br><span class="line">778cde7190 -      PLANET   213 DIRECT 2209     1995     103.195.103.66/9993</span><br><span class="line">992fcf1db7 -      PLANET   225 DIRECT 2209     1968     195.181.173.159/9993</span><br><span class="line">c3a0da579a 1.6.4  LEAF      42 DIRECT 2560     2516     222.178.10.188/48425</span><br><span class="line">e5cd7a9e1c 1.6.4  LEAF     329 DIRECT 2209     10660    35.236.84.174/32150</span><br><span class="line">fa2671ab8a 1.6.4  LEAF      41 DIRECT 2943     2902     222.178.10.188/63370</span><br></pre></td></tr></table></figure>
+
+<p>可以看到peers中第二个的role已经变成了MOON，此时再来ping，可以发现网络延时降低很多</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">root@VM-0-17-ubuntu:/var/lib/zerotier-one<span class="comment"># ping 172.27.126.84</span></span><br><span class="line">PING 172.27.126.84 (172.27.126.84) 56(84) bytes of data.</span><br><span class="line">64 bytes from 172.27.126.84: icmp_seq=1 ttl=64 time=16.8 ms</span><br><span class="line">64 bytes from 172.27.126.84: icmp_seq=2 ttl=64 time=4.37 ms</span><br><span class="line">64 bytes from 172.27.126.84: icmp_seq=3 ttl=64 time=4.49 ms</span><br><span class="line">64 bytes from 172.27.126.84: icmp_seq=4 ttl=64 time=4.53 ms</span><br><span class="line">64 bytes from 172.27.126.84: icmp_seq=5 ttl=64 time=4.55 ms</span><br><span class="line">^C</span><br><span class="line">--- 172.27.126.84 ping statistics ---</span><br><span class="line">5 packets transmitted, 5 received, 0% packet loss, time 4009ms</span><br><span class="line">rtt min/avg/max/mdev = 4.368/6.955/16.842/4.943 ms</span><br></pre></td></tr></table></figure>
+
+<p>原本 ping 是 300+ ms 的时延，配置了 moon 节点后直接 10ms 以内</p>
+<p><strong>注：两个 MOON 节点不要互相 orbit</strong></p>
+<p>使用 zerotier-one
+的主要目的就是在宿舍远程控制实验室的服务器（虽然有很多现成的远程控制软件，但是大多都是远程图形界面的，写起来还是卡卡的，这种搞法既支持远程控制，也支持
+ssh 直连）</p>
+]]></content>
+      <categories>
+        <category>技术笔记</category>
+      </categories>
+      <tags>
+        <tag>内网穿透</tag>
       </tags>
   </entry>
   <entry>
@@ -3267,6 +3267,103 @@ shm_Adenialzz的博客-CSDN博客</a></li>
       </tags>
   </entry>
   <entry>
+    <title>CMake项目结构模板</title>
+    <url>/posts/d235/</url>
+    <content><![CDATA[<h1 id="整体结构">整体结构</h1>
+<figure class="highlight txt"><table><tr><td class="code"><pre><span class="line">.</span><br><span class="line">├── .gitignore</span><br><span class="line">├── .gitmodules</span><br><span class="line">├── CMakeLists.txt</span><br><span class="line">├── LICENSE</span><br><span class="line">├── README.md</span><br><span class="line">├── build</span><br><span class="line">├── cmake</span><br><span class="line">│   ├── CMakeLists.txt</span><br><span class="line">│   └── ...</span><br><span class="line">├── data</span><br><span class="line">│   ├── .gitkeep</span><br><span class="line">│   └── ...</span><br><span class="line">├── extern</span><br><span class="line">│   ├── CMakeLists.txt</span><br><span class="line">│   └── ...</span><br><span class="line">├── src</span><br><span class="line">│   ├── CMakeLists.txt</span><br><span class="line">│   ├── glad</span><br><span class="line">│   ├── lumos</span><br><span class="line">│   └── stb</span><br><span class="line">└── test</span><br><span class="line">    ├── CMakeLists.txt</span><br><span class="line">    ├── test_gl.cpp</span><br><span class="line">    ├── test_imageio.cpp</span><br><span class="line">    ├── test_imgui.cpp</span><br><span class="line">    ├── test_pcg.cpp</span><br><span class="line">    ├── test_random_permutation.cpp</span><br><span class="line">    └── test_viewer.cpp</span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+<p>含义：</p>
+<ul>
+<li><p><code>CMakeLists.txt</code>：组织项目的源代码，不会包含具体的编译细节，仅包含项目的声明、跨平台控制等，示例如下：</p>
+<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line"><span class="keyword">cmake_minimum_required</span>(VERSION <span class="number">3.20</span>.<span class="number">0</span>)</span><br><span class="line"><span class="keyword">project</span>(Lumos)</span><br><span class="line"></span><br><span class="line"><span class="comment"># used with command `cmake -DENABLE_TESTING=ON -B build -S .`</span></span><br><span class="line"><span class="comment"># Define an option with default value OFF (disabled)</span></span><br><span class="line"><span class="keyword">option</span>(<span class="keyword">ENABLE_TESTING</span> <span class="string">&quot;Enable testing&quot;</span> <span class="keyword">OFF</span>)</span><br><span class="line"></span><br><span class="line">cmake_path(<span class="keyword">SET</span> DATA_PATH NORMALIZE <span class="variable">$&#123;PROJECT_SOURCE_DIR&#125;</span>/data)</span><br><span class="line"></span><br><span class="line"><span class="keyword">add_subdirectory</span>(cmake)</span><br><span class="line"><span class="keyword">add_subdirectory</span>(extern)</span><br><span class="line"><span class="keyword">add_subdirectory</span>(src)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">ENABLE_TESTING</span>)</span><br><span class="line">  <span class="keyword">enable_testing</span>()</span><br><span class="line">  <span class="keyword">add_subdirectory</span>(<span class="keyword">test</span>)</span><br><span class="line"><span class="keyword">endif</span>()</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>src</code>、<code>test</code>、<code>extern</code>
+分别代表源代码、测试代码以及第三方依赖库，每一个都会包含各自的
+<code>CMakeLists.txt</code>，用来管理代码，对于 <code>src</code>
+中的库代码（自定义的
+library），个人推荐将头文件（<code>.h</code>）和源代码文件
+（<code>.cpp</code>） 分开放，同时 include
+目录时设定好文件夹层级，示例如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">.</span><br><span class="line">├── CMakeLists.txt</span><br><span class="line">├── core</span><br><span class="line">│   ├── CMakeLists.txt</span><br><span class="line">│   ├── include</span><br><span class="line">│   │   └── lumos</span><br><span class="line">│   │       └── core</span><br><span class="line">│   └── src</span><br><span class="line">└── gui</span><br><span class="line">    ├── CMakeLists.txt</span><br><span class="line">    ├── include</span><br><span class="line">    │   └── lumos</span><br><span class="line">    │       └── gui</span><br><span class="line">    └── src</span><br></pre></td></tr></table></figure>
+
+<p>这样做稍微有点繁琐，但是代码的组织逻辑比较清晰</p>
+<p>对于 <code>extern</code> 文件夹，其用来添加第三方依赖，推荐使用
+<code>git submodule</code> 来管理版本，下载时使用
+<code>git clone --recursive &lt;repo-url&gt;</code> 即可。</p></li>
+</ul>
+<h1 id="依赖管理">依赖管理</h1>
+<h2 id="添加-submodule">添加 submodule</h2>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule add &lt;repo-url&gt; &lt;local-submodule-path&gt;</span><br></pre></td></tr></table></figure>
+
+<p>例如</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule add https://github.com/ocornut/imgui.git extern/imgui</span><br></pre></td></tr></table></figure>
+
+<h2 id="使用指定-commit">使用指定 commit</h2>
+<p>为确保代码稳定性，我们可能需要使用特定版本的代码，例如 imgui
+中我们想使用 tag 为 <code>v1.89.7-docking</code>，我们需要进入 submodule
+目录手动切换一下</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cd</span> extern/imgui</span><br><span class="line">git checkout v1.89.7-docking</span><br></pre></td></tr></table></figure>
+
+<p>当我们提交后 github 就会默认链接到该 repo 对应的 commit 了</p>
+<h2 id="删除-submodule">删除 submodule</h2>
+<p>在 git 中删除 submodule
+较为繁琐，没有一个直接删除的方法，参考网上的操作大概有以下5个步骤：</p>
+<ol type="1">
+<li><p>删除子模块目录</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">rm</span> -rf extern/imgui</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>删除 <code>.git</code> 的缓存</p>
+ <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git <span class="built_in">rm</span> --cached extern/imgui</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>删除 <code>.gitmodules</code> 中对应的子模块</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[submodule &quot;extern/imgui&quot;]</span><br><span class="line">	path = extern/imgui</span><br><span class="line">	url = https://github.com/ocornut/imgui.git</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>删除 <code>.git/config</code> 中相应条目</p>
+ <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">    [core]</span><br><span class="line">        repositoryformatversion = 0</span><br><span class="line">        filemode = <span class="literal">true</span></span><br><span class="line">        bare = <span class="literal">false</span></span><br><span class="line">        logallrefupdates = <span class="literal">true</span></span><br><span class="line">        ignorecase = <span class="literal">true</span></span><br><span class="line">        precomposeunicode = <span class="literal">true</span></span><br><span class="line">    ...</span><br><span class="line">[submodule <span class="string">&quot;extern/imgui&quot;</span>]</span><br><span class="line">	url = https://github.com/ocornut/imgui.git</span><br><span class="line">...</span><br><span class="line">5. 删除 `.git` 中子模块目录</span><br><span class="line"></span><br><span class="line">    ```bash</span><br><span class="line">    <span class="built_in">rm</span> -rf .git/modules/extern/imgui</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h1 id="个人偏好命名方式">个人偏好命名方式</h1>
+<p>命名方式有很多，选择自己喜欢的就行，关键在于<strong>统一</strong></p>
+<p><strong>文件名</strong></p>
+<p>小写下划线，例如
+<code>image_utils.h</code>，<code>image_utils.cpp</code></p>
+<p><strong>命名空间</strong></p>
+<p>小写（尽量不要添加下划线，使用子命名空间即可），例如
+<code>lumos::xxx</code>，<code>lumos::core::xxx</code></p>
+<p><strong>类名</strong></p>
+<p>首字母大写驼峰命名，对于全部大写的当成单词仅首字母大写，例如
+<code>HTML</code> 写成 <code>Html</code>，<code>RGBA</code> 写成
+<code>Rgba</code></p>
+<p>函数</p>
+<p><strong>类函数名</strong></p>
+<p>对于 <code>public / protected</code>
+方法而言使用首字母大写驼峰命名，例如 <code>Initialize</code>，对于
+<code>private</code> 方法使用首字母小写驼峰命名，例如
+<code>createContext</code></p>
+<p><strong>类变量</strong></p>
+<p>全部以 <code>m_</code> 开头，小写下划线，例如
+<code>m_handle</code></p>
+<p><strong>变量名</strong></p>
+<p>小写下划线，例如 <code>image_data</code></p>
+<p><strong>常量</strong></p>
+<p>全部大写，例如 <code>BUFFER_SIZE</code></p>
+<p><strong>cmake文件名</strong></p>
+<p>以 <code>-</code> 连接，例如 <code>add-imgui.cmake</code></p>
+<p><strong>cmake函数名</strong></p>
+<p>小写下划线（类似于 cmake 的函数命名方式），例如
+<code>add_imgui</code></p>
+]]></content>
+      <categories>
+        <category>C++学习笔记</category>
+      </categories>
+      <tags>
+        <tag>C++</tag>
+        <tag>CMake</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>遍历二叉树的n种方式</title>
     <url>/posts/7a74/</url>
     <content><![CDATA[<h1 id="二叉树实现">二叉树实现</h1>
@@ -3867,103 +3964,6 @@ ANTLR 作者写的那本书 ANTLR 4权威指南，不过网上的 pdf
       </tags>
   </entry>
   <entry>
-    <title>CMake项目结构模板</title>
-    <url>/posts/d235/</url>
-    <content><![CDATA[<h1 id="整体结构">整体结构</h1>
-<figure class="highlight txt"><table><tr><td class="code"><pre><span class="line">.</span><br><span class="line">├── .gitignore</span><br><span class="line">├── .gitmodules</span><br><span class="line">├── CMakeLists.txt</span><br><span class="line">├── LICENSE</span><br><span class="line">├── README.md</span><br><span class="line">├── build</span><br><span class="line">├── cmake</span><br><span class="line">│   ├── CMakeLists.txt</span><br><span class="line">│   └── ...</span><br><span class="line">├── data</span><br><span class="line">│   ├── .gitkeep</span><br><span class="line">│   └── ...</span><br><span class="line">├── extern</span><br><span class="line">│   ├── CMakeLists.txt</span><br><span class="line">│   └── ...</span><br><span class="line">├── src</span><br><span class="line">│   ├── CMakeLists.txt</span><br><span class="line">│   ├── glad</span><br><span class="line">│   ├── lumos</span><br><span class="line">│   └── stb</span><br><span class="line">└── test</span><br><span class="line">    ├── CMakeLists.txt</span><br><span class="line">    ├── test_gl.cpp</span><br><span class="line">    ├── test_imageio.cpp</span><br><span class="line">    ├── test_imgui.cpp</span><br><span class="line">    ├── test_pcg.cpp</span><br><span class="line">    ├── test_random_permutation.cpp</span><br><span class="line">    └── test_viewer.cpp</span><br></pre></td></tr></table></figure>
-
-<span id="more"></span>
-
-<p>含义：</p>
-<ul>
-<li><p><code>CMakeLists.txt</code>：组织项目的源代码，不会包含具体的编译细节，仅包含项目的声明、跨平台控制等，示例如下：</p>
-<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line"><span class="keyword">cmake_minimum_required</span>(VERSION <span class="number">3.20</span>.<span class="number">0</span>)</span><br><span class="line"><span class="keyword">project</span>(Lumos)</span><br><span class="line"></span><br><span class="line"><span class="comment"># used with command `cmake -DENABLE_TESTING=ON -B build -S .`</span></span><br><span class="line"><span class="comment"># Define an option with default value OFF (disabled)</span></span><br><span class="line"><span class="keyword">option</span>(<span class="keyword">ENABLE_TESTING</span> <span class="string">&quot;Enable testing&quot;</span> <span class="keyword">OFF</span>)</span><br><span class="line"></span><br><span class="line">cmake_path(<span class="keyword">SET</span> DATA_PATH NORMALIZE <span class="variable">$&#123;PROJECT_SOURCE_DIR&#125;</span>/data)</span><br><span class="line"></span><br><span class="line"><span class="keyword">add_subdirectory</span>(cmake)</span><br><span class="line"><span class="keyword">add_subdirectory</span>(extern)</span><br><span class="line"><span class="keyword">add_subdirectory</span>(src)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">ENABLE_TESTING</span>)</span><br><span class="line">  <span class="keyword">enable_testing</span>()</span><br><span class="line">  <span class="keyword">add_subdirectory</span>(<span class="keyword">test</span>)</span><br><span class="line"><span class="keyword">endif</span>()</span><br></pre></td></tr></table></figure>
-</li>
-<li><p><code>src</code>、<code>test</code>、<code>extern</code>
-分别代表源代码、测试代码以及第三方依赖库，每一个都会包含各自的
-<code>CMakeLists.txt</code>，用来管理代码，对于 <code>src</code>
-中的库代码（自定义的
-library），个人推荐将头文件（<code>.h</code>）和源代码文件
-（<code>.cpp</code>） 分开放，同时 include
-目录时设定好文件夹层级，示例如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">.</span><br><span class="line">├── CMakeLists.txt</span><br><span class="line">├── core</span><br><span class="line">│   ├── CMakeLists.txt</span><br><span class="line">│   ├── include</span><br><span class="line">│   │   └── lumos</span><br><span class="line">│   │       └── core</span><br><span class="line">│   └── src</span><br><span class="line">└── gui</span><br><span class="line">    ├── CMakeLists.txt</span><br><span class="line">    ├── include</span><br><span class="line">    │   └── lumos</span><br><span class="line">    │       └── gui</span><br><span class="line">    └── src</span><br></pre></td></tr></table></figure>
-
-<p>这样做稍微有点繁琐，但是代码的组织逻辑比较清晰</p>
-<p>对于 <code>extern</code> 文件夹，其用来添加第三方依赖，推荐使用
-<code>git submodule</code> 来管理版本，下载时使用
-<code>git clone --recursive &lt;repo-url&gt;</code> 即可。</p></li>
-</ul>
-<h1 id="依赖管理">依赖管理</h1>
-<h2 id="添加-submodule">添加 submodule</h2>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule add &lt;repo-url&gt; &lt;local-submodule-path&gt;</span><br></pre></td></tr></table></figure>
-
-<p>例如</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule add https://github.com/ocornut/imgui.git extern/imgui</span><br></pre></td></tr></table></figure>
-
-<h2 id="使用指定-commit">使用指定 commit</h2>
-<p>为确保代码稳定性，我们可能需要使用特定版本的代码，例如 imgui
-中我们想使用 tag 为 <code>v1.89.7-docking</code>，我们需要进入 submodule
-目录手动切换一下</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cd</span> extern/imgui</span><br><span class="line">git checkout v1.89.7-docking</span><br></pre></td></tr></table></figure>
-
-<p>当我们提交后 github 就会默认链接到该 repo 对应的 commit 了</p>
-<h2 id="删除-submodule">删除 submodule</h2>
-<p>在 git 中删除 submodule
-较为繁琐，没有一个直接删除的方法，参考网上的操作大概有以下5个步骤：</p>
-<ol type="1">
-<li><p>删除子模块目录</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">rm</span> -rf extern/imgui</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>删除 <code>.git</code> 的缓存</p>
- <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git <span class="built_in">rm</span> --cached extern/imgui</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>删除 <code>.gitmodules</code> 中对应的子模块</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[submodule &quot;extern/imgui&quot;]</span><br><span class="line">	path = extern/imgui</span><br><span class="line">	url = https://github.com/ocornut/imgui.git</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>删除 <code>.git/config</code> 中相应条目</p>
- <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">    [core]</span><br><span class="line">        repositoryformatversion = 0</span><br><span class="line">        filemode = <span class="literal">true</span></span><br><span class="line">        bare = <span class="literal">false</span></span><br><span class="line">        logallrefupdates = <span class="literal">true</span></span><br><span class="line">        ignorecase = <span class="literal">true</span></span><br><span class="line">        precomposeunicode = <span class="literal">true</span></span><br><span class="line">    ...</span><br><span class="line">[submodule <span class="string">&quot;extern/imgui&quot;</span>]</span><br><span class="line">	url = https://github.com/ocornut/imgui.git</span><br><span class="line">...</span><br><span class="line">5. 删除 `.git` 中子模块目录</span><br><span class="line"></span><br><span class="line">    ```bash</span><br><span class="line">    <span class="built_in">rm</span> -rf .git/modules/extern/imgui</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<h1 id="个人偏好命名方式">个人偏好命名方式</h1>
-<p>命名方式有很多，选择自己喜欢的就行，关键在于<strong>统一</strong></p>
-<p><strong>文件名</strong></p>
-<p>小写下划线，例如
-<code>image_utils.h</code>，<code>image_utils.cpp</code></p>
-<p><strong>命名空间</strong></p>
-<p>小写（尽量不要添加下划线，使用子命名空间即可），例如
-<code>lumos::xxx</code>，<code>lumos::core::xxx</code></p>
-<p><strong>类名</strong></p>
-<p>首字母大写驼峰命名，对于全部大写的当成单词仅首字母大写，例如
-<code>HTML</code> 写成 <code>Html</code>，<code>RGBA</code> 写成
-<code>Rgba</code></p>
-<p>函数</p>
-<p><strong>类函数名</strong></p>
-<p>对于 <code>public / protected</code>
-方法而言使用首字母大写驼峰命名，例如 <code>Initialize</code>，对于
-<code>private</code> 方法使用首字母小写驼峰命名，例如
-<code>createContext</code></p>
-<p><strong>类变量</strong></p>
-<p>全部以 <code>m_</code> 开头，小写下划线，例如
-<code>m_handle</code></p>
-<p><strong>变量名</strong></p>
-<p>小写下划线，例如 <code>image_data</code></p>
-<p><strong>常量</strong></p>
-<p>全部大写，例如 <code>BUFFER_SIZE</code></p>
-<p><strong>cmake文件名</strong></p>
-<p>以 <code>-</code> 连接，例如 <code>add-imgui.cmake</code></p>
-<p><strong>cmake函数名</strong></p>
-<p>小写下划线（类似于 cmake 的函数命名方式），例如
-<code>add_imgui</code></p>
-]]></content>
-      <categories>
-        <category>C++学习笔记</category>
-      </categories>
-      <tags>
-        <tag>C++</tag>
-        <tag>CMake</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>空间填充曲线</title>
     <url>/posts/6117/</url>
     <content><![CDATA[<p>对于一个<span
@@ -4364,10 +4364,95 @@ A 仓库的代码更新，可以手动设置新的 remote，并手动拉取。</
 
 <p>其中 <code>HEAD:master</code> 表示将当前分支提交到
 <code>repoB/master</code> 分支上。</p>
+<h1 id="lfs">LFS</h1>
+<p>Git LFS（Large File
+Storage）用于管理大文件。仓库里保存的是<strong>指针文件</strong>（很小的文本），真实大文件存储在
+LFS 对象存储中。</p>
+<h2 id="初始化-lfs">初始化 LFS</h2>
+<p>先安装 Git LFS，然后在本机初始化：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">git lfs install</span><br></pre></td></tr></table></figure>
+
+<p>检查是否可用：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">git lfs version</span><br></pre></td></tr></table></figure>
+
+<h2 id="追踪大文件">追踪大文件</h2>
+<p>比如我们希望把 <code>.zip</code>、<code>.mp4</code> 这类文件交给
+LFS：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">git lfs track <span class="string">&quot;*.zip&quot;</span></span><br><span class="line">git lfs track <span class="string">&quot;*.mp4&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>执行后会更新 <code>.gitattributes</code>，需要把它一起提交：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">git add .gitattributes</span><br><span class="line">git add &lt;large-file&gt;</span><br><span class="line">git commit -m <span class="string">&quot;track large files with git lfs&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>可以通过下面命令查看当前被 LFS 跟踪的文件：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">git lfs ls-files</span><br></pre></td></tr></table></figure>
+
+<h2 id="将大文件迁移到-lfs">将大文件迁移到 LFS</h2>
+<p>如果某些大文件以前已经作为普通 Git 对象提交过，可以用
+<code>git lfs migrate import</code> 改写历史，把它们转成 LFS 指针：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">git lfs migrate import --include=<span class="string">&quot;*.zip,*.mp4&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>也可以只处理某个分支：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">git lfs migrate import --include=<span class="string">&quot;*.zip,*.mp4&quot;</span> --include-ref=<span class="string">&quot;refs/heads/main&quot;</span></span><br></pre></td></tr></table></figure>
+
+<div class="markdown-alert markdown-alert-caution">
+<div class="markdown-alert-title">
+<svg class="octicon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M4.47.22A.749.749 0 0 1 5 0h6c.199 0 .389.079.53.22l4.25 4.25c.141.14.22.331.22.53v6a.749.749 0 0 1-.22.53l-4.25 4.25A.749.749 0 0 1 11 16H5a.749.749 0 0 1-.53-.22L.22 11.53A.749.749 0 0 1 0 11V5c0-.199.079-.389.22-.53Zm.84 1.28L1.5 5.31v5.38l3.81 3.81h5.38l3.81-3.81V5.31L10.69 1.5ZM8 4a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 8 4Zm0 8a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>
+<strong>Caution</strong>
+</div>
+<p>这个操作会改写 commit
+历史，执行前建议先备份或在新分支验证。改写后通常需要强制推送：</p>
+</div>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">git push --force-with-lease</span><br></pre></td></tr></table></figure>
+
+<h2 id="把lfs指针还原为真实文件">把“LFS指针”还原为真实文件</h2>
+<p>正常情况下，<code>git clone</code> / <code>git pull</code> 会自动下载
+LFS 文件。</p>
+<p>如果你看到文件内容是这种文本（<code>version https://git-lfs.github.com/spec/v1</code>），说明当前工作区还是指针文件，可以执行：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">git lfs pull</span><br></pre></td></tr></table></figure>
+
+<p>如果之前跳过了 LFS 文件下载（例如设置过
+<code>GIT_LFS_SKIP_SMUDGE=1</code>），可以显式执行：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">git lfs fetch</span><br><span class="line">git lfs checkout</span><br></pre></td></tr></table></figure>
+
+<p>其中：</p>
+<ul>
+<li><code>git lfs fetch</code>：下载 LFS 对象到本地缓存</li>
+<li><code>git lfs checkout</code>：把工作区中的指针替换成真实文件</li>
+</ul>
+<h2 id="将-lfs-文件改回普通-git-文件">将 LFS 文件改回普通 Git 文件</h2>
+<p>如果后续不想让某类文件继续走 LFS：</p>
+<ol type="1">
+<li><p>取消跟踪规则</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">git lfs untrack <span class="string">&quot;*.zip&quot;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>重新加入文件并提交</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">git add .gitattributes</span><br><span class="line">git add &lt;file&gt;</span><br><span class="line">git commit -m <span class="string">&quot;stop tracking zip with lfs&quot;</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>如果需要把<strong>历史里</strong>的 LFS 指针也导回普通 Git
+对象，可使用：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">git lfs migrate <span class="built_in">export</span> --include=<span class="string">&quot;*.zip&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>同样会改写历史，推送时通常需要 <code>--force-with-lease</code>。</p>
+<h2 id="本地拉取时不下载-lfs-文件">本地拉取时不下载 LFS 文件</h2>
+<p>有时仓库已经启用 LFS，但本地磁盘空间紧张，只想保留代码和 LFS
+指针文件，不保留真实大文件。可以按照如下方式进行设置：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 1) 让当前仓库默认跳过 LFS smudge（仅本仓库生效）</span></span><br><span class="line">git lfs install --<span class="built_in">local</span> --skip-smudge</span><br><span class="line"></span><br><span class="line"><span class="comment"># 2) 重新检出当前提交，把工作区文件改写为指针形态</span></span><br><span class="line">git reset --hard HEAD</span><br><span class="line"></span><br><span class="line"><span class="comment"># 3) （可选）清理未跟踪文件</span></span><br><span class="line">git clean -fd</span><br><span class="line"></span><br><span class="line"><span class="comment"># 4) 清理本地 LFS 缓存对象，释放磁盘空间</span></span><br><span class="line">git lfs prune</span><br></pre></td></tr></table></figure>
+
+<p>执行后，LFS 文件在工作区会显示为指针文本（例如包含
+<code>version https://git-lfs.github.com/spec/v1</code>）。</p>
+<p>如果你想用“删光工作区再恢复”的方式，也可以这样做：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 注意：会删除未提交改动，请先确认</span></span><br><span class="line">git lfs install --<span class="built_in">local</span> --skip-smudge</span><br><span class="line">git reset --hard HEAD</span><br></pre></td></tr></table></figure>
+
+<p>通常不需要手工逐个删除文件，<code>reset --hard</code>
+已足够把已跟踪文件重写为指针。</p>
+<p>后续如果要恢复真实 LFS 文件下载：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">git lfs install --<span class="built_in">local</span></span><br><span class="line">git lfs pull</span><br></pre></td></tr></table></figure>
+
 <h1 id="说明">说明</h1>
 <p>上面介绍了一些常用的 git 命令，如果碰到其他的就直接使用
-<code>git &lt;command&gt; --help</code>
-查看相关文档，或者直接百度即可。</p>
+<code>git &lt;command&gt; --help</code> 查看相关文档，或者直接问 AI
+即可。</p>
 ]]></content>
       <categories>
         <category>技术笔记</category>
@@ -5020,6 +5105,387 @@ problems.</p>
       </tags>
   </entry>
   <entry>
+    <title>投影变换矩阵</title>
+    <url>/posts/7cfa/</url>
+    <content><![CDATA[<h1 id="hello-projection">Hello Projection</h1>
+<p>所谓投影，就是
+<strong>将高维空间中的对象通过某种方式映射到低维空间，或者映射到另一个空间中</strong>。如下图所示（图片来自网络）。</p>
+<p><img data-src="/posts/7cfa/3rd-angle-projection-1-1.png"
+style="zoom:50%;" /></p>
+<p>当我们在二维平面上展示三维物体时，看到的其实就是三维物体在二维空间中的一个投影，而这个从三维到二维的转换过程就是投影变换。</p>
+<p>如果投影过程可以表示成线性变换，就可以用一个矩阵来描述它，如下式所示，其中
+<span class="math inline">\(M_\text{projection}\)</span>
+就称为投影变换矩阵。 <span class="math display">\[
+P^{\prime} = M_{\text{projection}} \cdot P
+\]</span></p>
+<span id="more"></span>
+
+<h1 id="正交投影">正交投影</h1>
+<p>正交投影的一个特点是不会改变直线之间的平行关系，因此<strong>待投影区域一定是一个长方体</strong>。我们可以用六个参数
+<span class="math inline">\((l,r,t,b,n,f)\)</span>
+来描述这个长方体，分别对应 left、right、top、bottom、near、far
+六个平面的位置。</p>
+<p>它们满足 <span class="math inline">\(l&lt;r\)</span>、<span
+class="math inline">\(b&lt;t\)</span>、<span
+class="math inline">\(f&lt;n\)</span>。这里之所以有 <span
+class="math inline">\(f&lt;n\)</span>，是因为我们假设观察方向沿着 z
+轴负方向。</p>
+<p><strong>投影的目标是把这个长方体的中心移动到原点，并进一步转换成单位正方体</strong>，也就是
+NDC（normalized device coordinates）。</p>
+<p>因此，正交投影矩阵可以拆成两个步骤：平移变换和缩放变换。</p>
+<p>标准正方体的两个对角点可以记为 <span
+class="math inline">\((l,b,n)=(-1,-1,-1)\)</span> 和 <span
+class="math inline">\((r,t,f)=(1,1,1)\)</span>。此时 <span
+class="math inline">\(n&lt;f\)</span>，更符合我们的日常直觉，也就是从 z
+轴正方向看去时，越远的点 z 坐标越大。</p>
+<p>而实际待投影长方体的长、宽、高以及中心位置分别为： <span
+class="math display">\[
+\begin{align*}
+&amp;(r-l,t-b,n-f) \\
+&amp;(\frac{r+l}{2},\frac{t+b}{2},\frac{n+f}{2})
+\end{align*}
+\]</span> 因此我们首先要把它的中心移动到 <span
+class="math inline">\((0,0,0)\)</span>，对应的平移矩阵为： <span
+class="math display">\[
+T(\hat{t}) =
+\left[
+\begin{matrix}
+1 &amp; 0 &amp; 0 &amp; -\frac{r+l}{2} \\
+0 &amp; 1 &amp; 0 &amp; -\frac{t+b}{2} \\
+0 &amp; 0 &amp; 1 &amp; -\frac{n+f}{2} \\
+0 &amp; 0 &amp; 0 &amp; 1
+\end{matrix}
+\right]
+\]</span>
+然后再通过缩放把这个长方体转换成标准正方体即可，其中标准正方体的边长为
+2： <span class="math display">\[
+S(\hat{s}) =
+\left[
+\begin{matrix}
+\frac{r-l}{2} &amp; 0 &amp; 0 &amp; 0 \\
+0 &amp; \frac{t-b}{2} &amp; 0 &amp; 0 \\
+0 &amp; 0 &amp; \frac{n-f}{2} &amp; 0 \\
+0 &amp; 0 &amp; 0 &amp; 1
+\end{matrix}
+\right]
+\]</span> 经过这两步之后，得到的标准正方体在 z 方向上的前后关系仍然是
+<span class="math inline">\(n&gt;f\)</span>，也就是 <span
+class="math inline">\(n=1\)</span>、<span
+class="math inline">\(f=-1\)</span>，这和我们平时的直觉不太一致。因此可以再对
+z 坐标做一次镜像变换，把它转换成 <span
+class="math inline">\(n=-1\)</span>、<span
+class="math inline">\(f=1\)</span>，也就是在 z 轴上取反： <span
+class="math display">\[
+M_z=
+\left[
+\begin{matrix}
+1 &amp; 0 &amp; 0 &amp; 0 \\
+0 &amp; 1 &amp; 0 &amp; 0 \\
+0 &amp; 0 &amp; -1 &amp; 0 \\
+0 &amp; 0 &amp; 0 &amp; 1
+\end{matrix}
+\right]
+\]</span> 最后把这三个操作组合起来，就可以得到最终的正交投影矩阵： <span
+class="math display">\[
+\begin{align*}
+P_O = M_zS(\hat{s})T(\hat{t}) &amp; =
+\left[
+\begin{matrix}
+1 &amp; 0 &amp; 0 &amp; 0 \\
+0 &amp; 1 &amp; 0 &amp; 0 \\
+0 &amp; 0 &amp; -1 &amp; 0 \\
+0 &amp; 0 &amp; 0 &amp; 1
+\end{matrix}
+\right]
+\left[
+\begin{matrix}
+\frac{2}{r-l} &amp; 0 &amp; 0 &amp; 0 \\
+0 &amp; \frac{2}{t-b} &amp; 0 &amp; 0 \\
+0 &amp; 0 &amp; \frac{2}{n-f} &amp; 0 \\
+0 &amp; 0 &amp; 0 &amp; 1
+\end{matrix}
+\right]
+\left[
+\begin{matrix}
+1 &amp; 0 &amp; 0 &amp; -\frac{r+l}{2} \\
+0 &amp; 1 &amp; 0 &amp; -\frac{t+b}{2} \\
+0 &amp; 0 &amp; 1 &amp; -\frac{n+f}{2} \\
+0 &amp; 0 &amp; 0 &amp; 1
+\end{matrix}
+\right]
+\\
+&amp; =
+\left[
+\begin{matrix}
+\frac{2}{r-l} &amp; 0 &amp; 0 &amp; -\frac{r+l}{r-l} \\
+0 &amp; \frac{2}{t-b} &amp; 0 &amp; -\frac{t+b}{t-b} \\
+0 &amp; 0 &amp; \frac{2}{f-n} &amp; -\frac{n+f}{f-n} \\
+0 &amp; 0 &amp; 0 &amp; 1
+\end{matrix}
+\right]
+\end{align*}
+\]</span></p>
+<div class="markdown-alert markdown-alert-note">
+<div class="markdown-alert-title">
+<svg class="octicon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>
+<strong>Note</strong>
+</div>
+<p>上面的写法稍微有些繁琐，因为这里默认假设视角从原点看向 z
+轴负方向，所以 <span class="math inline">\(n\)</span> 和 <span
+class="math inline">\(f\)</span> 都是小于 0 的，并且满足 <span
+class="math inline">\(f&lt;n\)</span>。为了保证长、宽、高都是正值，缩放长度中就会出现
+<span class="math inline">\(n-f\)</span>。</p>
+<p>实际上，如果目标只是让 <span class="math inline">\(n\)</span> 在 NDC
+中对应到 <span class="math inline">\(z=-1\)</span>，让 <span
+class="math inline">\(f\)</span> 对应到 <span
+class="math inline">\(z=1\)</span>，那么直接使用 <span
+class="math inline">\(f-n\)</span> 也可以。它的几何意义就是把 <span
+class="math inline">\([n,f]\)</span> 区间直接缩放到 <span
+class="math inline">\([-1,1]\)</span>
+区间，两种写法本质上是等价的，只不过后一种把方向翻转的过程隐含进去了。</p>
+</div>
+<h1 id="透视投影">透视投影</h1>
+<p>和正交投影相比，透视投影具有近大远小的效果。平行线在透视投影中不再保持平行，而是会相交于一点，因此更能体现深度变化，看起来也更有立体感。</p>
+<p>因此，待投影区域不再是一个长方体，而是一个视锥体（frustum）。为了把这个锥体最终投影到二维平面上，我们可以先把视锥体转换成长方体，再继续套用正交投影。</p>
+<p>下面展示了视锥体的示意图：</p>
+<p><img data-src="/posts/7cfa/image-20220521170645438.png"
+style="zoom: 25%;" /></p>
+<p>下面简单推导一下如何把视锥体转换成长方体。从图中可以观察到 3
+个性质：</p>
+<ol type="1">
+<li><p>视锥体中任意一点在 n 面上的投影，都是“过原点和该点的连线”与 n
+面的交点，因此满足相似三角形性质，如下图所示：</p>
+<p><img data-src="/posts/7cfa/image-20250927171041250.png"
+style="zoom:50%;" /></p></li>
+<li><p>锥体前面，也就是 n 面上的点，投影前后坐标不发生变化。</p></li>
+<li><p>锥体后面，也就是 f 面的中心位置不会变化，即 <span
+class="math inline">\((0,0,f)\)</span> 投影后仍然是 <span
+class="math inline">\((0,0,f)\)</span>。</p></li>
+</ol>
+<p>首先根据<strong>观察 1：相似三角形</strong>，有如下关系： <span
+class="math display">\[
+\begin{align*}
+\frac{x}{z} = \frac{x_{\text{proj}}}{n} &amp; \quad x_{\text{proj}} =
+\frac{n}{z} \cdot x  \\
+\frac{y}{z} = \frac{y_{\text{proj}}}{n} &amp; \quad y_{\text{proj}} =
+\frac{n}{z} \cdot y\\
+\end{align*}
+\]</span> 这说明投影区域内任意一点 <span
+class="math inline">\((x,y,z,1)\)</span> 在 n 面上的投影可以写成 <span
+class="math inline">\((\frac{n}{z}x,\frac{n}{z}y,?,1)\)</span>。如果同时乘上
+<span class="math inline">\(z\)</span>，就可以写成齐次形式 <span
+class="math inline">\((nx,ny,?,z)\)</span>。这里投影后的 <span
+class="math inline">\(z\)</span> 值暂时未知，因为投影到二维 <span
+class="math inline">\(xy\)</span> 平面时只需要关心 <span
+class="math inline">\(x\)</span> 和 <span
+class="math inline">\(y\)</span>，而 <span
+class="math inline">\(z\)</span>
+的具体表达式还没有确定。于是我们可以先把变换矩阵的第 1、2、4 行写出来：
+<span class="math display">\[
+M_\text{perspective} =
+\left[
+\begin{matrix}
+n &amp; 0 &amp; 0 &amp; 0 \\
+0 &amp; n &amp; 0 &amp; 0 \\
+A &amp; B &amp; C &amp; D \\
+0 &amp; 0 &amp; 1 &amp; 0
+\end{matrix}
+\right]
+\]</span>
+接下来只剩下矩阵的第三行未知，我们可以利用前两个性质来确定它：</p>
+<p>由<strong>观察 2：n 面上任意一点的坐标不会变化</strong>，因此有：
+<span class="math display">\[
+\begin{align*}
+P_1^{\prime}
+&amp; = (x,y,n,1) \\
+&amp; = M_\text{perspective} P_1 \\
+&amp; = (nx,ny,Ax+By+Cn+D,n) \\
+&amp; = (nx,ny,n^2,n)
+\end{align*}
+\]</span> 于是可以得到： <span class="math display">\[
+Ax + By + Cn + D = n^2
+\]</span>
+又由于<strong>这个等式对投影区域内任意一点都成立</strong>，因此 <span
+class="math inline">\(A\)</span> 和 <span
+class="math inline">\(B\)</span> 一定为 0： <span
+class="math display">\[
+\begin{cases}
+A = 0 \\
+B = 0 \\
+Cn + D = n^2
+\end{cases}
+\]</span> 再由<strong>观察 3：f 面中心坐标不变</strong>，则有： <span
+class="math display">\[
+\begin{align*}
+P_2^{\prime}
+&amp; = (0,0,f,1) \\
+&amp; = M_\text{perspective}P_2 \\
+&amp; = (0,0,Cf+D,f)\\
+&amp; = (0,0,f^2,f)
+\end{align*}
+\]</span> 即 <span class="math display">\[
+Cf + D = f^2
+\]</span> 联立两式可得： <span class="math display">\[
+\begin{cases}
+Cn+D = n^2 \\
+Cf+D = f^2
+\end{cases}
+\]</span> 从而可以解出 <span class="math inline">\(C\)</span> 和 <span
+class="math inline">\(D\)</span>： <span class="math display">\[
+\left\{
+\begin{array}{ll}
+C = n+f\\
+D = -nf
+\end{array}
+\right.
+\]</span> 于是完整的透视变换矩阵为： <span class="math display">\[
+\left[
+\begin{matrix}
+n &amp; 0 &amp; 0 &amp; 0 \\
+0 &amp; n &amp; 0 &amp; 0 \\
+0 &amp; 0 &amp; n+f &amp; -nf \\
+0 &amp; 0 &amp; 1 &amp; 0
+\end{matrix}
+\right]
+\]</span>
+经过这个变换之后，待投影区域就已经变成一个长方体了。此时只需要再施加一次正交投影，就可以把它转换成标准立方体：
+<span class="math display">\[
+P_P = P_OM_\text{perspective} =
+\left[
+\begin{matrix}
+\frac{2n}{r-l} &amp; 0 &amp; 0 &amp; 0 \\
+0 &amp; \frac{2n}{t-b} &amp; 0 &amp; 0 \\
+0 &amp; 0 &amp; \frac{f+n}{f-n} &amp; -\frac{2nf}{f-n} \\
+0 &amp; 0 &amp; 1 &amp; 0
+\end{matrix}
+\right]
+\]</span></p>
+<p>此时矩阵参数仍然比较多，一共有 6 个。我们可以进一步假设待投影区域关于
+z 轴对称，并且观察点位于原点。这样一来，<span
+class="math inline">\(r-l\)</span> 和 <span
+class="math inline">\(t-b\)</span> 就可以用 aspect 和 fov
+两个参数来替代： <span class="math display">\[
+\begin{align}
+\text{w} &amp; = r - l \\
+\text{h} &amp; = t - b \\
+\text{aspect} &amp; = \frac{\text{w}}{\text{h}} = \frac{r-l}{t-b} \\
+ext{fov} &amp; = 2 \arctan (\frac{\text{h}}{2n}) \\
+c &amp;= \frac{2n}{t-b} = \frac{1}{\tan(\frac{\text{fov}}{2})} \\
+a &amp;= \text{aspect}
+\end{align}
+\]</span> 这样一来，只需要 aspect、fov、near、far 这 4
+个参数，就可以写出最终的透视投影矩阵：</p>
+<p><span class="math display">\[
+P_P = P_OM_\text{perspective} =
+\left[
+\begin{matrix}
+\frac{c}{a} &amp; 0 &amp; 0 &amp; 0 \\
+0 &amp; c &amp; 0 &amp; 0 \\
+0 &amp; 0 &amp; \frac{f+n}{f-n} &amp; -\frac{2nf}{f-n} \\
+0 &amp; 0 &amp; 1 &amp; 0
+\end{matrix}
+\right]
+\]</span></p>
+<p>通过矩阵计算后得到的是齐次坐标，再执行透视除法，就能得到投影后的三维
+NDC 坐标： <span class="math display">\[
+\begin{pmatrix}
+x_\text{ndc}\\
+y_\text{ndc}\\
+z_\text{ndc}
+\end{pmatrix}=
+\begin{pmatrix}
+{\tfrac {x_{c}}{w_{c}}}\\
+{\tfrac {y_{c}}{w_{c}}}\\
+{\tfrac {z_{c}}{w_{c}}}
+\end{pmatrix}
+\]</span></p>
+<p>此时 <span class="math inline">\(z_\text{ndc}\)</span> 的取值范围为
+<span class="math inline">\([-1,1]\)</span>，而原始 z 的取值范围为 <span
+class="math inline">\([n,f]\)</span>。如果还需要得到 z-buffer
+中实际存储的值，则要再做一次线性变换。这个过程通常会在 viewport
+变换中自动完成，也就是把 <span class="math inline">\([-1,1]\)</span>
+区间映射到 <span class="math inline">\([0,1]\)</span>： <span
+class="math display">\[
+z_{\text{buffer}} = 0.5 * (z_{\text{ndc}} + 1)
+\]</span></p>
+<h2 id="深度转换">深度转换</h2>
+<p>在 shader 中，经常需要在 <span
+class="math inline">\(z_{\text{ndc}}\)</span> 和原始坐标 <span
+class="math inline">\(z\)</span>
+之间来回转换。根据上面的矩阵公式，可以直接推导出它们之间的关系： <span
+class="math display">\[
+\begin{align}
+z_\text{ndc} &amp; =
+\left(\frac{f+n}{f-n} \cdot z - \frac{2nf}{f-n}\right)
+\cdot \frac{1}{z} \\
+&amp; = \frac{f+n}{f-n} - \frac{2nf}{(f-n) \cdot z} \\
+z &amp; = \frac{2nf}{f+n - (f-n)\cdot z_\text{ndc}}
+\end{align}
+\]</span></p>
+<p>如果需要获得归一化的线性深度，还需要进一步把 <span
+class="math inline">\(z\)</span> 归一化到 <span
+class="math inline">\([0,1]\)</span> 区间内，即： <span
+class="math display">\[
+z_{\text{depth01}} = \frac{z-n}{f-n}
+\]</span> 在实际情况下，<span class="math inline">\(n\)</span>
+往往是一个很小的值，很多时候可以近似忽略，因此上式可以进一步简化为 <span
+class="math inline">\(\tilde{z}_{\text{depth01}} = z /
+f\)</span>。这样计算公式就可以写成： <span class="math display">\[
+\tilde{z}_\text{depth01} = \frac{2n}{f+n-(f-n) \cdot z_{ndc}}
+\]</span> 根据 <span
+class="math inline">\(z_{\text{buffer}}\)</span>、<span
+class="math inline">\(z_\text{depth01}\)</span> 和 <span
+class="math inline">\(z\)</span> 之间的关系，可以画出如下曲线（<span
+class="math inline">\(n=1\)</span>，<span
+class="math inline">\(f=10\)</span>）：</p>
+<p><img data-src="/posts/7cfa/image-20250927191035306.png"
+style="zoom:67%;" /></p>
+<p>其中：</p>
+<ul>
+<li>灰色曲线代表 <span
+class="math inline">\(z_\text{buffer}\)</span></li>
+<li>绿色直线代表 <span
+class="math inline">\(z_{\text{depth01}}\)</span></li>
+<li>蓝色和红色竖线代表 <span class="math inline">\(n\)</span> 和 <span
+class="math inline">\(f\)</span></li>
+<li><span class="math inline">\(x\)</span> 轴对应原始的 <span
+class="math inline">\(z\)</span></li>
+</ul>
+<p>从图中可以看出，<span class="math inline">\(z\)</span>
+本身是线性增加的，而 <span class="math inline">\(z_\text{ndc}\)</span>
+并不是。随着 <span class="math inline">\(z\)</span>
+逐渐增大，深度之间的差异会越来越小。这也符合近大远小的特性，因为越靠近相机的物体，对深度精度的要求越高。</p>
+<p>当我们需要进行深度比例的计算时，就需要使用线性深度值，此时可以将
+<span class="math inline">\(z_\text{ndc}\)</span> 转换为 <span
+class="math inline">\(z_\text{depth01}\)</span> 后进行后续计算。</p>
+]]></content>
+      <categories>
+        <category>计算机图形学</category>
+      </categories>
+      <tags>
+        <tag>C++</tag>
+        <tag>线性代数</tag>
+        <tag>计算机图形学</tag>
+        <tag>OpenGL</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>通过曲面细分生成圆和球</title>
+    <url>/posts/285e/</url>
+    <content><![CDATA[<p>??</p>
+<span id="more"></span>
+]]></content>
+      <categories>
+        <category>计算机图形学</category>
+      </categories>
+      <tags>
+        <tag>C++</tag>
+        <tag>线性代数</tag>
+        <tag>计算机图形学</tag>
+        <tag>OpenGL</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>绘制 grid</title>
     <url>/posts/b93d/</url>
     <content><![CDATA[<p>之前一直想知道各种三维软件中的虚拟网格是怎么绘制的，于是上网搜了一下相关实现。没想到里面的小细节还挺多，就用一篇博客记录一下吧
@@ -5507,387 +5973,6 @@ style="zoom:50%;" /></p>
       </tags>
   </entry>
   <entry>
-    <title>通过曲面细分生成圆和球</title>
-    <url>/posts/285e/</url>
-    <content><![CDATA[<p>??</p>
-<span id="more"></span>
-]]></content>
-      <categories>
-        <category>计算机图形学</category>
-      </categories>
-      <tags>
-        <tag>C++</tag>
-        <tag>线性代数</tag>
-        <tag>计算机图形学</tag>
-        <tag>OpenGL</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>投影变换矩阵</title>
-    <url>/posts/7cfa/</url>
-    <content><![CDATA[<h1 id="hello-projection">Hello Projection</h1>
-<p>所谓投影，就是
-<strong>将高维空间中的对象通过某种方式映射到低维空间，或者映射到另一个空间中</strong>。如下图所示（图片来自网络）。</p>
-<p><img data-src="/posts/7cfa/3rd-angle-projection-1-1.png"
-style="zoom:50%;" /></p>
-<p>当我们在二维平面上展示三维物体时，看到的其实就是三维物体在二维空间中的一个投影，而这个从三维到二维的转换过程就是投影变换。</p>
-<p>如果投影过程可以表示成线性变换，就可以用一个矩阵来描述它，如下式所示，其中
-<span class="math inline">\(M_\text{projection}\)</span>
-就称为投影变换矩阵。 <span class="math display">\[
-P^{\prime} = M_{\text{projection}} \cdot P
-\]</span></p>
-<span id="more"></span>
-
-<h1 id="正交投影">正交投影</h1>
-<p>正交投影的一个特点是不会改变直线之间的平行关系，因此<strong>待投影区域一定是一个长方体</strong>。我们可以用六个参数
-<span class="math inline">\((l,r,t,b,n,f)\)</span>
-来描述这个长方体，分别对应 left、right、top、bottom、near、far
-六个平面的位置。</p>
-<p>它们满足 <span class="math inline">\(l&lt;r\)</span>、<span
-class="math inline">\(b&lt;t\)</span>、<span
-class="math inline">\(f&lt;n\)</span>。这里之所以有 <span
-class="math inline">\(f&lt;n\)</span>，是因为我们假设观察方向沿着 z
-轴负方向。</p>
-<p><strong>投影的目标是把这个长方体的中心移动到原点，并进一步转换成单位正方体</strong>，也就是
-NDC（normalized device coordinates）。</p>
-<p>因此，正交投影矩阵可以拆成两个步骤：平移变换和缩放变换。</p>
-<p>标准正方体的两个对角点可以记为 <span
-class="math inline">\((l,b,n)=(-1,-1,-1)\)</span> 和 <span
-class="math inline">\((r,t,f)=(1,1,1)\)</span>。此时 <span
-class="math inline">\(n&lt;f\)</span>，更符合我们的日常直觉，也就是从 z
-轴正方向看去时，越远的点 z 坐标越大。</p>
-<p>而实际待投影长方体的长、宽、高以及中心位置分别为： <span
-class="math display">\[
-\begin{align*}
-&amp;(r-l,t-b,n-f) \\
-&amp;(\frac{r+l}{2},\frac{t+b}{2},\frac{n+f}{2})
-\end{align*}
-\]</span> 因此我们首先要把它的中心移动到 <span
-class="math inline">\((0,0,0)\)</span>，对应的平移矩阵为： <span
-class="math display">\[
-T(\hat{t}) =
-\left[
-\begin{matrix}
-1 &amp; 0 &amp; 0 &amp; -\frac{r+l}{2} \\
-0 &amp; 1 &amp; 0 &amp; -\frac{t+b}{2} \\
-0 &amp; 0 &amp; 1 &amp; -\frac{n+f}{2} \\
-0 &amp; 0 &amp; 0 &amp; 1
-\end{matrix}
-\right]
-\]</span>
-然后再通过缩放把这个长方体转换成标准正方体即可，其中标准正方体的边长为
-2： <span class="math display">\[
-S(\hat{s}) =
-\left[
-\begin{matrix}
-\frac{r-l}{2} &amp; 0 &amp; 0 &amp; 0 \\
-0 &amp; \frac{t-b}{2} &amp; 0 &amp; 0 \\
-0 &amp; 0 &amp; \frac{n-f}{2} &amp; 0 \\
-0 &amp; 0 &amp; 0 &amp; 1
-\end{matrix}
-\right]
-\]</span> 经过这两步之后，得到的标准正方体在 z 方向上的前后关系仍然是
-<span class="math inline">\(n&gt;f\)</span>，也就是 <span
-class="math inline">\(n=1\)</span>、<span
-class="math inline">\(f=-1\)</span>，这和我们平时的直觉不太一致。因此可以再对
-z 坐标做一次镜像变换，把它转换成 <span
-class="math inline">\(n=-1\)</span>、<span
-class="math inline">\(f=1\)</span>，也就是在 z 轴上取反： <span
-class="math display">\[
-M_z=
-\left[
-\begin{matrix}
-1 &amp; 0 &amp; 0 &amp; 0 \\
-0 &amp; 1 &amp; 0 &amp; 0 \\
-0 &amp; 0 &amp; -1 &amp; 0 \\
-0 &amp; 0 &amp; 0 &amp; 1
-\end{matrix}
-\right]
-\]</span> 最后把这三个操作组合起来，就可以得到最终的正交投影矩阵： <span
-class="math display">\[
-\begin{align*}
-P_O = M_zS(\hat{s})T(\hat{t}) &amp; =
-\left[
-\begin{matrix}
-1 &amp; 0 &amp; 0 &amp; 0 \\
-0 &amp; 1 &amp; 0 &amp; 0 \\
-0 &amp; 0 &amp; -1 &amp; 0 \\
-0 &amp; 0 &amp; 0 &amp; 1
-\end{matrix}
-\right]
-\left[
-\begin{matrix}
-\frac{2}{r-l} &amp; 0 &amp; 0 &amp; 0 \\
-0 &amp; \frac{2}{t-b} &amp; 0 &amp; 0 \\
-0 &amp; 0 &amp; \frac{2}{n-f} &amp; 0 \\
-0 &amp; 0 &amp; 0 &amp; 1
-\end{matrix}
-\right]
-\left[
-\begin{matrix}
-1 &amp; 0 &amp; 0 &amp; -\frac{r+l}{2} \\
-0 &amp; 1 &amp; 0 &amp; -\frac{t+b}{2} \\
-0 &amp; 0 &amp; 1 &amp; -\frac{n+f}{2} \\
-0 &amp; 0 &amp; 0 &amp; 1
-\end{matrix}
-\right]
-\\
-&amp; =
-\left[
-\begin{matrix}
-\frac{2}{r-l} &amp; 0 &amp; 0 &amp; -\frac{r+l}{r-l} \\
-0 &amp; \frac{2}{t-b} &amp; 0 &amp; -\frac{t+b}{t-b} \\
-0 &amp; 0 &amp; \frac{2}{f-n} &amp; -\frac{n+f}{f-n} \\
-0 &amp; 0 &amp; 0 &amp; 1
-\end{matrix}
-\right]
-\end{align*}
-\]</span></p>
-<div class="markdown-alert markdown-alert-note">
-<div class="markdown-alert-title">
-<svg class="octicon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>
-<strong>Note</strong>
-</div>
-<p>上面的写法稍微有些繁琐，因为这里默认假设视角从原点看向 z
-轴负方向，所以 <span class="math inline">\(n\)</span> 和 <span
-class="math inline">\(f\)</span> 都是小于 0 的，并且满足 <span
-class="math inline">\(f&lt;n\)</span>。为了保证长、宽、高都是正值，缩放长度中就会出现
-<span class="math inline">\(n-f\)</span>。</p>
-<p>实际上，如果目标只是让 <span class="math inline">\(n\)</span> 在 NDC
-中对应到 <span class="math inline">\(z=-1\)</span>，让 <span
-class="math inline">\(f\)</span> 对应到 <span
-class="math inline">\(z=1\)</span>，那么直接使用 <span
-class="math inline">\(f-n\)</span> 也可以。它的几何意义就是把 <span
-class="math inline">\([n,f]\)</span> 区间直接缩放到 <span
-class="math inline">\([-1,1]\)</span>
-区间，两种写法本质上是等价的，只不过后一种把方向翻转的过程隐含进去了。</p>
-</div>
-<h1 id="透视投影">透视投影</h1>
-<p>和正交投影相比，透视投影具有近大远小的效果。平行线在透视投影中不再保持平行，而是会相交于一点，因此更能体现深度变化，看起来也更有立体感。</p>
-<p>因此，待投影区域不再是一个长方体，而是一个视锥体（frustum）。为了把这个锥体最终投影到二维平面上，我们可以先把视锥体转换成长方体，再继续套用正交投影。</p>
-<p>下面展示了视锥体的示意图：</p>
-<p><img data-src="/posts/7cfa/image-20220521170645438.png"
-style="zoom: 25%;" /></p>
-<p>下面简单推导一下如何把视锥体转换成长方体。从图中可以观察到 3
-个性质：</p>
-<ol type="1">
-<li><p>视锥体中任意一点在 n 面上的投影，都是“过原点和该点的连线”与 n
-面的交点，因此满足相似三角形性质，如下图所示：</p>
-<p><img data-src="/posts/7cfa/image-20250927171041250.png"
-style="zoom:50%;" /></p></li>
-<li><p>锥体前面，也就是 n 面上的点，投影前后坐标不发生变化。</p></li>
-<li><p>锥体后面，也就是 f 面的中心位置不会变化，即 <span
-class="math inline">\((0,0,f)\)</span> 投影后仍然是 <span
-class="math inline">\((0,0,f)\)</span>。</p></li>
-</ol>
-<p>首先根据<strong>观察 1：相似三角形</strong>，有如下关系： <span
-class="math display">\[
-\begin{align*}
-\frac{x}{z} = \frac{x_{\text{proj}}}{n} &amp; \quad x_{\text{proj}} =
-\frac{n}{z} \cdot x  \\
-\frac{y}{z} = \frac{y_{\text{proj}}}{n} &amp; \quad y_{\text{proj}} =
-\frac{n}{z} \cdot y\\
-\end{align*}
-\]</span> 这说明投影区域内任意一点 <span
-class="math inline">\((x,y,z,1)\)</span> 在 n 面上的投影可以写成 <span
-class="math inline">\((\frac{n}{z}x,\frac{n}{z}y,?,1)\)</span>。如果同时乘上
-<span class="math inline">\(z\)</span>，就可以写成齐次形式 <span
-class="math inline">\((nx,ny,?,z)\)</span>。这里投影后的 <span
-class="math inline">\(z\)</span> 值暂时未知，因为投影到二维 <span
-class="math inline">\(xy\)</span> 平面时只需要关心 <span
-class="math inline">\(x\)</span> 和 <span
-class="math inline">\(y\)</span>，而 <span
-class="math inline">\(z\)</span>
-的具体表达式还没有确定。于是我们可以先把变换矩阵的第 1、2、4 行写出来：
-<span class="math display">\[
-M_\text{perspective} =
-\left[
-\begin{matrix}
-n &amp; 0 &amp; 0 &amp; 0 \\
-0 &amp; n &amp; 0 &amp; 0 \\
-A &amp; B &amp; C &amp; D \\
-0 &amp; 0 &amp; 1 &amp; 0
-\end{matrix}
-\right]
-\]</span>
-接下来只剩下矩阵的第三行未知，我们可以利用前两个性质来确定它：</p>
-<p>由<strong>观察 2：n 面上任意一点的坐标不会变化</strong>，因此有：
-<span class="math display">\[
-\begin{align*}
-P_1^{\prime}
-&amp; = (x,y,n,1) \\
-&amp; = M_\text{perspective} P_1 \\
-&amp; = (nx,ny,Ax+By+Cn+D,n) \\
-&amp; = (nx,ny,n^2,n)
-\end{align*}
-\]</span> 于是可以得到： <span class="math display">\[
-Ax + By + Cn + D = n^2
-\]</span>
-又由于<strong>这个等式对投影区域内任意一点都成立</strong>，因此 <span
-class="math inline">\(A\)</span> 和 <span
-class="math inline">\(B\)</span> 一定为 0： <span
-class="math display">\[
-\begin{cases}
-A = 0 \\
-B = 0 \\
-Cn + D = n^2
-\end{cases}
-\]</span> 再由<strong>观察 3：f 面中心坐标不变</strong>，则有： <span
-class="math display">\[
-\begin{align*}
-P_2^{\prime}
-&amp; = (0,0,f,1) \\
-&amp; = M_\text{perspective}P_2 \\
-&amp; = (0,0,Cf+D,f)\\
-&amp; = (0,0,f^2,f)
-\end{align*}
-\]</span> 即 <span class="math display">\[
-Cf + D = f^2
-\]</span> 联立两式可得： <span class="math display">\[
-\begin{cases}
-Cn+D = n^2 \\
-Cf+D = f^2
-\end{cases}
-\]</span> 从而可以解出 <span class="math inline">\(C\)</span> 和 <span
-class="math inline">\(D\)</span>： <span class="math display">\[
-\left\{
-\begin{array}{ll}
-C = n+f\\
-D = -nf
-\end{array}
-\right.
-\]</span> 于是完整的透视变换矩阵为： <span class="math display">\[
-\left[
-\begin{matrix}
-n &amp; 0 &amp; 0 &amp; 0 \\
-0 &amp; n &amp; 0 &amp; 0 \\
-0 &amp; 0 &amp; n+f &amp; -nf \\
-0 &amp; 0 &amp; 1 &amp; 0
-\end{matrix}
-\right]
-\]</span>
-经过这个变换之后，待投影区域就已经变成一个长方体了。此时只需要再施加一次正交投影，就可以把它转换成标准立方体：
-<span class="math display">\[
-P_P = P_OM_\text{perspective} =
-\left[
-\begin{matrix}
-\frac{2n}{r-l} &amp; 0 &amp; 0 &amp; 0 \\
-0 &amp; \frac{2n}{t-b} &amp; 0 &amp; 0 \\
-0 &amp; 0 &amp; \frac{f+n}{f-n} &amp; -\frac{2nf}{f-n} \\
-0 &amp; 0 &amp; 1 &amp; 0
-\end{matrix}
-\right]
-\]</span></p>
-<p>此时矩阵参数仍然比较多，一共有 6 个。我们可以进一步假设待投影区域关于
-z 轴对称，并且观察点位于原点。这样一来，<span
-class="math inline">\(r-l\)</span> 和 <span
-class="math inline">\(t-b\)</span> 就可以用 aspect 和 fov
-两个参数来替代： <span class="math display">\[
-\begin{align}
-\text{w} &amp; = r - l \\
-\text{h} &amp; = t - b \\
-\text{aspect} &amp; = \frac{\text{w}}{\text{h}} = \frac{r-l}{t-b} \\
-ext{fov} &amp; = 2 \arctan (\frac{\text{h}}{2n}) \\
-c &amp;= \frac{2n}{t-b} = \frac{1}{\tan(\frac{\text{fov}}{2})} \\
-a &amp;= \text{aspect}
-\end{align}
-\]</span> 这样一来，只需要 aspect、fov、near、far 这 4
-个参数，就可以写出最终的透视投影矩阵：</p>
-<p><span class="math display">\[
-P_P = P_OM_\text{perspective} =
-\left[
-\begin{matrix}
-\frac{c}{a} &amp; 0 &amp; 0 &amp; 0 \\
-0 &amp; c &amp; 0 &amp; 0 \\
-0 &amp; 0 &amp; \frac{f+n}{f-n} &amp; -\frac{2nf}{f-n} \\
-0 &amp; 0 &amp; 1 &amp; 0
-\end{matrix}
-\right]
-\]</span></p>
-<p>通过矩阵计算后得到的是齐次坐标，再执行透视除法，就能得到投影后的三维
-NDC 坐标： <span class="math display">\[
-\begin{pmatrix}
-x_\text{ndc}\\
-y_\text{ndc}\\
-z_\text{ndc}
-\end{pmatrix}=
-\begin{pmatrix}
-{\tfrac {x_{c}}{w_{c}}}\\
-{\tfrac {y_{c}}{w_{c}}}\\
-{\tfrac {z_{c}}{w_{c}}}
-\end{pmatrix}
-\]</span></p>
-<p>此时 <span class="math inline">\(z_\text{ndc}\)</span> 的取值范围为
-<span class="math inline">\([-1,1]\)</span>，而原始 z 的取值范围为 <span
-class="math inline">\([n,f]\)</span>。如果还需要得到 z-buffer
-中实际存储的值，则要再做一次线性变换。这个过程通常会在 viewport
-变换中自动完成，也就是把 <span class="math inline">\([-1,1]\)</span>
-区间映射到 <span class="math inline">\([0,1]\)</span>： <span
-class="math display">\[
-z_{\text{buffer}} = 0.5 * (z_{\text{ndc}} + 1)
-\]</span></p>
-<h2 id="深度转换">深度转换</h2>
-<p>在 shader 中，经常需要在 <span
-class="math inline">\(z_{\text{ndc}}\)</span> 和原始坐标 <span
-class="math inline">\(z\)</span>
-之间来回转换。根据上面的矩阵公式，可以直接推导出它们之间的关系： <span
-class="math display">\[
-\begin{align}
-z_\text{ndc} &amp; =
-\left(\frac{f+n}{f-n} \cdot z - \frac{2nf}{f-n}\right)
-\cdot \frac{1}{z} \\
-&amp; = \frac{f+n}{f-n} - \frac{2nf}{(f-n) \cdot z} \\
-z &amp; = \frac{2nf}{f+n - (f-n)\cdot z_\text{ndc}}
-\end{align}
-\]</span></p>
-<p>如果需要获得归一化的线性深度，还需要进一步把 <span
-class="math inline">\(z\)</span> 归一化到 <span
-class="math inline">\([0,1]\)</span> 区间内，即： <span
-class="math display">\[
-z_{\text{depth01}} = \frac{z-n}{f-n}
-\]</span> 在实际情况下，<span class="math inline">\(n\)</span>
-往往是一个很小的值，很多时候可以近似忽略，因此上式可以进一步简化为 <span
-class="math inline">\(\tilde{z}_{\text{depth01}} = z /
-f\)</span>。这样计算公式就可以写成： <span class="math display">\[
-\tilde{z}_\text{depth01} = \frac{2n}{f+n-(f-n) \cdot z_{ndc}}
-\]</span> 根据 <span
-class="math inline">\(z_{\text{buffer}}\)</span>、<span
-class="math inline">\(z_\text{depth01}\)</span> 和 <span
-class="math inline">\(z\)</span> 之间的关系，可以画出如下曲线（<span
-class="math inline">\(n=1\)</span>，<span
-class="math inline">\(f=10\)</span>）：</p>
-<p><img data-src="/posts/7cfa/image-20250927191035306.png"
-style="zoom:67%;" /></p>
-<p>其中：</p>
-<ul>
-<li>灰色曲线代表 <span
-class="math inline">\(z_\text{buffer}\)</span></li>
-<li>绿色直线代表 <span
-class="math inline">\(z_{\text{depth01}}\)</span></li>
-<li>蓝色和红色竖线代表 <span class="math inline">\(n\)</span> 和 <span
-class="math inline">\(f\)</span></li>
-<li><span class="math inline">\(x\)</span> 轴对应原始的 <span
-class="math inline">\(z\)</span></li>
-</ul>
-<p>从图中可以看出，<span class="math inline">\(z\)</span>
-本身是线性增加的，而 <span class="math inline">\(z_\text{ndc}\)</span>
-并不是。随着 <span class="math inline">\(z\)</span>
-逐渐增大，深度之间的差异会越来越小。这也符合近大远小的特性，因为越靠近相机的物体，对深度精度的要求越高。</p>
-<p>当我们需要进行深度比例的计算时，就需要使用线性深度值，此时可以将
-<span class="math inline">\(z_\text{ndc}\)</span> 转换为 <span
-class="math inline">\(z_\text{depth01}\)</span> 后进行后续计算。</p>
-]]></content>
-      <categories>
-        <category>计算机图形学</category>
-      </categories>
-      <tags>
-        <tag>C++</tag>
-        <tag>线性代数</tag>
-        <tag>计算机图形学</tag>
-        <tag>OpenGL</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>OpenGL Shader Toy</title>
     <url>/posts/7ced/</url>
     <content><![CDATA[<h1 id="hello-shader-toy">Hello, Shader Toy</h1>
@@ -6089,5 +6174,645 @@ style="zoom: 50%;" /></p>
       <tags>
         <tag>VS Code</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>《经济学原理》问题与应用（1）</title>
+    <url>/posts/47c7/</url>
+    <content><![CDATA[<p>最近开始学习经济学原理，每一章后有一个”问题与应用“，作为对本章知识点的考察，有些问题还挺有意思的，就用博客将个人思考和
+AI 答案记录一下，便于回顾时查看。</p>
+<p>本次是第1章节 “经济学十大原理” 的部分问题和解答（结合 AI
+生成，不保证一定正确，但个人觉得挺有道理）。</p>
+<span id="more"></span>
+
+<hr />
+<p><em><strong>你正想决定是否去度假。度假的大部分成本（机票、住旅店的费用、放弃的工资）都是用金钱来衡量的，但度假的收益是心理上的。你将如何比较收益和成本呢？</strong></em></p>
+<p>可以用一个很实用的经济学思路：<strong>把心理收益“货币化”</strong>，再和成本比较。</p>
+<ol type="1">
+<li>先算可见成本</li>
+</ol>
+<p>​ 总成本 = 机票 + 酒店 + 餐饮交通 + 放弃的工资 + 其他杂费。</p>
+<ol start="2" type="1">
+<li>把“心理收益”换成你愿意支付的金额</li>
+</ol>
+<p>​
+问自己一个关键问题：<strong>“这次度假最多值多少钱，我才觉得值得去？”</strong>
+​
+这个“最多愿意支付的钱”就是你对心理收益的货币表达（可理解为愿付价格）。</p>
+<p>​
+也可以反过来问：<strong>”给我多少钱，我才愿意放弃这次度假？”</strong> ​
+得到的金额也反映了你对心理收益的价值判断。</p>
+<ol start="3" type="1">
+<li><p>决策规则</p>
+<ul>
+<li><p>如果 心理收益的货币化值 &gt; 总成本 → 去</p></li>
+<li><p>如果 心理收益的货币化值 &lt; 总成本 → 不去</p></li>
+<li><p>接近时 → 看预算压力、替代方案（短途、淡季、缩短天数）</p></li>
+</ul></li>
+<li><p>一个通俗小例子</p>
+<ul>
+<li><p>总成本：8000元</p></li>
+<li><p>你心里感觉：这次休息和体验“至少值10000元”</p></li>
+<li><p>净收益 = 10000 - 8000 = 2000（正） → 经济上可行。</p></li>
+</ul></li>
+</ol>
+<p>​ 若你只觉得值6000元，净收益为负，就不该去（或换更便宜方案）。</p>
+<p>核心就是：<strong>成本可见，收益虽是心理的，但仍可通过“你愿意为它付多少钱”来比较。</strong>
+这就是经济学里把主观效用用于理性选择的方法。</p>
+<hr />
+<p><em><strong>你管理的公司在开发一个新产品的过程中已经投资 500
+万美元，但是开发工作还没完成。在最近的一次会议上，你的销售人员报告说，竞争性产品的进入导致你们新产品的预期销售额减少为
+300 万美元。如果完成这项开发还需要花费 100
+万美元，你还应该继续进行这项开发吗？为了完成这项开发，你后续的最高花费应该是多少？</strong></em></p>
+<p>应该继续，但理由不是“已经投了 500
+万”，而是看<strong>从现在开始</strong>的增量收益和增量成本。</p>
+<ol type="1">
+<li>已投入的 500
+万是<strong>沉没成本</strong>，无论你做什么都拿不回来，决策时应忽略。</li>
+<li>从现在看：
+<ul>
+<li>完成开发的新增成本：100 万</li>
+<li>完成后预期销售额（可视作新增收益）：300 万</li>
+<li>增量净收益：300−100=200300−100=200 万（为正）</li>
+</ul></li>
+</ol>
+<p>所以在题目给定条件下，<strong>应继续开发</strong>。</p>
+<p>你后续可接受的最高花费是：<strong>300
+万美元</strong>（到这个数刚好打平，再高就不该继续）。
+也就是决策规则：后续最高花费 ≤ 预期新增收益。</p>
+<hr />
+<p><em><strong>一项 1996
+年的法案修改了联邦政府的反贫困计划，对许多福利领取者做了只能领取2年补贴的限制。</strong></em></p>
+<p><em><strong>a. 这个变动如何影响对工作的激励？</strong></em></p>
+<p><em><strong>b.
+这个变动如何反映了平等与效率之间的权衡取舍？</strong></em></p>
+<p>这个题的核心是：<strong>福利期限限制改变了“现在不工作/去工作”的相对收益</strong>。</p>
+<p>a. 对工作激励的影响</p>
+<ol type="1">
+<li>提高了短期找工作的动力。 因为补贴最多领 2
+年，继续不工作会更快失去收入来源，所以福利领取者更有动力尽早就业。</li>
+<li>降低了长期依赖福利的激励。 期限让“长期只靠补贴”变得不可持续。</li>
+<li>可能带来的副作用。
+一些人可能会为了不失去收入而接受低质量、低工资、缺乏稳定性的工作；也有人在技能不足、育儿负担重等情况下仍难就业。</li>
+</ol>
+<p>b. 如何体现平等与效率的权衡</p>
+<ol type="1">
+<li>效率方面（可能改善）：
+更多人进入劳动力市场，劳动供给增加，财政负担下降，减少“福利抑制工作”的扭曲，这通常被看作效率提升。</li>
+<li>平等方面（可能受损）： 对最弱势群体的保障变薄。超过 2
+年仍找不到工作的人，收入和生活保障可能明显下降，贫困风险上升，不平等可能扩大。</li>
+<li>权衡本质：
+这项改革是在“鼓励自立、提高经济运行效率”和“保障低收入群体、维护结果平等”之间，把政策重心更多放在前者。</li>
+</ol>
+<p>一句话总结： <strong>2
+年限制通过“减少长期福利可得性”来增强工作激励，但代价是对部分困难群体的再分配保护减弱，体现了效率与平等的典型取舍。</strong></p>
+<hr />
+<p><em><strong>解释下列每一项政府活动的动机是关注平等还是关注效率。在关注效率的情况下，讨论涉及的市场失灵的类型。</strong></em></p>
+<p><em><strong>a. 对有线电视的价格进行管制。</strong></em></p>
+<p><em><strong>b.
+向一些穷人提供可用来购买食物的消费券。</strong></em></p>
+<p><em><strong>c. 在公共场合禁止吸烟。</strong></em></p>
+<p><em><strong>d. 把标准石油公司（它曾拥有美国 90%
+的炼油厂）分拆为几个较小的公司。</strong></em></p>
+<p><em><strong>e.
+对收入较高的人实行较高的个人所得税率。</strong></em></p>
+<p><em><strong>f. 制定禁止酒后驾车的法律。</strong></em></p>
+<ol type="1">
+<li><p>对有线电视价格进行管制：</p>
+<p>主要是关注效率。原因是<strong>有线电视网络常有“自然垄断/市场势力”特征</strong>（铺设网络固定成本高、重复建设浪费），企业可能凭垄断地位抬价、减少产出。
+涉及的市场失灵类型：<strong>垄断（市场势力）</strong>，在某些地区可视作自然垄断。</p></li>
+<li><p>向一些穷人提供食物券：</p>
+<p>主要是关注平等。本质是<strong>收入再分配，保障低收入群体的基本生活与营养水平</strong>。</p></li>
+<li><p>在公共场合禁止吸烟：</p>
+<p>主要是关注效率。<strong>吸烟者把二手烟危害强加给他人，没把对他人的损害算进自己的决策成本里</strong>。
+涉及的市场失灵类型：<strong>负外部性（健康外部性）</strong>。</p></li>
+<li><p>分拆标准石油公司：</p>
+<p>主要是关注效率。防止单一大企业控制市场、限制竞争、抬高价格。
+涉及的市场失灵类型：<strong>垄断/反竞争行为导致的市场势力问题</strong>。</p></li>
+<li><p>对高收入者实行更高个税税率：</p>
+<p>主要是关注平等。通过累进税进行再分配，缩小税后收入差距（尽管会有一定效率代价）。</p></li>
+<li><p>制定禁止酒后驾车法律：</p>
+<p>主要是关注效率。<strong>酒驾把事故风险和损失转嫁给他人</strong>（行人、其他车辆、公共医疗与执法系统）。
+涉及的市场失灵类型：<strong>负外部性（交通安全外部性）</strong>；也常伴随信息与行为偏差问题，但核心是外部性。</p></li>
+</ol>
+<hr />
+<p><em><strong>从平等和效率的角度讨论下面每种说法。</strong></em></p>
+<p><em><strong>a.
+”应该保证社会上的每个人都得到尽可能好的医疗“</strong></em></p>
+<p><em><strong>b.
+”当工人被解雇时，应该使他们在找到新工作之前能一直领取失业津贴“</strong></em></p>
+<p>可以用“目标很好，但代价与激励如何”这条线来分析。</p>
+<ol type="1">
+<li><p>“应该保证社会上的每个人都得到尽可能好的医疗”</p>
+<p><strong>平等角度</strong>：
+这个说法非常强调平等，追求“按需要获得医疗”，不因收入差异而在健康机会上被拉开，能提升机会公平和基本保障。</p>
+<p><strong>效率角度</strong>：
+“尽可能好”意味着资源投入几乎无上限，但医疗资源稀缺（医生、设备、财政）。“无限提高质量给所有人”会带来高昂成本和资源错配。
+还可能出现：过度医疗、排队变长、财政不可持续、税负过高。
+所以效率上通常需要在“覆盖面、质量、成本”之间做最优组合，而不是单纯追求人人最顶级医疗。</p>
+<p><strong>结论</strong>：
+价值取向上偏平等；若不设预算约束，效率风险很大。现实政策常是“全民基本保障
++ 分层供给”。</p></li>
+<li><p>“当工人被解雇时，应该使他们在找到新工作之前能一直领取失业津贴”</p>
+<p><strong>平等角度</strong>：
+长期乃至无限期津贴能保护失业者及其家庭，平滑收入冲击，减少短期贫困和不平等，具有较强再分配和社会保险功能。</p>
+<p><strong>效率角度</strong>：
+如果“无限期且无条件”，会削弱找工作的紧迫性，延长失业时长，降低劳动供给，并增加财政负担与税收扭曲。
+但完全没有保障也会迫使人仓促接受极不匹配岗位，造成人岗错配。
+效率更高的设计通常是：有期限、随时间递减、配合求职要求和培训支持。</p>
+<p><strong>结论</strong>：
+这个说法同样偏平等；从效率看，需要通过制度设计减少“长期依赖”激励问题，而不是无限期无条件发放。</p></li>
+</ol>
+<p><strong>总括</strong>：两种主张都体现“加强保障”的平等目标，但若忽视激励与预算约束，都会带来效率损失；现实政策通常是在“保底”与“激励工作/控制成本”之间做折中。</p>
+<hr />
+<p><em><strong>假设美国人决定把他们更多的收入用于储蓄。如果银行把这笔钱借给企业，企业用这笔钱建设新工厂，这种高储蓄会如何加快生产率的提高呢？你认为谁会从更高的生产率中获益呢？社会会得到免费的午餐吗？</strong></em></p>
+<p>高储蓄在这个设定下，会通过“储蓄 → 投资 → 资本积累 →
+生产率”这条链条起作用。</p>
+<ol type="1">
+<li><p><strong>为什么会加快生产率提高</strong>？
+家庭多储蓄，银行可贷资金增加，企业更容易融资去建新工厂、买设备、上自动化、做研发和培训。
+这会带来两层提升：</p>
+<ul>
+<li>每个工人可使用的资本更多（人均资本上升），单位时间产出更多。</li>
+<li>新设备和新工艺通常更先进，技术效率更高。</li>
+</ul>
+<p>所以劳动生产率会更快提高。</p></li>
+<li><p><strong>谁会从更高生产率中获益</strong>？
+长期看，几乎全社会都可能受益，但分配路径不同：</p>
+<ul>
+<li><p>工人：工资往往随劳动生产率上升而提高。</p></li>
+<li><p>企业与股东：产出和利润空间扩大（尤其在技术领先阶段）。</p></li>
+<li><p>消费者：产品更便宜、更好，选择更多。</p></li>
+<li><p>政府：税基扩大，财政能力增强。</p></li>
+</ul>
+<p>但短期内收益可能不均衡，比如部分行业工人会经历岗位替代，需要再培训。</p></li>
+<li><p><strong>社会是否得到“免费午餐”</strong>？
+不是免费午餐。更高生产率有代价：</p>
+<ul>
+<li><p>当前消费被推迟（多储蓄意味着当下少消费）。</p></li>
+<li><p>投资有风险，可能失败或配置错误。</p></li>
+<li><p>转型有成本（失业摩擦、技能重配、地区分化）。</p></li>
+</ul></li>
+</ol>
+<p>所以更准确说法是：社会不是“白捡”，而是用“<strong>今天少消费 +
+承担转型成本</strong>”，换取“<strong>未来更高产出和更高生活水平</strong>”。</p>
+<hr />
+<p><em><strong>在美国独立战争期间，美国殖民地政府无法筹集到足够的税收来为战争融资。为了弥补这个差额，殖民地政府决定更多地印发货币。通过引发货币来弥补支出有时候被称为“通货膨胀税”。你认为当政府征收货币时，谁被“征税”了？为什么？</strong></em></p>
+<p>被“征税”的主要是<strong>持有货币的人</strong>，尤其是：</p>
+<ul>
+<li><p>手里现金多的人</p></li>
+<li><p>存款利率跟不上通胀的人</p></li>
+<li><p>固定工资、固定养老金领取者（收入调整慢）</p></li>
+<li><p>持有固定利率债券的债权人</p></li>
+</ul>
+<p>原因是：政府多印钱后，货币供给上升，通常会推高物价。人们手里的每一单位货币能买到的东西变少了，也就是<strong>货币购买力下降</strong>。<strong>这相当于政府通过通胀把一部分真实资源从公众手中转移给了自己，所以叫“通货膨胀税”</strong>。</p>
+<p>可以用一个直观公式理解：<strong>真实货币余额</strong> 大约是 <span
+class="math inline">\(M / P\)</span>（名义货币量 / 价格水平）。当 <span
+class="math inline">\(P\)</span> 上升时，<span class="math inline">\(M /
+P\)</span> 下降。这部分下降，就是持币者承担的“税负”。</p>
+<p>总结：<strong>印钞融资不是没有成本，而是把成本隐性地摊给了所有持币者，特别是来不及对冲通胀的人。</strong></p>
+<hr />
+]]></content>
+  </entry>
+  <entry>
+    <title>Conan创建Package</title>
+    <url>/posts/7331/</url>
+    <content><![CDATA[<p>在前一篇<a href="/posts/2944">笔记</a>中，我们介绍了如何使用 Conan
+管理 C++ 程序的依赖，但是 Conan Center
+中可用的包较少，我们时常需要自行创建 Conan
+Package，便于依赖管理。这一篇笔记我们将着重介绍如何通过编写 conanfile.py
+创建 Conan Package，并简要介绍 Conan-Center 的 GitHub
+仓库是如何维护的。</p>
+<p><span class="math inline">\(\require{physics}\)</span></p>
+<span id="more"></span>
+
+<h1 id="基础流程">基础流程</h1>
+<p>先给出一个最常用的流程，后面再展开细节：</p>
+<ol type="1">
+<li>使用 <code>conan new</code> 生成模板项目</li>
+<li>修改
+<code>conanfile.py</code>（包信息、构建、打包、导出依赖信息）</li>
+<li>用 <code>conan create</code> 在本地构建并生成 Package</li>
+<li>用 <code>test_package</code> 或单独工程验证该 Package 可用</li>
+<li>（可选）上传到私有远端，或者按 Conan Center 规范准备仓库</li>
+</ol>
+<h1 id="生成模板">生成模板</h1>
+<p>先准备 Conan 配置：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">conan --version</span><br><span class="line">conan profile detect --force</span><br></pre></td></tr></table></figure>
+
+<p>创建一个基于 CMake 的库模板：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">conan new cmake_lib -d name=hello -d version=0.1.0</span><br></pre></td></tr></table></figure>
+
+<p>生成后重点看这几个文件：</p>
+<ul>
+<li><code>conanfile.py</code>：配方核心</li>
+<li><code>CMakeLists.txt</code> + <code>src/</code> +
+<code>include/</code>：库源码</li>
+<li><code>test_package/</code>：用于验证包是否可被下游工程正确消费</li>
+</ul>
+<h1 id="conanfilepy-最小必备项">conanfile.py 最小必备项</h1>
+<p>这里给一个常见的最小结构（省略了和主题无关的细节）：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> conan <span class="keyword">import</span> ConanFile</span><br><span class="line"><span class="keyword">from</span> conan.tools.cmake <span class="keyword">import</span> CMake, CMakeDeps, CMakeToolchain, cmake_layout</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">HelloRecipe</span>(<span class="title class_ inherited__">ConanFile</span>):</span><br><span class="line">  name = <span class="string">&quot;hello&quot;</span></span><br><span class="line">  version = <span class="string">&quot;0.1.0&quot;</span></span><br><span class="line">  package_type = <span class="string">&quot;library&quot;</span></span><br><span class="line"></span><br><span class="line">  settings = <span class="string">&quot;os&quot;</span>, <span class="string">&quot;compiler&quot;</span>, <span class="string">&quot;build_type&quot;</span>, <span class="string">&quot;arch&quot;</span></span><br><span class="line">  options = &#123;<span class="string">&quot;shared&quot;</span>: [<span class="literal">True</span>, <span class="literal">False</span>], <span class="string">&quot;fPIC&quot;</span>: [<span class="literal">True</span>, <span class="literal">False</span>]&#125;</span><br><span class="line">  default_options = &#123;<span class="string">&quot;shared&quot;</span>: <span class="literal">False</span>, <span class="string">&quot;fPIC&quot;</span>: <span class="literal">True</span>&#125;</span><br><span class="line"></span><br><span class="line">  exports_sources = <span class="string">&quot;CMakeLists.txt&quot;</span>, <span class="string">&quot;src/*&quot;</span>, <span class="string">&quot;include/*&quot;</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">def</span> <span class="title function_">layout</span>(<span class="params">self</span>):</span><br><span class="line">    cmake_layout(self)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">def</span> <span class="title function_">generate</span>(<span class="params">self</span>):</span><br><span class="line">    deps = CMakeDeps(self)</span><br><span class="line">    deps.generate()</span><br><span class="line">    tc = CMakeToolchain(self)</span><br><span class="line">    tc.generate()</span><br><span class="line"></span><br><span class="line">  <span class="keyword">def</span> <span class="title function_">build</span>(<span class="params">self</span>):</span><br><span class="line">    cmake = CMake(self)</span><br><span class="line">    cmake.configure()</span><br><span class="line">    cmake.build()</span><br><span class="line"></span><br><span class="line">  <span class="keyword">def</span> <span class="title function_">package</span>(<span class="params">self</span>):</span><br><span class="line">    cmake = CMake(self)</span><br><span class="line">    cmake.install()</span><br><span class="line"></span><br><span class="line">  <span class="keyword">def</span> <span class="title function_">package_info</span>(<span class="params">self</span>):</span><br><span class="line">    self.cpp_info.libs = [<span class="string">&quot;hello&quot;</span>]</span><br></pre></td></tr></table></figure>
+
+<p>几个最容易踩坑的点：</p>
+<ul>
+<li><code>exports_sources</code> 漏文件会导致 <code>conan create</code>
+时源码不完整</li>
+<li><code>package_info</code> 里 <code>self.cpp_info.libs</code>
+名字要和实际生成库名一致</li>
+<li>如果支持 <code>shared=True</code>，Windows
+下通常要额外关注符号导出（例如
+<code>__declspec(dllexport/dllimport)</code>）</li>
+</ul>
+<h1 id="本地创建-package">本地创建 Package</h1>
+<p>在配方根目录执行：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">conan create . -s build_type=Release --build=missing</span><br></pre></td></tr></table></figure>
+
+<p>如果需要区分用户/通道：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">conan create . --user=myteam --channel=stable -s build_type=Release --build=missing</span><br></pre></td></tr></table></figure>
+
+<p><code>conan create</code> 会完成这几件事：</p>
+<ol type="1">
+<li>导出 recipe 到 Conan cache</li>
+<li>拉取并安装依赖</li>
+<li>构建和打包</li>
+<li>运行 <code>test_package</code>（默认模板通常会带）</li>
+</ol>
+<h1 id="在其他工程中消费">在其他工程中消费</h1>
+<p>例如在新工程中安装依赖：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">conan install . --requires=hello/0.1.0 --build=missing -s build_type=Release</span><br></pre></td></tr></table></figure>
+
+<p>如果你使用了 <code>user/channel</code>，引用格式对应为：</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">hello/0.1.0@myteam/stable</span><br></pre></td></tr></table></figure>
+
+<p>然后通过 Conan 生成的 CMake 配置（<code>CMakeDeps</code>）做
+<code>find_package</code> + <code>target_link_libraries</code>
+即可。</p>
+<h1 id="上传到私有远端可选">上传到私有远端（可选）</h1>
+<p>如果团队有自建 Artifactory 或 Conan Remote：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">conan remote list</span><br><span class="line">conan upload hello/0.1.0@myteam/stable -r=myremote --confirm</span><br></pre></td></tr></table></figure>
+
+<p>注意事项：</p>
+<ul>
+<li>先确认远端权限（上传/覆盖策略）</li>
+<li>版本一旦被下游依赖，尽量不要覆盖同版本内容</li>
+<li>二进制兼容性变化（ABI 变化）建议升级版本号，而不是“偷偷重发”</li>
+</ul>
+<h1 id="conan-center-仓库维护方式简述">Conan Center
+仓库维护方式（简述）</h1>
+<p>Conan Center Index（CCI）本质上是一个 recipe
+仓库。每个包通常有类似结构：</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">recipes/</span><br><span class="line">  &lt;pkg&gt;/</span><br><span class="line">    config.yml</span><br><span class="line">    all/</span><br><span class="line">      conandata.yml</span><br><span class="line">      conanfile.py</span><br><span class="line">      patches/</span><br></pre></td></tr></table></figure>
+
+<p>核心思路：</p>
+<ol type="1">
+<li>在 <code>conandata.yml</code> 中声明源码 URL、校验和、补丁信息</li>
+<li>在 <code>conanfile.py</code> 中实现跨平台构建逻辑</li>
+<li>通过 CI 在多平台、多编译器矩阵下验证可构建与可消费</li>
+</ol>
+<p>所以如果你准备贡献到 Conan Center，重点不是“本机能编过”，而是 recipe
+是否足够通用、可复现、可维护。</p>
+<h2 id="维护个人-conan-index实践">维护个人 Conan Index（实践）</h2>
+<p>我目前维护了一个自己的 index 仓库：</p>
+<ul>
+<li><a
+href="https://github.com/PureWhiteVK/conan-center-index">https://github.com/PureWhiteVK/conan-center-index</a></li>
+</ul>
+<p>这个仓库是从官方 CCI fork 出来的，适合做两类事情：</p>
+<ol type="1">
+<li>给个人项目补充 CCI 暂时没有的包</li>
+<li>给已有 recipe 打临时补丁（例如编译选项、平台兼容修复）</li>
+</ol>
+<p>日常维护建议按下面流程来：</p>
+<h3 id="1-定期同步上游">1) 定期同步上游</h3>
+<p>不要长期脱离
+<code>conan-io/conan-center-index</code>，否则后面冲突会越来越大。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git remote add upstream https://github.com/conan-io/conan-center-index.git</span><br><span class="line">git fetch upstream</span><br><span class="line">git rebase upstream/master</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-新增或更新-recipe">2) 新增或更新 recipe</h3>
+<p>保持 CCI 风格的目录结构（你现在仓库也是这个风格）：</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">recipes/</span><br><span class="line">  &lt;pkg&gt;/</span><br><span class="line">    config.yml</span><br><span class="line">    all/</span><br><span class="line">      conandata.yml</span><br><span class="line">      conanfile.py</span><br><span class="line">      patches/</span><br></pre></td></tr></table></figure>
+
+<p>更新时通常改三类内容：</p>
+<ul>
+<li><code>conandata.yml</code>：源码地址、sha256、补丁声明</li>
+<li><code>conanfile.py</code>：构建逻辑、选项、平台分支</li>
+<li><code>config.yml</code>：版本到目录的映射关系</li>
+</ul>
+<h3 id="3-本地先做最小验证">3) 本地先做最小验证</h3>
+<p>至少先验证一个你实际使用的配置：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">conan create recipes/&lt;pkg&gt;/all --version=&lt;ver&gt; -s build_type=Release --build=missing</span><br></pre></td></tr></table></figure>
+
+<p>如果你的项目覆盖多个配置，建议再补一个 Debug 或不同编译器组合。</p>
+<h3 id="4-ci-通过后再发布二进制">4) CI 通过后再发布二进制</h3>
+<p>这里有个关键边界要注意：</p>
+<ul>
+<li><strong>index 仓库存的是 recipe 源码，不是二进制包本体</strong></li>
+<li>下游真正安装到的包来自 Conan remote（例如自建 Artifactory）</li>
+</ul>
+<p>所以一个常见流程是：</p>
+<ol type="1">
+<li>在 index 仓库提交 recipe 变更</li>
+<li>CI 验证 recipe 可构建</li>
+<li>用 <code>conan upload</code> 把对应包上传到你的私有 remote</li>
+</ol>
+<p>示例：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">conan upload <span class="string">&quot;&lt;pkg&gt;/&lt;ver&gt;*&quot;</span> -r=&lt;your-remote&gt; --confirm</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-版本策略尽量保守">5) 版本策略尽量保守</h3>
+<p>对于已被项目引用的版本，建议遵循两条：</p>
+<ul>
+<li>不覆盖同版本内容（避免下游不可预期）</li>
+<li>有 ABI 或行为变化时升版本，不做 silent replace</li>
+</ul>
+<p>这样后面排查问题会轻松很多。</p>
+<h1 id="小结">小结</h1>
+<p>自己创建 Conan Package 的关键其实就三件事：</p>
+<ul>
+<li>recipe 信息完整（<code>conanfile.py</code>）</li>
+<li>本地验证闭环完整（<code>conan create</code> +
+<code>test_package</code>）</li>
+<li>版本与发布策略清晰（尤其是团队协作时）</li>
+</ul>
+<p>先把最小可用包跑通，再逐步加选项、平台适配和
+CI，是更稳妥的实践路径。</p>
+]]></content>
+      <categories>
+        <category>C++学习笔记</category>
+      </categories>
+      <tags>
+        <tag>C++</tag>
+        <tag>CMake</tag>
+        <tag>Python</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Perfetto基本使用</title>
+    <url>/posts/25f2/</url>
+    <content><![CDATA[<p><span class="math inline">\(\require{physics}\)</span></p>
+<span id="more"></span>
+
+<h1 id="profiling-vs-tracing">Profiling V.S. Tracing</h1>
+<p>先给结论：<strong>Profile 负责回答“慢在哪里”，Trace
+负责回答“为什么会慢”。</strong></p>
+<p>参考 <a href="https://perfetto.dev/docs/tracing-101">Tracing
+101</a>，两者可以这样区分：</p>
+<ul>
+<li><p><strong>Profiling（采样/热点分析）</strong></p>
+<ul>
+<li>典型工具：VTune、Linux perf、pprof</li>
+<li>结果：热点函数、调用栈、CPU 占比、内存热点</li>
+<li>优势：开销相对小，便于长期趋势对比</li>
+<li>局限：上下文较弱，跨线程因果关系不直观</li>
+</ul></li>
+<li><p><strong>Tracing（时序/因果分析）</strong></p>
+<ul>
+<li>典型工具：Perfetto</li>
+<li>结果：时间线、线程切换、跨线程流转、阶段耗时、Counter 曲线</li>
+<li>优势：上下文完整，适合分析卡顿、抖动、排队、阻塞</li>
+<li>局限：数据量大，采集策略需要设计</li>
+</ul></li>
+</ul>
+<h2 id="什么时候该用哪一个">什么时候该用哪一个</h2>
+<h3 id="ci-持续监控性能">CI 持续监控性能</h3>
+<p>优先使用 <strong>Profile + 基准指标</strong>，Trace 作为补充：</p>
+<ol type="1">
+<li>在 CI 固定场景跑 benchmark（吞吐、延迟、峰值内存）</li>
+<li>配合采样 profiler 记录热点函数占比趋势</li>
+<li>指标回归时，再触发短时 Trace 采集做定位</li>
+</ol>
+<p>核心原因：CI 更强调低开销、稳定和可比较。</p>
+<h3 id="性能问题分析">性能问题分析</h3>
+<p>优先使用 <strong>Trace</strong>（必要时配合 Profile）：</p>
+<ol type="1">
+<li>先用 Perfetto 看问题发生时刻的完整时序</li>
+<li>定位长耗时切片、线程等待、队列堆积</li>
+<li>再用 VTune/perf 深挖具体函数级热点</li>
+</ol>
+<p>实践上常见组合是：</p>
+<ul>
+<li>第一步 Profile：快速缩小范围</li>
+<li>第二步 Trace：解释因果链路</li>
+</ul>
+<h1 id="perfetto-c-sdk">Perfetto C++ SDK</h1>
+<p>下面给一个基于官方 <a
+href="https://github.com/google/perfetto/blob/main/examples/sdk/example.cc">example.cc</a>
+思路整理的示例，覆盖 TrackEvent 的常见能力：</p>
+<ul>
+<li>Slice（作用域事件 / BEGIN-END）</li>
+<li>Instant（瞬时事件）</li>
+<li>Counter（数值曲线）</li>
+<li>Track（自定义轨道）</li>
+<li>Flow（跨阶段关联）</li>
+<li>Debug Annotation / lambda 自定义字段</li>
+<li>DynamicString（动态事件名）</li>
+</ul>
+<div class="markdown-alert markdown-alert-note">
+<div class="markdown-alert-title">
+<svg class="octicon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>
+<strong>Note</strong>
+</div>
+<p>SDK 使用方式可能随版本变化，若编译时报错，请以官方仓库当前版本的
+<code>examples/sdk/example.cc</code> 为准。目前使用的 SDK 版本为
+v50.1</p>
+</div>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;chrono&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;cstdint&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;thread&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;vector&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;perfetto.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 1) 定义 category</span></span><br><span class="line"><span class="built_in">PERFETTO_DEFINE_CATEGORIES</span>(</span><br><span class="line">    perfetto::<span class="built_in">Category</span>(<span class="string">&quot;app&quot;</span>)</span><br><span class="line">        .<span class="built_in">SetDescription</span>(<span class="string">&quot;General app events&quot;</span>),</span><br><span class="line">    perfetto::<span class="built_in">Category</span>(<span class="string">&quot;render&quot;</span>)</span><br><span class="line">        .<span class="built_in">SetDescription</span>(<span class="string">&quot;Rendering pipeline events&quot;</span>),</span><br><span class="line">    perfetto::<span class="built_in">Category</span>(<span class="string">&quot;io&quot;</span>)</span><br><span class="line">        .<span class="built_in">SetDescription</span>(<span class="string">&quot;I/O events&quot;</span>),</span><br><span class="line">    perfetto::<span class="built_in">Category</span>(<span class="string">&quot;app.debug&quot;</span>)</span><br><span class="line">        .<span class="built_in">SetDescription</span>(<span class="string">&quot;Verbose debug events&quot;</span>)</span><br><span class="line">        .<span class="built_in">SetTags</span>(<span class="string">&quot;debug&quot;</span>),</span><br><span class="line">    perfetto::Category::<span class="built_in">Group</span>(<span class="string">&quot;app,benchmark&quot;</span>)</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 2) 在一个 .cc 文件里声明静态存储</span></span><br><span class="line"><span class="built_in">PERFETTO_TRACK_EVENT_STATIC_STORAGE</span>();</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> &#123;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">BusyWork</span><span class="params">(<span class="type">int</span> ms)</span> </span>&#123;</span><br><span class="line">  std::this_thread::<span class="built_in">sleep_for</span>(std::chrono::<span class="built_in">milliseconds</span>(ms));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">RenderFrame</span><span class="params">(<span class="type">int</span> frame_id, <span class="type">int</span> queue_depth)</span> </span>&#123;</span><br><span class="line">  <span class="comment">// Scope Slice：从宏位置开始，到当前作用域结束</span></span><br><span class="line">  <span class="built_in">TRACE_EVENT</span>(<span class="string">&quot;render&quot;</span>, <span class="string">&quot;RenderFrame&quot;</span>, <span class="string">&quot;frame&quot;</span>, frame_id);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Counter：记录时变数值</span></span><br><span class="line">  <span class="built_in">TRACE_COUNTER</span>(<span class="string">&quot;app&quot;</span>, <span class="string">&quot;QueueDepth&quot;</span>, queue_depth);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 带单位的计数器轨道</span></span><br><span class="line">  <span class="function"><span class="type">static</span> perfetto::CounterTrack <span class="title">fps_track</span><span class="params">(<span class="string">&quot;Framerate&quot;</span>, <span class="string">&quot;fps&quot;</span>)</span></span>;</span><br><span class="line">  <span class="built_in">TRACE_COUNTER</span>(<span class="string">&quot;render&quot;</span>, fps_track, <span class="number">120</span>);</span><br><span class="line"></span><br><span class="line">  <span class="built_in">BusyWork</span>(<span class="number">2</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">LoadingPhase</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="comment">// 手动 BEGIN/END</span></span><br><span class="line">  <span class="built_in">TRACE_EVENT_BEGIN</span>(<span class="string">&quot;io&quot;</span>, <span class="string">&quot;LoadAssets&quot;</span>);</span><br><span class="line">  <span class="built_in">BusyWork</span>(<span class="number">3</span>);</span><br><span class="line">  <span class="built_in">BusyWork</span>(<span class="number">2</span>);</span><br><span class="line">  <span class="built_in">TRACE_EVENT_END</span>(<span class="string">&quot;io&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">HandleRequestCrossThread</span><span class="params">(<span class="type">uint64_t</span> req_id)</span> </span>&#123;</span><br><span class="line">  <span class="comment">// 自定义 Track：跨线程串联同一请求</span></span><br><span class="line">  <span class="function">perfetto::Track <span class="title">req_track</span><span class="params">(req_id)</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">TRACE_EVENT_BEGIN</span>(<span class="string">&quot;app&quot;</span>, <span class="string">&quot;HandleRequest&quot;</span>, req_track, <span class="string">&quot;request_id&quot;</span>, req_id);</span><br><span class="line"></span><br><span class="line">  <span class="function">std::thread <span class="title">worker</span><span class="params">([req_track, req_id]() &#123;</span></span></span><br><span class="line"><span class="params"><span class="function">    TRACE_EVENT(<span class="string">&quot;app&quot;</span>, <span class="string">&quot;WorkerStage&quot;</span>, req_track, <span class="string">&quot;request_id&quot;</span>, req_id);</span></span></span><br><span class="line"><span class="params"><span class="function">    BusyWork(<span class="number">4</span>);</span></span></span><br><span class="line"><span class="params"><span class="function">    TRACE_EVENT_END(<span class="string">&quot;app&quot;</span>, req_track);</span></span></span><br><span class="line"><span class="params"><span class="function">  &#125;)</span></span>;</span><br><span class="line">  worker.<span class="built_in">join</span>();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">FlowDemo</span><span class="params">(<span class="type">uint64_t</span> req_id)</span> </span>&#123;</span><br><span class="line">  <span class="comment">// Flow：用箭头连接相关事件</span></span><br><span class="line">  <span class="built_in">TRACE_EVENT</span>(<span class="string">&quot;app&quot;</span>, <span class="string">&quot;DecodeBegin&quot;</span>, perfetto::Flow::<span class="built_in">ProcessScoped</span>(req_id));</span><br><span class="line">  <span class="built_in">BusyWork</span>(<span class="number">1</span>);</span><br><span class="line">  <span class="built_in">TRACE_EVENT</span>(<span class="string">&quot;app&quot;</span>, <span class="string">&quot;DecodeEnd&quot;</span>, perfetto::TerminatingFlow::<span class="built_in">ProcessScoped</span>(req_id));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">AdvancedArgsDemo</span><span class="params">(std::string dynamic_name)</span> </span>&#123;</span><br><span class="line">  <span class="comment">// DynamicString：动态事件名</span></span><br><span class="line">  <span class="built_in">TRACE_EVENT</span>(<span class="string">&quot;app&quot;</span>, perfetto::DynamicString&#123;dynamic_name&#125;);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Debug annotations + lambda</span></span><br><span class="line">  <span class="built_in">TRACE_EVENT</span>(</span><br><span class="line">      <span class="string">&quot;app&quot;</span>, <span class="string">&quot;UploadChunk&quot;</span>, <span class="string">&quot;chunk_bytes&quot;</span>, <span class="number">4096</span>,</span><br><span class="line">      [&amp;](perfetto::EventContext ctx) &#123;</span><br><span class="line">        <span class="keyword">auto</span>* ann = ctx.<span class="built_in">event</span>()-&gt;<span class="built_in">add_debug_annotations</span>();</span><br><span class="line">        ann-&gt;<span class="built_in">set_name</span>(<span class="string">&quot;note&quot;</span>);</span><br><span class="line">        ann-&gt;<span class="built_in">set_string_value</span>(<span class="string">&quot;custom annotation from lambda&quot;</span>);</span><br><span class="line">      &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#125;  <span class="comment">// namespace</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="comment">// 3) 初始化 tracing</span></span><br><span class="line">  perfetto::TracingInitArgs args;</span><br><span class="line">  args.backends = perfetto::kInProcessBackend;</span><br><span class="line">  perfetto::Tracing::<span class="built_in">Initialize</span>(args);</span><br><span class="line">  perfetto::TrackEvent::<span class="built_in">Register</span>();</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 4) 配置并启动 tracing session</span></span><br><span class="line">  <span class="keyword">auto</span> tracing_session = perfetto::Tracing::<span class="built_in">NewTrace</span>();</span><br><span class="line">  perfetto::protos::gen::TraceConfig cfg;</span><br><span class="line"></span><br><span class="line">  cfg.<span class="built_in">add_buffers</span>()-&gt;<span class="built_in">set_size_kb</span>(<span class="number">1024</span>);</span><br><span class="line">  <span class="keyword">auto</span>* ds_cfg = cfg.<span class="built_in">add_data_sources</span>()-&gt;<span class="built_in">mutable_config</span>();</span><br><span class="line">  ds_cfg-&gt;<span class="built_in">set_name</span>(<span class="string">&quot;track_event&quot;</span>);</span><br><span class="line">  ds_cfg-&gt;<span class="built_in">set_track_event_config_raw</span>(<span class="string">R&quot;pb(</span></span><br><span class="line"><span class="string">    enabled_categories: &quot;app&quot;</span></span><br><span class="line"><span class="string">    enabled_categories: &quot;render&quot;</span></span><br><span class="line"><span class="string">    enabled_categories: &quot;io&quot;</span></span><br><span class="line"><span class="string">    enabled_categories: &quot;benchmark&quot;</span></span><br><span class="line"><span class="string">  )pb&quot;</span>);</span><br><span class="line"></span><br><span class="line">  tracing_session-&gt;<span class="built_in">Setup</span>(cfg);</span><br><span class="line">  tracing_session-&gt;<span class="built_in">StartBlocking</span>();</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 5) 产生事件</span></span><br><span class="line">  <span class="built_in">TRACE_EVENT_INSTANT</span>(<span class="string">&quot;app&quot;</span>, <span class="string">&quot;Startup&quot;</span>);</span><br><span class="line">  <span class="keyword">if</span> (<span class="built_in">TRACE_EVENT_CATEGORY_ENABLED</span>(<span class="string">&quot;app&quot;</span>)) &#123;</span><br><span class="line">    <span class="built_in">TRACE_EVENT</span>(<span class="string">&quot;app&quot;</span>, <span class="string">&quot;CategoryEnabledCheckPassed&quot;</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">LoadingPhase</span>();</span><br><span class="line">  <span class="built_in">RenderFrame</span>(<span class="number">1</span>, <span class="number">3</span>);</span><br><span class="line">  <span class="built_in">HandleRequestCrossThread</span>(<span class="number">1001</span>);</span><br><span class="line">  <span class="built_in">FlowDemo</span>(<span class="number">1001</span>);</span><br><span class="line">  <span class="built_in">AdvancedArgsDemo</span>(<span class="string">&quot;DynamicStageName&quot;</span>);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 6) 停止并导出 trace</span></span><br><span class="line">  tracing_session-&gt;<span class="built_in">StopBlocking</span>();</span><br><span class="line">  <span class="function">std::vector&lt;<span class="type">char</span>&gt; <span class="title">trace_data</span><span class="params">(tracing_session-&gt;ReadTraceBlocking())</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="function">std::ofstream <span class="title">output</span><span class="params">(<span class="string">&quot;example.pftrace&quot;</span>, std::ios::binary)</span></span>;</span><br><span class="line">  output.<span class="built_in">write</span>(trace_data.<span class="built_in">data</span>(), <span class="built_in">static_cast</span>&lt;std::streamsize&gt;(trace_data.<span class="built_in">size</span>()));</span><br><span class="line">  output.<span class="built_in">close</span>();</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>对应的 <code>CMakeLists.txt</code>：</p>
+<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line"><span class="keyword">cmake_minimum_required</span>(VERSION <span class="number">3.13</span>)</span><br><span class="line"><span class="keyword">project</span>(PerfettoTrackEventDemo LANGUAGES CXX)</span><br><span class="line"></span><br><span class="line"><span class="keyword">set</span>(CMAKE_CXX_STANDARD <span class="number">17</span>)</span><br><span class="line"><span class="keyword">set</span>(CMAKE_CXX_STANDARD_REQUIRED <span class="keyword">ON</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">find_package</span>(Threads REQUIRED)</span><br><span class="line"></span><br><span class="line"><span class="comment"># perfetto/sdk 目录下放 perfetto.h 和 perfetto.cc</span></span><br><span class="line"><span class="keyword">add_library</span>(perfetto STATIC</span><br><span class="line">  perfetto/sdk/perfetto.cc</span><br><span class="line">)</span><br><span class="line"><span class="keyword">target_include_directories</span>(perfetto PUBLIC</span><br><span class="line">  <span class="variable">$&#123;CMAKE_CURRENT_SOURCE_DIR&#125;</span>/perfetto/sdk</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">add_executable</span>(example</span><br><span class="line">  example.cc</span><br><span class="line">)</span><br><span class="line"><span class="keyword">target_link_libraries</span>(example PRIVATE perfetto Threads::Threads)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(WIN32)</span><br><span class="line">  <span class="comment"># perfetto.cc 编译单元符号很多，MSVC 下需要 /bigobj</span></span><br><span class="line">  <span class="keyword">target_compile_options</span>(perfetto PRIVATE /bigobj)</span><br><span class="line"></span><br><span class="line">  <span class="comment"># 避免 windows.h 的宏污染（min/max）和体积膨胀</span></span><br><span class="line">  <span class="keyword">target_compile_definitions</span>(perfetto PUBLIC WIN32_LEAN_AND_MEAN NOMINMAX)</span><br><span class="line">  <span class="keyword">target_compile_definitions</span>(example PUBLIC WIN32_LEAN_AND_MEAN NOMINMAX)</span><br><span class="line"></span><br><span class="line">  <span class="comment"># Perfetto 在 Windows 下依赖 WinSock</span></span><br><span class="line">  <span class="keyword">target_link_libraries</span>(example PRIVATE ws2_32)</span><br><span class="line"><span class="keyword">endif</span>()</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(MSVC)</span><br><span class="line">  <span class="comment"># 使用更严格、标准一致的编译模式</span></span><br><span class="line">  <span class="keyword">target_compile_options</span>(example PRIVATE /permissive-)</span><br><span class="line"><span class="keyword">endif</span>()</span><br></pre></td></tr></table></figure>
+
+<p>Windows 下使用 MSVC 的一些编译说明：</p>
+<ul>
+<li>必须使用 C++ 17 标准</li>
+<li>最好使用 vc142 工具链（VS 2019），vc143
+不一定支持（能编过就能用）</li>
+<li>头文件引入顺序也可能造成编译报错，例如自定义的宏影响，可以将
+<code>perfetto.h</code> 放在第一个位置引入以规避这类问题</li>
+<li><code>/bigobj</code>：Perfetto 的聚合源文件符号较多，MSVC
+默认节数量上限容易触发编译错误</li>
+<li><code>WIN32_LEAN_AND_MEAN</code> + <code>NOMINMAX</code>：减少
+<code>windows.h</code> 宏污染，避免与 C++ 标准库冲突</li>
+<li><code>ws2_32</code>：Windows 网络相关符号需要显式链接</li>
+<li><code>/permissive-</code>：开启 MSVC 严格语法模式，更接近标准 C++
+的行为，减少编译器扩展导致的隐性兼容问题</li>
+</ul>
+<div class="markdown-alert markdown-alert-tip">
+<div class="markdown-alert-title">
+<svg class="octicon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M8 1.5c-2.363 0-4 1.69-4 3.75 0 .984.424 1.625.984 2.304l.214.253c.223.264.47.556.673.848.284.411.537.896.621 1.49a.75.75 0 0 1-1.484.211c-.04-.282-.163-.547-.37-.847a8.456 8.456 0 0 0-.542-.68c-.084-.1-.173-.205-.268-.32C3.201 7.75 2.5 6.766 2.5 5.25 2.5 2.31 4.863 0 8 0s5.5 2.31 5.5 5.25c0 1.516-.701 2.5-1.328 3.259-.095.115-.184.22-.268.319-.207.245-.383.453-.541.681-.208.3-.33.565-.37.847a.751.751 0 0 1-1.485-.212c.084-.593.337-1.078.621-1.489.203-.292.45-.584.673-.848.075-.088.147-.173.213-.253.561-.679.985-1.32.985-2.304 0-2.06-1.637-3.75-4-3.75ZM5.75 12h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5ZM6 15.25a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75Z"></path></svg>
+<strong>Tip</strong>
+</div>
+<p>Perfetto <a
+href="https://perfetto.dev/docs/contributing/build-instructions#building-on-windows">官方编译说明</a>里提到：Windows
+下 <code>clang-cl</code> 路线通常更稳定（功能支撑 chrome://tracing
+），纯 MSVC 属于 best-effort
+维护（能编过就凑合用，不能也不会单独维护）。</p>
+<blockquote>
+<p>clang-cl support is more stable because that build configuration is
+actively covered by the Chromium project (Perfetto rolls into chromium
+and underpins chrome://tracing). The MSVC build is maintained
+best-effort.</p>
+</blockquote>
+</div>
+<h2 id="常用-track-event-类型">常用 Track Event 类型</h2>
+<ul>
+<li><code>TRACE_EVENT("cat", "name")</code>
+<ul>
+<li>最常用，记录一个作用域的耗时（函数、阶段、任务）</li>
+</ul></li>
+<li><code>TRACE_EVENT_BEGIN/TRACE_EVENT_END</code>
+<ul>
+<li>手动控制切片边界，不依赖作用域结束，但必须成对存在！</li>
+</ul></li>
+<li><code>TRACE_EVENT_INSTANT</code>
+<ul>
+<li>打点型事件（点击、状态切换、关键分支命中），用于在 Time Line
+中添加竖线 + 标签，让我们更清楚的了解函数执行到哪一步</li>
+</ul></li>
+<li><code>TRACE_COUNTER</code>
+<ul>
+<li>记录数值曲线，例如渲染帧率、内存占用率等，常用于事件循环（任务队列中待处理的任务数）、render
+loop 中（FPS值）</li>
+</ul></li>
+</ul>
+<p>为区分 Track Event，还可以让 perfetto
+在记录过程中记录每一次函数执行参数，便于理解函数在哪种输入场景下表现异常。</p>
+<h1 id="offline-perfetto-ui">Offline Perfetto-UI</h1>
+<p>在官网的<a
+href="https://perfetto.dev/docs/">介绍文档</a>中提到：Perfetto
+提供一个基于网页的 UI，用于可视化时序数据。</p>
+<blockquote>
+<ul>
+<li><strong>Fully local, browser-based UI</strong> for visualizing large
+amounts of complex, interconnected data on a timeline. Our UI works in
+all major browsers, doesn't require any installation, works offline, and
+can open traces recorded by other (non-Perfetto) tracing tools.</li>
+</ul>
+</blockquote>
+<p>但是直接编译 UI 太过麻烦，而且在 Windows
+完全无法编译。为此，可以通过脚本将 <a
+href="https://ui.perfetto.dev/"><span>https://ui.perfetto.dev/</span></a>
+完整下载到本地，然后通过本地 HTTP Server 部署，实现 Perfetto-UI
+离线使用。</p>
+<p>整体流程如下：</p>
+<ol type="1">
+<li><p>下载 <code>index.html</code>，解析最新稳定版本号</p></li>
+<li><p>根据稳定版本号下载对应 <code>manifest.json</code></p></li>
+<li><p>根据 <code>manifest.json</code> 下载全部资源文件</p></li>
+<li><p>使用本地 HTTP Server 部署静态页面</p></li>
+<li><p>打开浏览器加载 Perfetto-UI</p></li>
+</ol>
+<p>完整下载脚本（PowerShell，<em>generated by GPT 5.3
+Codex</em>）如下：</p>
+<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line"><span class="variable">$Root</span> = <span class="string">&quot;D:\perfetto-ui-local&quot;</span></span><br><span class="line"><span class="variable">$Base</span> = <span class="string">&quot;https://ui.perfetto.dev&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">New-Item</span> <span class="literal">-ItemType</span> Directory <span class="literal">-Force</span> <span class="literal">-Path</span> <span class="variable">$Root</span> | <span class="built_in">Out-Null</span></span><br><span class="line"><span class="built_in">Set-Location</span> <span class="variable">$Root</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">Invoke-WebRequest</span> <span class="string">&quot;<span class="variable">$Base</span>/index.html&quot;</span> <span class="literal">-OutFile</span> <span class="string">&quot;index.html&quot;</span></span><br><span class="line"><span class="built_in">Invoke-WebRequest</span> <span class="string">&quot;<span class="variable">$Base</span>/service_worker.js&quot;</span> <span class="literal">-OutFile</span> <span class="string">&quot;service_worker.js&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="variable">$html</span> = <span class="built_in">Get-Content</span> <span class="string">&quot;index.html&quot;</span> <span class="literal">-Raw</span></span><br><span class="line"><span class="variable">$ver</span> = ([<span class="type">regex</span>]<span class="string">&#x27;&quot;stable&quot;\s*:\s*&quot;([^&quot;]+)&quot;&#x27;</span>).Match(<span class="variable">$html</span>).Groups[<span class="number">1</span>].Value</span><br><span class="line"><span class="keyword">if</span> (<span class="operator">-not</span> <span class="variable">$ver</span>) &#123; <span class="keyword">throw</span> <span class="string">&quot;无法从 index.html 解析 stable 版本号&quot;</span> &#125;</span><br><span class="line"></span><br><span class="line"><span class="variable">$verDir</span> = <span class="built_in">Join-Path</span> <span class="variable">$Root</span> <span class="variable">$ver</span></span><br><span class="line"><span class="built_in">New-Item</span> <span class="literal">-ItemType</span> Directory <span class="literal">-Force</span> <span class="literal">-Path</span> <span class="variable">$verDir</span> | <span class="built_in">Out-Null</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">Invoke-WebRequest</span> <span class="string">&quot;<span class="variable">$Base</span>/<span class="variable">$ver</span>/manifest.json&quot;</span> <span class="literal">-OutFile</span> (<span class="built_in">Join-Path</span> <span class="variable">$verDir</span> <span class="string">&quot;manifest.json&quot;</span>)</span><br><span class="line"><span class="variable">$manifest</span> = <span class="built_in">Get-Content</span> (<span class="built_in">Join-Path</span> <span class="variable">$verDir</span> <span class="string">&quot;manifest.json&quot;</span>) <span class="literal">-Raw</span> | <span class="built_in">ConvertFrom-Json</span></span><br><span class="line"><span class="variable">$files</span> = <span class="variable">$manifest</span>.resources.PSObject.Properties.Name</span><br><span class="line"></span><br><span class="line"><span class="keyword">foreach</span> (<span class="variable">$f</span> <span class="keyword">in</span> <span class="variable">$files</span>) &#123;</span><br><span class="line">  <span class="variable">$dst</span> = <span class="built_in">Join-Path</span> <span class="variable">$verDir</span> <span class="variable">$f</span></span><br><span class="line">  <span class="built_in">New-Item</span> <span class="literal">-ItemType</span> Directory <span class="literal">-Force</span> <span class="literal">-Path</span> (<span class="built_in">Split-Path</span> <span class="variable">$dst</span> <span class="literal">-Parent</span>) | <span class="built_in">Out-Null</span></span><br><span class="line">  <span class="built_in">Invoke-WebRequest</span> <span class="string">&quot;<span class="variable">$Base</span>/<span class="variable">$ver</span>/<span class="variable">$f</span>&quot;</span> <span class="literal">-OutFile</span> <span class="variable">$dst</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">Write-Host</span> <span class="string">&quot;下载完成，版本: <span class="variable">$ver</span>&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>本地部署静态页面时推荐使用 <a
+href="https://github.com/caddyserver/caddy/releases">Caddy</a>，并搭配下面的启动脚本，实现开箱即用效果，避免繁琐的手动编译步骤（甚至在
+Windows 下完全无法编译😅）：</p>
+<figure class="highlight bat"><table><tr><td class="code"><pre><span class="line">@<span class="built_in">echo</span> off</span><br><span class="line"><span class="built_in">start</span> &quot;Caddy File Server&quot; <span class="built_in">cmd</span> /c &quot;<span class="built_in">cd</span> /d %~dp0 &amp;&amp; .\caddy.exe file-server --root . --listen :<span class="number">8080</span> --browse --access-log&quot;</span><br><span class="line">timeout /t <span class="number">1</span> /nobreak &gt;<span class="built_in">nul</span></span><br><span class="line"><span class="built_in">start</span> &quot;&quot; &quot;http://localhost:<span class="number">8080</span>/&quot;</span><br></pre></td></tr></table></figure>
+
+<p>在其他平台下部署静态页面也是同样原理，这里不再展开，最后给一张运行效果图：</p>
+<p><img data-src="/posts/null/image-20260322173205081.png"
+style="zoom:20%;" /></p>
+]]></content>
+      <categories>
+        <category>技术笔记</category>
+      </categories>
+      <tags>
+        <tag>C++</tag>
+        <tag>Perfetto</tag>
+        <tag>性能分析</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>《经济学原理》问题与应用（2）</title>
+    <url>/posts/3c7/</url>
+    <content><![CDATA[<p>本次是第2章节 “像经济学家一样思考” 的部分问题和解答。</p>
+<hr />
+<p><em><strong>举出一种没有被包含在简化的循环流量图中的经济交易。</strong></em></p>
+<p>在第2章介绍的简化的循环流量图中，仅包含两个角色——家庭和企业，忽略了政府、金融市场、国际贸易等角色参与下的经济交易：</p>
+<ol type="1">
+<li><p>政府参与的交易</p>
+<p>税收、转移支付（社会福利、生育补贴）、政府采购</p></li>
+<li><p>金融市场的交易</p>
+<p>储蓄、借贷</p></li>
+<li><p>国际贸易</p>
+<p>进口、出口</p></li>
+</ol>
+<p><span class="math inline">\(\require{physics}\)</span></p>
+<span id="more"></span>
+
+<hr />
+<p><em><strong>画出并解释一个生成牛奶与点心的经济的生产可能性边界。如果一场瘟疫使该经济中的一半奶牛死亡，这条生产可能性边界会发生怎样的变动？</strong></em></p>
+<p>在这个场景下，<strong>社会用于生产牛奶和点心的资源是有限的，且假设二者之间无任何联系</strong>（例如牛奶有奶牛产奶加工而成，而点心通过面粉和糖加工而成）。</p>
+<p>此时瘟疫只会影响奶牛的数量，进而影响牛奶的产量（变化成只有之前一半的产量），而点心并不会收到影响，因此在生产可能性边界上点心的端点不会发生移动，而牛奶的端点会移动至之前一半的点。如下图所示：</p>
+<p><img data-src="/posts/null/image-20260322225805589.png"
+style="zoom:33%;" /></p>
+<p>实线为瘟疫前的生产可能性边界，而虚线为瘟疫后的生产可能性边界。</p>
+<div class="markdown-alert markdown-alert-tip">
+<div class="markdown-alert-title">
+<svg class="octicon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M8 1.5c-2.363 0-4 1.69-4 3.75 0 .984.424 1.625.984 2.304l.214.253c.223.264.47.556.673.848.284.411.537.896.621 1.49a.75.75 0 0 1-1.484.211c-.04-.282-.163-.547-.37-.847a8.456 8.456 0 0 0-.542-.68c-.084-.1-.173-.205-.268-.32C3.201 7.75 2.5 6.766 2.5 5.25 2.5 2.31 4.863 0 8 0s5.5 2.31 5.5 5.25c0 1.516-.701 2.5-1.328 3.259-.095.115-.184.22-.268.319-.207.245-.383.453-.541.681-.208.3-.33.565-.37.847a.751.751 0 0 1-1.485-.212c.084-.593.337-1.078.621-1.489.203-.292.45-.584.673-.848.075-.088.147-.173.213-.253.561-.679.985-1.32.985-2.304 0-2.06-1.637-3.75-4-3.75ZM5.75 12h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5ZM6 15.25a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75Z"></path></svg>
+<strong>Tip</strong>
+</div>
+<p>此时可以暂时假设制作点心时不包含黄油（黄油由牛奶制作而成），如果把点心使用黄油这一因素也考虑在内，问题会更复杂，而生产可能性边界就不适合在用来描述瘟疫所带来的变化了。</p>
+<p>因为生产可能性边界的主要展示的就是“想要更多的 A，就必须舍弃一些
+B”的权衡观点，如果再引入黄油作为中间品，就无法直观展现出在点心和牛奶之间的机会成本变化了。</p>
+</div>
+<hr />
+<p><em><strong>把下列话题分别归入微观经济学或宏观经济学：</strong></em></p>
+<p><em><strong>a. 家庭把多少收入用于储蓄的决策。</strong></em></p>
+<p><em><strong>b. 政府管制对于汽车废气排放的影响。</strong></em></p>
+<p><em><strong>c. 高国民储蓄对经济增长的影响。</strong></em></p>
+<p><em><strong>d. 企业关于雇佣多少工人的决策。</strong></em></p>
+<p><em><strong>e. 通货膨胀率和货币量变动之间的关系。</strong></em></p>
+<p>可以根据研究对象的<strong>尺度</strong>来划分：<strong>微观经济学</strong>研究<strong>个体（家庭、企业）的行为</strong>及在<strong>特定市场</strong>中的相互作用；<strong>宏观经济学</strong>研究<strong>经济体整体</strong>的运行趋势（如增长、通胀、失业）。</p>
+<p>以下是具体归类：</p>
+<ol type="1">
+<li>微观经济学 (Microeconomics)</li>
+</ol>
+<p>这些话题关注的是特定决策者或特定市场的逻辑：</p>
+<ul>
+<li><strong>a. 家庭把多少收入用于储蓄的决策：</strong>
+<ul>
+<li><strong>理由：</strong>
+这是一个典型的<strong>个体行为分析</strong>。它研究单一家庭单位如何根据自身目标、利率和收入水平，在“当前消费”与“未来消费”之间做权衡。</li>
+</ul></li>
+<li><strong>b. 政府管制对于汽车废气排放的影响：</strong>
+<ul>
+<li><strong>理由：</strong>
+虽然是由政府实施的，但它针对的是<strong>特定行业（汽车）和
+特定外部性问题</strong>。它研究这项管制如何改变汽车买卖双方的行为，以及对该市场均衡价格和产量的影响。</li>
+</ul></li>
+<li><strong>d. 企业关于雇佣多少工人的决策：</strong>
+<ul>
+<li><strong>理由：</strong>
+属于<strong>生产理论</strong>范畴。它分析单一厂商（企业）如何根据劳动力成本（工资）和生产边际效益来最优化其资源配置。</li>
+</ul></li>
+</ul>
+<ol start="2" type="1">
+<li>宏观经济学 (Macroeconomics)</li>
+</ol>
+<p>这些话题关注的是国家或全球层面的总量与整体波动：</p>
+<ul>
+<li><strong>c. 高国民储蓄对经济增长的影响：</strong>
+<ul>
+<li><strong>理由：</strong>
+这里研究的是<strong>国民总储蓄</strong>（全社会所有家庭、企业和政府储蓄的总和），以及它作为投资来源如何推动整个国家生产率和
+<strong>GDP（经济增长）</strong> 的长期提升。</li>
+</ul></li>
+<li><strong>e. 通货膨胀率和货币量变动之间的关系：</strong>
+<ul>
+<li><strong>理由：</strong>
+<strong>通货膨胀</strong>是物价总水平的持续上涨，涉及整个经济体的购买力。研究货币供应量与物价水平的联系是宏观经济政策（货币政策）的核心课题。</li>
+</ul></li>
+</ul>
+<p>💡 深度理解：a 和 c 的区别</p>
+<p>注意到 <strong>a</strong> 和 <strong>c</strong>
+都提到了“储蓄”，但视角完全不同：</p>
+<ul>
+<li>在 <strong>a</strong>
+中，我们关心的是：“由于利息涨了，<strong>我家</strong>今年是不是会多存钱？”（微观，某个个体）。</li>
+<li>在 <strong>c</strong>
+中，我们关心的是：“如果<strong>全国</strong>的人都开始存钱，这个国家的资本积累和十年后的总产出会有什么变化？”（宏观，全国整体）。</li>
+</ul>
+]]></content>
   </entry>
 </search>

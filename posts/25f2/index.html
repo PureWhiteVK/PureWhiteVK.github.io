@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 8.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.css" integrity="sha256-gkQVf8UKZgQ0HyuxL/VnacadJ+D2Kox2TCEBuNQg5+w=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"purewhitevk.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.27.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":"default"},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false,"trigger":"auto"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="\(\require{physics}\)">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Perfetto基本使用">
+<meta property="og:url" content="https://purewhitevk.github.io/posts/25f2/">
+<meta property="og:site_name" content="PureWhiteVK&#39;s Blog">
+<meta property="og:description" content="\(\require{physics}\)">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/null/image-20260322173205081.png">
+<meta property="article:published_time" content="2026-03-22T01:05:18.000Z">
+<meta property="article:modified_time" content="2026-03-22T01:05:18.000Z">
+<meta property="article:author" content="PureWhiteVK">
+<meta property="article:tag" content="C++">
+<meta property="article:tag" content="Perfetto">
+<meta property="article:tag" content="性能分析">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://purewhitevk.github.io/posts/null/image-20260322173205081.png">
+
+
+<link rel="canonical" href="https://purewhitevk.github.io/posts/25f2/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://purewhitevk.github.io/posts/25f2/","path":"posts/25f2/","title":"Perfetto基本使用"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Perfetto基本使用 | PureWhiteVK's Blog</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.umd.js" integrity="sha256-a+H7FYzJv6oU2hfsfDGM2Ohw/cR9v+hPfxHCLdmCrE8=" crossorigin="anonymous" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+  <script src="/js/third-party/fancybox.js" defer></script>
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js" defer></script>
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">PureWhiteVK's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">30</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">6</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">28</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#profiling-vs-tracing"><span class="nav-number">1.</span> <span class="nav-text">Profiling V.S. Tracing</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99%E8%AF%A5%E7%94%A8%E5%93%AA%E4%B8%80%E4%B8%AA"><span class="nav-number">1.1.</span> <span class="nav-text">什么时候该用哪一个</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ci-%E6%8C%81%E7%BB%AD%E7%9B%91%E6%8E%A7%E6%80%A7%E8%83%BD"><span class="nav-number">1.1.1.</span> <span class="nav-text">CI 持续监控性能</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%A7%E8%83%BD%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90"><span class="nav-number">1.1.2.</span> <span class="nav-text">性能问题分析</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#perfetto-c-sdk"><span class="nav-number">2.</span> <span class="nav-text">Perfetto C++ SDK</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8-track-event-%E7%B1%BB%E5%9E%8B"><span class="nav-number">2.1.</span> <span class="nav-text">常用 Track Event 类型</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#offline-perfetto-ui"><span class="nav-number">3.</span> <span class="nav-text">Offline Perfetto-UI</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="PureWhiteVK"
+      src="/images/Touma.Kazusa.256x256.png">
+  <p class="site-author-name" itemprop="name">PureWhiteVK</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">28</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/PureWhiteVK" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;PureWhiteVK" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:yl_xiao@outlook.com" title="E-Mail → mailto:yl_xiao@outlook.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://purewhitevk.github.io/posts/25f2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/Touma.Kazusa.256x256.png">
+      <meta itemprop="name" content="PureWhiteVK">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PureWhiteVK's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Perfetto基本使用 | PureWhiteVK's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Perfetto基本使用
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2026/03/22 09:05:18" itemprop="dateCreated datePublished" datetime="2026-03-22T09:05:18+08:00">2026/03/22</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">技术笔记</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>1.9k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>7 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p><span class="math inline">\(\require{physics}\)</span></p>
+<span id="more"></span>
+
+<h1 id="profiling-vs-tracing">Profiling V.S. Tracing</h1>
+<p>先给结论：<strong>Profile 负责回答“慢在哪里”，Trace
+负责回答“为什么会慢”。</strong></p>
+<p>参考 <a target="_blank" rel="noopener" href="https://perfetto.dev/docs/tracing-101">Tracing
+101</a>，两者可以这样区分：</p>
+<ul>
+<li><p><strong>Profiling（采样/热点分析）</strong></p>
+<ul>
+<li>典型工具：VTune、Linux perf、pprof</li>
+<li>结果：热点函数、调用栈、CPU 占比、内存热点</li>
+<li>优势：开销相对小，便于长期趋势对比</li>
+<li>局限：上下文较弱，跨线程因果关系不直观</li>
+</ul></li>
+<li><p><strong>Tracing（时序/因果分析）</strong></p>
+<ul>
+<li>典型工具：Perfetto</li>
+<li>结果：时间线、线程切换、跨线程流转、阶段耗时、Counter 曲线</li>
+<li>优势：上下文完整，适合分析卡顿、抖动、排队、阻塞</li>
+<li>局限：数据量大，采集策略需要设计</li>
+</ul></li>
+</ul>
+<h2 id="什么时候该用哪一个">什么时候该用哪一个</h2>
+<h3 id="ci-持续监控性能">CI 持续监控性能</h3>
+<p>优先使用 <strong>Profile + 基准指标</strong>，Trace 作为补充：</p>
+<ol type="1">
+<li>在 CI 固定场景跑 benchmark（吞吐、延迟、峰值内存）</li>
+<li>配合采样 profiler 记录热点函数占比趋势</li>
+<li>指标回归时，再触发短时 Trace 采集做定位</li>
+</ol>
+<p>核心原因：CI 更强调低开销、稳定和可比较。</p>
+<h3 id="性能问题分析">性能问题分析</h3>
+<p>优先使用 <strong>Trace</strong>（必要时配合 Profile）：</p>
+<ol type="1">
+<li>先用 Perfetto 看问题发生时刻的完整时序</li>
+<li>定位长耗时切片、线程等待、队列堆积</li>
+<li>再用 VTune/perf 深挖具体函数级热点</li>
+</ol>
+<p>实践上常见组合是：</p>
+<ul>
+<li>第一步 Profile：快速缩小范围</li>
+<li>第二步 Trace：解释因果链路</li>
+</ul>
+<h1 id="perfetto-c-sdk">Perfetto C++ SDK</h1>
+<p>下面给一个基于官方 <a
+target="_blank" rel="noopener" href="https://github.com/google/perfetto/blob/main/examples/sdk/example.cc">example.cc</a>
+思路整理的示例，覆盖 TrackEvent 的常见能力：</p>
+<ul>
+<li>Slice（作用域事件 / BEGIN-END）</li>
+<li>Instant（瞬时事件）</li>
+<li>Counter（数值曲线）</li>
+<li>Track（自定义轨道）</li>
+<li>Flow（跨阶段关联）</li>
+<li>Debug Annotation / lambda 自定义字段</li>
+<li>DynamicString（动态事件名）</li>
+</ul>
+<div class="markdown-alert markdown-alert-note">
+<div class="markdown-alert-title">
+<svg class="octicon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>
+<strong>Note</strong>
+</div>
+<p>SDK 使用方式可能随版本变化，若编译时报错，请以官方仓库当前版本的
+<code>examples/sdk/example.cc</code> 为准。目前使用的 SDK 版本为
+v50.1</p>
+</div>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;chrono&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;cstdint&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;thread&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;vector&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;perfetto.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 1) 定义 category</span></span><br><span class="line"><span class="built_in">PERFETTO_DEFINE_CATEGORIES</span>(</span><br><span class="line">    perfetto::<span class="built_in">Category</span>(<span class="string">&quot;app&quot;</span>)</span><br><span class="line">        .<span class="built_in">SetDescription</span>(<span class="string">&quot;General app events&quot;</span>),</span><br><span class="line">    perfetto::<span class="built_in">Category</span>(<span class="string">&quot;render&quot;</span>)</span><br><span class="line">        .<span class="built_in">SetDescription</span>(<span class="string">&quot;Rendering pipeline events&quot;</span>),</span><br><span class="line">    perfetto::<span class="built_in">Category</span>(<span class="string">&quot;io&quot;</span>)</span><br><span class="line">        .<span class="built_in">SetDescription</span>(<span class="string">&quot;I/O events&quot;</span>),</span><br><span class="line">    perfetto::<span class="built_in">Category</span>(<span class="string">&quot;app.debug&quot;</span>)</span><br><span class="line">        .<span class="built_in">SetDescription</span>(<span class="string">&quot;Verbose debug events&quot;</span>)</span><br><span class="line">        .<span class="built_in">SetTags</span>(<span class="string">&quot;debug&quot;</span>),</span><br><span class="line">    perfetto::Category::<span class="built_in">Group</span>(<span class="string">&quot;app,benchmark&quot;</span>)</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 2) 在一个 .cc 文件里声明静态存储</span></span><br><span class="line"><span class="built_in">PERFETTO_TRACK_EVENT_STATIC_STORAGE</span>();</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> &#123;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">BusyWork</span><span class="params">(<span class="type">int</span> ms)</span> </span>&#123;</span><br><span class="line">  std::this_thread::<span class="built_in">sleep_for</span>(std::chrono::<span class="built_in">milliseconds</span>(ms));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">RenderFrame</span><span class="params">(<span class="type">int</span> frame_id, <span class="type">int</span> queue_depth)</span> </span>&#123;</span><br><span class="line">  <span class="comment">// Scope Slice：从宏位置开始，到当前作用域结束</span></span><br><span class="line">  <span class="built_in">TRACE_EVENT</span>(<span class="string">&quot;render&quot;</span>, <span class="string">&quot;RenderFrame&quot;</span>, <span class="string">&quot;frame&quot;</span>, frame_id);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Counter：记录时变数值</span></span><br><span class="line">  <span class="built_in">TRACE_COUNTER</span>(<span class="string">&quot;app&quot;</span>, <span class="string">&quot;QueueDepth&quot;</span>, queue_depth);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 带单位的计数器轨道</span></span><br><span class="line">  <span class="function"><span class="type">static</span> perfetto::CounterTrack <span class="title">fps_track</span><span class="params">(<span class="string">&quot;Framerate&quot;</span>, <span class="string">&quot;fps&quot;</span>)</span></span>;</span><br><span class="line">  <span class="built_in">TRACE_COUNTER</span>(<span class="string">&quot;render&quot;</span>, fps_track, <span class="number">120</span>);</span><br><span class="line"></span><br><span class="line">  <span class="built_in">BusyWork</span>(<span class="number">2</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">LoadingPhase</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="comment">// 手动 BEGIN/END</span></span><br><span class="line">  <span class="built_in">TRACE_EVENT_BEGIN</span>(<span class="string">&quot;io&quot;</span>, <span class="string">&quot;LoadAssets&quot;</span>);</span><br><span class="line">  <span class="built_in">BusyWork</span>(<span class="number">3</span>);</span><br><span class="line">  <span class="built_in">BusyWork</span>(<span class="number">2</span>);</span><br><span class="line">  <span class="built_in">TRACE_EVENT_END</span>(<span class="string">&quot;io&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">HandleRequestCrossThread</span><span class="params">(<span class="type">uint64_t</span> req_id)</span> </span>&#123;</span><br><span class="line">  <span class="comment">// 自定义 Track：跨线程串联同一请求</span></span><br><span class="line">  <span class="function">perfetto::Track <span class="title">req_track</span><span class="params">(req_id)</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">TRACE_EVENT_BEGIN</span>(<span class="string">&quot;app&quot;</span>, <span class="string">&quot;HandleRequest&quot;</span>, req_track, <span class="string">&quot;request_id&quot;</span>, req_id);</span><br><span class="line"></span><br><span class="line">  <span class="function">std::thread <span class="title">worker</span><span class="params">([req_track, req_id]() &#123;</span></span></span><br><span class="line"><span class="params"><span class="function">    TRACE_EVENT(<span class="string">&quot;app&quot;</span>, <span class="string">&quot;WorkerStage&quot;</span>, req_track, <span class="string">&quot;request_id&quot;</span>, req_id);</span></span></span><br><span class="line"><span class="params"><span class="function">    BusyWork(<span class="number">4</span>);</span></span></span><br><span class="line"><span class="params"><span class="function">    TRACE_EVENT_END(<span class="string">&quot;app&quot;</span>, req_track);</span></span></span><br><span class="line"><span class="params"><span class="function">  &#125;)</span></span>;</span><br><span class="line">  worker.<span class="built_in">join</span>();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">FlowDemo</span><span class="params">(<span class="type">uint64_t</span> req_id)</span> </span>&#123;</span><br><span class="line">  <span class="comment">// Flow：用箭头连接相关事件</span></span><br><span class="line">  <span class="built_in">TRACE_EVENT</span>(<span class="string">&quot;app&quot;</span>, <span class="string">&quot;DecodeBegin&quot;</span>, perfetto::Flow::<span class="built_in">ProcessScoped</span>(req_id));</span><br><span class="line">  <span class="built_in">BusyWork</span>(<span class="number">1</span>);</span><br><span class="line">  <span class="built_in">TRACE_EVENT</span>(<span class="string">&quot;app&quot;</span>, <span class="string">&quot;DecodeEnd&quot;</span>, perfetto::TerminatingFlow::<span class="built_in">ProcessScoped</span>(req_id));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">AdvancedArgsDemo</span><span class="params">(std::string dynamic_name)</span> </span>&#123;</span><br><span class="line">  <span class="comment">// DynamicString：动态事件名</span></span><br><span class="line">  <span class="built_in">TRACE_EVENT</span>(<span class="string">&quot;app&quot;</span>, perfetto::DynamicString&#123;dynamic_name&#125;);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Debug annotations + lambda</span></span><br><span class="line">  <span class="built_in">TRACE_EVENT</span>(</span><br><span class="line">      <span class="string">&quot;app&quot;</span>, <span class="string">&quot;UploadChunk&quot;</span>, <span class="string">&quot;chunk_bytes&quot;</span>, <span class="number">4096</span>,</span><br><span class="line">      [&amp;](perfetto::EventContext ctx) &#123;</span><br><span class="line">        <span class="keyword">auto</span>* ann = ctx.<span class="built_in">event</span>()-&gt;<span class="built_in">add_debug_annotations</span>();</span><br><span class="line">        ann-&gt;<span class="built_in">set_name</span>(<span class="string">&quot;note&quot;</span>);</span><br><span class="line">        ann-&gt;<span class="built_in">set_string_value</span>(<span class="string">&quot;custom annotation from lambda&quot;</span>);</span><br><span class="line">      &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#125;  <span class="comment">// namespace</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="comment">// 3) 初始化 tracing</span></span><br><span class="line">  perfetto::TracingInitArgs args;</span><br><span class="line">  args.backends = perfetto::kInProcessBackend;</span><br><span class="line">  perfetto::Tracing::<span class="built_in">Initialize</span>(args);</span><br><span class="line">  perfetto::TrackEvent::<span class="built_in">Register</span>();</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 4) 配置并启动 tracing session</span></span><br><span class="line">  <span class="keyword">auto</span> tracing_session = perfetto::Tracing::<span class="built_in">NewTrace</span>();</span><br><span class="line">  perfetto::protos::gen::TraceConfig cfg;</span><br><span class="line"></span><br><span class="line">  cfg.<span class="built_in">add_buffers</span>()-&gt;<span class="built_in">set_size_kb</span>(<span class="number">1024</span>);</span><br><span class="line">  <span class="keyword">auto</span>* ds_cfg = cfg.<span class="built_in">add_data_sources</span>()-&gt;<span class="built_in">mutable_config</span>();</span><br><span class="line">  ds_cfg-&gt;<span class="built_in">set_name</span>(<span class="string">&quot;track_event&quot;</span>);</span><br><span class="line">  ds_cfg-&gt;<span class="built_in">set_track_event_config_raw</span>(<span class="string">R&quot;pb(</span></span><br><span class="line"><span class="string">    enabled_categories: &quot;app&quot;</span></span><br><span class="line"><span class="string">    enabled_categories: &quot;render&quot;</span></span><br><span class="line"><span class="string">    enabled_categories: &quot;io&quot;</span></span><br><span class="line"><span class="string">    enabled_categories: &quot;benchmark&quot;</span></span><br><span class="line"><span class="string">  )pb&quot;</span>);</span><br><span class="line"></span><br><span class="line">  tracing_session-&gt;<span class="built_in">Setup</span>(cfg);</span><br><span class="line">  tracing_session-&gt;<span class="built_in">StartBlocking</span>();</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 5) 产生事件</span></span><br><span class="line">  <span class="built_in">TRACE_EVENT_INSTANT</span>(<span class="string">&quot;app&quot;</span>, <span class="string">&quot;Startup&quot;</span>);</span><br><span class="line">  <span class="keyword">if</span> (<span class="built_in">TRACE_EVENT_CATEGORY_ENABLED</span>(<span class="string">&quot;app&quot;</span>)) &#123;</span><br><span class="line">    <span class="built_in">TRACE_EVENT</span>(<span class="string">&quot;app&quot;</span>, <span class="string">&quot;CategoryEnabledCheckPassed&quot;</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">LoadingPhase</span>();</span><br><span class="line">  <span class="built_in">RenderFrame</span>(<span class="number">1</span>, <span class="number">3</span>);</span><br><span class="line">  <span class="built_in">HandleRequestCrossThread</span>(<span class="number">1001</span>);</span><br><span class="line">  <span class="built_in">FlowDemo</span>(<span class="number">1001</span>);</span><br><span class="line">  <span class="built_in">AdvancedArgsDemo</span>(<span class="string">&quot;DynamicStageName&quot;</span>);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 6) 停止并导出 trace</span></span><br><span class="line">  tracing_session-&gt;<span class="built_in">StopBlocking</span>();</span><br><span class="line">  <span class="function">std::vector&lt;<span class="type">char</span>&gt; <span class="title">trace_data</span><span class="params">(tracing_session-&gt;ReadTraceBlocking())</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="function">std::ofstream <span class="title">output</span><span class="params">(<span class="string">&quot;example.pftrace&quot;</span>, std::ios::binary)</span></span>;</span><br><span class="line">  output.<span class="built_in">write</span>(trace_data.<span class="built_in">data</span>(), <span class="built_in">static_cast</span>&lt;std::streamsize&gt;(trace_data.<span class="built_in">size</span>()));</span><br><span class="line">  output.<span class="built_in">close</span>();</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>对应的 <code>CMakeLists.txt</code>：</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">cmake_minimum_required</span>(VERSION <span class="number">3.13</span>)</span><br><span class="line"><span class="keyword">project</span>(PerfettoTrackEventDemo LANGUAGES CXX)</span><br><span class="line"></span><br><span class="line"><span class="keyword">set</span>(CMAKE_CXX_STANDARD <span class="number">17</span>)</span><br><span class="line"><span class="keyword">set</span>(CMAKE_CXX_STANDARD_REQUIRED <span class="keyword">ON</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">find_package</span>(Threads REQUIRED)</span><br><span class="line"></span><br><span class="line"><span class="comment"># perfetto/sdk 目录下放 perfetto.h 和 perfetto.cc</span></span><br><span class="line"><span class="keyword">add_library</span>(perfetto STATIC</span><br><span class="line">  perfetto/sdk/perfetto.cc</span><br><span class="line">)</span><br><span class="line"><span class="keyword">target_include_directories</span>(perfetto PUBLIC</span><br><span class="line">  <span class="variable">$&#123;CMAKE_CURRENT_SOURCE_DIR&#125;</span>/perfetto/sdk</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">add_executable</span>(example</span><br><span class="line">  example.cc</span><br><span class="line">)</span><br><span class="line"><span class="keyword">target_link_libraries</span>(example PRIVATE perfetto Threads::Threads)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(WIN32)</span><br><span class="line">  <span class="comment"># perfetto.cc 编译单元符号很多，MSVC 下需要 /bigobj</span></span><br><span class="line">  <span class="keyword">target_compile_options</span>(perfetto PRIVATE /bigobj)</span><br><span class="line"></span><br><span class="line">  <span class="comment"># 避免 windows.h 的宏污染（min/max）和体积膨胀</span></span><br><span class="line">  <span class="keyword">target_compile_definitions</span>(perfetto PUBLIC WIN32_LEAN_AND_MEAN NOMINMAX)</span><br><span class="line">  <span class="keyword">target_compile_definitions</span>(example PUBLIC WIN32_LEAN_AND_MEAN NOMINMAX)</span><br><span class="line"></span><br><span class="line">  <span class="comment"># Perfetto 在 Windows 下依赖 WinSock</span></span><br><span class="line">  <span class="keyword">target_link_libraries</span>(example PRIVATE ws2_32)</span><br><span class="line"><span class="keyword">endif</span>()</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(MSVC)</span><br><span class="line">  <span class="comment"># 使用更严格、标准一致的编译模式</span></span><br><span class="line">  <span class="keyword">target_compile_options</span>(example PRIVATE /permissive-)</span><br><span class="line"><span class="keyword">endif</span>()</span><br></pre></td></tr></table></figure>
+
+<p>Windows 下使用 MSVC 的一些编译说明：</p>
+<ul>
+<li>必须使用 C++ 17 标准</li>
+<li>最好使用 vc142 工具链（VS 2019），vc143
+不一定支持（能编过就能用）</li>
+<li>头文件引入顺序也可能造成编译报错，例如自定义的宏影响，可以将
+<code>perfetto.h</code> 放在第一个位置引入以规避这类问题</li>
+<li><code>/bigobj</code>：Perfetto 的聚合源文件符号较多，MSVC
+默认节数量上限容易触发编译错误</li>
+<li><code>WIN32_LEAN_AND_MEAN</code> + <code>NOMINMAX</code>：减少
+<code>windows.h</code> 宏污染，避免与 C++ 标准库冲突</li>
+<li><code>ws2_32</code>：Windows 网络相关符号需要显式链接</li>
+<li><code>/permissive-</code>：开启 MSVC 严格语法模式，更接近标准 C++
+的行为，减少编译器扩展导致的隐性兼容问题</li>
+</ul>
+<div class="markdown-alert markdown-alert-tip">
+<div class="markdown-alert-title">
+<svg class="octicon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M8 1.5c-2.363 0-4 1.69-4 3.75 0 .984.424 1.625.984 2.304l.214.253c.223.264.47.556.673.848.284.411.537.896.621 1.49a.75.75 0 0 1-1.484.211c-.04-.282-.163-.547-.37-.847a8.456 8.456 0 0 0-.542-.68c-.084-.1-.173-.205-.268-.32C3.201 7.75 2.5 6.766 2.5 5.25 2.5 2.31 4.863 0 8 0s5.5 2.31 5.5 5.25c0 1.516-.701 2.5-1.328 3.259-.095.115-.184.22-.268.319-.207.245-.383.453-.541.681-.208.3-.33.565-.37.847a.751.751 0 0 1-1.485-.212c.084-.593.337-1.078.621-1.489.203-.292.45-.584.673-.848.075-.088.147-.173.213-.253.561-.679.985-1.32.985-2.304 0-2.06-1.637-3.75-4-3.75ZM5.75 12h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5ZM6 15.25a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75Z"></path></svg>
+<strong>Tip</strong>
+</div>
+<p>Perfetto <a
+target="_blank" rel="noopener" href="https://perfetto.dev/docs/contributing/build-instructions#building-on-windows">官方编译说明</a>里提到：Windows
+下 <code>clang-cl</code> 路线通常更稳定（功能支撑 chrome://tracing
+），纯 MSVC 属于 best-effort
+维护（能编过就凑合用，不能也不会单独维护）。</p>
+<blockquote>
+<p>clang-cl support is more stable because that build configuration is
+actively covered by the Chromium project (Perfetto rolls into chromium
+and underpins chrome://tracing). The MSVC build is maintained
+best-effort.</p>
+</blockquote>
+</div>
+<h2 id="常用-track-event-类型">常用 Track Event 类型</h2>
+<ul>
+<li><code>TRACE_EVENT("cat", "name")</code>
+<ul>
+<li>最常用，记录一个作用域的耗时（函数、阶段、任务）</li>
+</ul></li>
+<li><code>TRACE_EVENT_BEGIN/TRACE_EVENT_END</code>
+<ul>
+<li>手动控制切片边界，不依赖作用域结束，但必须成对存在！</li>
+</ul></li>
+<li><code>TRACE_EVENT_INSTANT</code>
+<ul>
+<li>打点型事件（点击、状态切换、关键分支命中），用于在 Time Line
+中添加竖线 + 标签，让我们更清楚的了解函数执行到哪一步</li>
+</ul></li>
+<li><code>TRACE_COUNTER</code>
+<ul>
+<li>记录数值曲线，例如渲染帧率、内存占用率等，常用于事件循环（任务队列中待处理的任务数）、render
+loop 中（FPS值）</li>
+</ul></li>
+</ul>
+<p>为区分 Track Event，还可以让 perfetto
+在记录过程中记录每一次函数执行参数，便于理解函数在哪种输入场景下表现异常。</p>
+<h1 id="offline-perfetto-ui">Offline Perfetto-UI</h1>
+<p>在官网的<a
+target="_blank" rel="noopener" href="https://perfetto.dev/docs/">介绍文档</a>中提到：Perfetto
+提供一个基于网页的 UI，用于可视化时序数据。</p>
+<blockquote>
+<ul>
+<li><strong>Fully local, browser-based UI</strong> for visualizing large
+amounts of complex, interconnected data on a timeline. Our UI works in
+all major browsers, doesn't require any installation, works offline, and
+can open traces recorded by other (non-Perfetto) tracing tools.</li>
+</ul>
+</blockquote>
+<p>但是直接编译 UI 太过麻烦，而且在 Windows
+完全无法编译。为此，可以通过脚本将 <a
+target="_blank" rel="noopener" href="https://ui.perfetto.dev/"><span>https://ui.perfetto.dev/</span></a>
+完整下载到本地，然后通过本地 HTTP Server 部署，实现 Perfetto-UI
+离线使用。</p>
+<p>整体流程如下：</p>
+<ol type="1">
+<li><p>下载 <code>index.html</code>，解析最新稳定版本号</p></li>
+<li><p>根据稳定版本号下载对应 <code>manifest.json</code></p></li>
+<li><p>根据 <code>manifest.json</code> 下载全部资源文件</p></li>
+<li><p>使用本地 HTTP Server 部署静态页面</p></li>
+<li><p>打开浏览器加载 Perfetto-UI</p></li>
+</ol>
+<p>完整下载脚本（PowerShell，<em>generated by GPT 5.3
+Codex</em>）如下：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$Root</span> = <span class="string">&quot;D:\perfetto-ui-local&quot;</span></span><br><span class="line"><span class="variable">$Base</span> = <span class="string">&quot;https://ui.perfetto.dev&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">New-Item</span> <span class="literal">-ItemType</span> Directory <span class="literal">-Force</span> <span class="literal">-Path</span> <span class="variable">$Root</span> | <span class="built_in">Out-Null</span></span><br><span class="line"><span class="built_in">Set-Location</span> <span class="variable">$Root</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">Invoke-WebRequest</span> <span class="string">&quot;<span class="variable">$Base</span>/index.html&quot;</span> <span class="literal">-OutFile</span> <span class="string">&quot;index.html&quot;</span></span><br><span class="line"><span class="built_in">Invoke-WebRequest</span> <span class="string">&quot;<span class="variable">$Base</span>/service_worker.js&quot;</span> <span class="literal">-OutFile</span> <span class="string">&quot;service_worker.js&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="variable">$html</span> = <span class="built_in">Get-Content</span> <span class="string">&quot;index.html&quot;</span> <span class="literal">-Raw</span></span><br><span class="line"><span class="variable">$ver</span> = ([<span class="type">regex</span>]<span class="string">&#x27;&quot;stable&quot;\s*:\s*&quot;([^&quot;]+)&quot;&#x27;</span>).Match(<span class="variable">$html</span>).Groups[<span class="number">1</span>].Value</span><br><span class="line"><span class="keyword">if</span> (<span class="operator">-not</span> <span class="variable">$ver</span>) &#123; <span class="keyword">throw</span> <span class="string">&quot;无法从 index.html 解析 stable 版本号&quot;</span> &#125;</span><br><span class="line"></span><br><span class="line"><span class="variable">$verDir</span> = <span class="built_in">Join-Path</span> <span class="variable">$Root</span> <span class="variable">$ver</span></span><br><span class="line"><span class="built_in">New-Item</span> <span class="literal">-ItemType</span> Directory <span class="literal">-Force</span> <span class="literal">-Path</span> <span class="variable">$verDir</span> | <span class="built_in">Out-Null</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">Invoke-WebRequest</span> <span class="string">&quot;<span class="variable">$Base</span>/<span class="variable">$ver</span>/manifest.json&quot;</span> <span class="literal">-OutFile</span> (<span class="built_in">Join-Path</span> <span class="variable">$verDir</span> <span class="string">&quot;manifest.json&quot;</span>)</span><br><span class="line"><span class="variable">$manifest</span> = <span class="built_in">Get-Content</span> (<span class="built_in">Join-Path</span> <span class="variable">$verDir</span> <span class="string">&quot;manifest.json&quot;</span>) <span class="literal">-Raw</span> | <span class="built_in">ConvertFrom-Json</span></span><br><span class="line"><span class="variable">$files</span> = <span class="variable">$manifest</span>.resources.PSObject.Properties.Name</span><br><span class="line"></span><br><span class="line"><span class="keyword">foreach</span> (<span class="variable">$f</span> <span class="keyword">in</span> <span class="variable">$files</span>) &#123;</span><br><span class="line">  <span class="variable">$dst</span> = <span class="built_in">Join-Path</span> <span class="variable">$verDir</span> <span class="variable">$f</span></span><br><span class="line">  <span class="built_in">New-Item</span> <span class="literal">-ItemType</span> Directory <span class="literal">-Force</span> <span class="literal">-Path</span> (<span class="built_in">Split-Path</span> <span class="variable">$dst</span> <span class="literal">-Parent</span>) | <span class="built_in">Out-Null</span></span><br><span class="line">  <span class="built_in">Invoke-WebRequest</span> <span class="string">&quot;<span class="variable">$Base</span>/<span class="variable">$ver</span>/<span class="variable">$f</span>&quot;</span> <span class="literal">-OutFile</span> <span class="variable">$dst</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">Write-Host</span> <span class="string">&quot;下载完成，版本: <span class="variable">$ver</span>&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>本地部署静态页面时推荐使用 <a
+target="_blank" rel="noopener" href="https://github.com/caddyserver/caddy/releases">Caddy</a>，并搭配下面的启动脚本，实现开箱即用效果，避免繁琐的手动编译步骤（甚至在
+Windows 下完全无法编译😅）：</p>
+<figure class="highlight bat"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">@<span class="built_in">echo</span> off</span><br><span class="line"><span class="built_in">start</span> &quot;Caddy File Server&quot; <span class="built_in">cmd</span> /c &quot;<span class="built_in">cd</span> /d %~dp0 &amp;&amp; .\caddy.exe file-server --root . --listen :<span class="number">8080</span> --browse --access-log&quot;</span><br><span class="line">timeout /t <span class="number">1</span> /nobreak &gt;<span class="built_in">nul</span></span><br><span class="line"><span class="built_in">start</span> &quot;&quot; &quot;http://localhost:<span class="number">8080</span>/&quot;</span><br></pre></td></tr></table></figure>
+
+<p>在其他平台下部署静态页面也是同样原理，这里不再展开，最后给一张运行效果图：</p>
+<p><img data-src="/posts/null/image-20260322173205081.png"
+style="zoom:20%;" /></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>PureWhiteVK
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://purewhitevk.github.io/posts/25f2/" title="Perfetto基本使用">https://purewhitevk.github.io/posts/25f2/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/C/" rel="tag"># C++</a>
+              <a href="/tags/Perfetto/" rel="tag"># Perfetto</a>
+              <a href="/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" rel="tag"># 性能分析</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/7331/" rel="prev" title="Conan创建Package">
+                  <i class="fa fa-angle-left"></i> Conan创建Package
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/3c7/" rel="next" title="《经济学原理》问题与应用（2）">
+                  《经济学原理》问题与应用（2） <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">PureWhiteVK</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">74k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">4:29</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>
