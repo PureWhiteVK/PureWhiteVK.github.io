@@ -4,9 +4,8 @@ date: {{ date }}
 abbrlink: {{ abbrlink }}
 tags:
 category:
-mathjax: false
+mathjax: true
 ---
 
-<!-- more -->
-
 $\require{physics}$
+<!-- more -->

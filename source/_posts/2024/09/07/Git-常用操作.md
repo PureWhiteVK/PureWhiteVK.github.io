@@ -379,9 +379,154 @@ git push repoB HEAD:master -f
 
 其中 `HEAD:master` 表示将当前分支提交到 `repoB/master` 分支上。
 
+# LFS
 
+Git LFS（Large File Storage）用于管理大文件。仓库里保存的是**指针文件**（很小的文本），真实大文件存储在 LFS 对象存储中。
+
+## 初始化 LFS
+
+先安装 Git LFS，然后在本机初始化：
+
+```sh
+git lfs install
+```
+
+检查是否可用：
+
+```sh
+git lfs version
+```
+
+## 追踪大文件
+
+比如我们希望把 `.zip`、`.mp4` 这类文件交给 LFS：
+
+```sh
+git lfs track "*.zip"
+git lfs track "*.mp4"
+```
+
+执行后会更新 `.gitattributes`，需要把它一起提交：
+
+```sh
+git add .gitattributes
+git add <large-file>
+git commit -m "track large files with git lfs"
+```
+
+可以通过下面命令查看当前被 LFS 跟踪的文件：
+
+```sh
+git lfs ls-files
+```
+
+## 将大文件迁移到 LFS
+
+如果某些大文件以前已经作为普通 Git 对象提交过，可以用 `git lfs migrate import` 改写历史，把它们转成 LFS 指针：
+
+```sh
+git lfs migrate import --include="*.zip,*.mp4"
+```
+
+也可以只处理某个分支：
+
+```sh
+git lfs migrate import --include="*.zip,*.mp4" --include-ref="refs/heads/main"
+```
+
+> [!CAUTION]
+> 这个操作会改写 commit 历史，执行前建议先备份或在新分支验证。改写后通常需要强制推送：
+
+```sh
+git push --force-with-lease
+```
+
+## 把“LFS指针”还原为真实文件
+
+正常情况下，`git clone` / `git pull` 会自动下载 LFS 文件。
+
+如果你看到文件内容是这种文本（`version https://git-lfs.github.com/spec/v1`），说明当前工作区还是指针文件，可以执行：
+
+```sh
+git lfs pull
+```
+
+如果之前跳过了 LFS 文件下载（例如设置过 `GIT_LFS_SKIP_SMUDGE=1`），可以显式执行：
+
+```sh
+git lfs fetch
+git lfs checkout
+```
+
+其中：
+
+- `git lfs fetch`：下载 LFS 对象到本地缓存
+- `git lfs checkout`：把工作区中的指针替换成真实文件
+
+## 将 LFS 文件改回普通 Git 文件
+
+如果后续不想让某类文件继续走 LFS：
+
+1. 取消跟踪规则
+
+   ```sh
+   git lfs untrack "*.zip"
+   ```
+
+2. 重新加入文件并提交
+
+   ```sh
+   git add .gitattributes
+   git add <file>
+   git commit -m "stop tracking zip with lfs"
+   ```
+
+如果需要把**历史里**的 LFS 指针也导回普通 Git 对象，可使用：
+
+```sh
+git lfs migrate export --include="*.zip"
+```
+
+同样会改写历史，推送时通常需要 `--force-with-lease`。
+
+## 本地拉取时不下载 LFS 文件
+
+有时仓库已经启用 LFS，但本地磁盘空间紧张，只想保留代码和 LFS 指针文件，不保留真实大文件。可以按照如下方式进行设置：
+
+```sh
+# 1) 让当前仓库默认跳过 LFS smudge（仅本仓库生效）
+git lfs install --local --skip-smudge
+
+# 2) 重新检出当前提交，把工作区文件改写为指针形态
+git reset --hard HEAD
+
+# 3) （可选）清理未跟踪文件
+git clean -fd
+
+# 4) 清理本地 LFS 缓存对象，释放磁盘空间
+git lfs prune
+```
+
+执行后，LFS 文件在工作区会显示为指针文本（例如包含 `version https://git-lfs.github.com/spec/v1`）。
+
+如果你想用“删光工作区再恢复”的方式，也可以这样做：
+
+```sh
+# 注意：会删除未提交改动，请先确认
+git lfs install --local --skip-smudge
+git reset --hard HEAD
+```
+
+通常不需要手工逐个删除文件，`reset --hard` 已足够把已跟踪文件重写为指针。
+
+后续如果要恢复真实 LFS 文件下载：
+
+```sh
+git lfs install --local
+git lfs pull
+```
 
 # 说明
 
-上面介绍了一些常用的 git 命令，如果碰到其他的就直接使用 `git <command> --help` 查看相关文档，或者直接百度即可。
+上面介绍了一些常用的 git 命令，如果碰到其他的就直接使用 `git <command> --help` 查看相关文档，或者直接问 AI 即可。
 
