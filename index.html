@@ -263,14 +263,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>1.3k</span>
+      <span>4.5k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>5 分钟</span>
+      <span>16 分钟</span>
     </span>
 </div>
 
@@ -394,6 +394,27 @@
     
     <div class="post-body" itemprop="articleBody">
           <p><span class="math inline">\(\require{physics}\)</span></p>
+<h1 id="profiling-vs-tracing">Profiling V.S. Tracing</h1>
+<p>先给结论：<strong>Profile 负责回答“慢在哪里”，Trace
+负责回答“为什么会慢”。</strong></p>
+<p>参考 <a target="_blank" rel="noopener" href="https://perfetto.dev/docs/tracing-101">Tracing
+101</a>，两者可以这样区分：</p>
+<ul>
+<li><p><strong>Profiling（采样/热点分析）</strong></p>
+<ul>
+<li>典型工具：VTune、Linux perf、pprof</li>
+<li>结果：热点函数、调用栈、CPU 占比、内存热点</li>
+<li>优势：开销相对小，便于长期趋势对比</li>
+<li>局限：上下文较弱，跨线程因果关系不直观</li>
+</ul></li>
+<li><p><strong>Tracing（时序/因果分析）</strong></p>
+<ul>
+<li>典型工具：Perfetto</li>
+<li>结果：时间线、线程切换、跨线程流转、阶段耗时、Counter 曲线</li>
+<li>优势：上下文完整，适合分析卡顿、抖动、排队、阻塞</li>
+<li>局限：数据量大，采集策略需要设计</li>
+</ul></li>
+</ul>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/posts/25f2/#more" rel="contents">
@@ -1322,13 +1343,13 @@ Flavored Markdown Spec）规范</a>的一部分，后来才发现这其实是 Gi
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">74k</span>
+    <span title="站点总字数">77k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">4:29</span>
+    <span title="站点阅读时长">4:41</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
