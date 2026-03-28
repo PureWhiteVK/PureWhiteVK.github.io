@@ -1,18 +1,18 @@
 ---
 title: Perfetto基本使用
 mathjax: true
-date: 2026-03-22 09:05:18
-abbrlink:
+abbrlink: 25f2
 tags:
   - Perfetto
   - C++
   - 性能分析
 category:
   - 技术笔记
+date: 2026-03-22 09:05:18
 ---
 
 $\require{physics}$
-<!-- more -->
+
 
 # Profiling V.S. Tracing
 
@@ -31,6 +31,8 @@ $\require{physics}$
   - 结果：时间线、线程切换、跨线程流转、阶段耗时、Counter 曲线
   - 优势：上下文完整，适合分析卡顿、抖动、排队、阻塞
   - 局限：数据量大，采集策略需要设计
+
+<!-- more -->
 
 ## 什么时候该用哪一个
 
