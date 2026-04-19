@@ -3267,6 +3267,103 @@ shm_Adenialzz的博客-CSDN博客</a></li>
       </tags>
   </entry>
   <entry>
+    <title>CMake项目结构模板</title>
+    <url>/posts/d235/</url>
+    <content><![CDATA[<h1 id="整体结构">整体结构</h1>
+<figure class="highlight txt"><table><tr><td class="code"><pre><span class="line">.</span><br><span class="line">├── .gitignore</span><br><span class="line">├── .gitmodules</span><br><span class="line">├── CMakeLists.txt</span><br><span class="line">├── LICENSE</span><br><span class="line">├── README.md</span><br><span class="line">├── build</span><br><span class="line">├── cmake</span><br><span class="line">│   ├── CMakeLists.txt</span><br><span class="line">│   └── ...</span><br><span class="line">├── data</span><br><span class="line">│   ├── .gitkeep</span><br><span class="line">│   └── ...</span><br><span class="line">├── extern</span><br><span class="line">│   ├── CMakeLists.txt</span><br><span class="line">│   └── ...</span><br><span class="line">├── src</span><br><span class="line">│   ├── CMakeLists.txt</span><br><span class="line">│   ├── glad</span><br><span class="line">│   ├── lumos</span><br><span class="line">│   └── stb</span><br><span class="line">└── test</span><br><span class="line">    ├── CMakeLists.txt</span><br><span class="line">    ├── test_gl.cpp</span><br><span class="line">    ├── test_imageio.cpp</span><br><span class="line">    ├── test_imgui.cpp</span><br><span class="line">    ├── test_pcg.cpp</span><br><span class="line">    ├── test_random_permutation.cpp</span><br><span class="line">    └── test_viewer.cpp</span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+<p>含义：</p>
+<ul>
+<li><p><code>CMakeLists.txt</code>：组织项目的源代码，不会包含具体的编译细节，仅包含项目的声明、跨平台控制等，示例如下：</p>
+<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line"><span class="keyword">cmake_minimum_required</span>(VERSION <span class="number">3.20</span>.<span class="number">0</span>)</span><br><span class="line"><span class="keyword">project</span>(Lumos)</span><br><span class="line"></span><br><span class="line"><span class="comment"># used with command `cmake -DENABLE_TESTING=ON -B build -S .`</span></span><br><span class="line"><span class="comment"># Define an option with default value OFF (disabled)</span></span><br><span class="line"><span class="keyword">option</span>(<span class="keyword">ENABLE_TESTING</span> <span class="string">&quot;Enable testing&quot;</span> <span class="keyword">OFF</span>)</span><br><span class="line"></span><br><span class="line">cmake_path(<span class="keyword">SET</span> DATA_PATH NORMALIZE <span class="variable">$&#123;PROJECT_SOURCE_DIR&#125;</span>/data)</span><br><span class="line"></span><br><span class="line"><span class="keyword">add_subdirectory</span>(cmake)</span><br><span class="line"><span class="keyword">add_subdirectory</span>(extern)</span><br><span class="line"><span class="keyword">add_subdirectory</span>(src)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">ENABLE_TESTING</span>)</span><br><span class="line">  <span class="keyword">enable_testing</span>()</span><br><span class="line">  <span class="keyword">add_subdirectory</span>(<span class="keyword">test</span>)</span><br><span class="line"><span class="keyword">endif</span>()</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>src</code>、<code>test</code>、<code>extern</code>
+分别代表源代码、测试代码以及第三方依赖库，每一个都会包含各自的
+<code>CMakeLists.txt</code>，用来管理代码，对于 <code>src</code>
+中的库代码（自定义的
+library），个人推荐将头文件（<code>.h</code>）和源代码文件
+（<code>.cpp</code>） 分开放，同时 include
+目录时设定好文件夹层级，示例如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">.</span><br><span class="line">├── CMakeLists.txt</span><br><span class="line">├── core</span><br><span class="line">│   ├── CMakeLists.txt</span><br><span class="line">│   ├── include</span><br><span class="line">│   │   └── lumos</span><br><span class="line">│   │       └── core</span><br><span class="line">│   └── src</span><br><span class="line">└── gui</span><br><span class="line">    ├── CMakeLists.txt</span><br><span class="line">    ├── include</span><br><span class="line">    │   └── lumos</span><br><span class="line">    │       └── gui</span><br><span class="line">    └── src</span><br></pre></td></tr></table></figure>
+
+<p>这样做稍微有点繁琐，但是代码的组织逻辑比较清晰</p>
+<p>对于 <code>extern</code> 文件夹，其用来添加第三方依赖，推荐使用
+<code>git submodule</code> 来管理版本，下载时使用
+<code>git clone --recursive &lt;repo-url&gt;</code> 即可。</p></li>
+</ul>
+<h1 id="依赖管理">依赖管理</h1>
+<h2 id="添加-submodule">添加 submodule</h2>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule add &lt;repo-url&gt; &lt;local-submodule-path&gt;</span><br></pre></td></tr></table></figure>
+
+<p>例如</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule add https://github.com/ocornut/imgui.git extern/imgui</span><br></pre></td></tr></table></figure>
+
+<h2 id="使用指定-commit">使用指定 commit</h2>
+<p>为确保代码稳定性，我们可能需要使用特定版本的代码，例如 imgui
+中我们想使用 tag 为 <code>v1.89.7-docking</code>，我们需要进入 submodule
+目录手动切换一下</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cd</span> extern/imgui</span><br><span class="line">git checkout v1.89.7-docking</span><br></pre></td></tr></table></figure>
+
+<p>当我们提交后 github 就会默认链接到该 repo 对应的 commit 了</p>
+<h2 id="删除-submodule">删除 submodule</h2>
+<p>在 git 中删除 submodule
+较为繁琐，没有一个直接删除的方法，参考网上的操作大概有以下5个步骤：</p>
+<ol type="1">
+<li><p>删除子模块目录</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">rm</span> -rf extern/imgui</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>删除 <code>.git</code> 的缓存</p>
+ <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git <span class="built_in">rm</span> --cached extern/imgui</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>删除 <code>.gitmodules</code> 中对应的子模块</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[submodule &quot;extern/imgui&quot;]</span><br><span class="line">	path = extern/imgui</span><br><span class="line">	url = https://github.com/ocornut/imgui.git</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>删除 <code>.git/config</code> 中相应条目</p>
+ <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">    [core]</span><br><span class="line">        repositoryformatversion = 0</span><br><span class="line">        filemode = <span class="literal">true</span></span><br><span class="line">        bare = <span class="literal">false</span></span><br><span class="line">        logallrefupdates = <span class="literal">true</span></span><br><span class="line">        ignorecase = <span class="literal">true</span></span><br><span class="line">        precomposeunicode = <span class="literal">true</span></span><br><span class="line">    ...</span><br><span class="line">[submodule <span class="string">&quot;extern/imgui&quot;</span>]</span><br><span class="line">	url = https://github.com/ocornut/imgui.git</span><br><span class="line">...</span><br><span class="line">5. 删除 `.git` 中子模块目录</span><br><span class="line"></span><br><span class="line">    ```bash</span><br><span class="line">    <span class="built_in">rm</span> -rf .git/modules/extern/imgui</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h1 id="个人偏好命名方式">个人偏好命名方式</h1>
+<p>命名方式有很多，选择自己喜欢的就行，关键在于<strong>统一</strong></p>
+<p><strong>文件名</strong></p>
+<p>小写下划线，例如
+<code>image_utils.h</code>，<code>image_utils.cpp</code></p>
+<p><strong>命名空间</strong></p>
+<p>小写（尽量不要添加下划线，使用子命名空间即可），例如
+<code>lumos::xxx</code>，<code>lumos::core::xxx</code></p>
+<p><strong>类名</strong></p>
+<p>首字母大写驼峰命名，对于全部大写的当成单词仅首字母大写，例如
+<code>HTML</code> 写成 <code>Html</code>，<code>RGBA</code> 写成
+<code>Rgba</code></p>
+<p>函数</p>
+<p><strong>类函数名</strong></p>
+<p>对于 <code>public / protected</code>
+方法而言使用首字母大写驼峰命名，例如 <code>Initialize</code>，对于
+<code>private</code> 方法使用首字母小写驼峰命名，例如
+<code>createContext</code></p>
+<p><strong>类变量</strong></p>
+<p>全部以 <code>m_</code> 开头，小写下划线，例如
+<code>m_handle</code></p>
+<p><strong>变量名</strong></p>
+<p>小写下划线，例如 <code>image_data</code></p>
+<p><strong>常量</strong></p>
+<p>全部大写，例如 <code>BUFFER_SIZE</code></p>
+<p><strong>cmake文件名</strong></p>
+<p>以 <code>-</code> 连接，例如 <code>add-imgui.cmake</code></p>
+<p><strong>cmake函数名</strong></p>
+<p>小写下划线（类似于 cmake 的函数命名方式），例如
+<code>add_imgui</code></p>
+]]></content>
+      <categories>
+        <category>C++学习笔记</category>
+      </categories>
+      <tags>
+        <tag>C++</tag>
+        <tag>CMake</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>遍历二叉树的n种方式</title>
     <url>/posts/7a74/</url>
     <content><![CDATA[<h1 id="二叉树实现">二叉树实现</h1>
@@ -3423,103 +3520,6 @@ class="math inline">\(\mathcal{O}(1)\)</span>，使用链表反转的后序遍�
       </tags>
   </entry>
   <entry>
-    <title>CMake项目结构模板</title>
-    <url>/posts/d235/</url>
-    <content><![CDATA[<h1 id="整体结构">整体结构</h1>
-<figure class="highlight txt"><table><tr><td class="code"><pre><span class="line">.</span><br><span class="line">├── .gitignore</span><br><span class="line">├── .gitmodules</span><br><span class="line">├── CMakeLists.txt</span><br><span class="line">├── LICENSE</span><br><span class="line">├── README.md</span><br><span class="line">├── build</span><br><span class="line">├── cmake</span><br><span class="line">│   ├── CMakeLists.txt</span><br><span class="line">│   └── ...</span><br><span class="line">├── data</span><br><span class="line">│   ├── .gitkeep</span><br><span class="line">│   └── ...</span><br><span class="line">├── extern</span><br><span class="line">│   ├── CMakeLists.txt</span><br><span class="line">│   └── ...</span><br><span class="line">├── src</span><br><span class="line">│   ├── CMakeLists.txt</span><br><span class="line">│   ├── glad</span><br><span class="line">│   ├── lumos</span><br><span class="line">│   └── stb</span><br><span class="line">└── test</span><br><span class="line">    ├── CMakeLists.txt</span><br><span class="line">    ├── test_gl.cpp</span><br><span class="line">    ├── test_imageio.cpp</span><br><span class="line">    ├── test_imgui.cpp</span><br><span class="line">    ├── test_pcg.cpp</span><br><span class="line">    ├── test_random_permutation.cpp</span><br><span class="line">    └── test_viewer.cpp</span><br></pre></td></tr></table></figure>
-
-<span id="more"></span>
-
-<p>含义：</p>
-<ul>
-<li><p><code>CMakeLists.txt</code>：组织项目的源代码，不会包含具体的编译细节，仅包含项目的声明、跨平台控制等，示例如下：</p>
-<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line"><span class="keyword">cmake_minimum_required</span>(VERSION <span class="number">3.20</span>.<span class="number">0</span>)</span><br><span class="line"><span class="keyword">project</span>(Lumos)</span><br><span class="line"></span><br><span class="line"><span class="comment"># used with command `cmake -DENABLE_TESTING=ON -B build -S .`</span></span><br><span class="line"><span class="comment"># Define an option with default value OFF (disabled)</span></span><br><span class="line"><span class="keyword">option</span>(<span class="keyword">ENABLE_TESTING</span> <span class="string">&quot;Enable testing&quot;</span> <span class="keyword">OFF</span>)</span><br><span class="line"></span><br><span class="line">cmake_path(<span class="keyword">SET</span> DATA_PATH NORMALIZE <span class="variable">$&#123;PROJECT_SOURCE_DIR&#125;</span>/data)</span><br><span class="line"></span><br><span class="line"><span class="keyword">add_subdirectory</span>(cmake)</span><br><span class="line"><span class="keyword">add_subdirectory</span>(extern)</span><br><span class="line"><span class="keyword">add_subdirectory</span>(src)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">ENABLE_TESTING</span>)</span><br><span class="line">  <span class="keyword">enable_testing</span>()</span><br><span class="line">  <span class="keyword">add_subdirectory</span>(<span class="keyword">test</span>)</span><br><span class="line"><span class="keyword">endif</span>()</span><br></pre></td></tr></table></figure>
-</li>
-<li><p><code>src</code>、<code>test</code>、<code>extern</code>
-分别代表源代码、测试代码以及第三方依赖库，每一个都会包含各自的
-<code>CMakeLists.txt</code>，用来管理代码，对于 <code>src</code>
-中的库代码（自定义的
-library），个人推荐将头文件（<code>.h</code>）和源代码文件
-（<code>.cpp</code>） 分开放，同时 include
-目录时设定好文件夹层级，示例如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">.</span><br><span class="line">├── CMakeLists.txt</span><br><span class="line">├── core</span><br><span class="line">│   ├── CMakeLists.txt</span><br><span class="line">│   ├── include</span><br><span class="line">│   │   └── lumos</span><br><span class="line">│   │       └── core</span><br><span class="line">│   └── src</span><br><span class="line">└── gui</span><br><span class="line">    ├── CMakeLists.txt</span><br><span class="line">    ├── include</span><br><span class="line">    │   └── lumos</span><br><span class="line">    │       └── gui</span><br><span class="line">    └── src</span><br></pre></td></tr></table></figure>
-
-<p>这样做稍微有点繁琐，但是代码的组织逻辑比较清晰</p>
-<p>对于 <code>extern</code> 文件夹，其用来添加第三方依赖，推荐使用
-<code>git submodule</code> 来管理版本，下载时使用
-<code>git clone --recursive &lt;repo-url&gt;</code> 即可。</p></li>
-</ul>
-<h1 id="依赖管理">依赖管理</h1>
-<h2 id="添加-submodule">添加 submodule</h2>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule add &lt;repo-url&gt; &lt;local-submodule-path&gt;</span><br></pre></td></tr></table></figure>
-
-<p>例如</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule add https://github.com/ocornut/imgui.git extern/imgui</span><br></pre></td></tr></table></figure>
-
-<h2 id="使用指定-commit">使用指定 commit</h2>
-<p>为确保代码稳定性，我们可能需要使用特定版本的代码，例如 imgui
-中我们想使用 tag 为 <code>v1.89.7-docking</code>，我们需要进入 submodule
-目录手动切换一下</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cd</span> extern/imgui</span><br><span class="line">git checkout v1.89.7-docking</span><br></pre></td></tr></table></figure>
-
-<p>当我们提交后 github 就会默认链接到该 repo 对应的 commit 了</p>
-<h2 id="删除-submodule">删除 submodule</h2>
-<p>在 git 中删除 submodule
-较为繁琐，没有一个直接删除的方法，参考网上的操作大概有以下5个步骤：</p>
-<ol type="1">
-<li><p>删除子模块目录</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">rm</span> -rf extern/imgui</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>删除 <code>.git</code> 的缓存</p>
- <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git <span class="built_in">rm</span> --cached extern/imgui</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>删除 <code>.gitmodules</code> 中对应的子模块</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[submodule &quot;extern/imgui&quot;]</span><br><span class="line">	path = extern/imgui</span><br><span class="line">	url = https://github.com/ocornut/imgui.git</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>删除 <code>.git/config</code> 中相应条目</p>
- <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">    [core]</span><br><span class="line">        repositoryformatversion = 0</span><br><span class="line">        filemode = <span class="literal">true</span></span><br><span class="line">        bare = <span class="literal">false</span></span><br><span class="line">        logallrefupdates = <span class="literal">true</span></span><br><span class="line">        ignorecase = <span class="literal">true</span></span><br><span class="line">        precomposeunicode = <span class="literal">true</span></span><br><span class="line">    ...</span><br><span class="line">[submodule <span class="string">&quot;extern/imgui&quot;</span>]</span><br><span class="line">	url = https://github.com/ocornut/imgui.git</span><br><span class="line">...</span><br><span class="line">5. 删除 `.git` 中子模块目录</span><br><span class="line"></span><br><span class="line">    ```bash</span><br><span class="line">    <span class="built_in">rm</span> -rf .git/modules/extern/imgui</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<h1 id="个人偏好命名方式">个人偏好命名方式</h1>
-<p>命名方式有很多，选择自己喜欢的就行，关键在于<strong>统一</strong></p>
-<p><strong>文件名</strong></p>
-<p>小写下划线，例如
-<code>image_utils.h</code>，<code>image_utils.cpp</code></p>
-<p><strong>命名空间</strong></p>
-<p>小写（尽量不要添加下划线，使用子命名空间即可），例如
-<code>lumos::xxx</code>，<code>lumos::core::xxx</code></p>
-<p><strong>类名</strong></p>
-<p>首字母大写驼峰命名，对于全部大写的当成单词仅首字母大写，例如
-<code>HTML</code> 写成 <code>Html</code>，<code>RGBA</code> 写成
-<code>Rgba</code></p>
-<p>函数</p>
-<p><strong>类函数名</strong></p>
-<p>对于 <code>public / protected</code>
-方法而言使用首字母大写驼峰命名，例如 <code>Initialize</code>，对于
-<code>private</code> 方法使用首字母小写驼峰命名，例如
-<code>createContext</code></p>
-<p><strong>类变量</strong></p>
-<p>全部以 <code>m_</code> 开头，小写下划线，例如
-<code>m_handle</code></p>
-<p><strong>变量名</strong></p>
-<p>小写下划线，例如 <code>image_data</code></p>
-<p><strong>常量</strong></p>
-<p>全部大写，例如 <code>BUFFER_SIZE</code></p>
-<p><strong>cmake文件名</strong></p>
-<p>以 <code>-</code> 连接，例如 <code>add-imgui.cmake</code></p>
-<p><strong>cmake函数名</strong></p>
-<p>小写下划线（类似于 cmake 的函数命名方式），例如
-<code>add_imgui</code></p>
-]]></content>
-      <categories>
-        <category>C++学习笔记</category>
-      </categories>
-      <tags>
-        <tag>C++</tag>
-        <tag>CMake</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>生成排列和组合</title>
     <url>/posts/454a/</url>
     <content><![CDATA[<h1 id="所有排列">所有排列</h1>
@@ -3614,163 +3614,6 @@ map
       </categories>
       <tags>
         <tag>算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>CMake依赖管理</title>
-    <url>/posts/dbe7/</url>
-    <content><![CDATA[<h1 id="git-submodule-管理依赖">Git Submodule 管理依赖</h1>
-<p>由于 C++
-自身的特殊性，要想实现跨平台代码，只能使用源码分发（也有类似于 Conan 的
-C++ 依赖解决方案，但是对于一些冷门的库可能就不支持，还是得自己写）。</p>
-<p>最简单的办法就是通过 git
-的子模块将其添加到项目中，这种依赖管理方式确保可以访问到源代码，其缺点也很明显，我们在下载库的时候需要通过下载依赖库（也就是子模块），如果子模块较大可能下载起来比较耗时。</p>
-<p>前面一个笔记中也提到了，要想删除添加的 git submodule
-十分麻烦，没有一个简单的命令可以直接删除，需要手动调整需要的文件才能删除干净。</p>
-<h1 id="fetchcontent-模块添加依赖">FetchContent 模块添加依赖</h1>
-<p>而 FetchContent 是 CMake 提供的一种新式依赖管理方案（在 3.11
-版本首次出现），其在 CMake
-的配置过程中自动下载依赖项并配置（或者由用户自行配置）。这样可以保持我们的代码库整洁。</p>
-<span id="more"></span>
-
-<p>使用时首先引入这个模块</p>
-<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line"><span class="keyword">include</span>(FetchContent)</span><br></pre></td></tr></table></figure>
-
-<p>主要包含下面三个函数</p>
-<ul>
-<li><p><code>FetchContent_Declare</code>：用来指定依赖库的下载路径（git
-仓库地址或者 URL 链接，其会自动解压缩）</p></li>
-<li><p><code>FetchContent_MakeAvailable</code>：自动配置依赖库（相当于调用了
-<code>add_subdirectory</code>）</p></li>
-<li><p><code>FetchContent_Populate</code>：手动配置依赖库，这个函数会帮我们配置好一系列变量，然后由使用者自行管理如何编译</p>
-<p>其会设置一些常用的变量</p>
-<ul>
-<li><code>&lt;lowercaseName&gt;_SOURCE_DIR</code>，指定的库源代码地址</li>
-<li><code>&lt;lowercaseName&gt;_BINARY_DIR</code>，指定库的编译输出地址</li>
-</ul>
-<p>当我们使用的时候就可以通过 <code>add_subdirectory</code>
-进行添加，也可以手写 <code>CMakeLists.txt</code> 来手动添加库</p></li>
-</ul>
-<p>其中有点需要注意的就是 <code>FetchContent_MakeAvailable</code>
-需要在所有的 <code>FetchContent_Declare</code>
-声明完成后再写，这样可以确保我们依赖加载完全了，因为一个依赖有可能使用
-<code>FetchContent</code> 添加另外一个依赖（隐式依赖）</p>
-<blockquote>
-<p><a
-href="https://cmake.org/cmake/help/latest/module/FetchContent.html#fetchcontent">FetchContent
-— CMake 3.27.4 Documentation</a></p>
-<p>Projects should aim to declare the details of all dependencies they
-might use before they call <code>FetchContent_MakeAvailable()</code> for
-any of them. This ensures that if any of the dependencies are also
-sub-dependencies of one or more of the others, the main project still
-controls the details that will be used (because it will declare them
-first before the dependencies get a chance to).</p>
-</blockquote>
-<h1 id="实际使用">实际使用</h1>
-<p>下面给出一个实际案例：</p>
-<p>我们需要添加四个依赖：<code>fmt</code>，<code>glfw</code>，<code>imgui</code>，<code>glad</code></p>
-<p>对于前三个，我们都可以使用 <code>FetchContent</code> 来添加，由于
-<code>glad</code>
-是使用网站生成的，我们需要手动将其添加到源代码库中。</p>
-<p><code>fmt</code> 库的添加代码</p>
-<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line">FetchContent_Declare(</span><br><span class="line">    fmt</span><br><span class="line">    GIT_REPOSITORY https://github.com/fmtlib/fmt.git</span><br><span class="line">    GIT_TAG <span class="number">10.1</span>.<span class="number">0</span></span><br><span class="line">    GIT_SHALLOW <span class="keyword">ON</span></span><br><span class="line">)</span><br><span class="line">FetchContent_MakeAvailable(fmt)</span><br></pre></td></tr></table></figure>
-
-<p>这里我们通过 <code>GIT_REPOSITORY</code> 指定了待下载库的 git
-仓库连接，同时通过 <code>GIT_TAG</code> 指定我们需要的版本（也可使用
-commit 号），最后的 <code>GIT_SHALLOW</code> 表示我们在
-<code>git clone</code> 时设置
-<code>--depth 1</code>，这样可以确保我们仅下载需要的部分，而不下载完整的
-git 仓库，减少下载时间。</p>
-<p>由于 <code>fmt</code> 库本身比较简单，且是一个 header-only
-的库，我们直接通过 <code>FetchContent_MakeAvailable</code>
-将其添加到代码中即可，当我们需要使用该库时直接链接即可，例如</p>
-<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line"><span class="keyword">add_executable</span>(test_fmt main.cpp)</span><br><span class="line"><span class="keyword">target_link_libraries</span>(test_fmt PRIVATE fmt::fmt)</span><br></pre></td></tr></table></figure>
-
-<p><code>glfw</code> 库的添加代码</p>
-<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line">FetchContent_Declare(</span><br><span class="line">    glfw</span><br><span class="line">    GIT_REPOSITORY https://github.com/glfw/glfw</span><br><span class="line">    GIT_TAG <span class="number">3.3</span>.<span class="number">8</span></span><br><span class="line">    GIT_SHALLOW <span class="keyword">ON</span></span><br><span class="line">)</span><br><span class="line">FetchContent_Populate(glfw)</span><br><span class="line"><span class="keyword">set</span>(GLFW_BUILD_TESTS <span class="keyword">OFF</span>)</span><br><span class="line"><span class="keyword">add_subdirectory</span>(<span class="variable">$&#123;glfw_SOURCE_DIR&#125;</span>)</span><br><span class="line"><span class="keyword">add_library</span>(glfw::glfw ALIAS glfw)</span><br></pre></td></tr></table></figure>
-
-<p>由于 glfw 库包含一堆 tests 和 examples
-，我们可能并不想生成这些文件，为此我们可以通过
-<code>FetchContent_Populate</code> 来手动配置 glfw 的编译。</p>
-<p>我们在添加 glfw 编译目标之前通过参数 <code>GLFW_BUILD_TESTS</code>
-来取消生成 tests，然后将其添加到代码库中，最终由于 glfw
-没有提供别名输出（<code>glfw::glfw</code>，可以用来防止打错名字，例如我们直接错写成
-<code>glfv</code> 时，没有这个依赖库 cmake 也不会报错，但是写成
-<code>glfw::glfv</code> 时没有这个依赖库 cmake
-会报错，提示我们找不到这个依赖库），我们手动为其添加一个别名。</p>
-<p><code>imgui</code> 库的添加代码</p>
-<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line">FetchContent_Populate(imgui)</span><br><span class="line">add_imgui(</span><br><span class="line">  USE_STD_STRING </span><br><span class="line">  USE_FREETYPE </span><br><span class="line">  IMGUI_DIR <span class="variable">$&#123;imgui_SOURCE_DIR&#125;</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
-
-<p>对于 imgui 而言稍微复杂一点，因为其并没有提供开箱即用的
-<code>CMakeLists.txt</code>
-供我们使用，我们需要手动配置使用哪些文件进行编译，为此我们写了一个小函数
-<code>add_imgui</code> 来辅助配置，完整代码如下</p>
-<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span>(add_imgui)</span><br><span class="line">  <span class="keyword">set</span>(options USE_STD_STRING USE_FREETYPE)</span><br><span class="line">  <span class="keyword">set</span>(one_value_args IMGUI_DIR)</span><br><span class="line">  <span class="keyword">set</span>(multi_value_args <span class="string">&quot;&quot;</span>)</span><br><span class="line">  <span class="keyword">cmake_parse_arguments</span>(ARGS <span class="string">&quot;$&#123;options&#125;&quot;</span> <span class="string">&quot;$&#123;one_value_args&#125;&quot;</span></span><br><span class="line">                             <span class="string">&quot;$&#123;multi_value_args&#125;&quot;</span> <span class="variable">$&#123;ARGN&#125;</span> )</span><br><span class="line"></span><br><span class="line">  <span class="keyword">message</span>(STATUS <span class="string">&quot;add imgui (opengl3 + glfw) [ STATIC ] with c++17&quot;</span>)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">list</span>(APPEND CMAKE_MESSAGE_INDENT <span class="string">&quot;  &quot;</span>)</span><br><span class="line"></span><br><span class="line">  <span class="comment"># Using dear imgui via a shared library is not recommended, </span></span><br><span class="line">  <span class="comment"># because we don&#x27;t guarantee backward nor forward ABI compatibility </span></span><br><span class="line">  <span class="comment"># (also function call overhead, as dear imgui is a call-heavy API)</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># we should use imgui as static library</span></span><br><span class="line">  <span class="keyword">add_library</span>(imgui STATIC</span><br><span class="line">    <span class="variable">$&#123;ARGS_IMGUI_DIR&#125;</span>/imgui_demo.cpp </span><br><span class="line">    <span class="variable">$&#123;ARGS_IMGUI_DIR&#125;</span>/imgui_draw.cpp </span><br><span class="line">    <span class="variable">$&#123;ARGS_IMGUI_DIR&#125;</span>/imgui_tables.cpp </span><br><span class="line">    <span class="variable">$&#123;ARGS_IMGUI_DIR&#125;</span>/imgui_widgets.cpp </span><br><span class="line">    <span class="variable">$&#123;ARGS_IMGUI_DIR&#125;</span>/imgui.cpp </span><br><span class="line">  )</span><br><span class="line"></span><br><span class="line">  <span class="keyword">add_library</span>(imgui::imgui ALIAS imgui)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">set_property</span>(<span class="keyword">TARGET</span> imgui PROPERTY CXX_STANDARD <span class="number">17</span>)</span><br><span class="line">  <span class="keyword">set_property</span>(<span class="keyword">TARGET</span> imgui PROPERTY CXX_STANDARD_REQUIRED <span class="keyword">ON</span>)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">target_include_directories</span>(imgui PUBLIC </span><br><span class="line">    <span class="variable">$&#123;ARGS_IMGUI_DIR&#125;</span></span><br><span class="line">  )</span><br><span class="line">  <span class="comment"># backends</span></span><br><span class="line">  <span class="keyword">target_sources</span>(imgui PUBLIC     </span><br><span class="line">    <span class="variable">$&#123;ARGS_IMGUI_DIR&#125;</span>/backends/imgui_impl_opengl3.cpp</span><br><span class="line">    <span class="variable">$&#123;ARGS_IMGUI_DIR&#125;</span>/backends/imgui_impl_glfw.cpp</span><br><span class="line">  )</span><br><span class="line"></span><br><span class="line">  <span class="keyword">target_include_directories</span>(imgui PUBLIC </span><br><span class="line">    <span class="variable">$&#123;ARGS_IMGUI_DIR&#125;</span>/backends</span><br><span class="line">  )</span><br><span class="line"></span><br><span class="line">  <span class="keyword">target_link_libraries</span>(imgui PUBLIC </span><br><span class="line">    glfw::glfw</span><br><span class="line">  )</span><br><span class="line">  </span><br><span class="line">  <span class="comment"># extensions</span></span><br><span class="line">  <span class="keyword">if</span> ( ARGS_USE_STD_STRING )</span><br><span class="line">    <span class="keyword">message</span>(STATUS <span class="string">&quot;enable std::string support for imgui::InputText&quot;</span>)</span><br><span class="line">    <span class="keyword">target_sources</span>(imgui PUBLIC </span><br><span class="line">      <span class="variable">$&#123;ARGS_IMGUI_DIR&#125;</span>/misc/cpp/imgui_stdlib.cpp</span><br><span class="line">    )</span><br><span class="line">    <span class="keyword">target_include_directories</span>(imgui PUBLIC </span><br><span class="line">      <span class="variable">$&#123;ARGS_IMGUI_DIR&#125;</span>/misc/cpp</span><br><span class="line">    )</span><br><span class="line">  <span class="keyword">endif</span>()</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">if</span> ( ARGS_USE_FREETYPE )</span><br><span class="line">    <span class="keyword">find_package</span>(Freetype QUIET)</span><br><span class="line">    <span class="keyword">if</span>(Freetype_FOUND)</span><br><span class="line">      <span class="keyword">message</span>(STATUS <span class="string">&quot;enable freetype for imgui&quot;</span>)</span><br><span class="line">      <span class="keyword">target_sources</span>(imgui PRIVATE </span><br><span class="line">        <span class="variable">$&#123;ARGS_IMGUI_DIR&#125;</span>/misc/freetype/imgui_freetype.cpp</span><br><span class="line">      )</span><br><span class="line">      <span class="keyword">target_include_directories</span>(imgui PRIVATE </span><br><span class="line">        <span class="variable">$&#123;ARGS_IMGUI_DIR&#125;</span>/misc/freetype</span><br><span class="line">      )</span><br><span class="line">      <span class="keyword">target_link_libraries</span>(imgui PRIVATE </span><br><span class="line">        Freetype::Freetype</span><br><span class="line">      )</span><br><span class="line">      <span class="keyword">target_compile_definitions</span>(imgui PRIVATE </span><br><span class="line">        IMGUI_ENABLE_FREETYPE</span><br><span class="line">      )</span><br><span class="line">    <span class="keyword">else</span>()</span><br><span class="line">    <span class="keyword">message</span>(STATUS <span class="string">&quot;disable freetype for imgui&quot;</span>)</span><br><span class="line">    <span class="keyword">endif</span>()</span><br><span class="line">  <span class="keyword">endif</span>()</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">list</span>(POP_BACK CMAKE_MESSAGE_INDENT)</span><br><span class="line"></span><br><span class="line"><span class="keyword">endfunction</span>(add_imgui)</span><br></pre></td></tr></table></figure>
-
-<p>函数 <code>add_imgui</code> 通过提供 imgui
-源代码目录以及一些配置项来简化配置流程，其默认使用 glfw + opengl
-作为渲染后端。</p>
-<p>然后对于 glad 库（用来加载 OpenGL 函数），其配置代码也十分简单</p>
-<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 配置为动态链接库</span></span><br><span class="line"><span class="keyword">add_library</span>(glad SHARED src/gl.c)</span><br><span class="line"><span class="keyword">target_compile_definitions</span>(glad PRIVATE -DGLAD_API_CALL_EXPORT_BUILD)</span><br><span class="line"><span class="keyword">target_compile_definitions</span>(glad PUBLIC -DGLAD_API_CALL_EXPORT)</span><br><span class="line"><span class="keyword">target_include_directories</span>(glad PUBLIC <span class="keyword">include</span>)</span><br><span class="line"><span class="keyword">add_library</span>(glad::glad ALIAS glad)</span><br></pre></td></tr></table></figure>
-
-<h1 id="externalproject-添加依赖">ExternalProject 添加依赖</h1>
-<p>这个也是 CMake 中下载依赖的一种方式，其早于 <code>FetchContent</code>
-出现，可以提供和 <code>FetchContent</code>
-类似的功能，主要通过一个巨大的函数进行依赖配置</p>
-<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line">ExternalProject_Add</span><br></pre></td></tr></table></figure>
-
-<p>我们可以在其中指定编译的命令等，也可以使用
-<code>ExternalProject_Add_Step</code>
-来手动管理依赖的编译步骤，不过这种方式个人感觉没有
-<code>FetchContent_Declare</code> 和 <code>FetchContent_Populate</code>
-使用来的方便，就不过多介绍了，网上也有很多相关的教程。</p>
-<blockquote>
-<p><a
-href="https://cmake.org/cmake/help/latest/module/ExternalProject.html">ExternalProject
-— CMake 3.27.4 Documentation</a></p>
-</blockquote>
-<h1 id="杂项">杂项</h1>
-<p><strong>在 Windows 下使用动态链接库时可能会因为找不到 dll
-库的位置而无法启动应用</strong>，我们需要手动将动态链接库（例如
-<code>glad.dll</code>
-）拷贝到可执行环境目录下，才可以正常运行，但是每次手动拷贝太麻烦了，cmake
-也可以自动帮我们完成这一任务。</p>
-<p>（图片太大可能看不清字，写的是：<strong>由于找不到
-glad.dll，无法继续执行代码，重新安装程序可能会解决此问题。</strong>）</p>
-<p><em>比较坑的点在于 Windows 下使用 VSCode 完全看不到这个错误提示，而在
-Visual Studio 中就可以看到，恶心坏了</em></p>
-<p><img data-src="/posts/dbe7/image-20230827220434585.png" /></p>
-<p>解决方案有很多：</p>
-<ul>
-<li>强制所有编译输出到同一个目录下，这样就可以确保一定能找到了（个人感觉比较丑陋，只能算一个
-workaround）</li>
-<li>找到该应用所有的依赖库，将其拷贝到可执行文件输出路径下（<strong>关键在于如何找到可执行文件的所有依赖库呢？</strong>）</li>
-</ul>
-<p>这个问题肯定不止我们一个人碰到过，cmake 给我们提供好了这个变量</p>
-<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line"><span class="comment"># %target-name% 对应的所有运行时依赖</span></span><br><span class="line">$&lt;TARGET_RUNTIME_DLLS:%<span class="keyword">target</span>-name%&gt;</span><br></pre></td></tr></table></figure>
-
-<p>以及</p>
-<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line"><span class="comment"># %target-name% 的可执行文件输出路径</span></span><br><span class="line">$&lt;TARGET_FILE_DIR:%<span class="keyword">target</span>-name%&gt;</span><br></pre></td></tr></table></figure>
-
-<p>这样我们可以通过 <code>add_custom_command</code>
-来进行自动拷贝了，完整代码如下</p>
-<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line"><span class="keyword">add_custom_command</span>(<span class="keyword">TARGET</span> test_imgui POST_BUILD</span><br><span class="line">  <span class="keyword">COMMAND</span> <span class="variable">$&#123;CMAKE_COMMAND&#125;</span> -E copy -t </span><br><span class="line">  $&lt;TARGET_FILE_DIR:test_imgui&gt; </span><br><span class="line">  $&lt;TARGET_RUNTIME_DLLS:test_imgui&gt;</span><br><span class="line">  COMMAND_EXPAND_LISTS</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
-
-<p>这一段代码来源于 cmake 官方文档（看来是需要这个功能的人太多了）</p>
-<blockquote>
-<p><a
-href="https://cmake.org/cmake/help/latest/manual/cmake-generator-expressions.7.html#genex:TARGET_RUNTIME_DLLS">genex:TARGET_RUNTIME_DLLS</a></p>
-</blockquote>
-<p>当然，这个功能要求 cmake 的版本比较新，需要在 cmake 版本高于
-3.21，记得更新 <code>cmake_minimum_required</code></p>
-<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line"><span class="keyword">cmake_minimum_required</span>(VERSION <span class="number">3.21</span>)</span><br></pre></td></tr></table></figure>
-]]></content>
-      <categories>
-        <category>C++学习笔记</category>
-      </categories>
-      <tags>
-        <tag>C++</tag>
-        <tag>CMake</tag>
       </tags>
   </entry>
   <entry>
@@ -3961,6 +3804,163 @@ ANTLR 作者写的那本书 ANTLR 4权威指南，不过网上的 pdf
         <tag>CMake</tag>
         <tag>ANTLR</tag>
         <tag>编译原理</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>CMake依赖管理</title>
+    <url>/posts/dbe7/</url>
+    <content><![CDATA[<h1 id="git-submodule-管理依赖">Git Submodule 管理依赖</h1>
+<p>由于 C++
+自身的特殊性，要想实现跨平台代码，只能使用源码分发（也有类似于 Conan 的
+C++ 依赖解决方案，但是对于一些冷门的库可能就不支持，还是得自己写）。</p>
+<p>最简单的办法就是通过 git
+的子模块将其添加到项目中，这种依赖管理方式确保可以访问到源代码，其缺点也很明显，我们在下载库的时候需要通过下载依赖库（也就是子模块），如果子模块较大可能下载起来比较耗时。</p>
+<p>前面一个笔记中也提到了，要想删除添加的 git submodule
+十分麻烦，没有一个简单的命令可以直接删除，需要手动调整需要的文件才能删除干净。</p>
+<h1 id="fetchcontent-模块添加依赖">FetchContent 模块添加依赖</h1>
+<p>而 FetchContent 是 CMake 提供的一种新式依赖管理方案（在 3.11
+版本首次出现），其在 CMake
+的配置过程中自动下载依赖项并配置（或者由用户自行配置）。这样可以保持我们的代码库整洁。</p>
+<span id="more"></span>
+
+<p>使用时首先引入这个模块</p>
+<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line"><span class="keyword">include</span>(FetchContent)</span><br></pre></td></tr></table></figure>
+
+<p>主要包含下面三个函数</p>
+<ul>
+<li><p><code>FetchContent_Declare</code>：用来指定依赖库的下载路径（git
+仓库地址或者 URL 链接，其会自动解压缩）</p></li>
+<li><p><code>FetchContent_MakeAvailable</code>：自动配置依赖库（相当于调用了
+<code>add_subdirectory</code>）</p></li>
+<li><p><code>FetchContent_Populate</code>：手动配置依赖库，这个函数会帮我们配置好一系列变量，然后由使用者自行管理如何编译</p>
+<p>其会设置一些常用的变量</p>
+<ul>
+<li><code>&lt;lowercaseName&gt;_SOURCE_DIR</code>，指定的库源代码地址</li>
+<li><code>&lt;lowercaseName&gt;_BINARY_DIR</code>，指定库的编译输出地址</li>
+</ul>
+<p>当我们使用的时候就可以通过 <code>add_subdirectory</code>
+进行添加，也可以手写 <code>CMakeLists.txt</code> 来手动添加库</p></li>
+</ul>
+<p>其中有点需要注意的就是 <code>FetchContent_MakeAvailable</code>
+需要在所有的 <code>FetchContent_Declare</code>
+声明完成后再写，这样可以确保我们依赖加载完全了，因为一个依赖有可能使用
+<code>FetchContent</code> 添加另外一个依赖（隐式依赖）</p>
+<blockquote>
+<p><a
+href="https://cmake.org/cmake/help/latest/module/FetchContent.html#fetchcontent">FetchContent
+— CMake 3.27.4 Documentation</a></p>
+<p>Projects should aim to declare the details of all dependencies they
+might use before they call <code>FetchContent_MakeAvailable()</code> for
+any of them. This ensures that if any of the dependencies are also
+sub-dependencies of one or more of the others, the main project still
+controls the details that will be used (because it will declare them
+first before the dependencies get a chance to).</p>
+</blockquote>
+<h1 id="实际使用">实际使用</h1>
+<p>下面给出一个实际案例：</p>
+<p>我们需要添加四个依赖：<code>fmt</code>，<code>glfw</code>，<code>imgui</code>，<code>glad</code></p>
+<p>对于前三个，我们都可以使用 <code>FetchContent</code> 来添加，由于
+<code>glad</code>
+是使用网站生成的，我们需要手动将其添加到源代码库中。</p>
+<p><code>fmt</code> 库的添加代码</p>
+<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line">FetchContent_Declare(</span><br><span class="line">    fmt</span><br><span class="line">    GIT_REPOSITORY https://github.com/fmtlib/fmt.git</span><br><span class="line">    GIT_TAG <span class="number">10.1</span>.<span class="number">0</span></span><br><span class="line">    GIT_SHALLOW <span class="keyword">ON</span></span><br><span class="line">)</span><br><span class="line">FetchContent_MakeAvailable(fmt)</span><br></pre></td></tr></table></figure>
+
+<p>这里我们通过 <code>GIT_REPOSITORY</code> 指定了待下载库的 git
+仓库连接，同时通过 <code>GIT_TAG</code> 指定我们需要的版本（也可使用
+commit 号），最后的 <code>GIT_SHALLOW</code> 表示我们在
+<code>git clone</code> 时设置
+<code>--depth 1</code>，这样可以确保我们仅下载需要的部分，而不下载完整的
+git 仓库，减少下载时间。</p>
+<p>由于 <code>fmt</code> 库本身比较简单，且是一个 header-only
+的库，我们直接通过 <code>FetchContent_MakeAvailable</code>
+将其添加到代码中即可，当我们需要使用该库时直接链接即可，例如</p>
+<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line"><span class="keyword">add_executable</span>(test_fmt main.cpp)</span><br><span class="line"><span class="keyword">target_link_libraries</span>(test_fmt PRIVATE fmt::fmt)</span><br></pre></td></tr></table></figure>
+
+<p><code>glfw</code> 库的添加代码</p>
+<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line">FetchContent_Declare(</span><br><span class="line">    glfw</span><br><span class="line">    GIT_REPOSITORY https://github.com/glfw/glfw</span><br><span class="line">    GIT_TAG <span class="number">3.3</span>.<span class="number">8</span></span><br><span class="line">    GIT_SHALLOW <span class="keyword">ON</span></span><br><span class="line">)</span><br><span class="line">FetchContent_Populate(glfw)</span><br><span class="line"><span class="keyword">set</span>(GLFW_BUILD_TESTS <span class="keyword">OFF</span>)</span><br><span class="line"><span class="keyword">add_subdirectory</span>(<span class="variable">$&#123;glfw_SOURCE_DIR&#125;</span>)</span><br><span class="line"><span class="keyword">add_library</span>(glfw::glfw ALIAS glfw)</span><br></pre></td></tr></table></figure>
+
+<p>由于 glfw 库包含一堆 tests 和 examples
+，我们可能并不想生成这些文件，为此我们可以通过
+<code>FetchContent_Populate</code> 来手动配置 glfw 的编译。</p>
+<p>我们在添加 glfw 编译目标之前通过参数 <code>GLFW_BUILD_TESTS</code>
+来取消生成 tests，然后将其添加到代码库中，最终由于 glfw
+没有提供别名输出（<code>glfw::glfw</code>，可以用来防止打错名字，例如我们直接错写成
+<code>glfv</code> 时，没有这个依赖库 cmake 也不会报错，但是写成
+<code>glfw::glfv</code> 时没有这个依赖库 cmake
+会报错，提示我们找不到这个依赖库），我们手动为其添加一个别名。</p>
+<p><code>imgui</code> 库的添加代码</p>
+<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line">FetchContent_Populate(imgui)</span><br><span class="line">add_imgui(</span><br><span class="line">  USE_STD_STRING </span><br><span class="line">  USE_FREETYPE </span><br><span class="line">  IMGUI_DIR <span class="variable">$&#123;imgui_SOURCE_DIR&#125;</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>对于 imgui 而言稍微复杂一点，因为其并没有提供开箱即用的
+<code>CMakeLists.txt</code>
+供我们使用，我们需要手动配置使用哪些文件进行编译，为此我们写了一个小函数
+<code>add_imgui</code> 来辅助配置，完整代码如下</p>
+<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span>(add_imgui)</span><br><span class="line">  <span class="keyword">set</span>(options USE_STD_STRING USE_FREETYPE)</span><br><span class="line">  <span class="keyword">set</span>(one_value_args IMGUI_DIR)</span><br><span class="line">  <span class="keyword">set</span>(multi_value_args <span class="string">&quot;&quot;</span>)</span><br><span class="line">  <span class="keyword">cmake_parse_arguments</span>(ARGS <span class="string">&quot;$&#123;options&#125;&quot;</span> <span class="string">&quot;$&#123;one_value_args&#125;&quot;</span></span><br><span class="line">                             <span class="string">&quot;$&#123;multi_value_args&#125;&quot;</span> <span class="variable">$&#123;ARGN&#125;</span> )</span><br><span class="line"></span><br><span class="line">  <span class="keyword">message</span>(STATUS <span class="string">&quot;add imgui (opengl3 + glfw) [ STATIC ] with c++17&quot;</span>)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">list</span>(APPEND CMAKE_MESSAGE_INDENT <span class="string">&quot;  &quot;</span>)</span><br><span class="line"></span><br><span class="line">  <span class="comment"># Using dear imgui via a shared library is not recommended, </span></span><br><span class="line">  <span class="comment"># because we don&#x27;t guarantee backward nor forward ABI compatibility </span></span><br><span class="line">  <span class="comment"># (also function call overhead, as dear imgui is a call-heavy API)</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># we should use imgui as static library</span></span><br><span class="line">  <span class="keyword">add_library</span>(imgui STATIC</span><br><span class="line">    <span class="variable">$&#123;ARGS_IMGUI_DIR&#125;</span>/imgui_demo.cpp </span><br><span class="line">    <span class="variable">$&#123;ARGS_IMGUI_DIR&#125;</span>/imgui_draw.cpp </span><br><span class="line">    <span class="variable">$&#123;ARGS_IMGUI_DIR&#125;</span>/imgui_tables.cpp </span><br><span class="line">    <span class="variable">$&#123;ARGS_IMGUI_DIR&#125;</span>/imgui_widgets.cpp </span><br><span class="line">    <span class="variable">$&#123;ARGS_IMGUI_DIR&#125;</span>/imgui.cpp </span><br><span class="line">  )</span><br><span class="line"></span><br><span class="line">  <span class="keyword">add_library</span>(imgui::imgui ALIAS imgui)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">set_property</span>(<span class="keyword">TARGET</span> imgui PROPERTY CXX_STANDARD <span class="number">17</span>)</span><br><span class="line">  <span class="keyword">set_property</span>(<span class="keyword">TARGET</span> imgui PROPERTY CXX_STANDARD_REQUIRED <span class="keyword">ON</span>)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">target_include_directories</span>(imgui PUBLIC </span><br><span class="line">    <span class="variable">$&#123;ARGS_IMGUI_DIR&#125;</span></span><br><span class="line">  )</span><br><span class="line">  <span class="comment"># backends</span></span><br><span class="line">  <span class="keyword">target_sources</span>(imgui PUBLIC     </span><br><span class="line">    <span class="variable">$&#123;ARGS_IMGUI_DIR&#125;</span>/backends/imgui_impl_opengl3.cpp</span><br><span class="line">    <span class="variable">$&#123;ARGS_IMGUI_DIR&#125;</span>/backends/imgui_impl_glfw.cpp</span><br><span class="line">  )</span><br><span class="line"></span><br><span class="line">  <span class="keyword">target_include_directories</span>(imgui PUBLIC </span><br><span class="line">    <span class="variable">$&#123;ARGS_IMGUI_DIR&#125;</span>/backends</span><br><span class="line">  )</span><br><span class="line"></span><br><span class="line">  <span class="keyword">target_link_libraries</span>(imgui PUBLIC </span><br><span class="line">    glfw::glfw</span><br><span class="line">  )</span><br><span class="line">  </span><br><span class="line">  <span class="comment"># extensions</span></span><br><span class="line">  <span class="keyword">if</span> ( ARGS_USE_STD_STRING )</span><br><span class="line">    <span class="keyword">message</span>(STATUS <span class="string">&quot;enable std::string support for imgui::InputText&quot;</span>)</span><br><span class="line">    <span class="keyword">target_sources</span>(imgui PUBLIC </span><br><span class="line">      <span class="variable">$&#123;ARGS_IMGUI_DIR&#125;</span>/misc/cpp/imgui_stdlib.cpp</span><br><span class="line">    )</span><br><span class="line">    <span class="keyword">target_include_directories</span>(imgui PUBLIC </span><br><span class="line">      <span class="variable">$&#123;ARGS_IMGUI_DIR&#125;</span>/misc/cpp</span><br><span class="line">    )</span><br><span class="line">  <span class="keyword">endif</span>()</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">if</span> ( ARGS_USE_FREETYPE )</span><br><span class="line">    <span class="keyword">find_package</span>(Freetype QUIET)</span><br><span class="line">    <span class="keyword">if</span>(Freetype_FOUND)</span><br><span class="line">      <span class="keyword">message</span>(STATUS <span class="string">&quot;enable freetype for imgui&quot;</span>)</span><br><span class="line">      <span class="keyword">target_sources</span>(imgui PRIVATE </span><br><span class="line">        <span class="variable">$&#123;ARGS_IMGUI_DIR&#125;</span>/misc/freetype/imgui_freetype.cpp</span><br><span class="line">      )</span><br><span class="line">      <span class="keyword">target_include_directories</span>(imgui PRIVATE </span><br><span class="line">        <span class="variable">$&#123;ARGS_IMGUI_DIR&#125;</span>/misc/freetype</span><br><span class="line">      )</span><br><span class="line">      <span class="keyword">target_link_libraries</span>(imgui PRIVATE </span><br><span class="line">        Freetype::Freetype</span><br><span class="line">      )</span><br><span class="line">      <span class="keyword">target_compile_definitions</span>(imgui PRIVATE </span><br><span class="line">        IMGUI_ENABLE_FREETYPE</span><br><span class="line">      )</span><br><span class="line">    <span class="keyword">else</span>()</span><br><span class="line">    <span class="keyword">message</span>(STATUS <span class="string">&quot;disable freetype for imgui&quot;</span>)</span><br><span class="line">    <span class="keyword">endif</span>()</span><br><span class="line">  <span class="keyword">endif</span>()</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">list</span>(POP_BACK CMAKE_MESSAGE_INDENT)</span><br><span class="line"></span><br><span class="line"><span class="keyword">endfunction</span>(add_imgui)</span><br></pre></td></tr></table></figure>
+
+<p>函数 <code>add_imgui</code> 通过提供 imgui
+源代码目录以及一些配置项来简化配置流程，其默认使用 glfw + opengl
+作为渲染后端。</p>
+<p>然后对于 glad 库（用来加载 OpenGL 函数），其配置代码也十分简单</p>
+<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 配置为动态链接库</span></span><br><span class="line"><span class="keyword">add_library</span>(glad SHARED src/gl.c)</span><br><span class="line"><span class="keyword">target_compile_definitions</span>(glad PRIVATE -DGLAD_API_CALL_EXPORT_BUILD)</span><br><span class="line"><span class="keyword">target_compile_definitions</span>(glad PUBLIC -DGLAD_API_CALL_EXPORT)</span><br><span class="line"><span class="keyword">target_include_directories</span>(glad PUBLIC <span class="keyword">include</span>)</span><br><span class="line"><span class="keyword">add_library</span>(glad::glad ALIAS glad)</span><br></pre></td></tr></table></figure>
+
+<h1 id="externalproject-添加依赖">ExternalProject 添加依赖</h1>
+<p>这个也是 CMake 中下载依赖的一种方式，其早于 <code>FetchContent</code>
+出现，可以提供和 <code>FetchContent</code>
+类似的功能，主要通过一个巨大的函数进行依赖配置</p>
+<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line">ExternalProject_Add</span><br></pre></td></tr></table></figure>
+
+<p>我们可以在其中指定编译的命令等，也可以使用
+<code>ExternalProject_Add_Step</code>
+来手动管理依赖的编译步骤，不过这种方式个人感觉没有
+<code>FetchContent_Declare</code> 和 <code>FetchContent_Populate</code>
+使用来的方便，就不过多介绍了，网上也有很多相关的教程。</p>
+<blockquote>
+<p><a
+href="https://cmake.org/cmake/help/latest/module/ExternalProject.html">ExternalProject
+— CMake 3.27.4 Documentation</a></p>
+</blockquote>
+<h1 id="杂项">杂项</h1>
+<p><strong>在 Windows 下使用动态链接库时可能会因为找不到 dll
+库的位置而无法启动应用</strong>，我们需要手动将动态链接库（例如
+<code>glad.dll</code>
+）拷贝到可执行环境目录下，才可以正常运行，但是每次手动拷贝太麻烦了，cmake
+也可以自动帮我们完成这一任务。</p>
+<p>（图片太大可能看不清字，写的是：<strong>由于找不到
+glad.dll，无法继续执行代码，重新安装程序可能会解决此问题。</strong>）</p>
+<p><em>比较坑的点在于 Windows 下使用 VSCode 完全看不到这个错误提示，而在
+Visual Studio 中就可以看到，恶心坏了</em></p>
+<p><img data-src="/posts/dbe7/image-20230827220434585.png" /></p>
+<p>解决方案有很多：</p>
+<ul>
+<li>强制所有编译输出到同一个目录下，这样就可以确保一定能找到了（个人感觉比较丑陋，只能算一个
+workaround）</li>
+<li>找到该应用所有的依赖库，将其拷贝到可执行文件输出路径下（<strong>关键在于如何找到可执行文件的所有依赖库呢？</strong>）</li>
+</ul>
+<p>这个问题肯定不止我们一个人碰到过，cmake 给我们提供好了这个变量</p>
+<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line"><span class="comment"># %target-name% 对应的所有运行时依赖</span></span><br><span class="line">$&lt;TARGET_RUNTIME_DLLS:%<span class="keyword">target</span>-name%&gt;</span><br></pre></td></tr></table></figure>
+
+<p>以及</p>
+<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line"><span class="comment"># %target-name% 的可执行文件输出路径</span></span><br><span class="line">$&lt;TARGET_FILE_DIR:%<span class="keyword">target</span>-name%&gt;</span><br></pre></td></tr></table></figure>
+
+<p>这样我们可以通过 <code>add_custom_command</code>
+来进行自动拷贝了，完整代码如下</p>
+<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line"><span class="keyword">add_custom_command</span>(<span class="keyword">TARGET</span> test_imgui POST_BUILD</span><br><span class="line">  <span class="keyword">COMMAND</span> <span class="variable">$&#123;CMAKE_COMMAND&#125;</span> -E copy -t </span><br><span class="line">  $&lt;TARGET_FILE_DIR:test_imgui&gt; </span><br><span class="line">  $&lt;TARGET_RUNTIME_DLLS:test_imgui&gt;</span><br><span class="line">  COMMAND_EXPAND_LISTS</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>这一段代码来源于 cmake 官方文档（看来是需要这个功能的人太多了）</p>
+<blockquote>
+<p><a
+href="https://cmake.org/cmake/help/latest/manual/cmake-generator-expressions.7.html#genex:TARGET_RUNTIME_DLLS">genex:TARGET_RUNTIME_DLLS</a></p>
+</blockquote>
+<p>当然，这个功能要求 cmake 的版本比较新，需要在 cmake 版本高于
+3.21，记得更新 <code>cmake_minimum_required</code></p>
+<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line"><span class="keyword">cmake_minimum_required</span>(VERSION <span class="number">3.21</span>)</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>C++学习笔记</category>
+      </categories>
+      <tags>
+        <tag>C++</tag>
+        <tag>CMake</tag>
       </tags>
   </entry>
   <entry>
@@ -4462,61 +4462,6 @@ LFS 文件。</p>
       </tags>
   </entry>
   <entry>
-    <title>命令行设置 Proxy</title>
-    <url>/posts/4af5/</url>
-    <content><![CDATA[<h1 id="powershell-设置">PowerShell 设置</h1>
-<p>通过 <code>$PROFILE</code> 变量，可以查询到 PowerShell
-默认加载的配置文件路径，如下所示</p>
-<p><img data-src="/posts/4af5/image-20250827211708072.png"
-style="zoom: 67%;" /></p>
-<p>如果文件不存在，直接创建一个即可，然后填入下面两个预定义的函数（默认代理的地址为
-<code>127.0.0.1:7890</code>，纪念天国的CFW🙏）</p>
-<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">proxy_on</span></span> &#123;</span><br><span class="line">    <span class="variable">$proxy</span>=<span class="string">&quot;http://127.0.0.1:7890&quot;</span></span><br><span class="line">    <span class="variable">$Env:http_proxy</span> = <span class="string">&quot;<span class="variable">$proxy</span>&quot;</span></span><br><span class="line">    <span class="variable">$Env:https_proxy</span> = <span class="string">&quot;<span class="variable">$proxy</span>&quot;</span></span><br><span class="line">    <span class="built_in">Write-Host</span> <span class="string">&quot;Proxy enabled: <span class="variable">$proxy</span>&quot;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">proxy_off</span></span> &#123;</span><br><span class="line">    <span class="built_in">Remove-Item</span> Env:\http_proxy <span class="literal">-ErrorAction</span> SilentlyContinue</span><br><span class="line">    <span class="built_in">Remove-Item</span> Env:\https_proxy <span class="literal">-ErrorAction</span> SilentlyContinue</span><br><span class="line">    <span class="built_in">Write-Host</span> <span class="string">&quot;Proxy disabled&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>当更改完 <code>$PROFILE</code> 文件后，使用 <code>. $PROFILE</code>
-加载更新后的配置文件，并通过简单的 <code>curl</code>
-命令判断是否可用</p>
-<span id="more"></span>
-
-<p><img data-src="/posts/4af5/image-20250827212341633.png"
-style="zoom: 50%;" /></p>
-<p>（由于 cmd 并不支持
-profile，就无法编写类似的函数了，不过其基本思路也就是设置
-<code>http_proxy</code> 和删除 <code>http_proxy</code> 而已）</p>
-<h1 id="bash-设置">Bash 设置</h1>
-<p>对于 Bash，也可以编写类似的脚本，修改
-<code>~/.bashrc</code>，并插入如下内容</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="title">proxy_on</span></span>() &#123;</span><br><span class="line">    <span class="built_in">local</span> proxy=<span class="string">&quot;http://127.0.0.1:7890&quot;</span></span><br><span class="line">    <span class="built_in">export</span> http_proxy=<span class="string">&quot;<span class="variable">$proxy</span>&quot;</span></span><br><span class="line">    <span class="built_in">export</span> https_proxy=<span class="string">&quot;<span class="variable">$proxy</span>&quot;</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;Proxy enabled: <span class="variable">$proxy</span>&quot;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">proxy_off</span></span>() &#123;</span><br><span class="line">    <span class="built_in">unset</span> http_proxy</span><br><span class="line">    <span class="built_in">unset</span> https_proxy</span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;Proxy disabled&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>更新完成后，使用 <code>source ~/.bashrc</code> （实际上也可以使用
-<code>. ~/.bashrc</code>） 加载更新后的配置文件，并进行简单的验证</p>
-<p><img data-src="/posts/4af5/image-20250827212804711.png"
-style="zoom: 67%;" /></p>
-<h2 id="wsl-设置">WSL 设置</h2>
-<p>在 WSL 中设置代理和 Bash
-的设置十分相似，但是有一点区别：当我们在宿主机（Windows
-机器）上开启了代理软件（例如
-CFW）后，可以通过局域网走宿主机代理，只需要在 CFW
-上开启允许局域网代理即可，如下所示</p>
-<p><img data-src="/posts/4af5/image-20250912232211744.png"
-style="zoom: 50%;" /></p>
-<p>之后要做的就是在 WSL 中查询宿主机的局域网 IP 地址，这个在 <a
-href="https://learn.microsoft.com/en-us/windows/wsl/networking#identify-ip-address">WSL
-的官方文档</a> 中已经给出示例。</p>
-<p><img data-src="/posts/4af5/image-20250912232338114.png"
-style="zoom: 67%;" /></p>
-<p>稍微修改一下 <code>proxy_on</code> 的代码，就可以在 WSL
-上设置好代理了，如下所示</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="title">proxy_on</span></span>() &#123;</span><br><span class="line">    <span class="built_in">local</span> hostip=<span class="string">&quot;<span class="subst">$(ip route show | grep -i default | awk &#x27;&#123; print $3 &#125;&#x27;)</span>&quot;</span></span><br><span class="line">    <span class="built_in">local</span> proxy=<span class="string">&quot;http://<span class="variable">$hostip</span>:7890&quot;</span></span><br><span class="line">    <span class="built_in">export</span> http_proxy=<span class="string">&quot;<span class="variable">$proxy</span>&quot;</span></span><br><span class="line">    <span class="built_in">export</span> https_proxy=<span class="string">&quot;<span class="variable">$proxy</span>&quot;</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;Proxy enabled: <span class="variable">$proxy</span>&quot;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">proxy_off</span></span>() &#123;</span><br><span class="line">    <span class="built_in">unset</span> http_proxy</span><br><span class="line">    <span class="built_in">unset</span> https_proxy</span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;Proxy disabled&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-]]></content>
-      <categories>
-        <category>技术笔记</category>
-      </categories>
-      <tags>
-        <tag>命令行</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Conan使用</title>
     <url>/posts/2944/</url>
     <content><![CDATA[<p><a href="https://conan.io/">Conan</a> 作为一个 C++
@@ -4884,6 +4829,61 @@ style="zoom: 50%;" /></p>
         <tag>C++</tag>
         <tag>CMake</tag>
         <tag>Python</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>命令行设置 Proxy</title>
+    <url>/posts/4af5/</url>
+    <content><![CDATA[<h1 id="powershell-设置">PowerShell 设置</h1>
+<p>通过 <code>$PROFILE</code> 变量，可以查询到 PowerShell
+默认加载的配置文件路径，如下所示</p>
+<p><img data-src="/posts/4af5/image-20250827211708072.png"
+style="zoom: 67%;" /></p>
+<p>如果文件不存在，直接创建一个即可，然后填入下面两个预定义的函数（默认代理的地址为
+<code>127.0.0.1:7890</code>，纪念天国的CFW🙏）</p>
+<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">proxy_on</span></span> &#123;</span><br><span class="line">    <span class="variable">$proxy</span>=<span class="string">&quot;http://127.0.0.1:7890&quot;</span></span><br><span class="line">    <span class="variable">$Env:http_proxy</span> = <span class="string">&quot;<span class="variable">$proxy</span>&quot;</span></span><br><span class="line">    <span class="variable">$Env:https_proxy</span> = <span class="string">&quot;<span class="variable">$proxy</span>&quot;</span></span><br><span class="line">    <span class="built_in">Write-Host</span> <span class="string">&quot;Proxy enabled: <span class="variable">$proxy</span>&quot;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">proxy_off</span></span> &#123;</span><br><span class="line">    <span class="built_in">Remove-Item</span> Env:\http_proxy <span class="literal">-ErrorAction</span> SilentlyContinue</span><br><span class="line">    <span class="built_in">Remove-Item</span> Env:\https_proxy <span class="literal">-ErrorAction</span> SilentlyContinue</span><br><span class="line">    <span class="built_in">Write-Host</span> <span class="string">&quot;Proxy disabled&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>当更改完 <code>$PROFILE</code> 文件后，使用 <code>. $PROFILE</code>
+加载更新后的配置文件，并通过简单的 <code>curl</code>
+命令判断是否可用</p>
+<span id="more"></span>
+
+<p><img data-src="/posts/4af5/image-20250827212341633.png"
+style="zoom: 50%;" /></p>
+<p>（由于 cmd 并不支持
+profile，就无法编写类似的函数了，不过其基本思路也就是设置
+<code>http_proxy</code> 和删除 <code>http_proxy</code> 而已）</p>
+<h1 id="bash-设置">Bash 设置</h1>
+<p>对于 Bash，也可以编写类似的脚本，修改
+<code>~/.bashrc</code>，并插入如下内容</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="title">proxy_on</span></span>() &#123;</span><br><span class="line">    <span class="built_in">local</span> proxy=<span class="string">&quot;http://127.0.0.1:7890&quot;</span></span><br><span class="line">    <span class="built_in">export</span> http_proxy=<span class="string">&quot;<span class="variable">$proxy</span>&quot;</span></span><br><span class="line">    <span class="built_in">export</span> https_proxy=<span class="string">&quot;<span class="variable">$proxy</span>&quot;</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;Proxy enabled: <span class="variable">$proxy</span>&quot;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">proxy_off</span></span>() &#123;</span><br><span class="line">    <span class="built_in">unset</span> http_proxy</span><br><span class="line">    <span class="built_in">unset</span> https_proxy</span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;Proxy disabled&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>更新完成后，使用 <code>source ~/.bashrc</code> （实际上也可以使用
+<code>. ~/.bashrc</code>） 加载更新后的配置文件，并进行简单的验证</p>
+<p><img data-src="/posts/4af5/image-20250827212804711.png"
+style="zoom: 67%;" /></p>
+<h2 id="wsl-设置">WSL 设置</h2>
+<p>在 WSL 中设置代理和 Bash
+的设置十分相似，但是有一点区别：当我们在宿主机（Windows
+机器）上开启了代理软件（例如
+CFW）后，可以通过局域网走宿主机代理，只需要在 CFW
+上开启允许局域网代理即可，如下所示</p>
+<p><img data-src="/posts/4af5/image-20250912232211744.png"
+style="zoom: 50%;" /></p>
+<p>之后要做的就是在 WSL 中查询宿主机的局域网 IP 地址，这个在 <a
+href="https://learn.microsoft.com/en-us/windows/wsl/networking#identify-ip-address">WSL
+的官方文档</a> 中已经给出示例。</p>
+<p><img data-src="/posts/4af5/image-20250912232338114.png"
+style="zoom: 67%;" /></p>
+<p>稍微修改一下 <code>proxy_on</code> 的代码，就可以在 WSL
+上设置好代理了，如下所示</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="title">proxy_on</span></span>() &#123;</span><br><span class="line">    <span class="built_in">local</span> hostip=<span class="string">&quot;<span class="subst">$(ip route show | grep -i default | awk &#x27;&#123; print $3 &#125;&#x27;)</span>&quot;</span></span><br><span class="line">    <span class="built_in">local</span> proxy=<span class="string">&quot;http://<span class="variable">$hostip</span>:7890&quot;</span></span><br><span class="line">    <span class="built_in">export</span> http_proxy=<span class="string">&quot;<span class="variable">$proxy</span>&quot;</span></span><br><span class="line">    <span class="built_in">export</span> https_proxy=<span class="string">&quot;<span class="variable">$proxy</span>&quot;</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;Proxy enabled: <span class="variable">$proxy</span>&quot;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">proxy_off</span></span>() &#123;</span><br><span class="line">    <span class="built_in">unset</span> http_proxy</span><br><span class="line">    <span class="built_in">unset</span> https_proxy</span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;Proxy disabled&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>技术笔记</category>
+      </categories>
+      <tags>
+        <tag>命令行</tag>
       </tags>
   </entry>
   <entry>
@@ -6725,19 +6725,16 @@ style="zoom:20%;" /></p>
   <entry>
     <title>《经济学原理》问题与应用（2）</title>
     <url>/posts/3c7/</url>
-    <content><![CDATA[<p>本次是第2章节 “像经济学家一样思考” 的部分问题和解答。</p>
+    <content><![CDATA[<p><span class="math inline">\(\require{physics}\)</span></p>
+<p>本次是第2章节 “像经济学家一样思考” 的部分问题和解答。</p>
 <hr />
 <p><em><strong>举出一种没有被包含在简化的循环流量图中的经济交易。</strong></em></p>
 <p>在第2章介绍的简化的循环流量图中，仅包含两个角色——家庭和企业，忽略了政府、金融市场、国际贸易等角色参与下的经济交易：</p>
 <ol type="1">
-<li><p>政府参与的交易</p>
-<p>税收、转移支付（社会福利、生育补贴）、政府采购</p></li>
-<li><p>金融市场的交易</p>
-<p>储蓄、借贷</p></li>
-<li><p>国际贸易</p>
-<p>进口、出口</p></li>
+<li><p>政府参与的交易：税收、转移支付（社会福利、生育补贴）、政府采购</p></li>
+<li><p>金融市场的交易：储蓄、借贷</p></li>
+<li><p>国际贸易：进口、出口</p></li>
 </ol>
-<p><span class="math inline">\(\require{physics}\)</span></p>
 <span id="more"></span>
 
 <hr />
@@ -7727,6 +7724,332 @@ class="math inline">\(5 &lt; \text{电脑价格} &lt; 10\)</span>。</p>
 <p>贸易并不必然使所有相关的人都受益。对于直接参与且自愿达成交易的双方，通常都能从中获益；但对于未参与交易的其他人，或者在一国国内受到进口竞争冲击的人来说，贸易未必是好事。因此，不能说只要贸易对一个人有利，就对另一个人也总是有利。</p>
 <p><strong>e</strong>. 错误。</p>
 <p>贸易可以提高一国整体的资源配置效率，使国家总体福利增加，但这种收益未必会平均分配给每一个人。一些行业、企业或工人可能因为进口竞争而受到损失。因此，贸易可以让一个国家整体受益，但不一定让该国每一个人都受益。</p>
+]]></content>
+  </entry>
+  <entry>
+    <title>《经济学原理》问题与应用（4）</title>
+    <url>/posts/8bc7/</url>
+    <content><![CDATA[<p><span class="math inline">\(\require{physics}\)</span></p>
+<p>本次是第4章节 “供给与需求的市场力量” 的部分问题和解答。</p>
+<hr />
+<p><em><strong>什么是竞争市场？简单描述一种不是完全竞争的市场。</strong></em></p>
+<p>竞争市场是指有大量买者和卖者、任何单个参与者都不能显著影响市场价格的市场，市场价格主要由供求共同决定。</p>
+<p>一种不是完全竞争的市场是电信市场。无论在中国还是美国，基础电信运营商数量都比较少，市场由少数大型运营商主导，进入门槛高（牌照、基础设施、频谱资源等），单个企业对价格和服务有一定影响力，因此它更接近寡头竞争，而不是完全竞争市场。</p>
+<p>除了这个外，还有
+民航、操作系统、搜索引擎、社交平台、自来水/电力、高铁客运等公共事业等。</p>
+<div class="markdown-alert markdown-alert-tip">
+<div class="markdown-alert-title">
+<svg class="octicon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M8 1.5c-2.363 0-4 1.69-4 3.75 0 .984.424 1.625.984 2.304l.214.253c.223.264.47.556.673.848.284.411.537.896.621 1.49a.75.75 0 0 1-1.484.211c-.04-.282-.163-.547-.37-.847a8.456 8.456 0 0 0-.542-.68c-.084-.1-.173-.205-.268-.32C3.201 7.75 2.5 6.766 2.5 5.25 2.5 2.31 4.863 0 8 0s5.5 2.31 5.5 5.25c0 1.516-.701 2.5-1.328 3.259-.095.115-.184.22-.268.319-.207.245-.383.453-.541.681-.208.3-.33.565-.37.847a.751.751 0 0 1-1.485-.212c.084-.593.337-1.078.621-1.489.203-.292.45-.584.673-.848.075-.088.147-.173.213-.253.561-.679.985-1.32.985-2.304 0-2.06-1.637-3.75-4-3.75ZM5.75 12h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5ZM6 15.25a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75Z"></path></svg>
+<strong>Tip</strong>
+</div>
+<p>这类市场通常具有高固定成本和高进入壁垒，并伴随显著规模经济，因此一般不会呈现完全竞争结构，而更可能表现为寡头或自然垄断。
+寡头是少数企业主导的市场结构，自然垄断是由高固定成本和显著规模经济导致的一家供给更有效的市场结构；前者不一定是企业主动垄断，后者主要由行业技术与成本条件自然形成，但两者都可能需要反垄断或价格监管。</p>
+</div>
+<span id="more"></span>
+
+<hr />
+<p><em><strong>给市场均衡下定义。描述使市场向均衡变动的力量。</strong></em></p>
+<p>市场均衡是指市场价格达到某一水平时，商品的需求量恰好等于供给量的状态。在这种状态下，市场既不存在短缺，也不存在过剩。</p>
+<p>使市场向均衡变动的力量是价格调整机制。</p>
+<p>当市场价格高于均衡价格时，供给量大于需求量，市场出现过剩。卖者为了卖出商品会降低价格，价格下降后，需求量增加而供给量减少，市场逐渐回到均衡。</p>
+<p>当市场价格低于均衡价格时，需求量大于供给量，市场出现短缺。买者之间的竞争会推动价格上升，价格上升后，需求量减少而供给量增加，市场也会逐渐回到均衡。</p>
+<p>进一步说，当买者数量、收入、偏好、相关商品价格、预期等因素变化时，需求曲线会移动；当卖者数量、投入品价格、技术、预期等因素变化时，供给曲线会移动，从而使市场形成新的均衡价格和均衡数量。</p>
+<hr />
+<p><em><strong>描述市场经济中价格的作用。</strong></em></p>
+<p>市场经济中，价格起着传递信息和配置资源的作用。价格反映了一种物品的稀缺程度，并引导买者和卖者作出决策。当某种商品价格上升时，表明这种商品相对更稀缺，生产者会增加供给，消费者会减少需求；当价格下降时，则会产生相反的作用。因此，价格能够引导资源流向社会更需要、价值更高的用途。</p>
+<hr />
+<p><em><strong>（开放讨论题）</strong></em></p>
+<ol type="1">
+<li><p><em><strong>疫情之后，如果允许卖者涨价，你认为你能找到更多还是更少的消毒洗手液？为什么？</strong></em></p></li>
+<li><p><em><strong>一场灾难后，如果不允许稀缺资源的卖者涨价以使供求平衡，你认为这些资源又该如何分配呢？你的建议有什么好处？在现实中可能遇到什么问题？</strong></em></p></li>
+</ol>
+<p>（个人思考结合 AI 整理）</p>
+<blockquote>
+<p>原始思考：第一题我觉得不好说，因为通过供求图来分析，在这种情况下即会引起需求的变化，也会引起供给的变化，那么此时一定会出现价格的上涨，但是市场上留存的消毒洗手液数量却无法确定，有可能多也有可能少，但是从我的体感而言，消毒洗手液更难买到是真的？第二题的话，在中国的一些做法是在社区进行分配（也就是挨家挨户发送，同时限制出行，尽可能不在外走动），这也可以保证每个人的基本安全，但是如果有更多的需求，则还是需要买，这种情况下，感觉还是会有“黑市”在监管下铤而走险？</p>
+</blockquote>
+<p>（感觉 AI 把 70 分的答案变成了 100 分）</p>
+<ol type="1">
+<li>如果允许卖者涨价，通常会更容易买到消毒洗手液。</li>
+</ol>
+<p>原因是价格上涨会同时带来两种作用：一方面，较高的价格会抑制一部分需求，减少抢购和囤积；另一方面，较高的价格也会激励卖者增加供给，或者把更多货物运到需求更强的地区。因此，从经济学角度看，涨价通常会缓解短缺，使商品更容易被找到。</p>
+<p>不过，现实中的疫情情境往往更复杂。即使价格上涨，供给增加也需要时间，而且生产、物流和原材料本身也可能受到冲击。因此，短期内人们仍然可能感到“很难买到”。也就是说，允许涨价通常有助于缓解短缺，但不意味着短时间内一定能完全解决买不到的问题。</p>
+<ol start="2" type="1">
+<li>如果不允许稀缺资源的卖者通过涨价来实现供求平衡，那么这些资源就需要通过非价格方式分配，例如政府或社区统一配给、限量购买、预约购买，或者优先供应医护人员、老人和其他急需人群。</li>
+</ol>
+<p>这种做法的好处是更强调公平，能够保障每个人的基本生活需要，也可以优先保护最急需资源的人群，避免低收入者因为价格过高而完全得不到必需品。</p>
+<p>但在现实中，这种分配方式也会遇到一些问题。例如，行政分配的成本较高，真正最急需的人未必总能最快拿到资源；同时还可能出现排队、抢购、关系优先、资源错配等情况。如果官方价格长期低于市场供求关系所反映的水平，还可能诱发倒卖和黑市交易。因此，在灾难情境下，非价格分配能提高公平性，但往往也要付出效率下降和监管成本上升的代价。</p>
+<hr />
+<p><em><strong>用供求图分别解释以下表述：</strong></em></p>
+<p><em><strong>a.“当寒流袭击佛罗里达时，全美超市中的橙汁价格都上升。”</strong></em></p>
+<p><em><strong>b.“当每年夏天新英格兰地区天气变暖时，加勒比地区旅馆房间的价格直线下降。”</strong></em></p>
+<p><em><strong>c.“当中东爆发战争时，汽油价格上升，而 SUV
+的价格下降。”</strong></em></p>
+<p>a.
+寒流袭击佛罗里达会损害橙子产量，从而减少橙汁供给，使橙汁供给曲线左移。在需求变化不大的情况下，橙汁的均衡价格上升，均衡数量下降。</p>
+<p>b.
+每年夏天新英格兰地区天气变暖后，人们对前往加勒比地区度假的需求会减少，因此加勒比地区旅馆房间的需求曲线左移。在供给变化不大的情况下，旅馆房间的均衡价格下降，均衡数量也下降。</p>
+<p>c. 中东爆发战争会减少原油供给，从而推高汽油价格。由于 SUV
+更耗油，消费者对 SUV 的需求会下降，使 SUV 的需求曲线左移。因此，SUV
+的均衡价格下降，均衡数量也下降。</p>
+<hr />
+<p><em><strong>“对练习本需求的增加提高了练习本的需求量，但没有提高练习本的供给量。”这句话是对还是错？解释原因。</strong></em></p>
+<p>这句话是错的。</p>
+<p>对练习本需求的增加表示需求曲线右移，而不是同一条需求曲线上的点移动。需求增加后，市场的均衡价格会上升，均衡数量也会上升。</p>
+<p>在这个过程中，供给曲线本身并没有移动，因此“供给”没有增加；但是由于价格上升，生产者愿意提供更多练习本，所以“供给量”会增加。</p>
+<p>因此，更准确的说法应该是：对练习本需求的增加会提高练习本的均衡价格和均衡数量；虽然不会提高练习本的供给，但会提高练习本的供给量。</p>
+<hr />
+<p><em><strong>考虑家用旅行车市场。根据下面所列的事件，分别指出哪一种需求或供给的决定因素将受到影响。</strong></em></p>
+<p><em><strong>同时还要指出，需求或供给是增加了，还是减少了。然后画图说明该事件对家用旅行车价格和数量的影响。</strong></em></p>
+<p><em><strong>a.人们决定多生孩子。</strong></em></p>
+<p><em><strong>b.钢铁工人罢工，致使钢铁价格上涨。</strong></em></p>
+<p><em><strong>c.工程师开发出用于家用旅行车生产的新的自动化机器。</strong></em></p>
+<p><em><strong>d. SUV 价格上升。</strong></em></p>
+<p><em><strong>e.股市崩溃减少了人们的财产。</strong></em></p>
+<p>a.
+人们决定多生孩子，会提高家庭对家用旅行车的需求，影响的是需求的决定因素（买者数量与偏好），使需求曲线右移。结果是家用旅行车的均衡价格上升，均衡数量上升。</p>
+<p>b.
+钢铁价格上涨会提高家用旅行车生产成本，影响的是供给的决定因素（投入品价格），使供给曲线左移。结果是家用旅行车的均衡价格上升，均衡数量下降。</p>
+<p>c.
+新的自动化机器提高生产效率、降低单位成本，影响的是供给的决定因素（技术），使供给曲线右移。结果是家用旅行车的均衡价格下降，均衡数量上升。</p>
+<p>d. SUV 与家用旅行车属于替代品。SUV
+价格上升后，部分消费者会转向购买家用旅行车，影响的是需求的决定因素（相关商品价格），使家用旅行车需求曲线右移。结果是家用旅行车的均衡价格上升，均衡数量上升。</p>
+<p>e.
+股市崩溃减少居民财产，通常会降低对家用旅行车这类正常品的需求，影响的是需求的决定因素（收入/财富），使需求曲线左移。结果是家用旅行车的均衡价格下降，均衡数量下降。</p>
+<hr />
+<p><em><strong>考虑视频流媒体服务、电视和电影院门票市场。</strong></em></p>
+<p><em><strong>a.对每一对物品，确定它们是互补品还是替代品：</strong></em>
+- <em><strong>视频流媒体服务和电视</strong></em> -
+<em><strong>视频流媒体服务和电影票</strong></em></p>
+<ul>
+<li><em><strong>电视和电影票</strong></em></li>
+</ul>
+<p><em><strong>b.假设技术进步降低了制造电视的成本。画一个图说明电视市场会发生什么变动。</strong></em></p>
+<p><em><strong>c.再画两个图说明电视市场的变动如何影响视频流媒体服务市场和电影票市场。</strong></em></p>
+<p>a.
+视频流媒体服务和电视是互补品，因为电视可以提升在家观看流媒体内容的体验。视频流媒体服务和电影票是替代品，因为它们都能满足观看影视内容的需求。电视和电影票也属于替代品，因为电视使用体验改善后，人们更可能选择在家观看内容，而不是去电影院。</p>
+<p>b.
+技术进步降低了制造电视的成本，这会提高电视的供给，使电视供给曲线右移。因此，电视的均衡价格下降，均衡数量上升。</p>
+<p>c.
+由于电视和视频流媒体服务是互补品，电视价格下降会增加人们对视频流媒体服务的需求，使其需求曲线右移，从而提高视频流媒体服务的均衡价格和均衡数量。由于电视和电影票是替代品，电视价格下降会减少人们对电影票的需求，使电影票的需求曲线左移，从而降低电影票的均衡价格和均衡数量。</p>
+<hr />
+<p><em><strong>过去40年间，技术进步降低了电脑芯片的成本。你认为这会对电脑市场产生怎样的影响？对电脑软件呢？对打字机呢？</strong></em></p>
+<p>技术进步降低了电脑芯片的成本，这会降低电脑的生产成本，从而提高电脑的供给，使电脑供给曲线右移。结果是电脑的均衡价格下降，均衡数量上升。</p>
+<p>由于电脑软件和电脑属于互补品，电脑价格下降、电脑普及率提高后，人们对电脑软件的需求会增加，使电脑软件的需求曲线右移。结果是电脑软件的均衡价格上升，均衡数量上升。</p>
+<p>而打字机和电脑在一定程度上属于替代品。随着电脑变得更便宜、更普及，消费者对打字机的需求会减少，使打字机的需求曲线左移。结果是打字机的均衡价格下降，均衡数量下降，长期来看甚至可能逐渐退出市场。</p>
+<hr />
+<p><em><strong>运用供求图说明下列事件对运动衫市场的影响。</strong></em></p>
+<p><em><strong>a.南卡罗来纳的飓风损害了棉花作物。</strong></em></p>
+<p><em><strong>b.皮夹克价格下降。</strong></em></p>
+<p><em><strong>c.所有大学都要求学生穿合适的服装做早操。</strong></em></p>
+<p><em><strong>d.新织布机被发明出来。</strong></em></p>
+<p>a.
+南卡罗来纳的飓风损害了棉花作物，会减少棉花供给并提高棉花价格，从而提高运动衫的生产成本，影响的是供给的决定因素（投入品价格），使运动衫供给曲线左移。结果是运动衫的均衡价格上升，均衡数量下降。</p>
+<p>b.
+皮夹克和运动衫更适合看作替代品。皮夹克价格下降后，部分消费者会转向购买皮夹克，从而减少对运动衫的需求，影响的是需求的决定因素（相关商品价格），使运动衫需求曲线左移。结果是运动衫的均衡价格下降，均衡数量下降。</p>
+<p>c.
+如果所有大学都要求学生穿合适的服装做早操，那么对运动衫的需求会增加，影响的是需求的决定因素（偏好/制度要求），使需求曲线右移。结果是运动衫的均衡价格上升，均衡数量上升。</p>
+<p>d.
+新织布机被发明出来后，运动衫的生产效率提高，生产成本下降，影响的是供给的决定因素（技术），使供给曲线右移。结果是运动衫的均衡价格下降，均衡数量上升。</p>
+<hr />
+<p><em><strong>番茄酱是热狗的互补品（以及调味品）。如果热狗价格上升，那么番茄酱市场会发生什么变动？番茄市场呢？番茄汁市场呢？橙汁市场呢？</strong></em></p>
+<p>热狗价格上升会减少人们对热狗的需求。由于番茄酱是热狗的互补品，番茄酱需求也会减少，使番茄酱需求曲线左移。结果是番茄酱的均衡价格下降，均衡数量下降。</p>
+<p>由于番茄是生产番茄酱的重要原材料，番茄酱需求减少也会降低对番茄的需求，使番茄需求曲线左移。结果是番茄价格下降，番茄数量下降。</p>
+<p>番茄价格下降后，生产番茄汁的成本降低，因此番茄汁的供给会增加，供给曲线右移。结果是番茄汁的均衡价格下降，均衡数量上升。</p>
+<p>由于橙汁和番茄汁更适合看作替代品，番茄汁价格下降后，一部分消费者会转向购买番茄汁，从而减少对橙汁的需求，使橙汁需求曲线左移。结果是橙汁的均衡价格下降，均衡数量下降。</p>
+<hr />
+<p><em><strong>比萨饼市场的需求与供给表如下：</strong></em></p>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">价格（美元）</th>
+<th style="text-align: right;">需求量（个）</th>
+<th style="text-align: right;">供给量（个）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">135</td>
+<td style="text-align: right;">26</td>
+</tr>
+<tr>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">104</td>
+<td style="text-align: right;">53</td>
+</tr>
+<tr>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">81</td>
+<td style="text-align: right;">81</td>
+</tr>
+<tr>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">68</td>
+<td style="text-align: right;">98</td>
+</tr>
+<tr>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">53</td>
+<td style="text-align: right;">110</td>
+</tr>
+<tr>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">39</td>
+<td style="text-align: right;">121</td>
+</tr>
+</tbody>
+</table>
+<p><em><strong>a.画出需求曲线与供给曲线。该市场上的均衡价格和均衡数量是多少？</strong></em></p>
+<p><em><strong>b.如果该市场上实际价格高于均衡价格，什么会使市场趋向于均衡？</strong></em></p>
+<p><em><strong>c.如果该市场上实际价格低于均衡价格，什么会使市场趋向于均衡？</strong></em></p>
+<p>a. 从表中可以看出，当价格为 6 美元时，需求量和供给量都为 81
+个，因此该市场的均衡价格是 6 美元，均衡数量是 81 个。</p>
+<p>b.
+如果市场上的实际价格高于均衡价格，那么供给量会大于需求量，市场出现过剩。卖者为了卖出积压的比萨饼，会主动降低价格。随着价格下降，需求量增加而供给量减少，市场会逐渐回到均衡。</p>
+<p>c.
+如果市场上的实际价格低于均衡价格，那么需求量会大于供给量，市场出现短缺。买者之间的竞争会推动价格上升。随着价格上升，需求量减少而供给量增加，市场也会逐渐回到均衡。</p>
+<hr />
+<p><em><strong>考虑以下事件：科学家发现，多吃橙子可以降低患糖尿病的风险；同时农民用了新的肥料,
+提高了橙子的产量。说明并解释这些变化对橙子的均衡价格和均衡数量有什么影响。</strong></em></p>
+<p>科学家发现多吃橙子有助于降低患糖尿病的风险，会提高消费者对橙子的偏好，因此橙子的需求曲线右移。与此同时，新的肥料提高了橙子的产量，相当于改进了生产技术或提高了生产效率，因此橙子的供给曲线也右移。</p>
+<p>当需求和供给同时增加时，橙子的均衡数量一定上升，因为无论哪一方变化更大，市场成交量都会扩大。</p>
+<p>但均衡价格则无法确定：如果需求增加的影响更强，价格会上升；如果供给增加的影响更强，价格会下降；如果两者影响大致相当，价格也可能基本不变。</p>
+<p>因此，<strong>橙子的均衡数量一定增加，而均衡价格不确定。</strong></p>
+<hr />
+<p><em><strong>因为贝果与奶酪通常一起食用，所以它们是互补品。</strong></em></p>
+<p><em><strong>a.我们观察到奶酪的均衡价格与贝果的均衡数量同时上升。什么因素会引起这种变动是面粉价格下降，还是牛奶价格下降？说明并解释你的答案。</strong></em></p>
+<p><em><strong>b.再假设奶酪的均衡价格上升了，但贝果的均衡数量减少了。什么因素会引起这种变动是面粉价格上升，还是牛奶价格上升？说明并解释你的答案。</strong></em></p>
+<p>a. 应当是<strong>面粉价格下降</strong>。</p>
+<p>原因是：面粉是贝果的投入品，面粉价格下降会降低贝果的生产成本，使贝果的供给曲线右移。这样一来，贝果的均衡数量会上升，价格会下降。由于贝果和奶酪是互补品，贝果变得更便宜后，人们会更多地同时购买奶酪，从而使奶酪的需求曲线右移，导致奶酪的均衡价格上升。</p>
+<p>b. 应当是<strong>牛奶价格上升</strong>。</p>
+<p>原因是：牛奶是奶酪的投入品，牛奶价格上升会提高奶酪的生产成本，使奶酪的供给曲线左移，从而导致奶酪的均衡价格上升。又因为奶酪和贝果是互补品，奶酪价格上升后，人们对贝果的需求会减少，使贝果的需求曲线左移，结果是贝果的均衡数量减少。</p>
+<hr />
+<p><em><strong>假设你们大学里篮球票的价格是由市场力量决定的。目前篮球票的需求与供给表如下：</strong></em></p>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">价格（美元）</th>
+<th style="text-align: right;">需求量（张）</th>
+<th style="text-align: right;">供给量（张）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">10000</td>
+<td style="text-align: right;">8000</td>
+</tr>
+<tr>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">8000</td>
+<td style="text-align: right;">8000</td>
+</tr>
+<tr>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">6000</td>
+<td style="text-align: right;">8000</td>
+</tr>
+<tr>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">4000</td>
+<td style="text-align: right;">8000</td>
+</tr>
+<tr>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">2000</td>
+<td style="text-align: right;">8000</td>
+</tr>
+</tbody>
+</table>
+<p><em><strong>a.画出需求曲线和供给曲线。这条供给曲线有什么不寻常之处？为什么会是这样的？</strong></em></p>
+<p><em><strong>b.篮球票的均衡价格和均衡数量是多少？</strong></em></p>
+<p><em><strong>c.你们大学明年计划招收5000名学生。新增的学生对篮球票的需求表如下：</strong></em></p>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">价格（美元）</th>
+<th style="text-align: right;">需求量（张）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">4000</td>
+</tr>
+<tr>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">3000</td>
+</tr>
+<tr>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">2000</td>
+</tr>
+<tr>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">1000</td>
+</tr>
+<tr>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">0</td>
+</tr>
+</tbody>
+</table>
+<p><em><strong>现在把原来的需求表与新生的需求表加在一起,计算整个大学的新需求表。新的均衡价格和均衡数量是多少？</strong></em></p>
+<p>a.
+这条供给曲线的特殊之处在于：<strong>供给量在每一个价格水平下都固定为
+8000
+张</strong>，也就是一条垂直的供给曲线。原因在于篮球比赛的座位数量受场馆容量限制，短期内无论票价高低，可供出售的门票总数都只有
+8000 张。</p>
+<p>b. 由表中数据可知，当票价为 <strong>8 美元</strong>
+时，需求量正好等于供给量，都是 <strong>8000 张</strong>，因此均衡价格是
+<strong>8 美元</strong>，均衡数量是 <strong>8000 张</strong>。</p>
+<p>c. 把原有学生和新增 5000 名学生的需求相加，可得新的需求表：</p>
+<table>
+<thead>
+<tr>
+<th>价格（美元）</th>
+<th style="text-align: right;">原需求量</th>
+<th style="text-align: right;">新生需求量</th>
+<th style="text-align: right;">总需求量</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>4</td>
+<td style="text-align: right;">10000</td>
+<td style="text-align: right;">4000</td>
+<td style="text-align: right;">14000</td>
+</tr>
+<tr>
+<td>8</td>
+<td style="text-align: right;">8000</td>
+<td style="text-align: right;">3000</td>
+<td style="text-align: right;">11000</td>
+</tr>
+<tr>
+<td>12</td>
+<td style="text-align: right;">6000</td>
+<td style="text-align: right;">2000</td>
+<td style="text-align: right;">8000</td>
+</tr>
+<tr>
+<td>16</td>
+<td style="text-align: right;">4000</td>
+<td style="text-align: right;">1000</td>
+<td style="text-align: right;">5000</td>
+</tr>
+<tr>
+<td>20</td>
+<td style="text-align: right;">2000</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2000</td>
+</tr>
+</tbody>
+</table>
+<p>由新需求表可知，当票价为 <strong>12 美元</strong>
+时，总需求量等于供给量，都是 <strong>8000
+张</strong>。因此，新的均衡价格是 <strong>12
+美元</strong>，新的均衡数量仍然是 <strong>8000 张</strong>。</p>
 ]]></content>
   </entry>
 </search>

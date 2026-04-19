@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 8.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.css" integrity="sha256-gkQVf8UKZgQ0HyuxL/VnacadJ+D2Kox2TCEBuNQg5+w=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"purewhitevk.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.27.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":"default"},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false,"trigger":"auto"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="\(\require{physics}\) 本次是第4章节 “供给与需求的市场力量” 的部分问题和解答。  什么是竞争市场？简单描述一种不是完全竞争的市场。 竞争市场是指有大量买者和卖者、任何单个参与者都不能显著影响市场价格的市场，市场价格主要由供求共同决定。 一种不是完全竞争的市场是电信市场。无论在中国还是美国，基础电信运营商数量都比较少，市场由少数大型运营商主导，进入门槛高（牌照、基础设施、频">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《经济学原理》问题与应用（4）">
+<meta property="og:url" content="https://purewhitevk.github.io/posts/8bc7/">
+<meta property="og:site_name" content="PureWhiteVK&#39;s Blog">
+<meta property="og:description" content="\(\require{physics}\) 本次是第4章节 “供给与需求的市场力量” 的部分问题和解答。  什么是竞争市场？简单描述一种不是完全竞争的市场。 竞争市场是指有大量买者和卖者、任何单个参与者都不能显著影响市场价格的市场，市场价格主要由供求共同决定。 一种不是完全竞争的市场是电信市场。无论在中国还是美国，基础电信运营商数量都比较少，市场由少数大型运营商主导，进入门槛高（牌照、基础设施、频">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-04-13T13:38:23.000Z">
+<meta property="article:modified_time" content="2026-04-13T13:38:23.000Z">
+<meta property="article:author" content="PureWhiteVK">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://purewhitevk.github.io/posts/8bc7/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://purewhitevk.github.io/posts/8bc7/","path":"posts/8bc7/","title":"《经济学原理》问题与应用（4）"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>《经济学原理》问题与应用（4） | PureWhiteVK's Blog</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.umd.js" integrity="sha256-a+H7FYzJv6oU2hfsfDGM2Ohw/cR9v+hPfxHCLdmCrE8=" crossorigin="anonymous" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+  <script src="/js/third-party/fancybox.js" defer></script>
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js" defer></script>
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">PureWhiteVK's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">30</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">6</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">30</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-overview-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="PureWhiteVK"
+      src="/images/Touma.Kazusa.256x256.png">
+  <p class="site-author-name" itemprop="name">PureWhiteVK</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">30</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/PureWhiteVK" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;PureWhiteVK" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:yl_xiao@outlook.com" title="E-Mail → mailto:yl_xiao@outlook.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://purewhitevk.github.io/posts/8bc7/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/Touma.Kazusa.256x256.png">
+      <meta itemprop="name" content="PureWhiteVK">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PureWhiteVK's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="《经济学原理》问题与应用（4） | PureWhiteVK's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          《经济学原理》问题与应用（4）
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2026/04/13 21:38:23" itemprop="dateCreated datePublished" datetime="2026-04-13T21:38:23+08:00">2026/04/13</time>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>5.5k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>20 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p><span class="math inline">\(\require{physics}\)</span></p>
+<p>本次是第4章节 “供给与需求的市场力量” 的部分问题和解答。</p>
+<hr />
+<p><em><strong>什么是竞争市场？简单描述一种不是完全竞争的市场。</strong></em></p>
+<p>竞争市场是指有大量买者和卖者、任何单个参与者都不能显著影响市场价格的市场，市场价格主要由供求共同决定。</p>
+<p>一种不是完全竞争的市场是电信市场。无论在中国还是美国，基础电信运营商数量都比较少，市场由少数大型运营商主导，进入门槛高（牌照、基础设施、频谱资源等），单个企业对价格和服务有一定影响力，因此它更接近寡头竞争，而不是完全竞争市场。</p>
+<p>除了这个外，还有
+民航、操作系统、搜索引擎、社交平台、自来水/电力、高铁客运等公共事业等。</p>
+<div class="markdown-alert markdown-alert-tip">
+<div class="markdown-alert-title">
+<svg class="octicon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M8 1.5c-2.363 0-4 1.69-4 3.75 0 .984.424 1.625.984 2.304l.214.253c.223.264.47.556.673.848.284.411.537.896.621 1.49a.75.75 0 0 1-1.484.211c-.04-.282-.163-.547-.37-.847a8.456 8.456 0 0 0-.542-.68c-.084-.1-.173-.205-.268-.32C3.201 7.75 2.5 6.766 2.5 5.25 2.5 2.31 4.863 0 8 0s5.5 2.31 5.5 5.25c0 1.516-.701 2.5-1.328 3.259-.095.115-.184.22-.268.319-.207.245-.383.453-.541.681-.208.3-.33.565-.37.847a.751.751 0 0 1-1.485-.212c.084-.593.337-1.078.621-1.489.203-.292.45-.584.673-.848.075-.088.147-.173.213-.253.561-.679.985-1.32.985-2.304 0-2.06-1.637-3.75-4-3.75ZM5.75 12h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5ZM6 15.25a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75Z"></path></svg>
+<strong>Tip</strong>
+</div>
+<p>这类市场通常具有高固定成本和高进入壁垒，并伴随显著规模经济，因此一般不会呈现完全竞争结构，而更可能表现为寡头或自然垄断。
+寡头是少数企业主导的市场结构，自然垄断是由高固定成本和显著规模经济导致的一家供给更有效的市场结构；前者不一定是企业主动垄断，后者主要由行业技术与成本条件自然形成，但两者都可能需要反垄断或价格监管。</p>
+</div>
+<span id="more"></span>
+
+<hr />
+<p><em><strong>给市场均衡下定义。描述使市场向均衡变动的力量。</strong></em></p>
+<p>市场均衡是指市场价格达到某一水平时，商品的需求量恰好等于供给量的状态。在这种状态下，市场既不存在短缺，也不存在过剩。</p>
+<p>使市场向均衡变动的力量是价格调整机制。</p>
+<p>当市场价格高于均衡价格时，供给量大于需求量，市场出现过剩。卖者为了卖出商品会降低价格，价格下降后，需求量增加而供给量减少，市场逐渐回到均衡。</p>
+<p>当市场价格低于均衡价格时，需求量大于供给量，市场出现短缺。买者之间的竞争会推动价格上升，价格上升后，需求量减少而供给量增加，市场也会逐渐回到均衡。</p>
+<p>进一步说，当买者数量、收入、偏好、相关商品价格、预期等因素变化时，需求曲线会移动；当卖者数量、投入品价格、技术、预期等因素变化时，供给曲线会移动，从而使市场形成新的均衡价格和均衡数量。</p>
+<hr />
+<p><em><strong>描述市场经济中价格的作用。</strong></em></p>
+<p>市场经济中，价格起着传递信息和配置资源的作用。价格反映了一种物品的稀缺程度，并引导买者和卖者作出决策。当某种商品价格上升时，表明这种商品相对更稀缺，生产者会增加供给，消费者会减少需求；当价格下降时，则会产生相反的作用。因此，价格能够引导资源流向社会更需要、价值更高的用途。</p>
+<hr />
+<p><em><strong>（开放讨论题）</strong></em></p>
+<ol type="1">
+<li><p><em><strong>疫情之后，如果允许卖者涨价，你认为你能找到更多还是更少的消毒洗手液？为什么？</strong></em></p></li>
+<li><p><em><strong>一场灾难后，如果不允许稀缺资源的卖者涨价以使供求平衡，你认为这些资源又该如何分配呢？你的建议有什么好处？在现实中可能遇到什么问题？</strong></em></p></li>
+</ol>
+<p>（个人思考结合 AI 整理）</p>
+<blockquote>
+<p>原始思考：第一题我觉得不好说，因为通过供求图来分析，在这种情况下即会引起需求的变化，也会引起供给的变化，那么此时一定会出现价格的上涨，但是市场上留存的消毒洗手液数量却无法确定，有可能多也有可能少，但是从我的体感而言，消毒洗手液更难买到是真的？第二题的话，在中国的一些做法是在社区进行分配（也就是挨家挨户发送，同时限制出行，尽可能不在外走动），这也可以保证每个人的基本安全，但是如果有更多的需求，则还是需要买，这种情况下，感觉还是会有“黑市”在监管下铤而走险？</p>
+</blockquote>
+<p>（感觉 AI 把 70 分的答案变成了 100 分）</p>
+<ol type="1">
+<li>如果允许卖者涨价，通常会更容易买到消毒洗手液。</li>
+</ol>
+<p>原因是价格上涨会同时带来两种作用：一方面，较高的价格会抑制一部分需求，减少抢购和囤积；另一方面，较高的价格也会激励卖者增加供给，或者把更多货物运到需求更强的地区。因此，从经济学角度看，涨价通常会缓解短缺，使商品更容易被找到。</p>
+<p>不过，现实中的疫情情境往往更复杂。即使价格上涨，供给增加也需要时间，而且生产、物流和原材料本身也可能受到冲击。因此，短期内人们仍然可能感到“很难买到”。也就是说，允许涨价通常有助于缓解短缺，但不意味着短时间内一定能完全解决买不到的问题。</p>
+<ol start="2" type="1">
+<li>如果不允许稀缺资源的卖者通过涨价来实现供求平衡，那么这些资源就需要通过非价格方式分配，例如政府或社区统一配给、限量购买、预约购买，或者优先供应医护人员、老人和其他急需人群。</li>
+</ol>
+<p>这种做法的好处是更强调公平，能够保障每个人的基本生活需要，也可以优先保护最急需资源的人群，避免低收入者因为价格过高而完全得不到必需品。</p>
+<p>但在现实中，这种分配方式也会遇到一些问题。例如，行政分配的成本较高，真正最急需的人未必总能最快拿到资源；同时还可能出现排队、抢购、关系优先、资源错配等情况。如果官方价格长期低于市场供求关系所反映的水平，还可能诱发倒卖和黑市交易。因此，在灾难情境下，非价格分配能提高公平性，但往往也要付出效率下降和监管成本上升的代价。</p>
+<hr />
+<p><em><strong>用供求图分别解释以下表述：</strong></em></p>
+<p><em><strong>a.“当寒流袭击佛罗里达时，全美超市中的橙汁价格都上升。”</strong></em></p>
+<p><em><strong>b.“当每年夏天新英格兰地区天气变暖时，加勒比地区旅馆房间的价格直线下降。”</strong></em></p>
+<p><em><strong>c.“当中东爆发战争时，汽油价格上升，而 SUV
+的价格下降。”</strong></em></p>
+<p>a.
+寒流袭击佛罗里达会损害橙子产量，从而减少橙汁供给，使橙汁供给曲线左移。在需求变化不大的情况下，橙汁的均衡价格上升，均衡数量下降。</p>
+<p>b.
+每年夏天新英格兰地区天气变暖后，人们对前往加勒比地区度假的需求会减少，因此加勒比地区旅馆房间的需求曲线左移。在供给变化不大的情况下，旅馆房间的均衡价格下降，均衡数量也下降。</p>
+<p>c. 中东爆发战争会减少原油供给，从而推高汽油价格。由于 SUV
+更耗油，消费者对 SUV 的需求会下降，使 SUV 的需求曲线左移。因此，SUV
+的均衡价格下降，均衡数量也下降。</p>
+<hr />
+<p><em><strong>“对练习本需求的增加提高了练习本的需求量，但没有提高练习本的供给量。”这句话是对还是错？解释原因。</strong></em></p>
+<p>这句话是错的。</p>
+<p>对练习本需求的增加表示需求曲线右移，而不是同一条需求曲线上的点移动。需求增加后，市场的均衡价格会上升，均衡数量也会上升。</p>
+<p>在这个过程中，供给曲线本身并没有移动，因此“供给”没有增加；但是由于价格上升，生产者愿意提供更多练习本，所以“供给量”会增加。</p>
+<p>因此，更准确的说法应该是：对练习本需求的增加会提高练习本的均衡价格和均衡数量；虽然不会提高练习本的供给，但会提高练习本的供给量。</p>
+<hr />
+<p><em><strong>考虑家用旅行车市场。根据下面所列的事件，分别指出哪一种需求或供给的决定因素将受到影响。</strong></em></p>
+<p><em><strong>同时还要指出，需求或供给是增加了，还是减少了。然后画图说明该事件对家用旅行车价格和数量的影响。</strong></em></p>
+<p><em><strong>a.人们决定多生孩子。</strong></em></p>
+<p><em><strong>b.钢铁工人罢工，致使钢铁价格上涨。</strong></em></p>
+<p><em><strong>c.工程师开发出用于家用旅行车生产的新的自动化机器。</strong></em></p>
+<p><em><strong>d. SUV 价格上升。</strong></em></p>
+<p><em><strong>e.股市崩溃减少了人们的财产。</strong></em></p>
+<p>a.
+人们决定多生孩子，会提高家庭对家用旅行车的需求，影响的是需求的决定因素（买者数量与偏好），使需求曲线右移。结果是家用旅行车的均衡价格上升，均衡数量上升。</p>
+<p>b.
+钢铁价格上涨会提高家用旅行车生产成本，影响的是供给的决定因素（投入品价格），使供给曲线左移。结果是家用旅行车的均衡价格上升，均衡数量下降。</p>
+<p>c.
+新的自动化机器提高生产效率、降低单位成本，影响的是供给的决定因素（技术），使供给曲线右移。结果是家用旅行车的均衡价格下降，均衡数量上升。</p>
+<p>d. SUV 与家用旅行车属于替代品。SUV
+价格上升后，部分消费者会转向购买家用旅行车，影响的是需求的决定因素（相关商品价格），使家用旅行车需求曲线右移。结果是家用旅行车的均衡价格上升，均衡数量上升。</p>
+<p>e.
+股市崩溃减少居民财产，通常会降低对家用旅行车这类正常品的需求，影响的是需求的决定因素（收入/财富），使需求曲线左移。结果是家用旅行车的均衡价格下降，均衡数量下降。</p>
+<hr />
+<p><em><strong>考虑视频流媒体服务、电视和电影院门票市场。</strong></em></p>
+<p><em><strong>a.对每一对物品，确定它们是互补品还是替代品：</strong></em>
+- <em><strong>视频流媒体服务和电视</strong></em> -
+<em><strong>视频流媒体服务和电影票</strong></em></p>
+<ul>
+<li><em><strong>电视和电影票</strong></em></li>
+</ul>
+<p><em><strong>b.假设技术进步降低了制造电视的成本。画一个图说明电视市场会发生什么变动。</strong></em></p>
+<p><em><strong>c.再画两个图说明电视市场的变动如何影响视频流媒体服务市场和电影票市场。</strong></em></p>
+<p>a.
+视频流媒体服务和电视是互补品，因为电视可以提升在家观看流媒体内容的体验。视频流媒体服务和电影票是替代品，因为它们都能满足观看影视内容的需求。电视和电影票也属于替代品，因为电视使用体验改善后，人们更可能选择在家观看内容，而不是去电影院。</p>
+<p>b.
+技术进步降低了制造电视的成本，这会提高电视的供给，使电视供给曲线右移。因此，电视的均衡价格下降，均衡数量上升。</p>
+<p>c.
+由于电视和视频流媒体服务是互补品，电视价格下降会增加人们对视频流媒体服务的需求，使其需求曲线右移，从而提高视频流媒体服务的均衡价格和均衡数量。由于电视和电影票是替代品，电视价格下降会减少人们对电影票的需求，使电影票的需求曲线左移，从而降低电影票的均衡价格和均衡数量。</p>
+<hr />
+<p><em><strong>过去40年间，技术进步降低了电脑芯片的成本。你认为这会对电脑市场产生怎样的影响？对电脑软件呢？对打字机呢？</strong></em></p>
+<p>技术进步降低了电脑芯片的成本，这会降低电脑的生产成本，从而提高电脑的供给，使电脑供给曲线右移。结果是电脑的均衡价格下降，均衡数量上升。</p>
+<p>由于电脑软件和电脑属于互补品，电脑价格下降、电脑普及率提高后，人们对电脑软件的需求会增加，使电脑软件的需求曲线右移。结果是电脑软件的均衡价格上升，均衡数量上升。</p>
+<p>而打字机和电脑在一定程度上属于替代品。随着电脑变得更便宜、更普及，消费者对打字机的需求会减少，使打字机的需求曲线左移。结果是打字机的均衡价格下降，均衡数量下降，长期来看甚至可能逐渐退出市场。</p>
+<hr />
+<p><em><strong>运用供求图说明下列事件对运动衫市场的影响。</strong></em></p>
+<p><em><strong>a.南卡罗来纳的飓风损害了棉花作物。</strong></em></p>
+<p><em><strong>b.皮夹克价格下降。</strong></em></p>
+<p><em><strong>c.所有大学都要求学生穿合适的服装做早操。</strong></em></p>
+<p><em><strong>d.新织布机被发明出来。</strong></em></p>
+<p>a.
+南卡罗来纳的飓风损害了棉花作物，会减少棉花供给并提高棉花价格，从而提高运动衫的生产成本，影响的是供给的决定因素（投入品价格），使运动衫供给曲线左移。结果是运动衫的均衡价格上升，均衡数量下降。</p>
+<p>b.
+皮夹克和运动衫更适合看作替代品。皮夹克价格下降后，部分消费者会转向购买皮夹克，从而减少对运动衫的需求，影响的是需求的决定因素（相关商品价格），使运动衫需求曲线左移。结果是运动衫的均衡价格下降，均衡数量下降。</p>
+<p>c.
+如果所有大学都要求学生穿合适的服装做早操，那么对运动衫的需求会增加，影响的是需求的决定因素（偏好/制度要求），使需求曲线右移。结果是运动衫的均衡价格上升，均衡数量上升。</p>
+<p>d.
+新织布机被发明出来后，运动衫的生产效率提高，生产成本下降，影响的是供给的决定因素（技术），使供给曲线右移。结果是运动衫的均衡价格下降，均衡数量上升。</p>
+<hr />
+<p><em><strong>番茄酱是热狗的互补品（以及调味品）。如果热狗价格上升，那么番茄酱市场会发生什么变动？番茄市场呢？番茄汁市场呢？橙汁市场呢？</strong></em></p>
+<p>热狗价格上升会减少人们对热狗的需求。由于番茄酱是热狗的互补品，番茄酱需求也会减少，使番茄酱需求曲线左移。结果是番茄酱的均衡价格下降，均衡数量下降。</p>
+<p>由于番茄是生产番茄酱的重要原材料，番茄酱需求减少也会降低对番茄的需求，使番茄需求曲线左移。结果是番茄价格下降，番茄数量下降。</p>
+<p>番茄价格下降后，生产番茄汁的成本降低，因此番茄汁的供给会增加，供给曲线右移。结果是番茄汁的均衡价格下降，均衡数量上升。</p>
+<p>由于橙汁和番茄汁更适合看作替代品，番茄汁价格下降后，一部分消费者会转向购买番茄汁，从而减少对橙汁的需求，使橙汁需求曲线左移。结果是橙汁的均衡价格下降，均衡数量下降。</p>
+<hr />
+<p><em><strong>比萨饼市场的需求与供给表如下：</strong></em></p>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">价格（美元）</th>
+<th style="text-align: right;">需求量（个）</th>
+<th style="text-align: right;">供给量（个）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">135</td>
+<td style="text-align: right;">26</td>
+</tr>
+<tr>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">104</td>
+<td style="text-align: right;">53</td>
+</tr>
+<tr>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">81</td>
+<td style="text-align: right;">81</td>
+</tr>
+<tr>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">68</td>
+<td style="text-align: right;">98</td>
+</tr>
+<tr>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">53</td>
+<td style="text-align: right;">110</td>
+</tr>
+<tr>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">39</td>
+<td style="text-align: right;">121</td>
+</tr>
+</tbody>
+</table>
+<p><em><strong>a.画出需求曲线与供给曲线。该市场上的均衡价格和均衡数量是多少？</strong></em></p>
+<p><em><strong>b.如果该市场上实际价格高于均衡价格，什么会使市场趋向于均衡？</strong></em></p>
+<p><em><strong>c.如果该市场上实际价格低于均衡价格，什么会使市场趋向于均衡？</strong></em></p>
+<p>a. 从表中可以看出，当价格为 6 美元时，需求量和供给量都为 81
+个，因此该市场的均衡价格是 6 美元，均衡数量是 81 个。</p>
+<p>b.
+如果市场上的实际价格高于均衡价格，那么供给量会大于需求量，市场出现过剩。卖者为了卖出积压的比萨饼，会主动降低价格。随着价格下降，需求量增加而供给量减少，市场会逐渐回到均衡。</p>
+<p>c.
+如果市场上的实际价格低于均衡价格，那么需求量会大于供给量，市场出现短缺。买者之间的竞争会推动价格上升。随着价格上升，需求量减少而供给量增加，市场也会逐渐回到均衡。</p>
+<hr />
+<p><em><strong>考虑以下事件：科学家发现，多吃橙子可以降低患糖尿病的风险；同时农民用了新的肥料,
+提高了橙子的产量。说明并解释这些变化对橙子的均衡价格和均衡数量有什么影响。</strong></em></p>
+<p>科学家发现多吃橙子有助于降低患糖尿病的风险，会提高消费者对橙子的偏好，因此橙子的需求曲线右移。与此同时，新的肥料提高了橙子的产量，相当于改进了生产技术或提高了生产效率，因此橙子的供给曲线也右移。</p>
+<p>当需求和供给同时增加时，橙子的均衡数量一定上升，因为无论哪一方变化更大，市场成交量都会扩大。</p>
+<p>但均衡价格则无法确定：如果需求增加的影响更强，价格会上升；如果供给增加的影响更强，价格会下降；如果两者影响大致相当，价格也可能基本不变。</p>
+<p>因此，<strong>橙子的均衡数量一定增加，而均衡价格不确定。</strong></p>
+<hr />
+<p><em><strong>因为贝果与奶酪通常一起食用，所以它们是互补品。</strong></em></p>
+<p><em><strong>a.我们观察到奶酪的均衡价格与贝果的均衡数量同时上升。什么因素会引起这种变动是面粉价格下降，还是牛奶价格下降？说明并解释你的答案。</strong></em></p>
+<p><em><strong>b.再假设奶酪的均衡价格上升了，但贝果的均衡数量减少了。什么因素会引起这种变动是面粉价格上升，还是牛奶价格上升？说明并解释你的答案。</strong></em></p>
+<p>a. 应当是<strong>面粉价格下降</strong>。</p>
+<p>原因是：面粉是贝果的投入品，面粉价格下降会降低贝果的生产成本，使贝果的供给曲线右移。这样一来，贝果的均衡数量会上升，价格会下降。由于贝果和奶酪是互补品，贝果变得更便宜后，人们会更多地同时购买奶酪，从而使奶酪的需求曲线右移，导致奶酪的均衡价格上升。</p>
+<p>b. 应当是<strong>牛奶价格上升</strong>。</p>
+<p>原因是：牛奶是奶酪的投入品，牛奶价格上升会提高奶酪的生产成本，使奶酪的供给曲线左移，从而导致奶酪的均衡价格上升。又因为奶酪和贝果是互补品，奶酪价格上升后，人们对贝果的需求会减少，使贝果的需求曲线左移，结果是贝果的均衡数量减少。</p>
+<hr />
+<p><em><strong>假设你们大学里篮球票的价格是由市场力量决定的。目前篮球票的需求与供给表如下：</strong></em></p>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">价格（美元）</th>
+<th style="text-align: right;">需求量（张）</th>
+<th style="text-align: right;">供给量（张）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">10000</td>
+<td style="text-align: right;">8000</td>
+</tr>
+<tr>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">8000</td>
+<td style="text-align: right;">8000</td>
+</tr>
+<tr>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">6000</td>
+<td style="text-align: right;">8000</td>
+</tr>
+<tr>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">4000</td>
+<td style="text-align: right;">8000</td>
+</tr>
+<tr>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">2000</td>
+<td style="text-align: right;">8000</td>
+</tr>
+</tbody>
+</table>
+<p><em><strong>a.画出需求曲线和供给曲线。这条供给曲线有什么不寻常之处？为什么会是这样的？</strong></em></p>
+<p><em><strong>b.篮球票的均衡价格和均衡数量是多少？</strong></em></p>
+<p><em><strong>c.你们大学明年计划招收5000名学生。新增的学生对篮球票的需求表如下：</strong></em></p>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">价格（美元）</th>
+<th style="text-align: right;">需求量（张）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">4000</td>
+</tr>
+<tr>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">3000</td>
+</tr>
+<tr>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">2000</td>
+</tr>
+<tr>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">1000</td>
+</tr>
+<tr>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">0</td>
+</tr>
+</tbody>
+</table>
+<p><em><strong>现在把原来的需求表与新生的需求表加在一起,计算整个大学的新需求表。新的均衡价格和均衡数量是多少？</strong></em></p>
+<p>a.
+这条供给曲线的特殊之处在于：<strong>供给量在每一个价格水平下都固定为
+8000
+张</strong>，也就是一条垂直的供给曲线。原因在于篮球比赛的座位数量受场馆容量限制，短期内无论票价高低，可供出售的门票总数都只有
+8000 张。</p>
+<p>b. 由表中数据可知，当票价为 <strong>8 美元</strong>
+时，需求量正好等于供给量，都是 <strong>8000 张</strong>，因此均衡价格是
+<strong>8 美元</strong>，均衡数量是 <strong>8000 张</strong>。</p>
+<p>c. 把原有学生和新增 5000 名学生的需求相加，可得新的需求表：</p>
+<table>
+<thead>
+<tr>
+<th>价格（美元）</th>
+<th style="text-align: right;">原需求量</th>
+<th style="text-align: right;">新生需求量</th>
+<th style="text-align: right;">总需求量</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>4</td>
+<td style="text-align: right;">10000</td>
+<td style="text-align: right;">4000</td>
+<td style="text-align: right;">14000</td>
+</tr>
+<tr>
+<td>8</td>
+<td style="text-align: right;">8000</td>
+<td style="text-align: right;">3000</td>
+<td style="text-align: right;">11000</td>
+</tr>
+<tr>
+<td>12</td>
+<td style="text-align: right;">6000</td>
+<td style="text-align: right;">2000</td>
+<td style="text-align: right;">8000</td>
+</tr>
+<tr>
+<td>16</td>
+<td style="text-align: right;">4000</td>
+<td style="text-align: right;">1000</td>
+<td style="text-align: right;">5000</td>
+</tr>
+<tr>
+<td>20</td>
+<td style="text-align: right;">2000</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2000</td>
+</tr>
+</tbody>
+</table>
+<p>由新需求表可知，当票价为 <strong>12 美元</strong>
+时，总需求量等于供给量，都是 <strong>8000
+张</strong>。因此，新的均衡价格是 <strong>12
+美元</strong>，新的均衡数量仍然是 <strong>8000 张</strong>。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>PureWhiteVK
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://purewhitevk.github.io/posts/8bc7/" title="《经济学原理》问题与应用（4）">https://purewhitevk.github.io/posts/8bc7/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/ffc6/" rel="prev" title="《经济学原理》问题与应用（3）">
+                  <i class="fa fa-angle-left"></i> 《经济学原理》问题与应用（3）
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">PureWhiteVK</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">90k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">5:27</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>
