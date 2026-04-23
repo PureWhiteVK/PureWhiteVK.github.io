@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 8.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.css" integrity="sha256-gkQVf8UKZgQ0HyuxL/VnacadJ+D2Kox2TCEBuNQg5+w=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"purewhitevk.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.27.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":"default"},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false,"trigger":"auto"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="\(\require{physics}\) 本次是第5章节 “弹性及其应用” 的部分问题和解答。  选择题1. 如果某种物品的需求___弹性___1，该物品的价格上升会引起消费者对该物品的支出总量减少 A. 收入，小于 B. 收入，大于 C. 价格，小于 D. 价格，大于 答案：D  支出总量与总收益：消费者的支出总量即卖者的总收益（\(TR &#x3D; P \times Q\)）。 价格弹性与总收益的关">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《经济学原理》问题与应用（5）">
+<meta property="og:url" content="https://purewhitevk.github.io/posts/77c6/">
+<meta property="og:site_name" content="PureWhiteVK&#39;s Blog">
+<meta property="og:description" content="\(\require{physics}\) 本次是第5章节 “弹性及其应用” 的部分问题和解答。  选择题1. 如果某种物品的需求___弹性___1，该物品的价格上升会引起消费者对该物品的支出总量减少 A. 收入，小于 B. 收入，大于 C. 价格，小于 D. 价格，大于 答案：D  支出总量与总收益：消费者的支出总量即卖者的总收益（\(TR &#x3D; P \times Q\)）。 价格弹性与总收益的关">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-04-19T15:28:17.000Z">
+<meta property="article:modified_time" content="2026-04-19T15:28:17.000Z">
+<meta property="article:author" content="PureWhiteVK">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://purewhitevk.github.io/posts/77c6/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://purewhitevk.github.io/posts/77c6/","path":"posts/77c6/","title":"《经济学原理》问题与应用（5）"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>《经济学原理》问题与应用（5） | PureWhiteVK's Blog</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.umd.js" integrity="sha256-a+H7FYzJv6oU2hfsfDGM2Ohw/cR9v+hPfxHCLdmCrE8=" crossorigin="anonymous" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+  <script src="/js/third-party/fancybox.js" defer></script>
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js" defer></script>
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">PureWhiteVK's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">30</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">6</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">31</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-overview-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="PureWhiteVK"
+      src="/images/Touma.Kazusa.256x256.png">
+  <p class="site-author-name" itemprop="name">PureWhiteVK</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">31</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/PureWhiteVK" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;PureWhiteVK" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:yl_xiao@outlook.com" title="E-Mail → mailto:yl_xiao@outlook.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://purewhitevk.github.io/posts/77c6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/Touma.Kazusa.256x256.png">
+      <meta itemprop="name" content="PureWhiteVK">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PureWhiteVK's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="《经济学原理》问题与应用（5） | PureWhiteVK's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          《经济学原理》问题与应用（5）
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2026/04/19 23:28:17" itemprop="dateCreated datePublished" datetime="2026-04-19T23:28:17+08:00">2026/04/19</time>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>6.9k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>25 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p><span class="math inline">\(\require{physics}\)</span></p>
+<p>本次是第5章节 “弹性及其应用” 的部分问题和解答。</p>
+<hr />
+<p><em><strong>选择题1.
+如果某种物品的需求___弹性___1，该物品的价格上升会引起消费者对该物品的支出总量减少</strong></em></p>
+<p><em><strong>A. 收入，小于</strong></em></p>
+<p><em><strong>B. 收入，大于</strong></em></p>
+<p><em><strong>C. 价格，小于</strong></em></p>
+<p><em><strong>D. 价格，大于</strong></em></p>
+<p>答案：D</p>
+<ol type="1">
+<li><strong>支出总量与总收益</strong>：消费者的支出总量即卖者的总收益（<span
+class="math inline">\(TR = P \times Q\)</span>）。</li>
+<li><strong>价格弹性与总收益的关系</strong>：
+<ul>
+<li>当需求<strong>富有弹性</strong>（弹性 <span
+class="math inline">\(&gt;
+1\)</span>）时，价格上升引起的数量减少比例大于价格上升比例，导致总收益减少。</li>
+<li>当需求<strong>缺乏弹性</strong>（弹性 <span
+class="math inline">\(&lt;
+1\)</span>）时，价格上升引起的数量减少比例小于价格上升比例，导致总收益增加。</li>
+</ul></li>
+<li><strong>结论</strong>：题目要求价格上升导致支出减少，说明需求富有弹性（价格弹性大于
+1）。</li>
+</ol>
+<span id="more"></span>
+
+<hr />
+<p><em><strong>选择题2. 市民 Rohan 比市民 Gondor
+把收入中更大的份额用于食物，其原因可能是：</strong></em></p>
+<p><em><strong>A. Rohan 购买的食物价格更低，而且需求价格弹性是
+零</strong></em></p>
+<p><em><strong>B. Rohan 购买的食物价格更低，而且需求价格弹性是
+0.5</strong></em></p>
+<p><em><strong>C. Rohan 的收入更低，而且需求收入弹性是
+0.5</strong></em></p>
+<p><em><strong>D. Rohan 的收入更低，而且需求收入弹性是
+1.5</strong></em></p>
+<p>答案：C</p>
+<ol type="1">
+<li><strong>恩格尔定律</strong>：食物通常是必需品，其需求收入弹性在
+<span class="math inline">\(0\)</span> 到 <span
+class="math inline">\(1\)</span> 之间（缺乏收入弹性）。</li>
+<li><strong>收入与支出占比</strong>：由于食物是必需品，随着收入增加，由于数量增长有限，食物支出占收入的比例（份额）会下降。</li>
+<li><strong>推论</strong>：Rohan 将更大份额用于食物，说明他的收入相对于
+Gondor 更低，且食物的需求收入弹性小于 1。</li>
+</ol>
+<hr />
+<p><em><strong>选择题3.
+在竞争市场上，农民采用了会最终减少他们收入的新技术是因为_____。</strong></em></p>
+<p><em><strong>A. 每个农民都是价格接收者</strong></em></p>
+<p><em><strong>B. 农民目光短浅</strong></em></p>
+<p><em><strong>C. 相关法规要求农民使用最好的技术</strong></em></p>
+<p><em><strong>D. 消费者迫使农民降价</strong></em></p>
+<p>答案：A</p>
+<ol type="1">
+<li><strong>完全竞争市场的特征</strong>：农产品市场通常被视为近乎“完全竞争”的市场。其核心特征是<strong>产品同质化</strong>（你的小麦和我的小麦没有区别），且存在<strong>极大量的生产者</strong>。</li>
+<li><strong>什么是“价格接收者” (Price Taker)</strong>：
+<ul>
+<li>由于单个农民的产量占整个市场总额的比例微乎其微（例如万分之一），无论他是个别增产还是个别停产，都无法对市场均衡价格产生任何可观测的影响。</li>
+<li>因此，农民只能被动接受由市场供求关系决定的既定价格，而没有定价权。</li>
+</ul></li>
+<li><strong>个体的“理性选择”</strong>：
+<ul>
+<li>当新技术出现时，如果某个农民采用它，他的成本会降低或产量会增加。在市场价格暂时不变的情况下，他的收入一定会增加。</li>
+<li>如果他不采用，而别的农民采用了，他就会在成本竞争中处于劣势。因此，<strong>采用新技术是每个独立农民的最优策略</strong>。</li>
+</ul></li>
+<li><strong>结局的“非理性” (合成谬误)</strong>：
+<ul>
+<li>当<strong>所有</strong>农民都基于个体理性采用了新技术，市场总供给曲线会大幅向右移动。</li>
+<li>由于食物是生活必需品，<strong>需求价格弹性通常很小（缺乏弹性）</strong>。这意味着要消耗掉多出来的产量，价格必须不成比例地剧烈下降。</li>
+<li>最终：价格下降的百分比超过了产量增加的百分比，导致整个行业的总收益
+<span class="math inline">\(TR(P \times Q)\)</span>
+反而下降了。这就是著名的“丰收悖论”。</li>
+</ul></li>
+</ol>
+<hr />
+<p><em><strong>选择题4.
+随着时间的推移，技术进步增加了消费者的收入并降低了智能手机的价格。如果智能手机的需求收入弹性大于___且需求价格弹性大于___，那么上述因素都会增加消费者对智能手机的支出。</strong></em></p>
+<p><em><strong>A. 0,0</strong></em></p>
+<p><em><strong>B. 0,1</strong></em></p>
+<p><em><strong>C. 1,0</strong></em></p>
+<p><em><strong>D. 1,1</strong></em></p>
+<p>答案：B</p>
+<ol type="1">
+<li><strong>收入因素</strong>：收入增加时，只要需求收入弹性大于
+0（正常物品），需求就会增加，从而增加支出。</li>
+<li><strong>价格因素</strong>：价格降低时，只有当需求<strong>富有价格弹性</strong>（弹性
+<span class="math inline">\(&gt;
+1\)</span>）时，需求量增加的比例才会超过价格下降的比例，从而导致总支出增加。</li>
+<li><strong>综合</strong>：要使两个因素都增加支出，需要需求收入弹性
+<span class="math inline">\(&gt; 0\)</span> 且需求价格弹性 <span
+class="math inline">\(&gt; 1\)</span>。</li>
+</ol>
+<hr />
+<p><em><strong>复习题1.
+如果需求是富有弹性的，价格上升会如何改变总收益？解释原因。</strong></em></p>
+<p>在这种情况下，总收益会减少。</p>
+<p>根据总收益公式 <span class="math inline">\(TR = P \times
+Q\)</span>，当需求富有弹性时，价格上升导致的需求量下降比例要大于价格上升的比例。因为数量减少对总收益的影响超过了单价上升的影响，所以最终总收益下降。</p>
+<hr />
+<p><em><strong>复习题2.
+如果一种物品的需求收人弹性小于零，那么我们把这种物品称为什么？</strong></em></p>
+<p>这种物品被称为<strong>低档物品 (Inferior Goods)</strong>。</p>
+<p>这类物品的特征是：当消费者收入增加时，其需求量反而会下降。</p>
+<p>正如廉价基础款显卡与高端游戏显卡的对比，</p>
+<ul>
+<li>当经济条件受限时，用户可能选择廉价显卡保障基本使用；</li>
+<li>但随着收入提高，用户往往会转向能带来更好体验的高端系列（正常物品），从而减少对低档替代品的消费。</li>
+</ul>
+<hr />
+<p><em><strong>复习题3.
+如果一种物品可获取的量是固定的，而且再也不能多生产，那么它的供给价格弹性是多少？</strong></em></p>
+<p>它的供给价格弹性是
+<strong>0</strong>。这被称为<strong>完全无弹性</strong>。</p>
+<p>在这种情况下，无论价格如何上升或下降，由于生产上限已经锁死，供给量都保持不变。</p>
+<p>在图像上，这表现为一条<strong>垂直的供给曲线</strong>。</p>
+<hr />
+<p><em><strong>复习题4.
+一场风暴摧毁了蚕豆苗的一半。当需求非常富有弹性还是非常缺乏弹性时，这个事件对农民的伤害更大？解释原因。</strong></em></p>
+<p><strong>当需求非常富有弹性时，对农民的伤害更大。</strong></p>
+<ol type="1">
+<li><strong>供给端变动</strong>：风暴摧毁了一半蚕豆苗，意味着供给大幅减少，供给曲线向左移动，由于供给减少，均衡价格必然上升。</li>
+<li><strong>需求端反应与收益影响</strong>：
+<ul>
+<li><strong>当需求非常富有弹性时</strong>：消费者对价格高度敏感。虽然价格上升了，但需求量会由于价格上涨而出现暴跌（减少比例远超价格上升比例）。这就导致农民手里剩下的蚕豆苗不仅卖不掉多少，而且价格上涨带来的红利完全无法抵消产量的巨额亏损，总收益大幅减少。</li>
+<li><strong>当需求缺乏弹性时</strong>：无论价格如何上涨，消费者的需求量变化都非常有限。只要价格涨幅超过一倍（以覆盖
+50% 的产量损失），总收益甚至可能逆势增加。</li>
+</ul></li>
+</ol>
+<p>因此，如果需求富有弹性，产量损失伴随着销量由于价格激增而“跳水”，农民将遭受最沉重的经济打击。</p>
+<hr />
+<p><em><strong>1.在下列每一对物品中，你认为哪一种物品的需求更富有弹性？为什么？</strong></em></p>
+<p><em><strong>a. 指定教科书或悬疑小说。</strong></em></p>
+<p><em><strong>b. Billie
+Eilish的唱片或一般流行音乐唱片。</strong></em></p>
+<p><em><strong>c.
+在未来6个月内乘坐地铁的人数或在未来5年内乘坐地铁的人数。</strong></em></p>
+<p><em><strong>d. 根汁汽水或水。</strong></em></p>
+<p><strong>悬疑小说</strong>更富有弹性。由于教科书是学校指定的教学必需品，缺乏相近替代品，即使涨价学生也必须购买。而悬疑小说属于娱乐消费，替代品（如言情小说、漫画等）非常丰富，价格上涨时消费者很容易转向其他娱乐方式。</p>
+<p><strong>一般流行音乐唱片</strong>更富有弹性。这符合“市场定义”的原则：定义笼统的市场（如一般流行乐）通常比定义具体的市场（如特定艺人的唱片）替代品更多，因而更有弹性。对于特定艺人的唱片，粉丝忠诚度往往使其需求相对缺乏弹性。</p>
+<p><strong>未来5年内乘坐地铁的人数</strong>更富有弹性。物品的需求在长期内比短期内更富有弹性。短期内（6个月）人们的交通习惯和生活地点很难改变，只能接受票价波动；但在长期（5年），人们可以通过购买电动车、拼车或搬到离公司更近的地方来应对票价上涨。</p>
+<p><strong>根汁汽水</strong>更富有弹性。水是维持生命的生存必需品，几乎没有替代品，需求价格弹性极小。而根汁汽水只是饮料的一种，属于非必需品，涨价时消费者可以轻易选择喝其他饮料或干脆喝水。</p>
+<hr />
+<p><em><strong>2.假设公务乘客和度假乘客对从芝加哥到迈阿密之间航班机票的需求如下：</strong></em></p>
+<table>
+<thead>
+<tr>
+<th>价格（美元）</th>
+<th>需求量（张）（公务乘客）</th>
+<th>需求量（张）（度假乘客）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>150</td>
+<td>2100</td>
+<td>1000</td>
+</tr>
+<tr>
+<td>200</td>
+<td>2000</td>
+<td>800</td>
+</tr>
+<tr>
+<td>250</td>
+<td>1900</td>
+<td>600</td>
+</tr>
+<tr>
+<td>300</td>
+<td>1800</td>
+<td>400</td>
+</tr>
+</tbody>
+</table>
+<p><em><strong>a.当票价从200美元上升到250美元时，公务乘客的需求价格弹性为多少？度假乘客的需求价格弹性为多少？（用中点法计算。）</strong></em></p>
+<p><em><strong>b.为什么度假乘客与公务乘客的需求价格弹性不同？</strong></em></p>
+<p>a. 使用中点法计算： 价格变动百分比 <span class="math inline">\(= (250
+- 200) / 225 = 22.2\%\)</span>。</p>
+<ul>
+<li><strong>公务乘客</strong>：数量变动百分比 <span
+class="math inline">\(= (2000 - 1900) / 1950 = 5.1\%\)</span>，弹性
+<span class="math inline">\(E_d = 5.1\% / 22.2\% \approx
+0.23\)</span>。</li>
+<li><strong>度假乘客</strong>：数量变动百分比 <span
+class="math inline">\(= (800 - 600) / 700 = 28.6\%\)</span>，弹性 <span
+class="math inline">\(E_d = 28.6\% / 22.2\% \approx 1.29\)</span>。</li>
+</ul>
+<p>b. 度假乘客的需求弹性远大于公务乘客。原因在于：</p>
+<ol type="1">
+<li><strong>必需品 vs
+奢侈品</strong>：对公务乘客而言，出差通常是工作必需且有时效性，缺乏替代方案（必需品）；而度假属于消费性支出（奢侈品），价格过高时可以轻易取消计划。</li>
+<li><strong>替代品可获得性</strong>：度假者如果觉得机票贵，可以选择其他目的地、其他出行方式（如开车）或者改变旅行时间；公务出差往往地点和时间固定，难以替代。</li>
+<li><strong>支付约束</strong>：公务支出通常可以报销，乘客对价格敏感度低；而度假者是自掏腰包，每一分钱的涨价都会直接影响决策。</li>
+</ol>
+<hr />
+<p><em><strong>3.假设取暖用油的需求价格弹性在短期中是0.2，而在长期中是0.7。</strong></em></p>
+<p><em><strong>a.如果每加仑取暖用油的价格从1.8美元上升到2.2美元，短期中取暖用油的需求量会发生什么变动？长期中呢？（用中点法计算。）</strong></em></p>
+<p><em><strong>b.为什么这种弹性取决于时间长短？</strong></em></p>
+<p>a. 根据中点法计算价格变动百分比： 价格差为 <span
+class="math inline">\(2.2 - 1.8 = 0.4\)</span>，中点价格为 <span
+class="math inline">\((2.2 + 1.8) / 2 = 2.0\)</span>。 价格变动百分比
+<span class="math inline">\(= 0.4 / 2.0 = 20\%\)</span>。</p>
+<ul>
+<li><strong>短期中</strong>：取暖用油的需求量将减少 <span
+class="math inline">\(0.2 \times 20\% = 4\%\)</span>。</li>
+<li><strong>长期中</strong>：取暖用油的需求量将减少 <span
+class="math inline">\(0.7 \times 20\% = 14\%\)</span>。</li>
+</ul>
+<p>b. 这种差异源于<strong>替代方案的可获得性随时间增加</strong>。</p>
+<p>在短期内，消费者的取暖设备（如油炉）和生活方式已经固定，即使价格上涨也难以迅速改变，因此需求缺乏弹性（0.2）；</p>
+<p>但在长期，消费者有足够的时间更换更节能的设备、改用电能或天然气等替代能源，甚至通过改善房屋隔热性能来大幅减少用油量，因此需求更富有弹性（0.7）。</p>
+<hr />
+<p><em><strong>4.一种物品的价格变动使其需求量减少了30%
+而这种物品的总收益增加了15%。</strong></em></p>
+<p><em><strong>这种物品的需求曲线是富有弹性还是缺乏弹性的？解释原因。</strong></em></p>
+<p>这种物品的需求曲线是<strong>缺乏弹性</strong>的。</p>
+<p><strong>原因</strong>：总收益 <span class="math inline">\(TR = P
+\times Q\)</span>。题目中提到需求量 <span
+class="math inline">\(Q\)</span> 减少了，说明价格 <span
+class="math inline">\(P\)</span>
+一定是上升了。当价格上升且需求量减少时，如果总收益反而增加了，说明<strong>价格上升带来的收益增加量超过了需求量减少带来的收益损失</strong>。由于数量变动比例小于价格变动比例，其需求价格弹性小于
+1，因此该需求曲线是缺乏弹性的。</p>
+<p><strong>通过数学计算也可以验证</strong>：</p>
+<p>若设初始状态为 <span class="math inline">\(P_1,
+Q_1\)</span>，变动后为 <span class="math inline">\(P_2, Q_2\)</span>。
+已知 <span class="math inline">\(Q_2 = (1 - 30\%) Q_1 = 0.7
+Q_1\)</span>；<span class="math inline">\(TR_2 = (1 + 15\%) TR_1 = 1.15
+TR_1\)</span>。 根据 <span class="math inline">\(TR = P \times
+Q\)</span> 可得： <span class="math display">\[P_2 = \frac{TR_2}{Q_2} =
+\frac{1.15 TR_1}{0.7 Q_1} \approx 1.64 P_1\]</span> 这意味着价格上升了约
+<span
+class="math inline">\(64\%\)</span>。使用中点法计算（或简单比例观察）：需求量变动百分比（<span
+class="math inline">\(30\%\)</span>）远小于价格变动百分比（约为 <span
+class="math inline">\(64\%\)</span>），弹性系数 <span
+class="math inline">\(E_d = 30\% / 64\% \approx 0.47 &lt;
+1\)</span>。结论依然成立。</p>
+<hr />
+<p><em><strong>5.咖啡和甜甜圈是互补品。两者的需求都缺乏弹性。一场飚风摧毁了一半咖啡豆。用图形回答以下问题，并做适当标记：</strong></em></p>
+<p><em><strong>a.咖啡豆的价格会发生什么变化？</strong></em></p>
+<p><em><strong>b.一杯咖啡的价格会发生什么变化？用于咖啡的总支出会发生什么变化？</strong></em></p>
+<p><em><strong>c.甜甜圈的价格会发生什么变化？用于甜甜圈的总支出会发生什么变化？</strong></em></p>
+<p>a.
+咖啡豆的供给大幅减少，供给曲线向左移动。由于需求相对稳定，这会导致咖啡豆的均衡价格显著上涨。</p>
+<p>b.
+作为咖啡的主要原材料，咖啡豆价格上涨导致一杯咖啡的生产成本增加，从而使得咖啡的供给曲线向左移动，引起咖啡均衡价格上涨。由于题目设定咖啡的需求是<strong>缺乏弹性</strong>的，价格上涨的比例将大于需求量减少的比例，因此消费者用于咖啡的总支出会增加。</p>
+<p>c.
+由于咖啡和甜甜圈是互补品，咖啡价格的上涨会导致咖啡需求量减少，进而引起甜甜圈的需求曲线向左移动（需求减少）。这会导致甜甜圈的均衡价格下降。对于总支出，由于甜甜圈的需求同样是<strong>缺乏弹性</strong>的，价格下降导致的支出减少程度将大于由于价格下降带来的微弱需求增幅，且叠加需求曲线左移的影响，最终用于甜甜圈的总支出会减少。</p>
+<hr />
+<p><em><strong>6.上个月阿司匹林的价格大幅度上升，而销售量仍然不变。五个人提出了各自的解释：</strong></em></p>
+<p><em><strong>Meredith：需求增加了，但供给完全无弹性。</strong></em></p>
+<p><em><strong>Alex：需求增加了，但它是完全无弹性的。</strong></em></p>
+<p><em><strong>Miranda：需求增加了，但供给同时减少了。</strong></em></p>
+<p><em><strong>Richard：供给减少了，但需求是单位弹性。</strong></em></p>
+<p><em><strong>Owen：供给减少了，但需求是完全无弹性的。</strong></em></p>
+<p><em><strong>谁的解释可能是正确的？用图形解释你的答案。</strong></em></p>
+<p>“销售量”指销售的<strong>数量</strong> (<span
+class="math inline">\(Q\)</span>)。题目要求价格 <span
+class="math inline">\(P \uparrow\)</span> 而数量 <span
+class="math inline">\(Q\)</span>
+不变。可以对五人的说法逐一进行逻辑筛选：</p>
+<ol type="1">
+<li><strong>Meredith
+是正确的</strong>：如果供给完全无弹性（供给曲线垂直），需求增加（需求曲线右移）会顺着垂直的供给曲线向上滑动，导致价格上升而均衡数量保持在原始水平。</li>
+<li><strong>Alex
+是错误的</strong>：如果垂直的需求曲线向右移动（需求增加），均衡数量必然会增加，价格也会上升，这不符合“销售量不变”的条件。</li>
+<li><strong>Miranda 是正确的</strong>：如果需求增加（<span
+class="math inline">\(D\)</span> 右移）的同时供给减少（<span
+class="math inline">\(S\)</span>
+左移），且两者变动的幅度刚好抵消了对数量的影响，那么数量就会保持不变，而价格则会由于双重压力而剧烈上升。</li>
+<li><strong>Richard
+是错误的</strong>：如果需求是单位弹性，价格上升必然导致需求量下降，不会保持不变。</li>
+<li><strong>Owen
+是正确的</strong>：如果需求完全无弹性（需求曲线垂直），供给减少（供给曲线左移）会顺着垂直的需求曲线向上滑动，导致价格上升而均衡数量保持不变。</li>
+</ol>
+<p><strong>结论</strong>：<strong>Meredith、Miranda 和 Owen</strong>
+的解释在逻辑上都是可能的。</p>
+<hr />
+<ol start="7" type="1">
+<li><em><strong>假设你的比萨饼需求表如下：</strong></em></li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>价格（美元）</th>
+<th>需求量（张）（收入=20000美元）</th>
+<th>需求量（张）（收入=24000美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>8</td>
+<td>40</td>
+<td>50</td>
+</tr>
+<tr>
+<td>10</td>
+<td>32</td>
+<td>45</td>
+</tr>
+<tr>
+<td>12</td>
+<td>24</td>
+<td>30</td>
+</tr>
+<tr>
+<td>14</td>
+<td>16</td>
+<td>20</td>
+</tr>
+<tr>
+<td>16</td>
+<td>8</td>
+<td>12</td>
+</tr>
+</tbody>
+</table>
+<p><em><strong>a.用中点法计算如果（i）你的收人是2万美元和（ii）你的收人是2.4万美元，当比萨饼价格从8美元上升到10美元时你的需求价格弹性。</strong></em>
+<em><strong>b.计算如果（i）价格是12美元和（ii）价格是16
+美元，当你的收人从2万美元增加到2.4万美元时你的需求收人弹性。</strong></em></p>
+<p>使用中点法：</p>
+<ol type="1">
+<li><strong>需求价格弹性</strong>（价格变动百分比为 <span
+class="math inline">\((10 - 8) / 9 \approx 22.22\%\)</span>）：
+<ul>
+<li>收入为 <span class="math inline">\(2\)</span> 万美元时：数量从 <span
+class="math inline">\(40\)</span> 降至 <span
+class="math inline">\(32\)</span>，变动百分比为 <span
+class="math inline">\((40 - 32) / 36 \approx 22.22\%\)</span>。弹性
+<span class="math inline">\(E_d = 22.22\% / 22.22\% = 1\)</span>。</li>
+<li>收入为 <span class="math inline">\(2.4\)</span> 万美元时：数量从
+<span class="math inline">\(50\)</span> 降至 <span
+class="math inline">\(45\)</span>，变动百分比为 <span
+class="math inline">\((50 - 45) / 47.5 \approx 10.53\%\)</span>。弹性
+<span class="math inline">\(E_d = 10.53\% / 22.22\% \approx
+0.47\)</span>（即 <span class="math inline">\(9/19\)</span>）。</li>
+</ul></li>
+<li><strong>需求收入弹性</strong>（收入变动百分比为 <span
+class="math inline">\((24000 - 20000) / 22000 \approx
+18.18\%\)</span>）：
+<ul>
+<li>价格为 <span class="math inline">\(12\)</span> 美元时：数量从 <span
+class="math inline">\(24\)</span> 增至 <span
+class="math inline">\(30\)</span>，变动百分比为 <span
+class="math inline">\((30 - 24) / 27 \approx 22.22\%\)</span>。弹性
+<span class="math inline">\(E_I = 22.22\% / 18.18\% \approx
+1.22\)</span>。</li>
+<li>价格为 <span class="math inline">\(16\)</span> 美元时：数量从 <span
+class="math inline">\(8\)</span> 增至 <span
+class="math inline">\(12\)</span>，变动百分比为 <span
+class="math inline">\((12 - 8) / 10 = 40\%\)</span>。弹性 <span
+class="math inline">\(E_I = 40\% / 18.18\% \approx 2.2\)</span>。</li>
+</ul></li>
+</ol>
+<div class="markdown-alert markdown-alert-tip">
+<div class="markdown-alert-title">
+<svg class="octicon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M8 1.5c-2.363 0-4 1.69-4 3.75 0 .984.424 1.625.984 2.304l.214.253c.223.264.47.556.673.848.284.411.537.896.621 1.49a.75.75 0 0 1-1.484.211c-.04-.282-.163-.547-.37-.847a8.456 8.456 0 0 0-.542-.68c-.084-.1-.173-.205-.268-.32C3.201 7.75 2.5 6.766 2.5 5.25 2.5 2.31 4.863 0 8 0s5.5 2.31 5.5 5.25c0 1.516-.701 2.5-1.328 3.259-.095.115-.184.22-.268.319-.207.245-.383.453-.541.681-.208.3-.33.565-.37.847a.751.751 0 0 1-1.485-.212c.084-.593.337-1.078.621-1.489.203-.292.45-.584.673-.848.075-.088.147-.173.213-.253.561-.679.985-1.32.985-2.304 0-2.06-1.637-3.75-4-3.75ZM5.75 12h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5ZM6 15.25a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75Z"></path></svg>
+<strong>Tip</strong>
+</div>
+<p>观察 7.b 的计算结果可以发现，当价格处于 16
+美元的高位时，需求收入弹性显著提高到了 2.2（远大于
+1.22）。这反映了一个有趣的经济现象：对于比萨饼这种物品，当价格越高、生活成本越重时，它反而会变得更加“富有收入弹性”——即<strong>你的收入变动对比萨消费的影响，在高价位下比在低价位下要剧烈得多。</strong></p>
+</div>
+<hr />
+<p><em><strong>8.《纽约时报》（1996年2月17日）报道，在地铁票价上升之后乘客减少了：“1995年12月，即价格上涨25美分到了1.5美元的第一个月以后，乘客减少了近四百万人次，比上一年的12月减少了4.3%。”</strong></em>
+<em><strong>a.用这些数据估算地铁乘客的需求价格弹性。</strong></em>
+<em><strong>b.根据你的估算，当票价上升时，地铁当局的收益会有什么变化？</strong></em>
+<em><strong>c.为什么你估算的弹性可能是不可靠的？</strong></em></p>
+<ol type="1">
+<li><p><strong>需求价格弹性估算</strong>：</p>
+<p>价格从中点法计算：<span class="math inline">\(P_1 =
+1.25\)</span>，<span class="math inline">\(P_2 =
+1.50\)</span>。中点价格为 <span
+class="math inline">\(1.375\)</span>。</p>
+<p>价格变动百分比 <span class="math inline">\(= 0.25 / 1.375 \approx
+18.18\%\)</span>。</p>
+<p>需求量变动百分比 <span class="math inline">\(= 4.3\%\)</span>。</p>
+<p>需求价格弹性 <span class="math inline">\(E_d = 4.3\% / 18.18\%
+\approx 0.237\)</span>。</p></li>
+<li><p><strong>收益变化</strong>：由于需求价格弹性 <span
+class="math inline">\(0.237 &lt;
+1\)</span>（缺乏弹性），价格上升时，需求量下降的比例小于价格上升的比例，因此地铁当局的总收益会<strong>增加</strong>。</p></li>
+<li><p><strong>可靠性分析</strong>：这个估算可能不可靠。题目对比的是“上一年的
+12
+月”，但在这一年时间里，除了票价，还有很多因素可能发生了变化（即“其他条件不变”的假设不成立）。例如：</p>
+<ul>
+<li><strong>经济环境</strong>：如果 1995
+年底纽约经济不景气，失业增加，那么乘客减少可能一部分是因为通勤需求整体下降，而非仅因票价上升。</li>
+<li><strong>替代品</strong>：如果这一年里油价下跌或共享出行（当时可能是班车服务）更便宜了，也会导致乘客流失。</li>
+<li><strong>季节性/特殊事件</strong>：如果 1994 年 12 月天气极佳而 1995
+年 12 月发生了暴风雪， 4.3% 的降幅中很大一部分可能归因于天气。
+如果这些因素共同导致了乘客减少，那么单纯归因于票价的“弹性”就被高估了；反之，如果今年本来需求在猛增，那么真实的弹性可能比
+0.237 更高。</li>
+</ul></li>
+</ol>
+<hr />
+<p><em><strong>9.两个司机 Thelma和 Louise
+分别开车到加油站。</strong></em>
+<em><strong>在看价格之前，Thelma说：“我想加
+5加仑汽油。”Louise说：“我想加20美元汽油。”</strong></em>
+<em><strong>两个司机的需求价格弹性分别是多少？</strong></em></p>
+<ol type="1">
+<li><strong>Thelma 的需求价格弹性为
+0</strong>（完全无弹性）：因为无论价格如何变动，她需要的汽油数量始终固定为
+<span class="math inline">\(5\)</span>
+加仑。这意味着数量变动的百分比永远为 <span
+class="math inline">\(0\)</span>，根据弹性公式 <span
+class="math inline">\(E_d = \frac{\% \Delta Q}{\% \Delta
+P}\)</span>，其结果为 <span
+class="math inline">\(0\)</span>。在图形上对应一条垂直的需求曲线。</li>
+<li><strong>Louise 的需求价格弹性为
+1</strong>（单位弹性）：因为她的总支出固定为 <span
+class="math inline">\(20\)</span> 美元。根据公式 <span
+class="math inline">\(\text{总支出} = P \times Q =
+20\)</span>，当价格上升一定比例时，需求量必须下降相同的比例才能保持乘积不变。这种“总支出保持不变”的特征正是单位弹性的定义。在图形上对应一条正双曲线。</li>
+</ol>
+<hr />
+<p><em><strong>10．考虑针对吸烟的公共政策。</strong></em>
+<em><strong>a.研究表明，香烟的需求价格弹性大约是0.4。如果现在每盒香烟为5美元，并且政府想减少20%的吸烟量，那么它应该将香烟价格提高多少？</strong></em>
+<em><strong>b.如果政府永久性地提高香烟价格，这项政策对从现在起1年内吸烟量的影响更大，还是对从现在起5年内吸烟量的影响更大？</strong></em>
+<em><strong>c.研究还发现，青少年对香烟的需求价格弹性大于成年人。为什么这可能是正确的？</strong></em></p>
+<ol type="1">
+<li><p><strong>价格调整计算</strong>：根据弹性公式 <span
+class="math inline">\(E_d = \frac{\% \Delta Q}{\% \Delta
+P}\)</span>，已知 <span class="math inline">\(E_d = 0.4\)</span>，<span
+class="math inline">\(\% \Delta Q = 20\%\)</span>。</p>
+<p>价格变动百分比 <span class="math inline">\(\% \Delta P = 20\% / 0.4 =
+50\%\)</span>。</p>
+<p>价格应提高：<span class="math inline">\(5 \times 50\% = 2.5\)</span>
+美元。即政府应将价格提高到 <span class="math inline">\(7.5\)</span>
+美元。</p></li>
+<li><p><strong>长期与短期影响</strong>：对 <strong>5 年内</strong>
+的吸烟量影响更大。因为物品的需求在长期中比在短期中更富有弹性。</p>
+<p>在 1 年内，很多烟民由于成瘾性难以迅速改变习惯；但在 5
+年的跨度下，更高的价格会促使更多人尝试戒烟，或者让潜在的新烟民（年轻人）放弃尝试。</p></li>
+<li><p><strong>青少年弹性更大的原因</strong>：</p>
+<ul>
+<li><strong>预算约束</strong>：青少年的收入（零花钱）通常远低于成年人，香烟支出占其总预算的份额更高，因此对价格波动更敏感。</li>
+<li><strong>成瘾程度</strong>：成年烟民往往有长期的烟瘾，生理依赖性强（需求更缺乏弹性）；而青少年大多处于尝试阶段，成瘾程度较低，更容易受价格信号引导致使行为改变。</li>
+<li><strong>同伴压力与替代性</strong>：青少年更易受社交因素影响，当价格过高导致群体性吸烟减少时，这种影响会通过社交网络放大。</li>
+</ul></li>
+</ol>
+<hr />
+<p><em><strong>11.你是一位博物馆馆长。博物馆经营缺乏资金，</strong></em>
+<em><strong>因此你决定增加收益。你应该提高还是降低门票的价格？解释原因。</strong></em></p>
+<p>应该<strong>降低</strong>门票价格。</p>
+<p>博物馆的需求通常是<strong>富有弹性</strong>的（弹性 <span
+class="math inline">\(&gt;
+1\)</span>）。这是因为博物馆有许多相近的替代品，如电影院、图书馆、美术馆、主题公园或其他娱乐活动。当博物馆门票价格降低时，吸引到的参观人数（需求量）增加的比例会大于价格下降的比例，根据总收益公式
+<span class="math inline">\(TR = P \times
+Q\)</span>，这种“数量效应”将超过“价格效应”，从而导致总收益增加，缓解资金缺乏的问题。</p>
+<hr />
+<p><em><strong>12.请解释下列情况为什么可能是正确的：全世界范围内的干早会增加农民通过出售粮食得到的总收入，但如果只有堪萨斯州出现干旱，堪萨斯州农民得到的总收入就会减少</strong></em></p>
+<p>这取决于<strong>市场定义的广度</strong>以及由此产生的<strong>需求弹性差异</strong>：</p>
+<ol type="1">
+<li><strong>全球范围内干旱</strong>：此时考察的是<strong>整个粮食市场</strong>。由于粮食是基本生活必需品，且几乎没有替代品，其需求是<strong>缺乏弹性</strong>的。当全球干旱导致供给大幅减少时，市场均衡价格会剧烈上涨。价格上涨的比例会远超过产量减少的比例，因此农民作为一个整体，总收入会增加（即“丰收悖论”的逆过程）。</li>
+<li><strong>仅堪萨斯州干旱</strong>：此时考察的是<strong>堪萨斯州农民面临的需求</strong>。对于全球市场而言，单一区域（如堪萨斯州）提供的小麦具有<strong>极强的替代性</strong>（买家可以轻易转向爱荷华州或国外进口）。根据“市场定义越窄，弹性越大”的原则，堪萨斯农民面临的是一个<strong>富有弹性</strong>的局部需求。即使该州减产，也无法显著推高全球粮食价格。结果是：产量大幅减少而价格基本不变，导致堪萨斯农民的总收入必然减少。</li>
+</ol>
+<p><em><strong>讨论题</strong></em></p>
+<p><em><strong>1.如果网约车的价格上升了10%，你对它们的使用会减少多少？你的需求价格弹性是多少？</strong></em></p>
+<p><em><strong>2.你认为为什么在这个市场上供给比需求更有弹性？</strong></em></p>
+<ol type="1">
+<li><p>使用量减少将小于 10%，即需求是<strong>缺乏弹性</strong>的（弹性
+<span class="math inline">\(&lt; 1\)</span>）。</p>
+<p>打车通常发生在特定场景下（如携带大件行李、旅途劳累、深夜通勤、目的地公共交通不便等），在这些情况下，公交或地铁并不是有效的替代品，<strong>即网约车具有一定的“必需品”属性</strong>。只要价格上涨仍在可接受范围内，由于缺乏同质量的替代方案，乘客对价格的敏感度较低。</p></li>
+<li><p>在这个市场上，<strong>供给端（司机）比需求端（乘客）更富有弹性</strong>。</p></li>
+</ol>
+<ul>
+<li><strong>需求端（乘客）</strong>：打车需求往往具有即时性和特定约束（如赶时间、行李多），此时<strong>公交或地铁的“替代性”较差，乘客的可选择空间有限，因此需求相对缺乏弹性</strong>。</li>
+<li><strong>供给端（司机）</strong>：对于司机而言，网约车只是其劳动力的一种变现方式。由于其拥有的技能（驾驶）通用性极强，且行业切换成本较低，他可以轻易选择送快递、跑同城货运或做代驾等作为“替代职业”。<strong>由于司机拥有的“逃避选项”更多，他们对收益波动的反应自然比没得选的乘客更灵敏</strong>。</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>PureWhiteVK
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://purewhitevk.github.io/posts/77c6/" title="《经济学原理》问题与应用（5）">https://purewhitevk.github.io/posts/77c6/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/8bc7/" rel="prev" title="《经济学原理》问题与应用（4）">
+                  <i class="fa fa-angle-left"></i> 《经济学原理》问题与应用（4）
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">PureWhiteVK</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">97k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">5:52</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>
