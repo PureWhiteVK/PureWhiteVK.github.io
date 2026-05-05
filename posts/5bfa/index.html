@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 8.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.css" integrity="sha256-gkQVf8UKZgQ0HyuxL/VnacadJ+D2Kox2TCEBuNQg5+w=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"purewhitevk.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.27.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":"default"},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false,"trigger":"auto"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="最近碰到一个需求是要在 Windows 上交叉编译 Linux 程序，用于做 Windows 代码的跨平台编译检查，发现里面弯弯绕绕还挺多的（主要是 Windows 和 Linux 系统层面的一些差异需要注意），就通过一篇博客记录一下整个交叉编译的流程，也加深对于交叉编译流程的理解。 整个交叉编译包含2个主要步骤：sysroot 准备和交叉编译工具链的构建。  sysroot 在 WSL 上使用">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Windows 交叉编译 Linux 程序">
+<meta property="og:url" content="https://purewhitevk.github.io/posts/5bfa/">
+<meta property="og:site_name" content="PureWhiteVK&#39;s Blog">
+<meta property="og:description" content="最近碰到一个需求是要在 Windows 上交叉编译 Linux 程序，用于做 Windows 代码的跨平台编译检查，发现里面弯弯绕绕还挺多的（主要是 Windows 和 Linux 系统层面的一些差异需要注意），就通过一篇博客记录一下整个交叉编译的流程，也加深对于交叉编译流程的理解。 整个交叉编译包含2个主要步骤：sysroot 准备和交叉编译工具链的构建。  sysroot 在 WSL 上使用">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/5bfa/image-20260505212830069.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/5bfa/image-20260505213158260.png">
+<meta property="article:published_time" content="2026-04-25T11:43:06.000Z">
+<meta property="article:modified_time" content="2026-04-25T11:43:06.000Z">
+<meta property="article:author" content="PureWhiteVK">
+<meta property="article:tag" content="CMake">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="cross-compile">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://purewhitevk.github.io/posts/5bfa/image-20260505212830069.png">
+
+
+<link rel="canonical" href="https://purewhitevk.github.io/posts/5bfa/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://purewhitevk.github.io/posts/5bfa/","path":"posts/5bfa/","title":"Windows 交叉编译 Linux 程序"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Windows 交叉编译 Linux 程序 | PureWhiteVK's Blog</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.umd.js" integrity="sha256-a+H7FYzJv6oU2hfsfDGM2Ohw/cR9v+hPfxHCLdmCrE8=" crossorigin="anonymous" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+  <script src="/js/third-party/fancybox.js" defer></script>
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js" defer></script>
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">PureWhiteVK's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">31</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">6</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">32</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-wsl"><span class="nav-number">1.</span> <span class="nav-text">安装 WSL</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%BC%E5%85%A5-wsl-%E9%95%9C%E5%83%8F"><span class="nav-number">1.1.</span> <span class="nav-text">导入 WSL 镜像</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%AF%E9%80%89%E5%88%9B%E5%BB%BA%E6%99%AE%E9%80%9A%E7%94%A8%E6%88%B7"><span class="nav-number">1.2.</span> <span class="nav-text">（可选）创建普通用户</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%AF%E9%80%89%E6%9B%B4%E6%8D%A2%E8%BD%AF%E4%BB%B6%E6%BA%90"><span class="nav-number">1.3.</span> <span class="nav-text">（可选）更换软件源</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%87%86%E5%A4%87-sysroot"><span class="nav-number">2.</span> <span class="nav-text">准备 sysroot</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E4%BE%9D%E8%B5%96"><span class="nav-number">2.1.</span> <span class="nav-text">安装依赖</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96-rootfs"><span class="nav-number">2.2.</span> <span class="nav-text">初始化 rootfs</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%9B%E5%85%A5-rootfs"><span class="nav-number">2.3.</span> <span class="nav-text">进入 rootfs</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E4%BE%9D%E8%B5%96-1"><span class="nav-number">2.4.</span> <span class="nav-text">安装依赖</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA-sysroot"><span class="nav-number">2.5.</span> <span class="nav-text">创建 sysroot</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%93%E5%8C%85%E5%92%8C%E8%A7%A3%E5%8E%8B"><span class="nav-number">2.6.</span> <span class="nav-text">打包和解压</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-cygwin"><span class="nav-number">3.</span> <span class="nav-text">安装 Cygwin</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E4%BE%9D%E8%B5%96-2"><span class="nav-number">3.1.</span> <span class="nav-text">安装依赖</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F"><span class="nav-number">3.2.</span> <span class="nav-text">设置环境变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%AF%E9%80%89%E5%8D%B8%E8%BD%BD-cygwin"><span class="nav-number">3.3.</span> <span class="nav-text">（可选）卸载 Cygwin</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9E%84%E5%BB%BA%E4%BA%A4%E5%8F%89%E7%BC%96%E8%AF%91%E5%B7%A5%E5%85%B7%E9%93%BE"><span class="nav-number">4.</span> <span class="nav-text">构建交叉编译工具链</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E5%B7%A5%E4%BD%9C%E7%9B%AE%E5%BD%95"><span class="nav-number">4.1.</span> <span class="nav-text">配置工作目录</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-crosstool-ng"><span class="nav-number">4.2.</span> <span class="nav-text">安装 crosstool-ng</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%AF%E9%80%89%E9%85%8D%E7%BD%AE%E5%B7%A5%E5%85%B7%E9%93%BE"><span class="nav-number">4.3.</span> <span class="nav-text">（可选）配置工具链</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9E%84%E5%BB%BA%E5%B7%A5%E5%85%B7%E9%93%BE"><span class="nav-number">4.4.</span> <span class="nav-text">构建工具链</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E7%BC%96%E8%AF%91%E9%AA%8C%E8%AF%81"><span class="nav-number">4.5.</span> <span class="nav-text">基本编译验证</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%A4%E5%8F%89%E7%BC%96%E8%AF%91%E9%AA%8C%E8%AF%81cmake"><span class="nav-number">5.</span> <span class="nav-text">交叉编译验证（CMake）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#fmt"><span class="nav-number">5.1.</span> <span class="nav-text">{fmt}</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#catch2"><span class="nav-number">5.2.</span> <span class="nav-text">Catch2</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sqlite"><span class="nav-number">5.3.</span> <span class="nav-text">sqlite</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#abseil%E5%8F%8A-googletest"><span class="nav-number">5.4.</span> <span class="nav-text">Abseil（及 googletest）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#glfw"><span class="nav-number">5.5.</span> <span class="nav-text">GLFW</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-sysroot-%E5%A6%82%E4%BD%95%E5%87%86%E5%A4%87"><span class="nav-number">5.5.1.</span> <span class="nav-text">1. sysroot 如何准备</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-toolchain-focal-sysrootcmake-%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E8%83%BD%E5%83%8F-toolchaincmake-%E9%82%A3%E6%A0%B7%E6%9E%81%E7%AE%80"><span class="nav-number">5.5.2.</span> <span class="nav-text">2.
+toolchain-focal-sysroot.cmake 为什么不能像
+toolchain.cmake 那样极简</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-cmake-%E5%A6%82%E4%BD%95%E9%85%8D%E7%BD%AE%E4%B8%8E%E7%BC%96%E8%AF%91cygwin"><span class="nav-number">5.5.3.</span> <span class="nav-text">3. CMake
+如何配置与编译（Cygwin）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E5%9C%A8-wsl-%E9%87%8C%E8%BF%90%E8%A1%8C-offscreen"><span class="nav-number">5.5.4.</span> <span class="nav-text">4. 在 WSL 里运行
+offscreen</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#qt597"><span class="nav-number">5.6.</span> <span class="nav-text">Qt（5.9.7）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#boost155"><span class="nav-number">5.7.</span> <span class="nav-text">Boost（1.55）</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="PureWhiteVK"
+      src="/images/Touma.Kazusa.256x256.png">
+  <p class="site-author-name" itemprop="name">PureWhiteVK</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">32</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">31</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/PureWhiteVK" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;PureWhiteVK" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:yl_xiao@outlook.com" title="E-Mail → mailto:yl_xiao@outlook.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://purewhitevk.github.io/posts/5bfa/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/Touma.Kazusa.256x256.png">
+      <meta itemprop="name" content="PureWhiteVK">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PureWhiteVK's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Windows 交叉编译 Linux 程序 | PureWhiteVK's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Windows 交叉编译 Linux 程序
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2026/04/25 19:43:06" itemprop="dateCreated datePublished" datetime="2026-04-25T19:43:06+08:00">2026/04/25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/C-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">C++学习笔记</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>6.6k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>24 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>最近碰到一个需求是要在 Windows 上交叉编译 Linux 程序，用于做 Windows
+代码的跨平台编译检查，发现里面弯弯绕绕还挺多的（主要是 Windows 和 Linux
+系统层面的一些差异需要注意），就通过一篇博客记录一下整个交叉编译的流程，也加深对于交叉编译流程的理解。</p>
+<p>整个交叉编译包含2个主要步骤：sysroot 准备和交叉编译工具链的构建。</p>
+<ul>
+<li><p>sysroot 在 WSL 上使用 debootstrap 创建</p></li>
+<li><p>交叉编译工具链通过 Cygwin 和 crosstool-ng 生成</p></li>
+</ul>
+<span id="more"></span>
+
+<h1 id="安装-wsl">安装 WSL</h1>
+<p>使用 WSL（<strong>W</strong>indows <strong>S</strong>ubsystem for
+<strong>L</strong>inux）主要是为了以下两件事：</p>
+<ol type="1">
+<li><p>创建交叉编译的 sysroot</p></li>
+<li><p>验证交叉编译产物结果</p></li>
+</ol>
+<p>通过 WSL 可以方便的同 Windows 文件系统进行交互，便于使用</p>
+<h2 id="导入-wsl-镜像">导入 WSL 镜像</h2>
+<p>可以在清华镜像站上的 Ubuntu 的 <a
+target="_blank" rel="noopener" href="https://mirrors.tuna.tsinghua.edu.cn/ubuntu-releases/20.04.6">WSL
+镜像</a>（本次使用的是 Ubuntu 20.04.6）：</p>
+<p>使用如下命令导入 WSL 镜像：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wsl <span class="literal">--import</span> &lt;发行版名称&gt; &lt;本机目录&gt; &lt;镜像路径&gt;</span><br></pre></td></tr></table></figure>
+
+<p>完整命令示例如下：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wsl <span class="literal">--import</span> Ubuntu<span class="literal">-20</span>.<span class="number">04</span> D:\VM\WSL\Ubuntu<span class="literal">-20</span>.<span class="number">04</span> D:\Download\ubuntu<span class="literal">-20</span>.<span class="number">04.6</span><span class="literal">-wsl-amd64</span>.wsl</span><br></pre></td></tr></table></figure>
+
+<p>导入完成后可通过如下命令启动指定 Linux 发行版：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wsl <span class="literal">-d</span> &lt;发行版名称&gt;</span><br></pre></td></tr></table></figure>
+
+<div class="markdown-alert markdown-alert-tip">
+<div class="markdown-alert-title">
+<svg class="octicon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M8 1.5c-2.363 0-4 1.69-4 3.75 0 .984.424 1.625.984 2.304l.214.253c.223.264.47.556.673.848.284.411.537.896.621 1.49a.75.75 0 0 1-1.484.211c-.04-.282-.163-.547-.37-.847a8.456 8.456 0 0 0-.542-.68c-.084-.1-.173-.205-.268-.32C3.201 7.75 2.5 6.766 2.5 5.25 2.5 2.31 4.863 0 8 0s5.5 2.31 5.5 5.25c0 1.516-.701 2.5-1.328 3.259-.095.115-.184.22-.268.319-.207.245-.383.453-.541.681-.208.3-.33.565-.37.847a.751.751 0 0 1-1.485-.212c.084-.593.337-1.078.621-1.489.203-.292.45-.584.673-.848.075-.088.147-.173.213-.253.561-.679.985-1.32.985-2.304 0-2.06-1.637-3.75-4-3.75ZM5.75 12h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5ZM6 15.25a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75Z"></path></svg>
+<strong>Tip</strong>
+</div>
+<p>直接 <code>--import</code> 的实例默认只有
+<code>root</code>，与商店安装的「自动创建用户」不同，需要手动建普通用户并设为默认登录用户。</p>
+</div>
+<h2 id="可选创建普通用户">（可选）创建普通用户</h2>
+<p>在 WSL 内执行如下命令创建用户</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">adduser &lt;user-name&gt;</span><br><span class="line">usermod -aG sudo &lt;user-name&gt;</span><br></pre></td></tr></table></figure>
+
+<p>编辑 <code>/etc/wsl.conf</code> 设置默认用户：</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[boot]</span></span><br><span class="line"><span class="attr">systemd</span>=<span class="literal">true</span></span><br><span class="line"></span><br><span class="line"><span class="section">[user]</span></span><br><span class="line"><span class="attr">default</span>=&lt;user-name&gt;</span><br></pre></td></tr></table></figure>
+
+<p>在 Windows 侧执行 <code>wsl --shutdown</code> 后重新进入
+WSL，确认已以普通用户登录。</p>
+<h2 id="可选更换软件源">（可选）更换软件源</h2>
+<p>参照<a target="_blank" rel="noopener" href="https://developer.aliyun.com/mirror/ubuntu/">阿里云
+Ubuntu 软件源</a>说明，根据实际使用的 Ubuntu 版本替换
+<code>/etc/apt/sources.list</code> 中地址即可</p>
+<p>替换之后记得执行 update</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt update</span><br></pre></td></tr></table></figure>
+
+<h1 id="准备-sysroot">准备 sysroot</h1>
+<p>sysroot（system root）
+是用于编译/交叉编译的“目标系统根目录视图”，<strong>仅包含编译时需要的部分</strong>（头文件、库文件、动态链接器）等，<strong>无法通过
+chroot 方式执行程序</strong>。</p>
+<p>rootfs（root
+filesystem）则是用于运行阶段的完整系统根目录，<strong>包含完整的 Linux
+系统结构</strong>（<code>/bin</code>，<code>/sbin</code>，<code>/etc</code>，<code>/usr</code>，<code>/var</code>
+等），<strong>可以通过 chroot 方式进入并执行程序</strong>。</p>
+<p>对 rootfs 裁剪掉不必要的文件后可得到 sysroot。</p>
+<h2 id="安装依赖">安装依赖</h2>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install debootstrap systemd-container qemu-user-static binfmt-support</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>debootstrap</strong>：从镜像站拉取包并初始化 rootfs。</li>
+<li><strong>systemd-container</strong>：以容器方式进入
+rootfs，并自动挂载目录。</li>
+<li><strong>qemu-user-static</strong>：用于支持在非本机 ISA（Instruction
+Set Architecture，指令集架构） 的 rootfs 里执行目标程序（例如做
+<strong>arm64 的 sysroot</strong> 时很有用）</li>
+<li><strong>binfmt-support</strong>：让 Linux 支持运行非本机 ISA 的 ELF
+程序，可以自动调用 qemu 执行 arm 应用。</li>
+</ul>
+<h2 id="初始化-rootfs">初始化 rootfs</h2>
+<p>通过如下命令初始化 rootfs</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">sudo debootstrap \</span><br><span class="line">    --<span class="built_in">arch</span>=amd64 \</span><br><span class="line">    --variant=minbase \</span><br><span class="line">    focal \</span><br><span class="line">    /opt/rootfs-focal-amd64 \</span><br><span class="line">    https://mirrors.aliyun.com/ubuntu/</span><br></pre></td></tr></table></figure>
+
+<p>执行完成后会提示 “Base system installed
+successfully”（基础系统成功安装）</p>
+<p><img data-src="/posts/5bfa/image-20260505212830069.png"
+style="zoom: 67%;" /></p>
+<h2 id="进入-rootfs">进入 rootfs</h2>
+<p>直接通过 chroot 可以进入 rootfs 安装程序，但是通常运行时需要手动挂载
+dev、run、proc 等目录，为简化操作，可通过 systemd-nspawn 以容器方式进入
+rootfs，命令如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"><span class="built_in">set</span> -euo pipefail</span><br><span class="line"></span><br><span class="line">SYSROOT=/opt/rootfs-focal-amd64</span><br><span class="line">SRC=/home/xiao/devenv</span><br><span class="line"></span><br><span class="line">sudo systemd-nspawn \</span><br><span class="line">        -D <span class="string">&quot;<span class="variable">$SYSROOT</span>&quot;</span> \</span><br><span class="line">        --<span class="built_in">bind</span>=<span class="string">&quot;<span class="variable">$SRC</span>:/mnt/project&quot;</span> \</span><br><span class="line">        --<span class="built_in">bind</span>=/etc/resolv.conf \</span><br><span class="line">        --setenv=HOME=/root \</span><br><span class="line">        --setenv=TERM=<span class="string">&quot;<span class="variable">$TERM</span>&quot;</span> \</span><br><span class="line">        --hostname=sysroot-env \</span><br><span class="line">        --console=interactive \</span><br><span class="line">        /bin/bash</span><br></pre></td></tr></table></figure>
+
+<p>将脚本保存到本地执行即可，成功进入rootfs输出如下所示：</p>
+<p><img data-src="/posts/5bfa/image-20260505213158260.png"
+style="zoom:67%;" /></p>
+<h2 id="安装依赖-1">安装依赖</h2>
+<p>由于 debootstrap 创建 rootfs 时默认仅使用 focal 和 main
+的软件，在安装依赖前需要重新调整软件源，命令如下所示：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">tee</span> /etc/apt/sources.list &gt; /dev/null &lt;&lt;<span class="string">&#x27;EOF&#x27;</span></span><br><span class="line">deb https://mirrors.aliyun.com/ubuntu/ focal main universe multiverse</span><br><span class="line">deb https://mirrors.aliyun.com/ubuntu/ focal-updates main universe multiverse</span><br><span class="line">deb https://mirrors.aliyun.com/ubuntu/ focal-security main universe multiverse</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
+
+<p>然后通过如下命令更新软件源和软件。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">apt update</span><br><span class="line">apt upgrade -y</span><br></pre></td></tr></table></figure>
+
+<p>为满足后续验证需要，我们在 rootfs 内安装下列依赖</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">apt install -y \</span><br><span class="line">    build-essential \</span><br><span class="line">    pkg-config \</span><br><span class="line">    ca-certificates \</span><br><span class="line">    tzdata \</span><br><span class="line">    locales \</span><br><span class="line">    git \</span><br><span class="line">    python3 \</span><br><span class="line">    python3-pip \</span><br><span class="line">    python3-venv</span><br></pre></td></tr></table></figure>
+
+<p>同时配置 pip 镜像并安装 conan、cmake 和 ninja（通过 pip 安装的 cmake
+和 ninja 版本更新）：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pip config <span class="built_in">set</span> global.index-url https://mirrors.aliyun.com/pypi/simple/</span><br><span class="line">pip install conan cmake ninja</span><br></pre></td></tr></table></figure>
+
+<p>若后续要在 sysroot 内编译或验证 GLFW 一类依赖 X11/Wayland
+的库，可额外安装开发包（体积较大，可按需装）：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt install -y libwayland-dev libxkbcommon-dev xorg-dev</span><br></pre></td></tr></table></figure>
+
+<p>配置完成后使用 <code>exit</code> 命令退出 rootfs。</p>
+<h2 id="创建-sysroot">创建 sysroot</h2>
+<p>rootfs 创建完成后，可拷贝 lib、include 和 pkgconfig 目录以生成
+sysroot，具体命令如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/usr/bin/env bash</span></span><br><span class="line"><span class="built_in">set</span> -e</span><br><span class="line"></span><br><span class="line">SRC=<span class="variable">$1</span></span><br><span class="line">DST=<span class="variable">$2</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> [ -z <span class="string">&quot;<span class="variable">$SRC</span>&quot;</span> ] || [ -z <span class="string">&quot;<span class="variable">$DST</span>&quot;</span> ]; <span class="keyword">then</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">&quot;Usage: <span class="variable">$0</span> &lt;rootfs&gt; &lt;sysroot&gt;&quot;</span></span><br><span class="line">  <span class="built_in">exit</span> 1</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">mkdir</span> -p <span class="string">&quot;<span class="variable">$DST</span>&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;[1/3] Copy essential directories...&quot;</span></span><br><span class="line"></span><br><span class="line">rsync -aHAXm --numeric-ids -m \</span><br><span class="line">  --include=<span class="string">&quot;/usr/***&quot;</span> \</span><br><span class="line">  --include=<span class="string">&quot;/lib&quot;</span> \</span><br><span class="line">  --include=<span class="string">&quot;/lib64&quot;</span> \</span><br><span class="line">  --include=<span class="string">&quot;/lib32&quot;</span> \</span><br><span class="line">  --include=<span class="string">&quot;/libx32&quot;</span> \</span><br><span class="line">  --include=<span class="string">&quot;*/&quot;</span> \</span><br><span class="line">  --exclude=<span class="string">&quot;*&quot;</span> \</span><br><span class="line">  <span class="string">&quot;<span class="variable">$SRC</span>&quot;</span>/ <span class="string">&quot;<span class="variable">$DST</span>&quot;</span>/</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">fix_absolute_symlinks_for_sysroot</span></span>() &#123;</span><br><span class="line">  <span class="built_in">local</span> SYSROOT=<span class="string">&quot;<span class="variable">$1</span>&quot;</span></span><br><span class="line">  <span class="keyword">while</span> IFS= <span class="built_in">read</span> -r -d <span class="string">&#x27;&#x27;</span> <span class="built_in">link</span>; <span class="keyword">do</span></span><br><span class="line">    tgt=$(<span class="built_in">readlink</span> <span class="string">&quot;<span class="variable">$link</span>&quot;</span>)</span><br><span class="line">    <span class="keyword">case</span> <span class="string">&quot;<span class="variable">$tgt</span>&quot;</span> <span class="keyword">in</span></span><br><span class="line">      /lib/*-linux-gnu/*)</span><br><span class="line">        base=<span class="string">&quot;<span class="variable">$&#123;tgt##*/&#125;</span>&quot;</span></span><br><span class="line">        tri=<span class="string">&quot;<span class="variable">$&#123;tgt#/lib/&#125;</span>&quot;</span></span><br><span class="line">        tri=<span class="string">&quot;<span class="variable">$&#123;tri%%/*&#125;</span>&quot;</span></span><br><span class="line">        <span class="built_in">ln</span> -sf <span class="string">&quot;../../../lib/<span class="variable">$tri</span>/<span class="variable">$base</span>&quot;</span> <span class="string">&quot;<span class="variable">$link</span>&quot;</span></span><br><span class="line">        ;;</span><br><span class="line">      /usr/lib/*-linux-gnu/*)</span><br><span class="line">        base=<span class="string">&quot;<span class="variable">$&#123;tgt##*/&#125;</span>&quot;</span></span><br><span class="line">        <span class="built_in">ln</span> -sf <span class="string">&quot;<span class="variable">$base</span>&quot;</span> <span class="string">&quot;<span class="variable">$link</span>&quot;</span></span><br><span class="line">        ;;</span><br><span class="line">    <span class="keyword">esac</span></span><br><span class="line">  <span class="keyword">done</span> &lt; &lt;(find <span class="string">&quot;<span class="variable">$SYSROOT</span>/usr/lib&quot;</span> -<span class="built_in">type</span> l -print0 2&gt;/dev/null)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">while</span> IFS= <span class="built_in">read</span> -r -d <span class="string">&#x27;&#x27;</span> <span class="built_in">link</span>; <span class="keyword">do</span></span><br><span class="line">    tgt=$(<span class="built_in">readlink</span> <span class="string">&quot;<span class="variable">$link</span>&quot;</span>)</span><br><span class="line">    <span class="keyword">case</span> <span class="string">&quot;<span class="variable">$tgt</span>&quot;</span> <span class="keyword">in</span></span><br><span class="line">      /lib/*-linux-gnu/*)</span><br><span class="line">        base=<span class="string">&quot;<span class="variable">$&#123;tgt##*/&#125;</span>&quot;</span></span><br><span class="line">        <span class="built_in">ln</span> -sf <span class="string">&quot;<span class="variable">$base</span>&quot;</span> <span class="string">&quot;<span class="variable">$link</span>&quot;</span></span><br><span class="line">        ;;</span><br><span class="line">    <span class="keyword">esac</span></span><br><span class="line">  <span class="keyword">done</span> &lt; &lt;(find <span class="string">&quot;<span class="variable">$SYSROOT</span>/lib&quot;</span> -<span class="built_in">type</span> l -print0 2&gt;/dev/null)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">ensure_lib64_ld_linux_symlink</span></span>() &#123;</span><br><span class="line">  <span class="built_in">local</span> SYSROOT=<span class="string">&quot;<span class="variable">$1</span>&quot;</span></span><br><span class="line">  <span class="built_in">mkdir</span> -p <span class="string">&quot;<span class="variable">$SYSROOT</span>/lib64&quot;</span></span><br><span class="line">  <span class="keyword">if</span> [[ -f <span class="string">&quot;<span class="variable">$SYSROOT</span>/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2&quot;</span> ]]; <span class="keyword">then</span></span><br><span class="line">    <span class="built_in">ln</span> -sf ../lib/x86_64-linux-gnu/ld-linux-x86-64.so.2 \</span><br><span class="line">      <span class="string">&quot;<span class="variable">$SYSROOT</span>/lib64/ld-linux-x86-64.so.2&quot;</span></span><br><span class="line">  <span class="keyword">fi</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">ensure_lib64_ld_linux_symlink <span class="string">&quot;<span class="variable">$DST</span>&quot;</span></span><br><span class="line">fix_absolute_symlinks_for_sysroot <span class="string">&quot;<span class="variable">$DST</span>&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;[2/3] Ensure loader exists...&quot;</span></span><br><span class="line"></span><br><span class="line">find <span class="string">&quot;<span class="variable">$DST</span>&quot;</span> -name <span class="string">&quot;ld-linux*&quot;</span> || &#123;</span><br><span class="line">  <span class="built_in">echo</span> <span class="string">&quot;ERROR: dynamic loader not found&quot;</span></span><br><span class="line">  <span class="built_in">exit</span> 1</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;[3/3] Basic validation...&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;- libc:&quot;</span></span><br><span class="line">find <span class="string">&quot;<span class="variable">$DST</span>&quot;</span> -name <span class="string">&quot;libc.so*&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;- interpreter candidates:&quot;</span></span><br><span class="line">find <span class="string">&quot;<span class="variable">$DST</span>&quot;</span> -name <span class="string">&quot;ld-linux*&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;Done.&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="打包和解压">打包和解压</h2>
+<p>打包命令（在 WSL 中执行）</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">tar --numeric-owner \</span><br><span class="line">    --xattrs \</span><br><span class="line">    --acls \</span><br><span class="line">    -czf sysroot-focal.tar.gz \</span><br><span class="line">    -C <span class="string">&quot;&lt;sysroot_dir 在 WSL 中的位置，例如 /home/xiao/devenv/sysroot-focal&gt;&quot;</span> .</span><br></pre></td></tr></table></figure>
+
+<p>解压命令（在 Cygwin 中执行）</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">sysroot_dir=<span class="string">&quot;&lt;sysroot_dir 在 Cygwin 中的位置，例如 /cygdrive/d/sysroot-focal&gt;&quot;</span></span><br><span class="line"><span class="built_in">mkdir</span> -p <span class="variable">$sysroot_dir</span></span><br><span class="line">tar -xzf sysroot-focal.tar.gz \</span><br><span class="line">    --no-same-owner \</span><br><span class="line">    --no-same-permissions \</span><br><span class="line">    -C <span class="string">&quot;<span class="variable">$sysroot_dir</span>&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="安装-cygwin">安装 Cygwin</h1>
+<p>为在 Windows 上编译 Linux 的可执行程序，需要模拟出 Linux
+运行环境（基本上就是模拟出 POSIX 接口），由于 MSYS2
+的工具链更新太过激进且并不是完全兼容 POSIX 接口，因此选择 Cygwin
+作为构建的基础环境。</p>
+<h2 id="安装依赖-2">安装依赖</h2>
+<p>从官网下载
+<code>setup-x86_64.exe</code>，在包列表中勾选下列依赖（具体版本参考下文的完整安装列表）：</p>
+<ul>
+<li>autoconf, automake, bison, flex, gawk,</li>
+<li>help2man, texinfo, diffutils, patch, make,</li>
+<li>cmake, ninja, gcc-g++, git, wget, xz, zip, unzip,</li>
+<li>libtool, gperf, libncurses-devel, python312-devel</li>
+</ul>
+<p><strong>完整安装列表</strong>见：<a
+href="cygcheck-c.txt">cygcheck-c.txt</a>（通过 <code>cygcheck -c</code>
+输出）</p>
+<div class="markdown-alert markdown-alert-note">
+<div class="markdown-alert-title">
+<svg class="octicon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>
+<strong>Note</strong>
+</div>
+<p>建议将 <code>setup-x86_64.exe</code> 放在 Cygwin
+的安装目录下面，因为该程序将作为 cygwin
+的包管理器，有可能需要频繁使用该程序安装包。</p>
+</div>
+<h2 id="设置环境变量">设置环境变量</h2>
+<p>在 <strong>Cygwin 的 shell 配置文件</strong>（如
+<code>~/.bashrc</code>）末尾中加入下列内容：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> CYGWIN=winsymlinks:sys</span><br><span class="line"><span class="built_in">export</span> PATH=<span class="string">&quot;/usr/local/bin:/usr/bin&quot;</span></span><br><span class="line"><span class="built_in">export</span> LANG=C.UTF-8</span><br><span class="line"><span class="built_in">export</span> LC_ALL=C.UTF-8</span><br><span class="line"><span class="built_in">export</span> http_proxy=<span class="string">&quot;http://127.0.0.1:7890&quot;</span></span><br><span class="line"><span class="built_in">export</span> https_proxy=<span class="string">&quot;http://127.0.0.1:7890&quot;</span></span><br><span class="line"><span class="comment"># 可选：少数工具只认 ALL_PROXY</span></span><br><span class="line"><span class="comment"># export ALL_PROXY=&quot;$https_proxy&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>其中 <strong>代理地址本机长期按 <code>127.0.0.1:7890</code>
+使用</strong>（与常见 Clash 等 <strong>HTTP 代理端口</strong>
+一致），若实际端口或协议不同，只改最后两行中的 URL 即可。</p>
+<h2 id="可选卸载-cygwin">（可选）卸载 Cygwin</h2>
+<p>仅删除安装目录时可能残留注册表项；可用下列 PowerShell 脚本（需
+<strong>PowerShell 7+</strong>，删 <code>HKLM</code>
+需管理员权限）。保存为 <code>uninstall_cygwin.ps1</code> 后执行：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#requires -Version 7.0</span></span><br><span class="line"><span class="comment"># uninstall_cygwin.ps1 — 仅删除安装目录 + 清理 Cygwin 相关注册表项</span></span><br><span class="line"><span class="comment"># 请用 PowerShell 7 运行: pwsh -NoProfile -File .\uninstall_cygwin.ps1</span></span><br><span class="line"><span class="comment"># 运行前请手动关闭所有 Cygwin / mintty 窗口，否则删除目录可能失败。</span></span><br><span class="line"><span class="comment"># 删除 HKLM 下项需要管理员权限。</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">Write-Host</span> <span class="string">&quot;== Cygwin 卸载（目录 + 注册表）==&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># -------- 可配置路径（若安装在其他盘符，请在此添加）--------</span></span><br><span class="line"><span class="variable">$cygwinPaths</span> = <span class="selector-tag">@</span>(</span><br><span class="line">    <span class="string">&quot;C:\cygwin64&quot;</span>,</span><br><span class="line">    <span class="string">&quot;C:\cygwin&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="variable">$regPaths</span> = <span class="selector-tag">@</span>(</span><br><span class="line">    <span class="string">&quot;HKCU:\Software\Cygwin&quot;</span>,</span><br><span class="line">    <span class="string">&quot;HKLM:\SOFTWARE\Cygwin&quot;</span>,</span><br><span class="line">    <span class="string">&quot;HKLM:\SOFTWARE\WOW6432Node\Cygwin&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="built_in">Write-Host</span> <span class="string">&quot;[1/2] 删除安装目录...&quot;</span></span><br><span class="line"><span class="keyword">foreach</span> (<span class="variable">$path</span> <span class="keyword">in</span> <span class="variable">$cygwinPaths</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">Test-Path</span> <span class="literal">-LiteralPath</span> <span class="variable">$path</span>) &#123;</span><br><span class="line">        <span class="built_in">Write-Host</span> <span class="string">&quot;  正在删除: <span class="variable">$path</span>&quot;</span></span><br><span class="line">        <span class="built_in">Remove-Item</span> <span class="literal">-LiteralPath</span> <span class="variable">$path</span> <span class="literal">-Recurse</span> <span class="literal">-Force</span> <span class="literal">-ErrorAction</span> Stop</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="built_in">Write-Host</span> <span class="string">&quot;  跳过（不存在）: <span class="variable">$path</span>&quot;</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">Write-Host</span> <span class="string">&quot;[2/2] 清理注册表...&quot;</span></span><br><span class="line"><span class="keyword">foreach</span> (<span class="variable">$reg</span> <span class="keyword">in</span> <span class="variable">$regPaths</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">Test-Path</span> <span class="literal">-LiteralPath</span> <span class="variable">$reg</span>) &#123;</span><br><span class="line">        <span class="built_in">Write-Host</span> <span class="string">&quot;  正在删除: <span class="variable">$reg</span>&quot;</span></span><br><span class="line">        <span class="built_in">Remove-Item</span> <span class="literal">-LiteralPath</span> <span class="variable">$reg</span> <span class="literal">-Recurse</span> <span class="literal">-Force</span> <span class="literal">-ErrorAction</span> Stop</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">Write-Host</span> <span class="string">&quot;== 完成 ==&quot;</span></span><br><span class="line"><span class="built_in">Write-Host</span> <span class="string">&quot;若曾把 Cygwin 加入系统 PATH，请自行在「环境变量」中删掉含 cygwin 的条目。&quot;</span></span><br></pre></td></tr></table></figure>
+
+<hr />
+<h1 id="构建交叉编译工具链">构建交叉编译工具链</h1>
+<h2 id="配置工作目录">配置工作目录</h2>
+<p>执行下列命令设置文件夹路径大小写敏感（需要管理员权限，Win11
+下开启开发者模式也可以）</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fsutil.exe file SetCaseSensitiveInfo <span class="string">&quot;D:\workspace&quot;</span> enable</span><br></pre></td></tr></table></figure>
+
+<div class="markdown-alert markdown-alert-tip">
+<div class="markdown-alert-title">
+<svg class="octicon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M8 1.5c-2.363 0-4 1.69-4 3.75 0 .984.424 1.625.984 2.304l.214.253c.223.264.47.556.673.848.284.411.537.896.621 1.49a.75.75 0 0 1-1.484.211c-.04-.282-.163-.547-.37-.847a8.456 8.456 0 0 0-.542-.68c-.084-.1-.173-.205-.268-.32C3.201 7.75 2.5 6.766 2.5 5.25 2.5 2.31 4.863 0 8 0s5.5 2.31 5.5 5.25c0 1.516-.701 2.5-1.328 3.259-.095.115-.184.22-.268.319-.207.245-.383.453-.541.681-.208.3-.33.565-.37.847a.751.751 0 0 1-1.485-.212c.084-.593.337-1.078.621-1.489.203-.292.45-.584.673-.848.075-.088.147-.173.213-.253.561-.679.985-1.32.985-2.304 0-2.06-1.637-3.75-4-3.75ZM5.75 12h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5ZM6 15.25a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75Z"></path></svg>
+<strong>Tip</strong>
+</div>
+<p>如果觉得路径太长，也可以直接将该路径链接到 <code>~</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">ln</span> -s /cygdriver/d/workspace ~/workspace</span><br></pre></td></tr></table></figure>
+
+</div>
+<h2 id="安装-crosstool-ng">安装 crosstool-ng</h2>
+<p>源码（示例版本 <strong>1.28.0</strong>）：<a
+target="_blank" rel="noopener" href="http://crosstool-ng.org/download/crosstool-ng/crosstool-ng-1.28.0.tar.xz">http://crosstool-ng.org/download/crosstool-ng/crosstool-ng-1.28.0.tar.xz</a></p>
+<p>解压后在源码目录外建 <code>build</code>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">mkdir</span> build &amp;&amp; <span class="built_in">cd</span> build</span><br><span class="line">../configure --prefix=&lt;ct-ng-install-path&gt;</span><br><span class="line">make -j</span><br><span class="line">make install</span><br></pre></td></tr></table></figure>
+
+<p>将安装前缀下的 <code>bin</code> 加入 <code>PATH</code>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> PATH=<span class="string">&quot;&lt;ct-ng-install-path&gt;/bin:/usr/local/bin:/usr/bin&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>例如：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> PATH=<span class="string">&quot;/home/xiao/workspace/local/bin:/usr/local/bin:/usr/bin&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>检查：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ct-ng version</span><br></pre></td></tr></table></figure>
+
+<!-- 截图：`ct-ng version` 输出 -->
+
+<h2 id="可选配置工具链">（可选）配置工具链</h2>
+<p>使用菜单进行配置或直接拷贝既有 <code>.config</code>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ct-ng menuconfig</span><br></pre></td></tr></table></figure>
+
+<p>配置时的一些注意事项：</p>
+<ol type="1">
+<li><strong>Linux
+头文件版本</strong>：在满足程序需求的前提下尽量别追新，减少与旧 sysroot
+不匹配。</li>
+<li><strong>glibc / gcc / binutils</strong>
+组合要与目标环境匹配；一般直接对齐某个发行版即可（例如 Ubuntu
+20.04：<code>glibc 2.31</code> + <code>gcc 9</code> +
+<code>binutils 2.34</code> 一类组合，具体以你 sysroot 为准）。</li>
+<li>下载 tarball 慢时，可在配置里改为国内镜像（例如清华 <strong>GNU
+镜像</strong>）再 <code>ct-ng build</code>。</li>
+</ol>
+<!-- 截图：`menuconfig` 中与目标架构、内核头、glibc 版本相关的界面（可多张） -->
+
+<h2 id="构建工具链">构建工具链</h2>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ct-ng build</span><br></pre></td></tr></table></figure>
+
+<p>构建时间长，日志里若出现下载失败，多半是网络或镜像问题。</p>
+<!-- 截图：构建成功结束时的最后若干行日志 -->
+
+<h2 id="基本编译验证">基本编译验证</h2>
+<p>下面为本机 <strong>已跑通</strong>
+的一次最小验证（<strong>prefix</strong> 以 <code>ct-ng</code>
+样本为准，这里是
+<strong><code>x86_64-linux-gnu</code></strong>；若你的三元组是
+<code>x86_64-unknown-linux-gnu</code>，把命令里的前缀名整体替换即可）。</p>
+<p><strong>工具链根目录</strong>（PATH 与 CMake 都会用到）：</p>
+<p><code>D:\ctng-build\workspace\cross-tools\toolchains\x86_64-linux-gnu</code></p>
+<p>在 <strong>Cygwin</strong> 里先把交叉编译器放进
+PATH（每次新开终端都要 export，或写入 <code>~/.bashrc</code>）：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> PATH=<span class="string">&quot;/cygdrive/d/ctng-build/workspace/cross-tools/toolchains/x86_64-linux-gnu/bin:/usr/local/bin:/usr/bin&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>确认编译器可用：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">x86_64-linux-gnu-gcc --version</span><br><span class="line">x86_64-linux-gnu-g++ --version</span><br></pre></td></tr></table></figure>
+
+<p>示例输出（节选）：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">x86_64-linux-gnu-gcc (crosstool-NG 1.28.0) 9.5.0</span><br><span class="line">...</span><br><span class="line">x86_64-linux-gnu-g++ (crosstool-NG 1.28.0) 9.5.0</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p><strong>最小 C 程序</strong>：单独建目录便于以后清理（例如
+<code>D:\ctng-build\workspace\cross-validate\smoke-hello</code>）。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">mkdir</span> -p /cygdrive/d/ctng-build/workspace/cross-validate/smoke-hello</span><br><span class="line"><span class="built_in">cd</span> /cygdrive/d/ctng-build/workspace/cross-validate/smoke-hello</span><br><span class="line"><span class="built_in">printf</span> <span class="string">&#x27;int main(void) &#123; return 0; &#125;\n&#x27;</span> &gt; hello.c</span><br><span class="line">x86_64-linux-gnu-gcc hello.c -o hello</span><br><span class="line">file hello</span><br></pre></td></tr></table></figure>
+
+<p><code>file</code> 在 Cygwin 下应看到 <strong>ELF
+64-bit、x86-64、interpreter /lib64/ld-linux-x86-64.so.2</strong>
+等，即已得到 <strong>Linux 可执行文件</strong>（目标内核版本会随工具链
+<code>ct-ng</code> 配置变化，以你本机 <code>file</code> 为准）。</p>
+<p>在 <strong>WSL</strong> 中直接跑 Windows 盘上的同一路径（本机为
+<code>/mnt/d/...</code>）：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/mnt/d/ctng-build/workspace/cross-validate/smoke-hello/hello</span><br><span class="line"><span class="built_in">echo</span> $?</span><br></pre></td></tr></table></figure>
+
+<p>期望最后一行输出 <strong><code>0</code></strong>。也可先确认解释器与
+<code>libc</code> 链接正常：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">file /mnt/d/ctng-build/workspace/cross-validate/smoke-hello/hello</span><br><span class="line">ldd  /mnt/d/ctng-build/workspace/cross-validate/smoke-hello/hello</span><br></pre></td></tr></table></figure>
+
+<p><code>ldd</code> 中应能解析到 <code>libc.so.6</code> 与
+<code>ld-linux-x86-64.so.2</code>（具体路径随 WSL 发行版可能是
+<code>/lib/x86_64-linux-gnu/...</code>）。</p>
+<!-- 截图：可选：Cygwin 里 `file hello`；WSL 里 `./hello` 后 `echo $?` 为 0，以及 `ldd` 输出 -->
+
+<div class="markdown-alert markdown-alert-note">
+<div class="markdown-alert-title">
+<svg class="octicon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>
+<strong>Note</strong>
+</div>
+<p><strong>坑点</strong></p>
+<ol type="1">
+<li>能 <code>gcc</code> 出 ELF 不代表 <strong>sysroot/链接参数</strong>
+与后文 CMake 一致；做库级验证时以同一套
+<strong><code>toolchain.cmake</code></strong> 为准（见下节），少手搓
+<code>--sysroot</code>。</li>
+<li>本仓库里与 <code>ct-ng</code> 安装布局对应的文件名为
+<strong><code>toolchain.cmake</code></strong>（在
+<code>x86_64-linux-gnu</code> 目录下），不是
+<code>toolchains.cmake</code>；若复制网上示例命令，注意文件名与
+<code>CMAKE_FIND_ROOT_PATH</code> 是否一致。</li>
+<li>启动 <code>wsl</code> 时若出现 <strong>localhost / 代理 /
+NAT</strong> 相关英文警告但命令仍成功，一般可忽略；若二进制无法运行再查
+<strong>WSL 与工具链 glibc 版本</strong> 是否差太多。</li>
+</ol>
+</div>
+<hr />
+<h1 id="交叉编译验证cmake">交叉编译验证（CMake）</h1>
+<p>目标：<strong>在 Windows(Cygwin) 侧用交叉编译器 + sysroot
+编译</strong>，在 <strong>WSL</strong> 侧运行（或至少 <code>ldd</code> /
+动态加载）验证。下表为 <strong>本机</strong> 使用的一套路径，换盘符或换
+prefix 时自行替换：</p>
+<ul>
+<li>Cygwin：<code>C:\cygwin64</code></li>
+<li>sysroot
+压缩包示例：<code>D:\ctng-build\sysroot-focal.tar.gz</code>（解压后的目录参与
+<code>CMAKE_SYSROOT</code>）</li>
+<li>工具链安装前缀：<code>D:\ctng-build\workspace\cross-tools\toolchains\x86_64-linux-gnu</code>（其下的
+<strong><code>toolchain.cmake</code></strong> 供 CMake 使用）</li>
+<li>建议验证工作区：<code>D:\ctng-build\workspace\cross-validate</code>（本文
+<strong><code>smoke-hello</code></strong> 目录即最小示例）</li>
+</ul>
+<p>通用步骤（<code>-DCMAKE_TOOLCHAIN_FILE</code> 指向
+<strong>与你前缀目录同级</strong> 的
+<code>toolchain.cmake</code>）：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> PATH=<span class="string">&quot;/cygdrive/d/ctng-build/workspace/cross-tools/toolchains/x86_64-linux-gnu/bin:/usr/local/bin:/usr/bin&quot;</span></span><br><span class="line"><span class="built_in">cd</span> /cygdrive/d/ctng-build/workspace/cross-validate/&lt;project&gt;</span><br><span class="line">cmake -S . -B build \</span><br><span class="line">  -DCMAKE_TOOLCHAIN_FILE=/cygdrive/d/ctng-build/workspace/cross-tools/toolchains/x86_64-linux-gnu/toolchain.cmake \</span><br><span class="line">  -DCMAKE_BUILD_TYPE=Release</span><br><span class="line">cmake --build build</span><br></pre></td></tr></table></figure>
+
+<p>将产物拷到 WSL 或通过共享目录运行测试。</p>
+<h2 id="fmt">{fmt}</h2>
+<p>发行包：<a
+target="_blank" rel="noopener" href="https://github.com/fmtlib/fmt/releases/download/12.1.0/fmt-12.1.0.zip">https://github.com/fmtlib/fmt/releases/download/12.1.0/fmt-12.1.0.zip</a></p>
+<p><strong>建议用库自带的 GTest
+单测</strong>（<code>FMT_TEST=ON</code>），在 Cygwin 里交叉编出
+<strong>Linux ELF</strong>，再到 <strong>WSL</strong> 里<strong>执行
+<code>build/bin</code>
+下各测试可执行文件</strong>（脚本按顺序跑完），与「自己写几行
+<code>fmt::print</code>」相比更能覆盖头文件/链接/ABI。</p>
+<p>本机把流程固化成两个脚本（与源码同目录，在
+<strong><code>D:\ctng-build\workspace\cross-validate\fmt-12.1.0\</code></strong>
+下；换机器时只改脚本里的 <code>CTNG_ROOT</code> / 构建目录名）：</p>
+<table>
+<thead>
+<tr>
+<th>脚本</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>build-cross.sh</code></td>
+<td>设好 <code>PATH</code> 与
+<code>toolchain.cmake</code>，<code>Ninja</code>
+配置并编译，<strong>打开官方 <code>FMT_TEST</code></strong>（并关
+<code>FMT_DOC</code> / <code>FMT_MODULE</code>
+等以减轻交叉场景负担）。</td>
+</tr>
+<tr>
+<td><code>run-ctest-wsl.sh</code></td>
+<td><strong>仅给 WSL/Linux 执行</strong>的 bash：按顺序跑
+<strong><code>build-linux-cross/bin/</code></strong> 下各
+ELF（<strong>不调用 <code>ctest</code></strong>）。在 Windows / Cygwin
+侧请用
+<strong><code>wsl bash /mnt/d/.../run-ctest-wsl.sh</code></strong>
+调用，不要把 <code>wsl</code> 写进脚本里。脚本须 <strong>LF</strong>
+换行。</td>
+</tr>
+</tbody>
+</table>
+<p>在 Cygwin 中（先 <code>chmod +x</code> 一次即可）：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /cygdrive/d/ctng-build/workspace/cross-validate/fmt-12.1.0</span><br><span class="line">./build-cross.sh</span><br><span class="line">wsl bash /mnt/d/ctng-build/workspace/cross-validate/fmt-12.1.0/run-ctest-wsl.sh</span><br></pre></td></tr></table></figure>
+
+<p>若 CMake/Ninja
+缓存坏了需要重来：<code>FULL_CLEAN=1 ./build-cross.sh</code>。默认会做
+<strong>增量</strong> 重新配置（不删
+<code>build-linux-cross</code>）；若要干净目录，同样用
+<code>FULL_CLEAN=1</code>。</p>
+<p>构建目录默认为源码下的
+<strong><code>build-linux-cross</code></strong>；若你改过
+<code>BLD</code> 或盘符，请同步修改
+<strong><code>run-ctest-wsl.sh</code> 里的
+<code>BLD=</code></strong>（<code>/mnt/d/...</code>）。</p>
+<div class="markdown-alert markdown-alert-note">
+<div class="markdown-alert-title">
+<svg class="octicon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>
+<strong>Note</strong>
+</div>
+<p>交叉主机上 <strong>不要</strong> 在 Cygwin 里直接执行 Linux ELF：应在
+<strong>WSL</strong>（或真机 Linux）里跑。脚本名字仍叫
+<code>run-ctest-wsl.sh</code> 只是历史命名；<strong>不要求 WSL 安装
+<code>ctest</code></strong>，只要 <code>/mnt/d/.../bin/</code>
+可读可执行即可。</p>
+<p>若你希望 <strong>与 CMake 登记的顺序、筛选完全一致</strong>，仍可改用
+<code>ctest</code>（需在 WSL 安装
+cmake），并自行保证构建目录与测试工作目录在 WSL 下路径一致。</p>
+</div>
+<!-- 截图：WSL 中脚本末尾 `Done: N program(s), 0 failed` 或某条 FAILED 行 -->
+
+<h2 id="catch2">Catch2</h2>
+<p>源码：<a
+target="_blank" rel="noopener" href="https://github.com/catchorg/Catch2/archive/refs/tags/v3.14.0.tar.gz">https://github.com/catchorg/Catch2/archive/refs/tags/v3.14.0.tar.gz</a></p>
+<p>与 <strong>{fmt}</strong> 同属 CMake：<strong>Cygwin 里配置 +
+交叉链接</strong>，产物在 <strong>WSL</strong> 里跑官方测试。差别在于
+Catch2 的「整套」单测打成一个可执行文件
+<strong><code>build-linux-cross/tests/SelfTest</code></strong>（不是散落在
+<code>bin/</code> 里）。</p>
+<p>打开 SelfTest 时，上游把
+<strong><code>CATCH_DEVELOPMENT_BUILD</code></strong> 与测试 CMake
+绑在一起；仅开 <strong><code>BUILD_TESTING=ON</code></strong> 往往编不出
+SelfTest。交叉场景建议顺带关掉
+<strong><code>CATCH_ENABLE_WERROR</code></strong>（避免
+<code>-Werror</code> 在交叉器上误伤），并关掉
+benchmark/fuzzer/extra_tests/coverage/docs 以减负：</p>
+<ul>
+<li><strong><code>CATCH_DEVELOPMENT_BUILD=ON</code></strong>、<strong><code>BUILD_TESTING=ON</code></strong></li>
+<li><strong><code>CATCH_ENABLE_WERROR=OFF</code></strong></li>
+<li><strong><code>CATCH_BUILD_BENCHMARKS=OFF</code></strong>、<strong><code>CATCH_BUILD_FUZZERS=OFF</code></strong>、<strong><code>CATCH_BUILD_EXTRA_TESTS=OFF</code></strong>、<strong><code>CATCH_ENABLE_COVERAGE=OFF</code></strong>、<strong><code>CATCH_INSTALL_DOCS=OFF</code></strong></li>
+<li><strong><code>CMAKE_CXX_STANDARD=17</code></strong>（与上游默认一致即可）</li>
+</ul>
+<p>配置阶段若启用 SelfTest，CMake 会用到 <strong>构建主机上的
+Python3</strong>（本机在 Cygwin 下为
+<strong><code>/usr/bin/python3</code></strong>）；不必在 sysroot
+里为「跑测试」装 Python——测试二进制仍是普通 Linux ELF，只在 WSL
+里执行。</p>
+<p>本机脚本（与源码同目录，在
+<strong><code>D:\ctng-build\workspace\cross-validate\Catch2-3.14.0\</code></strong>；换机器时只改
+<strong><code>CTNG_ROOT</code></strong> /
+<strong><code>run-ctest-wsl.sh</code></strong> 里的
+<code>/mnt/d/...</code>）：</p>
+<table>
+<thead>
+<tr>
+<th>脚本</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>build-cross.sh</code></td>
+<td>设好 <code>PATH</code> 与
+<code>toolchain.cmake</code>，<code>Ninja</code> 配置并编译，打开
+<strong><code>CATCH_DEVELOPMENT_BUILD</code></strong> 与上述开关。</td>
+</tr>
+<tr>
+<td><code>run-ctest-wsl.sh</code></td>
+<td><strong>仅 WSL/Linux</strong> 执行
+<strong><code>tests/SelfTest</code></strong>（<strong>不调用
+<code>ctest</code></strong>）。宿主机用
+<strong><code>wsl bash /mnt/d/.../run-ctest-wsl.sh</code></strong>；可选参数会传给
+SelfTest。汇总里 <strong>「failed as expected」</strong>
+为预期；<strong>退出码 0</strong> 即通过。脚本须
+<strong>LF</strong>。</td>
+</tr>
+</tbody>
+</table>
+<p>在 Cygwin 中（先 <code>chmod +x</code> 一次即可；脚本须
+<strong>LF</strong> 换行，否则 <code>set -euo pipefail</code>
+可能异常）：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /cygdrive/d/ctng-build/workspace/cross-validate/Catch2-3.14.0</span><br><span class="line">./build-cross.sh</span><br><span class="line">wsl bash /mnt/d/ctng-build/workspace/cross-validate/Catch2-3.14.0/run-ctest-wsl.sh</span><br></pre></td></tr></table></figure>
+
+<p>若 CMake/Ninja
+缓存坏了需要重来：<code>FULL_CLEAN=1 ./build-cross.sh</code>。默认
+<strong><code>build-linux-cross</code></strong>；若改过
+<strong><code>BLD</code></strong> 或 WSL 盘符路径，请同步修改
+<strong><code>run-ctest-wsl.sh</code></strong> 中的
+<strong><code>BLD=</code></strong>。</p>
+<p>需要附加 Catch2 参数时，写在
+<strong><code>wsl bash .../run-ctest-wsl.sh</code></strong>
+后面即可（会传给 SelfTest）；也可在 WSL 内直接执行
+<strong><code>.../build-linux-cross/tests/SelfTest ...</code></strong>。</p>
+<!-- 截图：WSL 中 SelfTest 末尾汇总（如 test cases: … passed … failed as expected） -->
+
+<h2 id="sqlite">sqlite</h2>
+<p>源码：<a
+target="_blank" rel="noopener" href="https://sqlite.org/2026/sqlite-autoconf-3530000.tar.gz">https://sqlite.org/2026/sqlite-autoconf-3530000.tar.gz</a></p>
+<p>发行包内已含 <strong>amalgamation</strong>（<code>sqlite3.c</code> /
+<code>sqlite3.h</code>），可不用先跑 <code>configure</code> 就编库。经典
+<strong>Autotools</strong> 交叉流程是
+<strong><code>./configure --host=x86_64-linux-gnu CC=...</code></strong>
+等；但<strong>官方随源码的回归测试大量依赖 <a
+target="_blank" rel="noopener" href="https://www.tcl.tk/">Tcl</a></strong>（<code>test/*.test</code>
+等），在「只装交叉器 +
+sysroot」的主机上往往<strong>既不想、也不必</strong>为跑测去整理一套
+<strong>目标 Linux 上的 Tcl + 与构建机路径一致</strong>
+的环境，因此本文<strong>不跑</strong>上游 Tcl
+单测，改为在源码树里增加子目录
+<strong><code>cross-smoke/</code></strong>，用自写 C 程序
+<strong><code>smoke.c</code></strong>
+做<strong>最小可执行验证</strong>（<code>:memory:</code>
+建表、<strong><code>sqlite3_exec</code></strong>、<strong><code>sqlite3_prepare_v2</code>
+/ <code>bind</code> / <code>step</code></strong>），与 {fmt}
+一样：<strong>在 Cygwin 里配好 <code>cmake</code> / <code>ninja</code>
+与 <code>PATH</code> 后交叉编译</strong>，再在 <strong>WSL</strong> 里跑
+ELF。</p>
+<p><strong>说明</strong>：下列 <strong><code>cmake</code> /
+<code>ninja</code> / 交叉 <code>gcc</code> 均指 Cygwin
+环境</strong>（与全文「准备 Cygwin」一致）；不要在未配置工具链的 Windows
+宿主上单独找「裸」CMake——交叉验证的一贯入口是 Cygwin shell。</p>
+<p>本机布局（<strong><code>D:\ctng-build\workspace\cross-validate\sqlite-autoconf-3530000\</code></strong>）：</p>
+<table>
+<thead>
+<tr>
+<th>路径</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sqlite3.c</code>、<code>sqlite3.h</code></td>
+<td>官方 amalgamation（与 <code>cross-smoke</code> 同级）。</td>
+</tr>
+<tr>
+<td><code>cross-smoke/CMakeLists.txt</code></td>
+<td>静态库 <strong><code>sqlite3</code></strong> + 可执行文件
+<strong><code>smoke</code></strong>。</td>
+</tr>
+<tr>
+<td><code>cross-smoke/smoke.c</code></td>
+<td>替代 Tcl 套件的微型验证逻辑。</td>
+</tr>
+<tr>
+<td><code>cross-smoke/build-cross.sh</code></td>
+<td>Cygwin：写
+<strong><code>PATH</code></strong>、<strong><code>toolchain.cmake</code></strong>，<strong>Ninja</strong>
+Release 构建到 <strong><code>build-linux-cross/</code></strong>。</td>
+</tr>
+<tr>
+<td><code>cross-smoke/run-validate-wsl.sh</code></td>
+<td><strong>仅 WSL/Linux</strong>：运行
+<strong><code>build-linux-cross/smoke</code></strong>；宿主机执行
+<strong><code>wsl bash /mnt/d/.../run-validate-wsl.sh</code></strong>。脚本须
+<strong>LF</strong>。</td>
+</tr>
+</tbody>
+</table>
+<p>在 <strong>Cygwin</strong> 中：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /cygdrive/d/ctng-build/workspace/cross-validate/sqlite-autoconf-3530000/cross-smoke</span><br><span class="line">./build-cross.sh</span><br><span class="line">wsl bash /mnt/d/ctng-build/workspace/cross-validate/sqlite-autoconf-3530000/cross-smoke/run-validate-wsl.sh</span><br></pre></td></tr></table></figure>
+
+<p>成功时 WSL 终端应打印
+<strong><code>sqlite cross-smoke: OK</code></strong>，退出码
+<strong>0</strong>。清理重配：<strong><code>FULL_CLEAN=1 ./build-cross.sh</code></strong>。若改过
+<strong><code>BLD</code></strong> 或盘符，同步修改
+<strong><code>run-validate-wsl.sh</code></strong> 里的
+<strong><code>BLD=</code></strong>。</p>
+<div class="markdown-alert markdown-alert-note">
+<div class="markdown-alert-title">
+<svg class="octicon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>
+<strong>Note</strong>
+</div>
+<p>若你仍希望走 <strong>Autotools</strong> 安装 CLI
+<strong><code>sqlite3</code></strong> 或动态库，可在
+<strong><code>sqlite-autoconf-*</code></strong> 根目录对
+<strong><code>configure</code></strong> 使用
+<strong><code>--host=</code></strong> 与
+<strong><code>CC=</code></strong> 指向
+<strong><code>x86_64-linux-gnu-gcc</code></strong>；与 amalgamation
+小测互不冲突，按需选用即可。</p>
+</div>
+<!-- 截图：WSL 中 `sqlite cross-smoke: OK` 一行 -->
+
+<h2 id="abseil及-googletest">Abseil（及 googletest）</h2>
+<ul>
+<li>Abseil：<a
+target="_blank" rel="noopener" href="https://github.com/abseil/abseil-cpp/releases/download/20260107.1/abseil-cpp-20260107.1.tar.gz">https://github.com/abseil/abseil-cpp/releases/download/20260107.1/abseil-cpp-20260107.1.tar.gz</a></li>
+<li>GoogleTest：<a
+target="_blank" rel="noopener" href="https://github.com/google/googletest/releases/download/v1.17.0/googletest-1.17.0.tar.gz">https://github.com/google/googletest/releases/download/v1.17.0/googletest-1.17.0.tar.gz</a></li>
+</ul>
+<p>在 <strong><code>cross-validate</code></strong>
+下将二者<strong>解压为同级目录</strong>（与全文约定一致），例如
+<strong><code>abseil-cpp-20260107.1/</code></strong> 与
+<strong><code>googletest-1.17.0/</code></strong>。<strong>不再额外写聚合用的顶层
+<code>CMakeLists.txt</code></strong>：直接在 <strong>Abseil
+源码根</strong> 上配置 CMake，并通过上游变量
+<strong><code>ABSL_LOCAL_GOOGLETEST_DIR</code></strong> 指向本地
+googletest 根目录（内含其顶层
+<strong><code>CMakeLists.txt</code></strong>）。脚本
+<strong><code>abseil-cross-smoke/build-cross.sh</code></strong>
+默认把该变量设为「脚本上一级目录下的
+<strong><code>googletest-1.17.0</code></strong>」，你也可以在环境里覆盖
+<strong><code>ABSL_SRC</code></strong> /
+<strong><code>ABSL_LOCAL_GOOGLETEST_DIR</code></strong>
+后再执行脚本。</p>
+<p>配置示例（由 <strong><code>build-cross.sh</code></strong>
+代为拼接；手动 cmake 时同理）：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">cmake -S /path/to/abseil-cpp-20260107.1 -B build-linux-cross -G Ninja \</span><br><span class="line">  -DCMAKE_TOOLCHAIN_FILE=.../toolchain.cmake \</span><br><span class="line">  -DCMAKE_BUILD_TYPE=Release \</span><br><span class="line">  -DCMAKE_CXX_STANDARD=17 \</span><br><span class="line">  -DCMAKE_CXX_STANDARD_REQUIRED=ON \</span><br><span class="line">  -DBUILD_TESTING=ON \</span><br><span class="line">  -DABSL_BUILD_TESTING=ON \</span><br><span class="line">  -DABSL_ENABLE_INSTALL=OFF \</span><br><span class="line">  -DABSL_LOCAL_GOOGLETEST_DIR=/path/to/googletest-1.17.0</span><br></pre></td></tr></table></figure>
+
+<p>在 <strong>Cygwin</strong> 中：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /cygdrive/d/ctng-build/workspace/cross-validate/abseil-cross-smoke</span><br><span class="line">./build-cross.sh</span><br><span class="line">wsl bash /mnt/d/ctng-build/workspace/cross-validate/abseil-cross-smoke/run-validate-wsl.sh</span><br></pre></td></tr></table></figure>
+
+<p>运行阶段在 <strong>WSL</strong> 里执行
+<strong><code>run-validate-wsl.sh</code></strong>：与
+<strong>{fmt}</strong> 一样<strong>按文件名顺序</strong>运行
+<strong><code>build-linux-cross/bin/</code></strong> 下各 Linux
+ELF（<strong>不要求安装 <code>ctest</code></strong>），末尾汇总
+<strong><code>Done: N program(s), M failed.</code></strong>。若本地路径、gmock
+头文件或 Abseil 自带的 googletest 集成脚本在你的环境下报错，再按 CMake
+输出逐项调整即可。个别与<strong>时限 / 调度</strong>相关的用例在
+<strong>WSL</strong> 上可能偶发失败，可改期再跑一次对照。</p>
+<h2 id="glfw">GLFW</h2>
+<p>源码：<a
+target="_blank" rel="noopener" href="https://github.com/glfw/glfw/archive/refs/tags/3.4.tar.gz">https://github.com/glfw/glfw/archive/refs/tags/3.4.tar.gz</a></p>
+<p>依赖 <strong>X11</strong>（及可选 Wayland）相关开发包：前文
+<strong>debootstrap → chroot → <code>apt install</code></strong>
+一节若已安装 <strong><code>xorg-dev</code></strong> 等并打入
+tar，解压后的 <strong>sysroot-focal</strong>
+即可供交叉链接使用。（交叉主机侧若无
+<strong><code>wayland-scanner</code></strong>，下文示例关闭
+Wayland。）</p>
+<p>下面是一套在 <strong>Cygwin + ct-ng + focal sysroot</strong> 下
+<strong>配置、编译、运行 <code>examples/offscreen</code></strong>
+的完整验证流程；仓库辅助文件在
+<strong><code>D:\Code\Note\ctng-toolchain-extras</code></strong> 与
+<strong><code>D:\Code\Note\scripts</code></strong>。</p>
+<h3 id="1-sysroot-如何准备">1. sysroot 如何准备</h3>
+<ol type="1">
+<li><strong>在 WSL 内</strong>按前文
+<strong><code>pack-sysroot.sh</code></strong> 打出
+<strong><code>sysroot-focal.tar.gz</code></strong>（或等价包），拷到
+Windows，例如
+<strong><code>D:\ctng-build\sysroot-focal-packed.tar.gz</code></strong>。</li>
+<li><strong>解压到工具链前缀下</strong>，使目录树为：
+<ul>
+<li><strong><code>…/toolchains/x86_64-linux-gnu/x86_64-linux-gnu/sysroot</code></strong>（ct-ng
+自带，勿覆盖）</li>
+<li><strong><code>…/toolchains/x86_64-linux-gnu/x86_64-linux-gnu/sysroot-focal</code></strong>（debootstrap
+focal） 若压缩包顶层是
+<strong><code>sysroot/</code></strong>，解压后应改名为
+<strong><code>sysroot-focal</code></strong>（与同目录
+<strong><code>extract-sysroot-focal.sh</code></strong> 行为一致）。</li>
+</ul></li>
+<li><strong>（强烈建议）软链修正</strong>：在 <strong>Cygwin</strong>
+中对 <strong><code>sysroot-focal</code></strong> 执行
+<strong><code>port_sysroot.sh --fix-only</code></strong>（见前文「解压到工具链旁与软链修正」）。否则
+<strong><code>usr/lib/x86_64-linux-gnu/libdl.so</code> →
+<code>/lib/...</code></strong> 一类绝对路径在
+<strong><code>--sysroot</code> + Cygwin</strong> 下容易导致
+<strong><code>-ldl</code> 落到
+<code>libdl.a</code></strong>，链接共享库时出现
+<strong><code>__dlopen</code> / <code>preinit_array</code></strong>
+等错误。</li>
+<li>将 <strong><code>toolchain-focal-sysroot.cmake</code></strong>
+复制到 <strong><code>…/toolchains/x86_64-linux-gnu/</code></strong>，与
+<strong><code>toolchain.cmake</code></strong>、<strong><code>bin/x86_64-linux-gnu-gcc</code></strong>
+同级（脚本内用 <strong><code>CMAKE_CURRENT_LIST_DIR</code></strong>
+定位编译器）。</li>
+</ol>
+<h3
+id="2-toolchain-focal-sysrootcmake-为什么不能像-toolchaincmake-那样极简">2.
+<code>toolchain-focal-sysroot.cmake</code> 为什么不能像
+<code>toolchain.cmake</code> 那样极简</h3>
+<p>自带的 <strong><code>toolchain.cmake</code></strong> 只设
+<strong><code>CMAKE_FIND_ROOT_PATH</code></strong> 指向 ct-ng
+<strong>内置 sysroot</strong>，交叉 <strong>gcc</strong> 的默认
+<strong><code>--sysroot</code></strong> 本就与之一致，布局也是「非
+Ubuntu multiarch」的简单树。</p>
+<p><strong>Ubuntu focal debootstrap</strong> 则是
+<strong>multiarch</strong>：<strong>crt</strong> 在
+<strong><code>usr/lib/x86_64-linux-gnu</code></strong>，<strong>glibc
+头</strong>依赖
+<strong><code>usr/include/x86_64-linux-gnu/bits</code></strong>。因此
+<strong>仅靠 <code>CMAKE_SYSROOT</code> + CMake
+查找</strong>，链接阶段仍会 <strong>找不到 <code>crt1.o</code> /
+<code>crti.o</code></strong>，编译阶段
+<strong><code>stdint.h</code></strong> 也会 <strong>找不到
+<code>bits/...</code></strong>。工具链里 <strong>始终需要</strong>：</p>
+<ul>
+<li><strong><code>-B${_SYS}/usr/lib/x86_64-linux-gnu</code></strong>（crt
+搜索路径）；</li>
+<li><strong><code>-isystem ${_SYS}/usr/include/x86_64-linux-gnu</code></strong>（<code>bits/</code>
+等多架构头）；</li>
+<li><strong><code>CMAKE_FIND_ROOT_PATH_*</code></strong> 与
+<strong><code>toolchain.cmake</code></strong> 相同，避免搜到 Windows
+主机库。</li>
+</ul>
+<p>可选再加 <strong><code>CMAKE_EXE_LINKER_FLAGS</code> /
+<code>CMAKE_SHARED_LINKER_FLAGS</code></strong> 里的
+<strong><code>-Wl,-rpath-link,${_LIB}</code></strong>，便于解析依赖
+<code>.so</code> 的符号。</p>
+<p>仓库 <strong><code>toolchain-focal-sysroot.cmake</code></strong>
+当前仅保留上述 <strong><code> -B</code> / <code>-isystem</code> /
+<code>rpath-link</code></strong>；<strong><code>-D_REENTRANT</code></strong>、<strong><code>-pthread</code>
+/ <code>-ldl</code>
+拆分</strong>、<strong><code>CMAKE_FIND_LIBRARY_SUFFIXES</code> 优先
+<code>.so</code></strong> 等，是在 <strong><code>port_sysroot.sh</code>
+尚未修正绝对路径软链</strong>、链接器容易误用
+<strong><code>libdl.a</code> / <code>libpthread.a</code></strong>
+时的保守写法。<strong>对 sysroot 做完 <code>--fix-only</code>
+后</strong>，用 <strong>GLFW 3.4</strong> 实测 <strong>共享库 +
+<code>offscreen</code></strong> 可在 <strong>不含</strong>
+这些额外项的情况下完整编过；根因仍是 <strong><code>libdl.so</code>
+等指向 <code>/lib/...</code> 的绝对软链</strong>，而非「CMake
+找不到库」本身。</p>
+<p>若换其它工程或 CMake 未正确传递
+<strong><code>Threads::Threads</code></strong> /
+<strong><code>-ldl</code></strong>，仍可按需在工具链里恢复 <strong>显式
+<code>-pthread</code>、<code>-Wl,-Bdynamic</code></strong> 等；若在全局
+<strong><code>CMAKE_C_FLAGS</code> 里写
+<code>-pthread</code></strong>，仍须留意
+<strong>共享库</strong>链接行是否被带上
+<strong><code>libpthread.a</code></strong>（DSO
+<strong><code>.preinit_array</code></strong> 一类错误）。</p>
+<p>仓库里的
+<strong><code>toolchain-focal-sysroot-minimal.cmake</code></strong>（仅
+<strong><code>CMAKE_SYSROOT</code> +
+<code>FIND_ROOT_PATH</code></strong>）可作对照：<strong>CMake
+编译器自检即会因缺少 crt 失败</strong>，证明 <strong>不能</strong>去掉
+<strong><code>-B</code> / <code>-isystem</code></strong>。</p>
+<h3 id="3-cmake-如何配置与编译cygwin">3. CMake
+如何配置与编译（Cygwin）</h3>
+<p>准备
+<strong><code>scripts/cmake-cross-threads-cache.cmake</code></strong>：交叉时
+<strong>FindThreads</strong> 的 <strong>try_compile</strong> 常失败，用
+<strong><code>-C</code> 预置缓存</strong>更稳。</p>
+<p>示例（路径按本机修改；<strong><code>RT_LIBRARY</code></strong> 指向
+<strong><code>librt-2.31.so</code> 真实版本文件</strong>，避免
+<strong><code>librt.so</code> 符号链接在 NTFS/Cygwin
+上异常</strong>）：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> PATH=<span class="string">&quot;/cygdrive/d/ctng-build/workspace/cross-tools/toolchains/x86_64-linux-gnu/bin:/usr/local/bin:/usr/bin&quot;</span></span><br><span class="line"></span><br><span class="line">TC=/cygdrive/d/ctng-build/workspace/cross-tools/toolchains/x86_64-linux-gnu</span><br><span class="line">SR=<span class="variable">$TC</span>/x86_64-linux-gnu/sysroot-focal/usr/lib/x86_64-linux-gnu/librt-2.31.so</span><br><span class="line">CACHE=/cygdrive/d/Code/Note/scripts/cmake-cross-threads-cache.cmake</span><br><span class="line">SRC=/cygdrive/d/ctng-build/workspace/cross-validate/glfw-3.4</span><br><span class="line">BLD=<span class="variable">$SRC</span>/build-glfw-focal</span><br><span class="line"></span><br><span class="line">cmake -S <span class="string">&quot;<span class="variable">$SRC</span>&quot;</span> -B <span class="string">&quot;<span class="variable">$BLD</span>&quot;</span> -G Ninja \</span><br><span class="line">  -DCMAKE_TOOLCHAIN_FILE=<span class="variable">$TC</span>/toolchain-focal-sysroot.cmake \</span><br><span class="line">  -C <span class="string">&quot;<span class="variable">$CACHE</span>&quot;</span> \</span><br><span class="line">  -DCMAKE_BUILD_TYPE=Release \</span><br><span class="line">  -DBUILD_SHARED_LIBS=ON \</span><br><span class="line">  -DRT_LIBRARY=<span class="string">&quot;<span class="variable">$SR</span>&quot;</span> \</span><br><span class="line">  -DGLFW_BUILD_EXAMPLES=ON \</span><br><span class="line">  -DGLFW_BUILD_TESTS=OFF \</span><br><span class="line">  -DGLFW_BUILD_DOCS=OFF \</span><br><span class="line">  -DGLFW_BUILD_WAYLAND=OFF</span><br><span class="line"></span><br><span class="line">cmake --build <span class="string">&quot;<span class="variable">$BLD</span>&quot;</span> --target examples/offscreen</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong><code>BUILD_SHARED_LIBS=ON</code></strong>：生成
+<strong><code>libglfw.so</code></strong>，链接命令需依赖上文
+<strong>共享库 linker flags</strong>。</li>
+<li>若改为 <strong><code>BUILD_SHARED_LIBS=OFF</code></strong>：得到
+<strong><code>libglfw3.a</code></strong>，示例可执行文件
+<strong>静态链入 GLFW</strong>，在 WSL 运行时 <strong>一般不必再为
+<code>libglfw</code> 设
+<code>LD_LIBRARY_PATH</code></strong>（仍动态依赖
+<strong><code>libc</code> / <code>libdl</code> / X11 与 GL
+等</strong>，后者在 GLFW 里可能以 <strong><code>dlopen</code></strong>
+加载）。</li>
+</ul>
+<h3 id="4-在-wsl-里运行-offscreen">4. 在 WSL 里运行
+<code>offscreen</code></h3>
+<p>示例 <strong><code>offscreen</code></strong> 会生成
+<strong><code>offscreen.png</code></strong>（依赖 OpenGL / GLX；无 GPU
+时可
+<strong><code>export LIBGL_ALWAYS_SOFTWARE=1</code></strong>）。</p>
+<ul>
+<li><strong>共享库版</strong>：可执行文件若带 <strong>Cygwin 下写入的
+RPATH（<code>/cygdrive/d/...</code>）</strong>，Linux
+动态加载器不认，需在 WSL 中设置：
+<strong><code>export LD_LIBRARY_PATH=/mnt/d/.../build-glfw-focal/src</code></strong>（路径对应你的构建目录）。</li>
+<li><strong>静态 GLFW 版</strong>：通常可直接运行：
+<strong><code>/mnt/d/.../build.../examples/offscreen</code></strong>，在工作目录得到
+<strong><code>offscreen.png</code></strong>。</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">mkdir</span> -p /tmp/offscreen-test &amp;&amp; <span class="built_in">cd</span> /tmp/offscreen-test</span><br><span class="line"><span class="built_in">export</span> LD_LIBRARY_PATH=/mnt/d/ctng-build/workspace/cross-validate/glfw-3.4/build-glfw-focal/src</span><br><span class="line"><span class="built_in">export</span> LIBGL_ALWAYS_SOFTWARE=1</span><br><span class="line">/mnt/d/ctng-build/workspace/cross-validate/glfw-3.4/build-glfw-focal/examples/offscreen</span><br><span class="line"><span class="built_in">ls</span> -la offscreen.png</span><br></pre></td></tr></table></figure>
+
+<p>图形窗口类示例需在 <strong>带图形栈的 WSL /
+真机</strong>上验证；<strong>offscreen</strong> 侧重「交叉链接 +
+离屏读回」链路。</p>
+<!-- 截图：交叉链接成功 + WSL 侧 `offscreen.png` 或 `file offscreen.png` -->
+
+<h2 id="qt597">Qt（5.9.7）</h2>
+<p>需求：<strong>sysroot 内有 Linux 版 Qt 5.9.7
+的头文件与库</strong>；<strong>moc、rcc、uic</strong> 等代码生成工具常在
+<strong>构建主机</strong> 上运行，因此实际工程中常见 <strong>「Windows
+主机 Qt 工具 + Linux 目标 Qt 库」</strong>
+的混搭，版本必须一致（此处固定 <strong>5.9.7</strong>）。</p>
+<p>可选思路（待你实践后把可行的一条写死）：</p>
+<ul>
+<li>使用官方或第三方 <strong>Qt 安装包</strong> 分别安装 Windows 与
+Linux 包；</li>
+<li>或调研
+<strong>aqtinstall</strong>（Python）一类工具按版本拉取组件。</li>
+</ul>
+<div class="markdown-alert markdown-alert-note">
+<div class="markdown-alert-title">
+<svg class="octicon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>
+<strong>Note</strong>
+</div>
+<p><strong>坑点</strong>：Qt 交叉编译的踩坑集中在 <strong>qmake/CMake 的
+Qt5_DIR</strong>、<strong>主机工具路径</strong>、以及
+<strong>plugins/platforms</strong> 部署；运行时还要保证 WSL 侧
+<strong>xcb/wayland</strong> 与 <strong>插件路径</strong> 一致。</p>
+</div>
+<!-- 截图：Qt Creator 或 CMake 日志里 Qt 版本与工具路径解析正确 -->
+
+<h2 id="boost155">Boost（1.55）</h2>
+<p>源码（官方归档，bz2）：<a
+target="_blank" rel="noopener" href="https://archives.boost.io/release/1.55.0/source/boost_1_55_0.tar.bz2">https://archives.boost.io/release/1.55.0/source/boost_1_55_0.tar.bz2</a></p>
+<p>老版本 Boost 常用 <strong><code>bootstrap.sh</code> +
+<code>b2</code></strong>；交叉编译需设置 <code>toolset</code> 与
+<code>target-os</code>，并指向交叉编译器与 sysroot（具体
+<strong><code>user-config.jam</code></strong> 待按工具链前缀补全）。</p>
+<p><strong>统一下载目录（只下一遍）</strong>：将 tarball 放到
+<strong><code>D:\ctng-build\workspace\cross-validate\archives\</code></strong>，供
+<strong>WSL chroot</strong>、<strong>WSL 本机</strong>、<strong>Cygwin
+交叉</strong> 共用，避免多处重复拉取。仓库脚本
+<strong><code>scripts/download-boost-1.55-to-cross-validate.sh</code></strong>
+默认写入上述路径；执行前在 shell 里导出与 <strong>「准备
+Cygwin」</strong> 一致的代理（本机长期
+<strong><code>http://127.0.0.1:7890</code></strong>）：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> http_proxy=http://127.0.0.1:7890</span><br><span class="line"><span class="built_in">export</span> https_proxy=http://127.0.0.1:7890</span><br><span class="line"><span class="built_in">chmod</span> +x /cygdrive/d/Code/Note/scripts/download-boost-1.55-to-cross-validate.sh</span><br><span class="line">/cygdrive/d/Code/Note/scripts/download-boost-1.55-to-cross-validate.sh</span><br></pre></td></tr></table></figure>
+
+<p>若文件已存在，脚本会 <strong>跳过下载</strong>。 tarball
+绝对路径示例：<strong><code>/cygdrive/d/ctng-build/workspace/cross-validate/archives/boost_1_55_0.tar.bz2</code></strong>。</p>
+<!-- 截图：`b2` 构建摘要或任意一个小库编译成功日志 -->
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>PureWhiteVK
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://purewhitevk.github.io/posts/5bfa/" title="Windows 交叉编译 Linux 程序">https://purewhitevk.github.io/posts/5bfa/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/Linux/" rel="tag"># Linux</a>
+              <a href="/tags/CMake/" rel="tag"># CMake</a>
+              <a href="/tags/cross-compile/" rel="tag"># cross-compile</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/77c6/" rel="prev" title="《经济学原理》问题与应用（5）">
+                  <i class="fa fa-angle-left"></i> 《经济学原理》问题与应用（5）
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">PureWhiteVK</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">103k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">6:15</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>
