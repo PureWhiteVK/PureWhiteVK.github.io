@@ -1,0 +1,54 @@
+sequenceDiagram
+    participant User
+    participant Main as Main Thread(Render/UI)
+    participant Worker as Watcher Thread
+    participant FS as File System
+    participant Timer as Debounce Timer
+
+    User->>Main: Select Fragment Shader File
+
+    Main->>Main: set_target_file(path)
+
+    Main->>Worker: m_change_target_signal
+
+    Worker->>Worker: on_change_target()
+    Worker->>Worker: stop old watcher
+    Worker->>Worker: start new watcher
+
+    FS-->>Worker: file changed event
+
+    Worker->>Worker: on_fs_event()
+
+    Worker->>Timer: reset/start debounce timer
+
+    FS-->>Worker: more file changes(optional)
+
+    Worker->>Timer: reset timer again
+
+    Timer-->>Worker: timeout
+
+    Worker->>Worker: on_debounce_timer()
+
+    Worker->>Main: shader_file_change_signal
+
+    Main->>Main: on_shader_file_change_callback()
+
+    Main->>Main: read shader file
+
+    Main->>Main: compile new shader
+
+    alt compile success
+        Main->>Main: replace old shader
+    else compile failed
+        Main->>Main: keep old shader
+    end
+
+    Main->>Main: render updated frame
+
+    Main->>Worker: stop signal
+
+    Worker->>Worker: close fs watcher
+    Worker->>Worker: close timer
+    Worker->>Worker: stop uv loop
+
+    Worker-->>Main: thread exit

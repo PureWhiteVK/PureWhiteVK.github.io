@@ -142,4 +142,8 @@ void main()
 
 8. 当主线程退出后，调用 watcher 的 `stop` 函数，向子线程任务队列发送 stop signal，通知子线程停止监控并退出。子线程会在 `on_stop_signal` 回调中关闭各个事件源，再关闭事件队列并退出线程。
 
+时序图如下：
+
+<img src="OpenGL-Shader-Toy/mermaid-diagram.png" alt="mermaid-diagram" style="zoom: 25%;" />
+
 源代码见 [这里](https://github.com/PureWhiteVK/OpenGL-Examples/blob/main/src/imgui-demo/shader_toy.cpp)

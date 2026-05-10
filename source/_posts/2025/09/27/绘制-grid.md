@@ -467,7 +467,7 @@ $$
 其中 $\sqrt{ 
 		\left(\frac{\partial f}{\partial u}\right)^2 + 
 		\left(\frac{\partial f}{\partial v}\right)^2
-	}$ 表示梯度 $ \grad f = \left(\frac{\partial f}{\partial u},\frac{\partial f}{\partial v}\right)$ 的 $L^2$ 范数（梯度向量在二维空间上的长度，可以理解为是在梯度方向上的变化率是多少）。
+	}$ 表示梯度 $\grad f = \left(\frac{\partial f}{\partial u},\frac{\partial f}{\partial v}\right)$ 的 $L^2$ 范数（梯度向量在二维空间上的长度，可以理解为是在梯度方向上的变化率是多少）。
 
 在实际计算过程中，可以用差分方式近似，也就是利用相邻像素之间的值来计算：
 $$
@@ -642,7 +642,7 @@ void main() {
 
 <img src="绘制-grid/image-20260118183601820.png" alt="image-20260118183601820" style="zoom: 50%;" />
 
-再结合网格线宽为 6，可以计算出该像素的覆盖率为 $6 * 0.5 - 2.7 + 0.5 = 0.8$。
+再结合网格线宽为 6，可以计算出该像素的覆盖率为 $6 \cross 0.5 - 2.7 + 0.5 = 0.8$。
 
 这里额外加上的 0.5，对应的是像素自身被覆盖的那一部分。
 

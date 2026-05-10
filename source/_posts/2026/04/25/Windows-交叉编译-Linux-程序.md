@@ -487,7 +487,11 @@ ct-ng build
 
 <img src="Windows-交叉编译-Linux-程序/image-20260506212222739.png" alt="image-20260506212222739" style="zoom:67%;" />
 
+如果编译时碰到 internal compiler error 且位置随机，多半是 cygwin 并行执行时出现问题，建议将并行数降低或改为串行执行。可通过如下命令进行调整。
 
+```bash
+ct-ng build.1
+```
 
 ## 基本功能验证
 
