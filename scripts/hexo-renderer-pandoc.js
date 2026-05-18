@@ -4,6 +4,7 @@
 
 const { spawn } = require('node:child_process');
 const path = require('node:path');
+const fs = require('node:fs');
 const assert = require('node:assert');
 const { yellow } = require('picocolors');
 
@@ -98,9 +99,28 @@ const renderer = (data) => {
         // the filename (xxx.md) may not correspond to title field in Markdown Front Matter
         const filename = path.basename(data.path, '.md');
         log.debug('Filename: %s', yellow(filename));
+
+        // Scan the actual filesystem directory for the asset folder name.
+        // On case-insensitive filesystems (Windows), path.basename can return a
+        // different case than what the markdown body uses.  Reading the real
+        // directory entries gives us the correct casing to use as the prefix,
+        // so the Lua filter's string comparison succeeds.
+        let assetDir = filename;
+        const postDir = path.dirname(data.path);
+        try {
+            const entries = fs.readdirSync(postDir, { withFileTypes: true });
+            const found = entries.find(e => e.isDirectory() && e.name.toLowerCase() === filename.toLowerCase());
+            if (found && found.name !== filename) {
+                log.debug('Asset dir case mismatch: "%s" -> "%s"', yellow(filename), yellow(found.name));
+                assetDir = found.name;
+            }
+        } catch {
+            // fall back to filename
+        }
+
         // const title = current_post.title;
         extra.push(argument('metadata', `path:${post_path}`));
-        extra.push(argument('metadata', `title:${filename}`));
+        extra.push(argument('metadata', `title:${assetDir}`));
     }
 
     // if we are rendering a post,
@@ -171,6 +191,25 @@ const renderer = (data) => {
             const length = output.length;
             log.debug(`Pandoc Output Size: ${length} bytes`);
             log.debug(`Pandoc Output Preview:\n%s`, yellow(length > 100 ? output.substring(length - 100, length).trim() : output.trim()));
+
+            // Validate image paths in rendered output
+            if (current_post) {
+                const imgRe = /(?:data-src|src)="([^"]+)"/gi;
+                const broken = [];
+                let m;
+                while ((m = imgRe.exec(output)) !== null) {
+                    const src = m[1];
+                    if (src.startsWith('/') || src.startsWith('http://') || src.startsWith('https://') || src.startsWith('data:') || src.startsWith('#')) {
+                        continue;
+                    }
+                    broken.push(src);
+                }
+                if (broken.length > 0) {
+                    const msg = `Broken image path(s) in "${source}":\n  ${broken.join('\n  ')}\nThe Lua filter may have failed to rewrite these paths. Check for case mismatch between the asset directory and the markdown image reference.`;
+                    return reject(new Error(msg));
+                }
+            }
+
             resolve(output);
         });
     });
