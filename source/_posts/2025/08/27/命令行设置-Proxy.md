@@ -95,5 +95,24 @@ proxy_off() {
 }
 ```
 
+2026/05/22 更新：最近发现 WSL 会自动设置代理转发，然后每次登录都有一个这样的输出，影响 agent 显示，如下所示：
 
+```bash
+PS C:\Users\Administrator> wsl
+wsl: 检测到 localhost 代理配置，但未镜像到 WSL。NAT 模式下的 WSL 不支持 localhost 代理。
+```
 
+需要在用户目录（`%userProfile%`）创建 `.wslconfig` 文件，设置 `autoProxy` 为 `false`，如下
+
+```ini
+[wsl2]
+autoProxy=false
+```
+
+然后通过下列命令关闭 WSL
+
+```bash
+wsl --shutdown
+```
+
+再次输入 `wsl`启动即可。
