@@ -285,7 +285,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>537</span>
+      <span>660</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -346,6 +346,21 @@ style="zoom: 67%;" /></p>
 <p>稍微修改一下 <code>proxy_on</code> 的代码，就可以在 WSL
 上设置好代理了，如下所示</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="title">proxy_on</span></span>() &#123;</span><br><span class="line">    <span class="built_in">local</span> hostip=<span class="string">&quot;<span class="subst">$(ip route show | grep -i default | awk &#x27;&#123; print $3 &#125;&#x27;)</span>&quot;</span></span><br><span class="line">    <span class="built_in">local</span> proxy=<span class="string">&quot;http://<span class="variable">$hostip</span>:7890&quot;</span></span><br><span class="line">    <span class="built_in">export</span> http_proxy=<span class="string">&quot;<span class="variable">$proxy</span>&quot;</span></span><br><span class="line">    <span class="built_in">export</span> https_proxy=<span class="string">&quot;<span class="variable">$proxy</span>&quot;</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;Proxy enabled: <span class="variable">$proxy</span>&quot;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">proxy_off</span></span>() &#123;</span><br><span class="line">    <span class="built_in">unset</span> http_proxy</span><br><span class="line">    <span class="built_in">unset</span> https_proxy</span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;Proxy disabled&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>2026/05/22 更新：最近发现 WSL
+会自动设置代理转发，然后每次登录都有一个这样的输出，影响 agent
+显示，如下所示：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">PS C:\Users\Administrator&gt; wsl</span><br><span class="line">wsl: 检测到 localhost 代理配置，但未镜像到 WSL。NAT 模式下的 WSL 不支持 localhost 代理。</span><br></pre></td></tr></table></figure>
+
+<p>需要在用户目录（<code>%userProfile%</code>）创建
+<code>.wslconfig</code> 文件，设置 <code>autoProxy</code> 为
+<code>false</code>，如下</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[wsl2]</span></span><br><span class="line"><span class="attr">autoProxy</span>=<span class="literal">false</span></span><br></pre></td></tr></table></figure>
+
+<p>然后通过下列命令关闭 WSL</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wsl --shutdown</span><br></pre></td></tr></table></figure>
+
+<p>再次输入 <code>wsl</code>启动即可。</p>
 
     </div>
 
