@@ -28,13 +28,17 @@
 <meta property="og:description" content="最近碰到一个需求是要在 Windows 上交叉编译 Linux 程序，用于做 Windows 代码的跨平台编译检查，发现里面弯弯绕绕还挺多的（主要是 Windows 和 Linux 系统层面的一些差异需要注意），就通过一篇博客记录一下整个交叉编译的流程，也加深对交叉编译流程的理解。 整个交叉编译包含2个主要步骤：sysroot 准备和交叉编译工具链的构建。  sysroot 在 WSL 上使用 d">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://purewhitevk.github.io/posts/5bfa/image-20260505212830069.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/5bfa/image-20260524130057836.png">
 <meta property="og:image" content="https://purewhitevk.github.io/posts/5bfa/image-20260505213158260.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/5bfa/image-20260524130232580.png">
 <meta property="og:image" content="https://purewhitevk.github.io/posts/5bfa/image-20260506211127580.png">
 <meta property="og:image" content="https://purewhitevk.github.io/posts/5bfa/image-20260506212222739.png">
 <meta property="og:image" content="https://purewhitevk.github.io/posts/5bfa/image-20260506212538919.png">
 <meta property="og:image" content="https://purewhitevk.github.io/posts/5bfa/image-20260506212758096.png">
 <meta property="og:image" content="https://purewhitevk.github.io/posts/5bfa/image-20260506213046577.png">
 <meta property="og:image" content="https://purewhitevk.github.io/posts/5bfa/image-20260506213913450.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/5bfa/image-20260524122935457.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/5bfa/image-20260524123229215.png">
 <meta property="og:image" content="https://purewhitevk.github.io/posts/5bfa/image-20260506221013993.png">
 <meta property="og:image" content="https://purewhitevk.github.io/posts/5bfa/image-20260506231604298.png">
 <meta property="og:image" content="https://purewhitevk.github.io/posts/5bfa/image-20260506225001773.png">
@@ -191,7 +195,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-wsl"><span class="nav-number">1.</span> <span class="nav-text">安装 WSL</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%BC%E5%85%A5-wsl-%E9%95%9C%E5%83%8F"><span class="nav-number">1.1.</span> <span class="nav-text">导入 WSL 镜像</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%AF%E9%80%89%E5%88%9B%E5%BB%BA%E6%99%AE%E9%80%9A%E7%94%A8%E6%88%B7"><span class="nav-number">1.2.</span> <span class="nav-text">（可选）创建普通用户</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%AF%E9%80%89%E6%9B%B4%E6%8D%A2%E8%BD%AF%E4%BB%B6%E6%BA%90"><span class="nav-number">1.3.</span> <span class="nav-text">（可选）更换软件源</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%87%86%E5%A4%87-sysroot"><span class="nav-number">2.</span> <span class="nav-text">准备 sysroot</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E4%BE%9D%E8%B5%96"><span class="nav-number">2.1.</span> <span class="nav-text">安装依赖</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96-rootfs"><span class="nav-number">2.2.</span> <span class="nav-text">初始化 rootfs</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%9B%E5%85%A5-rootfs"><span class="nav-number">2.3.</span> <span class="nav-text">进入 rootfs</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E4%BE%9D%E8%B5%96-1"><span class="nav-number">2.4.</span> <span class="nav-text">安装依赖</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA-sysroot"><span class="nav-number">2.5.</span> <span class="nav-text">创建 sysroot</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%93%E5%8C%85%E5%92%8C%E8%A7%A3%E5%8E%8B"><span class="nav-number">2.6.</span> <span class="nav-text">打包和解压</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-cygwin"><span class="nav-number">3.</span> <span class="nav-text">安装 Cygwin</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E4%BE%9D%E8%B5%96-2"><span class="nav-number">3.1.</span> <span class="nav-text">安装依赖</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F"><span class="nav-number">3.2.</span> <span class="nav-text">设置环境变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%AF%E9%80%89%E5%8D%B8%E8%BD%BD-cygwin"><span class="nav-number">3.3.</span> <span class="nav-text">（可选）卸载 Cygwin</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9E%84%E5%BB%BA%E4%BA%A4%E5%8F%89%E7%BC%96%E8%AF%91%E5%B7%A5%E5%85%B7%E9%93%BE"><span class="nav-number">4.</span> <span class="nav-text">构建交叉编译工具链</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E5%B7%A5%E4%BD%9C%E7%9B%AE%E5%BD%95"><span class="nav-number">4.1.</span> <span class="nav-text">配置工作目录</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-crosstool-ng"><span class="nav-number">4.2.</span> <span class="nav-text">安装 crosstool-ng</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%AF%E9%80%89%E9%85%8D%E7%BD%AE%E5%B7%A5%E5%85%B7%E9%93%BE"><span class="nav-number">4.3.</span> <span class="nav-text">（可选）配置工具链</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9E%84%E5%BB%BA%E5%B7%A5%E5%85%B7%E9%93%BE"><span class="nav-number">4.4.</span> <span class="nav-text">构建工具链</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E5%8A%9F%E8%83%BD%E9%AA%8C%E8%AF%81"><span class="nav-number">4.5.</span> <span class="nav-text">基本功能验证</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%A4%E5%8F%89%E7%BC%96%E8%AF%91%E9%AA%8C%E8%AF%81"><span class="nav-number">5.</span> <span class="nav-text">交叉编译验证</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#fmt"><span class="nav-number">5.1.</span> <span class="nav-text">{fmt}</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#catch2"><span class="nav-number">5.2.</span> <span class="nav-text">Catch2</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sqlite"><span class="nav-number">5.3.</span> <span class="nav-text">sqlite</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#abseil"><span class="nav-number">5.4.</span> <span class="nav-text">Abseil</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#glfw"><span class="nav-number">5.5.</span> <span class="nav-text">GLFW</span></a></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-wsl"><span class="nav-number">1.</span> <span class="nav-text">安装 WSL</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%BC%E5%85%A5-wsl-%E9%95%9C%E5%83%8F"><span class="nav-number">1.1.</span> <span class="nav-text">导入 WSL 镜像</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%AF%E9%80%89%E5%88%9B%E5%BB%BA%E6%99%AE%E9%80%9A%E7%94%A8%E6%88%B7"><span class="nav-number">1.2.</span> <span class="nav-text">（可选）创建普通用户</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%AF%E9%80%89%E6%9B%B4%E6%8D%A2%E8%BD%AF%E4%BB%B6%E6%BA%90"><span class="nav-number">1.3.</span> <span class="nav-text">（可选）更换软件源</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%87%86%E5%A4%87-sysroot"><span class="nav-number">2.</span> <span class="nav-text">准备 sysroot</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E4%BE%9D%E8%B5%96"><span class="nav-number">2.1.</span> <span class="nav-text">安装依赖</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96-rootfs"><span class="nav-number">2.2.</span> <span class="nav-text">初始化 rootfs</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96-aarch64-rootfs"><span class="nav-number">2.2.1.</span> <span class="nav-text">初始化 aarch64 rootfs</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%9B%E5%85%A5-rootfs"><span class="nav-number">2.3.</span> <span class="nav-text">进入 rootfs</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9B%E5%85%A5-aarch64-rootfs"><span class="nav-number">2.3.1.</span> <span class="nav-text">进入 aarch64 rootfs</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E4%BE%9D%E8%B5%96-1"><span class="nav-number">2.4.</span> <span class="nav-text">安装依赖</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA-sysroot"><span class="nav-number">2.5.</span> <span class="nav-text">创建 sysroot</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%93%E5%8C%85%E5%92%8C%E8%A7%A3%E5%8E%8B"><span class="nav-number">2.6.</span> <span class="nav-text">打包和解压</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#cygwin-%E6%9E%84%E5%BB%BA%E4%BA%A4%E5%8F%89%E7%BC%96%E8%AF%91%E5%B7%A5%E5%85%B7%E9%93%BE"><span class="nav-number">3.</span> <span class="nav-text">Cygwin 构建交叉编译工具链</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-cygwin"><span class="nav-number">3.1.</span> <span class="nav-text">安装 Cygwin</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E4%BE%9D%E8%B5%96-2"><span class="nav-number">3.1.1.</span> <span class="nav-text">安装依赖</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F"><span class="nav-number">3.1.2.</span> <span class="nav-text">设置环境变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%AF%E9%80%89%E5%8D%B8%E8%BD%BD-cygwin"><span class="nav-number">3.1.3.</span> <span class="nav-text">（可选）卸载 Cygwin</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E5%B7%A5%E4%BD%9C%E7%9B%AE%E5%BD%95"><span class="nav-number">3.2.</span> <span class="nav-text">配置工作目录</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-crosstool-ng"><span class="nav-number">3.3.</span> <span class="nav-text">安装 crosstool-ng</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E5%B7%A5%E5%85%B7%E9%93%BE"><span class="nav-number">3.4.</span> <span class="nav-text">配置工具链</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9E%84%E5%BB%BA%E5%B7%A5%E5%85%B7%E9%93%BE"><span class="nav-number">3.5.</span> <span class="nav-text">构建工具链</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E5%8A%9F%E8%83%BD%E9%AA%8C%E8%AF%81"><span class="nav-number">3.6.</span> <span class="nav-text">基本功能验证</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#linux-%E6%9E%84%E5%BB%BA%E4%BA%A4%E5%8F%89%E7%BC%96%E8%AF%91%E5%B7%A5%E5%85%B7%E9%93%BE"><span class="nav-number">4.</span> <span class="nav-text">Linux 构建交叉编译工具链</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E4%BE%9D%E8%B5%96-3"><span class="nav-number">4.1.</span> <span class="nav-text">安装依赖</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E5%B7%A5%E5%85%B7%E9%93%BE-1"><span class="nav-number">4.2.</span> <span class="nav-text">配置工具链</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%93%E5%8C%85%E5%B7%A5%E5%85%B7%E9%93%BE%E5%92%8C-sysroot"><span class="nav-number">4.3.</span> <span class="nav-text">打包工具链和 sysroot</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%A4%E5%8F%89%E7%BC%96%E8%AF%91%E9%AA%8C%E8%AF%81"><span class="nav-number">5.</span> <span class="nav-text">交叉编译验证</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#fmt"><span class="nav-number">5.1.</span> <span class="nav-text">{fmt}</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#catch2"><span class="nav-number">5.2.</span> <span class="nav-text">Catch2</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sqlite"><span class="nav-number">5.3.</span> <span class="nav-text">sqlite</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#abseil"><span class="nav-number">5.4.</span> <span class="nav-text">Abseil</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#glfw"><span class="nav-number">5.5.</span> <span class="nav-text">GLFW</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -303,14 +307,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>4.2k</span>
+      <span>5.7k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>15 分钟</span>
+      <span>21 分钟</span>
     </span>
 </div>
 
@@ -326,7 +330,11 @@
 <p>整个交叉编译包含2个主要步骤：sysroot 准备和交叉编译工具链的构建。</p>
 <ul>
 <li><p>sysroot 在 WSL 上使用 debootstrap 创建</p></li>
-<li><p>交叉编译工具链通过 Cygwin 和 crosstool-ng 生成</p></li>
+<li><p>交叉编译工具链可通过两种方式生成：</p>
+<ul>
+<li>通过 Cygwin 和 crosstool-ng 生成</li>
+<li>通过 Linux 和 crosstool-ng 以 canadian cross 方式生成</li>
+</ul></li>
 </ul>
 <span id="more"></span>
 
@@ -400,7 +408,7 @@ Linux
 rootfs，并自动挂载目录。</li>
 <li><strong>qemu-user-static</strong>：用于支持在非本机 ISA（Instruction
 Set Architecture，指令集架构） 的 rootfs 里执行目标程序（例如做
-<strong>arm64 的 sysroot</strong> 时很有用）</li>
+<strong>aarch64 的 sysroot</strong> 时很有用）</li>
 <li><strong>binfmt-support</strong>：让 Linux 支持运行非本机 ISA 的 ELF
 程序，可以自动调用 qemu 执行 arm 应用。</li>
 </ul>
@@ -412,6 +420,32 @@ Set Architecture，指令集架构） 的 rootfs 里执行目标程序（例如�
 successfully”（基础系统成功安装）</p>
 <p><img data-src="/posts/5bfa/image-20260505212830069.png"
 style="zoom: 67%;" /></p>
+<h3 id="初始化-aarch64-rootfs">初始化 aarch64 rootfs</h3>
+<p>在 x86_64 机器上也可以直接创建 arm 的
+rootfs，只不过中间步骤略微繁琐一点，需要通过 qemu 进行转义，同时 arm 的
+ubuntu 软件源地址也和 x86_64 的不一致（<a
+target="_blank" rel="noopener" href="https://mirrors.aliyun.com/ubuntu-ports/），需要额外注意。">https://mirrors.aliyun.com/ubuntu-ports/），需要额外注意。</a></p>
+<p>操作步骤如下：</p>
+<ol type="1">
+<li>初始化 rootfs（注意<code>--arch</code>和 <code>--foreign</code>
+参数，为了区分，这里创建的是 Ubuntu 18 的 rootfs）</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">sudo debootstrap \</span><br><span class="line">    --<span class="built_in">arch</span>=arm64 \</span><br><span class="line">    --foreign \</span><br><span class="line">    bionic \</span><br><span class="line">    /opt/rootfs-bionic-arm64 \</span><br><span class="line">    https://mirrors.aliyun.com/ubuntu-ports/</span><br></pre></td></tr></table></figure>
+
+<ol start="2" type="1">
+<li>拷贝 qemu-aarch64-static，便于 x86_64 上进入 aarch64 rootfs
+执行程序</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo <span class="built_in">cp</span> /usr/bin/qemu-aarch64-static /opt/rootfs-bionic-arm64/</span><br></pre></td></tr></table></figure>
+
+<ol start="3" type="1">
+<li>进入 rootfs 完成 debootstrap 后续操作</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo systemd-nspawn \</span><br><span class="line">    -D /opt/rootfs-bionic-arm64 \</span><br><span class="line">    /debootstrap/debootstrap --second-stage</span><br></pre></td></tr></table></figure>
+
+<p>完成后输出如下：</p>
+<p><img data-src="/posts/5bfa/image-20260524130057836.png"
+style="zoom:50%;" /></p>
 <h2 id="进入-rootfs">进入 rootfs</h2>
 <p>直接通过 chroot 可以进入 rootfs 安装程序，但是通常运行时需要手动挂载
 dev、run、proc 等目录，为简化操作，通过 systemd-nspawn 以容器方式进入
@@ -421,6 +455,14 @@ rootfs，命令如下：</p>
 <p>将脚本保存到本地执行即可，成功进入 rootfs 后输出如下所示：</p>
 <p><img data-src="/posts/5bfa/image-20260505213158260.png"
 style="zoom:67%;" /></p>
+<h3 id="进入-aarch64-rootfs">进入 aarch64 rootfs</h3>
+<p>启动脚本和 x86-64 类似，只需要 rootfs 内包含用于转译的
+qemu-aarch64-static 程序即可</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"><span class="built_in">set</span> -euo pipefail</span><br><span class="line"></span><br><span class="line">SYSROOT=/opt/rootfs-bionic-arm64</span><br><span class="line">SRC=/home/xiao/devenv</span><br><span class="line"></span><br><span class="line">sudo systemd-nspawn \</span><br><span class="line">        -D <span class="string">&quot;<span class="variable">$SYSROOT</span>&quot;</span> \</span><br><span class="line">        --<span class="built_in">bind</span>=<span class="string">&quot;<span class="variable">$SRC</span>:/mnt/project&quot;</span> \</span><br><span class="line">        --<span class="built_in">bind</span>=/etc/resolv.conf \</span><br><span class="line">        --setenv=HOME=/root \</span><br><span class="line">        --setenv=TERM=<span class="string">&quot;<span class="variable">$TERM</span>&quot;</span> \</span><br><span class="line">        --hostname=sysroot-env \</span><br><span class="line">        --console=interactive \</span><br><span class="line">        /bin/bash</span><br></pre></td></tr></table></figure>
+
+<p>启动后效果如下：</p>
+<p><img data-src="/posts/5bfa/image-20260524130232580.png"
+style="zoom: 50%;" /></p>
 <h2 id="安装依赖-1">安装依赖</h2>
 <p>由于 debootstrap 创建 rootfs
 时写入的默认软件源往往不完整，在安装依赖前需要重新调整软件源，命令如下所示：</p>
@@ -459,12 +501,13 @@ chroot
 <p>解压命令（在 Cygwin 中执行）</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">sysroot_dir=<span class="string">&quot;&lt;sysroot 在 Cygwin 中的位置，例如 /cygdrive/d/sysroot-focal&gt;&quot;</span></span><br><span class="line"><span class="built_in">mkdir</span> -p <span class="variable">$sysroot_dir</span></span><br><span class="line">tar -xzf sysroot-focal.tar.gz \</span><br><span class="line">    --no-same-owner \</span><br><span class="line">    --no-same-permissions \</span><br><span class="line">    -C <span class="string">&quot;<span class="variable">$sysroot_dir</span>&quot;</span></span><br></pre></td></tr></table></figure>
 
-<h1 id="安装-cygwin">安装 Cygwin</h1>
+<h1 id="cygwin-构建交叉编译工具链">Cygwin 构建交叉编译工具链</h1>
+<h2 id="安装-cygwin">安装 Cygwin</h2>
 <p>为在 Windows 上编译 Linux 的可执行程序，需要模拟出 Linux
 运行环境（基本上就是模拟出 POSIX 接口），由于 MSYS2
-的工具链更新太过激进且并不是完全兼容 POSIX 接口，这里选择 Cygwin
-作为交叉编译的基础环境。</p>
-<h2 id="安装依赖-2">安装依赖</h2>
+的工具链更新太过激进，编译低版本的工具链可能出现各种各样的问题，这里选择
+Cygwin 作为交叉编译的基础环境。</p>
+<h3 id="安装依赖-2">安装依赖</h3>
 <p>从官网下载
 <code>setup-x86_64.exe</code>，在包列表中勾选下列依赖（具体版本参考下文的完整安装列表）：</p>
 <ul>
@@ -476,30 +519,28 @@ chroot
 <p><strong>完整安装列表</strong>见：<a
 href="cygcheck-c.txt">cygcheck-c.txt</a>（通过 <code>cygcheck -c</code>
 输出）</p>
-<div class="markdown-alert markdown-alert-note">
+<div class="markdown-alert markdown-alert-tip">
 <div class="markdown-alert-title">
-<svg class="octicon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>
-<strong>Note</strong>
+<svg class="octicon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M8 1.5c-2.363 0-4 1.69-4 3.75 0 .984.424 1.625.984 2.304l.214.253c.223.264.47.556.673.848.284.411.537.896.621 1.49a.75.75 0 0 1-1.484.211c-.04-.282-.163-.547-.37-.847a8.456 8.456 0 0 0-.542-.68c-.084-.1-.173-.205-.268-.32C3.201 7.75 2.5 6.766 2.5 5.25 2.5 2.31 4.863 0 8 0s5.5 2.31 5.5 5.25c0 1.516-.701 2.5-1.328 3.259-.095.115-.184.22-.268.319-.207.245-.383.453-.541.681-.208.3-.33.565-.37.847a.751.751 0 0 1-1.485-.212c.084-.593.337-1.078.621-1.489.203-.292.45-.584.673-.848.075-.088.147-.173.213-.253.561-.679.985-1.32.985-2.304 0-2.06-1.637-3.75-4-3.75ZM5.75 12h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5ZM6 15.25a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75Z"></path></svg>
+<strong>Tip</strong>
 </div>
 <p>建议将 <code>setup-x86_64.exe</code> 放在 Cygwin
 的安装目录下面，因为该程序将作为 cygwin
 的包管理器，有可能需要频繁使用该程序安装包。</p>
 </div>
-<h2 id="设置环境变量">设置环境变量</h2>
+<h3 id="设置环境变量">设置环境变量</h3>
 <p>在 <strong>Cygwin 的 shell 配置文件</strong>（如
 <code>~/.bashrc</code>）末尾中加入下列内容：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> CYGWIN=winsymlinks:sys</span><br><span class="line"><span class="built_in">export</span> PATH=<span class="string">&quot;/usr/local/bin:/usr/bin&quot;</span></span><br><span class="line"><span class="built_in">export</span> LANG=C.UTF-8</span><br><span class="line"><span class="built_in">export</span> LC_ALL=C.UTF-8</span><br><span class="line"><span class="built_in">export</span> http_proxy=<span class="string">&quot;http://127.0.0.1:7890&quot;</span></span><br><span class="line"><span class="built_in">export</span> https_proxy=<span class="string">&quot;http://127.0.0.1:7890&quot;</span></span><br><span class="line"><span class="comment"># 可选：少数工具只认 ALL_PROXY</span></span><br><span class="line"><span class="comment"># export ALL_PROXY=&quot;$https_proxy&quot;</span></span><br></pre></td></tr></table></figure>
 
 <p>其中 <strong>代理地址</strong> 用于 crosstool-ng 编译时下载源码。</p>
-<h2 id="可选卸载-cygwin">（可选）卸载 Cygwin</h2>
+<h3 id="可选卸载-cygwin">（可选）卸载 Cygwin</h3>
 <p>仅删除安装目录时可能残留注册表项；可用下列 PowerShell 脚本（需
 <strong>PowerShell 7+</strong>，删 <code>HKLM</code>
 需管理员权限）。</p>
 <p>保存为 <code>uninstall_cygwin.ps1</code> 后执行：</p>
 <figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#requires -Version 7.0</span></span><br><span class="line"><span class="comment"># uninstall_cygwin.ps1 — 仅删除安装目录 + 清理 Cygwin 相关注册表项</span></span><br><span class="line"><span class="comment"># 请用 PowerShell 7 运行: pwsh -NoProfile -File .\uninstall_cygwin.ps1</span></span><br><span class="line"><span class="comment"># 运行前请手动关闭所有 Cygwin / mintty 窗口，否则删除目录可能失败。</span></span><br><span class="line"><span class="comment"># 删除 HKLM 下项需要管理员权限。</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">Write-Host</span> <span class="string">&quot;== Cygwin 卸载（目录 + 注册表）==&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># -------- 可配置路径（若安装在其他盘符，请在此添加）--------</span></span><br><span class="line"><span class="variable">$cygwinPaths</span> = <span class="selector-tag">@</span>(</span><br><span class="line">    <span class="string">&quot;C:\cygwin64&quot;</span>,</span><br><span class="line">    <span class="string">&quot;C:\cygwin&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="variable">$regPaths</span> = <span class="selector-tag">@</span>(</span><br><span class="line">    <span class="string">&quot;HKCU:\Software\Cygwin&quot;</span>,</span><br><span class="line">    <span class="string">&quot;HKLM:\SOFTWARE\Cygwin&quot;</span>,</span><br><span class="line">    <span class="string">&quot;HKLM:\SOFTWARE\WOW6432Node\Cygwin&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="built_in">Write-Host</span> <span class="string">&quot;[1/2] 删除安装目录...&quot;</span></span><br><span class="line"><span class="keyword">foreach</span> (<span class="variable">$path</span> <span class="keyword">in</span> <span class="variable">$cygwinPaths</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">Test-Path</span> <span class="literal">-LiteralPath</span> <span class="variable">$path</span>) &#123;</span><br><span class="line">        <span class="built_in">Write-Host</span> <span class="string">&quot;  正在删除: <span class="variable">$path</span>&quot;</span></span><br><span class="line">        <span class="built_in">Remove-Item</span> <span class="literal">-LiteralPath</span> <span class="variable">$path</span> <span class="literal">-Recurse</span> <span class="literal">-Force</span> <span class="literal">-ErrorAction</span> Stop</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="built_in">Write-Host</span> <span class="string">&quot;  跳过（不存在）: <span class="variable">$path</span>&quot;</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">Write-Host</span> <span class="string">&quot;[2/2] 清理注册表...&quot;</span></span><br><span class="line"><span class="keyword">foreach</span> (<span class="variable">$reg</span> <span class="keyword">in</span> <span class="variable">$regPaths</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">Test-Path</span> <span class="literal">-LiteralPath</span> <span class="variable">$reg</span>) &#123;</span><br><span class="line">        <span class="built_in">Write-Host</span> <span class="string">&quot;  正在删除: <span class="variable">$reg</span>&quot;</span></span><br><span class="line">        <span class="built_in">Remove-Item</span> <span class="literal">-LiteralPath</span> <span class="variable">$reg</span> <span class="literal">-Recurse</span> <span class="literal">-Force</span> <span class="literal">-ErrorAction</span> Stop</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">Write-Host</span> <span class="string">&quot;== 完成 ==&quot;</span></span><br><span class="line"><span class="built_in">Write-Host</span> <span class="string">&quot;若曾把 Cygwin 加入系统 PATH，请自行在「环境变量」中删掉含 cygwin 的条目。&quot;</span></span><br></pre></td></tr></table></figure>
 
-<hr />
-<h1 id="构建交叉编译工具链">构建交叉编译工具链</h1>
 <h2 id="配置工作目录">配置工作目录</h2>
 <p>执行下列命令设置文件夹路径大小写敏感（需要管理员权限，Win11
 下使用开发者模式也可以设置）</p>
@@ -532,9 +573,9 @@ target="_blank" rel="noopener" href="http://crosstool-ng.org/download/crosstool-
 
 <p><img data-src="/posts/5bfa/image-20260506211127580.png"
 style="zoom:67%;" /></p>
-<h2 id="可选配置工具链">（可选）配置工具链</h2>
+<h2 id="配置工具链">配置工具链</h2>
 <p>使用菜单进行配置或直接使用已经配置好的 <a
-href="config.txt"><code>.config</code></a>：</p>
+href="config.HOST-x86_64-cygwin-gnu-x86_64-pc-linux-gnu.txt">config.HOST-x86_64-cygwin-gnu-x86_64-pc-linux-gnu.txt</a>：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ct-ng menuconfig</span><br></pre></td></tr></table></figure>
 
 <p>配置时的一些注意事项：</p>
@@ -588,6 +629,135 @@ style="zoom:67%;" /></p>
 输出，同时返回值为 0</p>
 <p><img data-src="/posts/5bfa/image-20260506213913450.png"
 style="zoom:67%;" /></p>
+<h1 id="linux-构建交叉编译工具链">Linux 构建交叉编译工具链</h1>
+<p>Cygwin 上编译的程序会依赖 Cygwin-1.dll 做 POSIX 接口到 WinAPI
+的翻译，导致其性能和稳定性都不如原生 Windows
+程序高，做一些简单的验证没问题，但是在复杂场景上会因为各种兼容性问题导致编译的
+.o 损坏、编译器 ICE（internal compile
+error）等，为了更好的适配实际场景，可以通过在 Linux 上编译出 Windows
+上运行的交叉编译工具链。</p>
+<div class="markdown-alert markdown-alert-note">
+<div class="markdown-alert-title">
+<svg class="octicon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>
+<strong>Note</strong>
+</div>
+<p>由于编译工具链的平台和工具链运行的平台不一致，这种编译方式就成为
+Canadian Cross 编译方式</p>
+<p>交叉编译中有3个平台概念（triplet）：</p>
+<p><em><strong>build</strong></em>：<strong>编译工具链</strong>
+的平台</p>
+<p><em><strong>host</strong></em>：<strong>运行工具链</strong>
+的平台</p>
+<p><em><strong>target</strong></em>：<strong>运行编译产物</strong>
+的平台</p>
+<p>如果 build 平台和 host
+平台不一致，就需要2步才能完成交叉编译工具链的构建：</p>
+<ol type="1">
+<li><p>构建出 (&lt;build&gt;-&lt;build&gt;-&lt;host&gt;)
+的工具链，称为前置准备工具链（prerequisite tools）</p>
+<p>或者至少要求能有一个在 build 平台上能编译 host
+平台程序的工具，基本也就是一个精简/全量的交叉编译工具了</p></li>
+<li><p>利用 step 1
+中准备的工具链，构建出最终需要的（&lt;build&gt;-&lt;host&gt;-&lt;target&gt;）交叉编译的工具链</p></li>
+</ol>
+<p>这种方式相当于是用 交叉编译工具 构建
+交叉编译工具，有点套娃的意思。</p>
+</div>
+<p>这种方式听起来很复杂，相比 Cygwin 方案需要多准备一些东西，但
+crosstool-ng
+已经封装好了相关的编译脚本，只需要将依赖的软件包准备好，剩下的操作基本就和
+Cygwin 上一致了，而且由于是原生 Linux 系统，相对于 Cygwin
+的运行速度更快，且更稳定。</p>
+<h2 id="安装依赖-3">安装依赖</h2>
+<p>以 Ubuntu 20.04 为例，建议分两组安装依赖。</p>
+<p>先安装基础依赖：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">sudo apt update</span><br><span class="line">sudo apt install -y \</span><br><span class="line">  build-essential gperf bison flex texinfo help2man gawk libtool-bin \</span><br><span class="line">  libncurses5-dev python3-dev automake autoconf unzip rsync curl file \</span><br><span class="line">  patch wget xz-utils zip p7zip-full cmake ninja-build pkg-config</span><br></pre></td></tr></table></figure>
+
+<p>再安装交叉编译windows工具链使用的的 <code>mingw</code> 依赖：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install -y \</span><br><span class="line">  gcc-mingw-w64-x86-64 \</span><br><span class="line">  g++-mingw-w64-x86-64</span><br></pre></td></tr></table></figure>
+
+<p>crosstool-ng 的安装方式同 Cygwin 一致，这里不过多赘述。</p>
+<h2 id="配置工具链-1">配置工具链</h2>
+<p>当前使用的 triplet 为：</p>
+<ul>
+<li><code>build</code>: <code>x86_64-pc-linux-gnu</code>（WSL /
+Ubuntu）</li>
+<li><code>host</code>: <code>x86_64-w64-mingw32</code>（工具链运行在
+Windows）</li>
+<li><code>target</code>:
+<code>x86_64-pc-linux-gnu</code>（最终程序运行在 Linux x86_64 上）</li>
+</ul>
+<div class="markdown-alert markdown-alert-tip">
+<div class="markdown-alert-title">
+<svg class="octicon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M8 1.5c-2.363 0-4 1.69-4 3.75 0 .984.424 1.625.984 2.304l.214.253c.223.264.47.556.673.848.284.411.537.896.621 1.49a.75.75 0 0 1-1.484.211c-.04-.282-.163-.547-.37-.847a8.456 8.456 0 0 0-.542-.68c-.084-.1-.173-.205-.268-.32C3.201 7.75 2.5 6.766 2.5 5.25 2.5 2.31 4.863 0 8 0s5.5 2.31 5.5 5.25c0 1.516-.701 2.5-1.328 3.259-.095.115-.184.22-.268.319-.207.245-.383.453-.541.681-.208.3-.33.565-.37.847a.751.751 0 0 1-1.485-.212c.084-.593.337-1.078.621-1.489.203-.292.45-.584.673-.848.075-.088.147-.173.213-.253.561-.679.985-1.32.985-2.304 0-2.06-1.637-3.75-4-3.75ZM5.75 12h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5ZM6 15.25a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75Z"></path></svg>
+<strong>Tip</strong>
+</div>
+<p>如果需要交叉编译 aarch64，只需要将 target 切换为
+<code>aarch64-pc-linux-gnu</code> 即可</p>
+</div>
+<p>也就是 <code>x86_64-w64-mingw32,x86_64-pc-linux-gnu</code>（Canadian
+Cross）。</p>
+<p>先查看可用 samples（建议先确认名称再创建）：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ct-ng list-samples | grep <span class="string">&quot;mingw32.*linux-gnu&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>输出结果如下：</p>
+<p><img data-src="/posts/5bfa/image-20260524122935457.png"
+style="zoom: 67%;" /></p>
+<p>创建工作目录并基于 sample 生成 <code>.config</code>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">mkdir</span> -p ~/devenv/mingw-cross</span><br><span class="line"><span class="built_in">cd</span> ~/devenv/mingw-cross</span><br><span class="line">ct-ng x86_64-w64-mingw32,x86_64-pc-linux-gnu</span><br></pre></td></tr></table></figure>
+
+<p>在此基础上可通过 <code>menuconfig</code> 做交互调整：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ct-ng menuconfig</span><br></pre></td></tr></table></figure>
+
+<p>修改后建议执行一次默认化补全并核对：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ct-ng olddefconfig</span><br><span class="line">ct-ng show-config</span><br></pre></td></tr></table></figure>
+
+<p>输出如下</p>
+<p><img data-src="/posts/5bfa/image-20260524123229215.png"
+style="zoom: 50%;" /></p>
+<p>本次实践里比较关键的版本组合（对标 Ubuntu
+20.04，如果需要其他的对标版本，例如 Ubuntu
+18.04，则根据实际需要调整即可）：</p>
+<ul>
+<li>Linux headers: <code>4.4.302</code></li>
+<li>glibc: <code>2.31</code>(Ubuntu 18 使用 2.27)</li>
+<li>binutils: <code>2.34</code>（Ubuntu 18 使用 2.30）</li>
+<li>gcc: <code>9.5.0</code></li>
+</ul>
+<p>为降低复杂度，可先关闭不必要组件（例如
+<code>ltrace/strace</code>），<code>gdb</code>
+推荐先使用相对稳定版本（如 <code>12.1</code>）。</p>
+<p>配置时的几个注意事项：</p>
+<ol type="1">
+<li><code>ct-ng x86_64-w64-mingw32,x86_64-pc-linux-gnu</code>
+只负责生成初始 <code>.config</code>，后续改动都要在同一目录内进行。</li>
+<li>直接编辑 <code>.config</code> 后，一定执行
+<code>ct-ng olddefconfig</code>，否则部分新旧键可能不一致。</li>
+<li><code>CT_PREFIX_DIR</code> 建议指向独立目录（例如
+<code>${HOME}/x-tools/...</code>），避免覆盖历史构建结果。</li>
+<li><code>CT_LOCAL_TARBALLS_DIR</code>
+建议设置缓存目录，重复构建可显著减少下载时间。</li>
+<li>如果在 Ubuntu 20.04 上对齐 sysroot，建议保持
+<code>glibc/binutils/linux headers</code>
+与目标基线一致，避免链接期和运行期偏差。</li>
+</ol>
+<p>此时会在当前目录生成
+<code>.config</code>。本次实际使用并验证通过的配置如下：</p>
+<ul>
+<li><a
+href="config.HOST-x86_64-w64-mingw32-aarch64-pc-linux-gnu.txt">config.HOST-x86_64-w64-mingw32-aarch64-pc-linux-gnu</a>：对标
+Ubuntu 18.04</li>
+<li><a
+href="config.HOST-x86_64-w64-mingw32-x86_64-pc-linux-gnu.txt">config.HOST-x86_64-w64-mingw32-x86_64-pc-linux-gnu</a>：对标
+Ubuntu 20.04</li>
+</ul>
+<h2 id="打包工具链和-sysroot">打包工具链和 sysroot</h2>
+<p>这种方式构建出来的工具链可以直接在 Windows 环境下运行，而不依赖 msys2
+/ cygwin 等环境，<strong>只需要额外处理软链接问题即可</strong>。</p>
+<p>最简单的处理方式就是将软链接全部转换为实际的文件（dereference），虽然会造成空间的浪费，但是这种方案实现起来简单，而且处理之后可以直接在
+windows 上使用，<strong>但Windows
+上仍需要保证文件夹的路径大小写敏感</strong>。处理脚本为 <a
+href="dereference_symlink.py">dereference_symlink.py</a>。</p>
 <h1 id="交叉编译验证">交叉编译验证</h1>
 <p>最后，我们需要结合 sysroot 和编译好的 toolchain，对 CMake
 项目进行编译检查，并通过项目内置的单元测试检查功能是否正常。</p>
@@ -769,13 +939,13 @@ style="zoom:50%;" /></p>
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">109k</span>
+    <span title="站点总字数">114k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">6:37</span>
+    <span title="站点阅读时长">6:56</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
