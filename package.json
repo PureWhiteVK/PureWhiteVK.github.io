@@ -24,6 +24,6 @@
     "hexo-theme-next": "^8.27.0",
     "hexo-word-counter": "^0.2.2",
     "picocolors": "^1.1.1",
-    "remark-github-blockquote-alert": "^2.0.1"
+    "remark-github-blockquote-alert": "^2.1.0"
   }
 }
