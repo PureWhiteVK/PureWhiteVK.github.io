@@ -17,7 +17,10 @@ date: 2026-04-25 19:43:06
 
 - sysroot 在 WSL 上使用 debootstrap 创建
 
-- 交叉编译工具链通过 Cygwin 和 crosstool-ng 生成
+- 交叉编译工具链可通过两种方式生成：
+  - 通过 Cygwin 和 crosstool-ng 生成
+  - 通过 Linux 和 crosstool-ng 以 canadian cross 方式生成
+
 
 <!-- more -->
 
@@ -109,7 +112,7 @@ sudo apt install debootstrap systemd-container qemu-user-static binfmt-support
 
 - **debootstrap**：从镜像站拉取包并初始化 rootfs。
 - **systemd-container**：以容器方式进入 rootfs，并自动挂载目录。
-- **qemu-user-static**：用于支持在非本机 ISA（Instruction Set Architecture，指令集架构） 的 rootfs 里执行目标程序（例如做 **arm64 的 sysroot** 时很有用）
+- **qemu-user-static**：用于支持在非本机 ISA（Instruction Set Architecture，指令集架构） 的 rootfs 里执行目标程序（例如做 **aarch64 的 sysroot** 时很有用）
 - **binfmt-support**：让 Linux 支持运行非本机 ISA 的 ELF 程序，可以自动调用 qemu 执行 arm 应用。
 
 ## 初始化 rootfs
@@ -128,6 +131,41 @@ sudo debootstrap \
 执行完成后会提示 “Base system installed successfully”（基础系统成功安装）
 
 <img src="Windows-交叉编译-Linux-程序/image-20260505212830069.png" alt="image-20260505212830069" style="zoom: 67%;" />
+
+### 初始化 aarch64 rootfs
+
+在 x86_64 机器上也可以直接创建 arm 的 rootfs，只不过中间步骤略微繁琐一点，需要通过 qemu 进行转义，同时 arm 的 ubuntu 软件源地址也和 x86_64 的不一致（https://mirrors.aliyun.com/ubuntu-ports/），需要额外注意。
+
+操作步骤如下：
+
+1. 初始化 rootfs（注意`--arch`和 `--foreign` 参数，为了区分，这里创建的是 Ubuntu 18 的 rootfs）
+
+```bash
+sudo debootstrap \
+    --arch=arm64 \
+    --foreign \
+    bionic \
+    /opt/rootfs-bionic-arm64 \
+    https://mirrors.aliyun.com/ubuntu-ports/
+```
+
+2. 拷贝 qemu-aarch64-static，便于 x86_64 上进入 aarch64 rootfs 执行程序
+
+```bash
+sudo cp /usr/bin/qemu-aarch64-static /opt/rootfs-bionic-arm64/
+```
+
+3. 进入 rootfs 完成 debootstrap 后续操作
+
+```bash
+sudo systemd-nspawn \
+    -D /opt/rootfs-bionic-arm64 \
+    /debootstrap/debootstrap --second-stage
+```
+
+完成后输出如下：
+
+<img src="Windows-交叉编译-Linux-程序/image-20260524130057836.png" alt="image-20260524130057836" style="zoom:50%;" />
 
 ## 进入 rootfs
 
@@ -154,6 +192,34 @@ sudo systemd-nspawn \
 将脚本保存到本地执行即可，成功进入 rootfs 后输出如下所示：
 
 <img src="Windows-交叉编译-Linux-程序/image-20260505213158260.png" alt="image-20260505213158260" style="zoom:67%;" />
+
+### 进入 aarch64 rootfs
+
+启动脚本和 x86-64 类似，只需要 rootfs 内包含用于转译的 qemu-aarch64-static 程序即可
+
+```bash
+#!/bin/bash
+set -euo pipefail
+
+SYSROOT=/opt/rootfs-bionic-arm64
+SRC=/home/xiao/devenv
+
+sudo systemd-nspawn \
+        -D "$SYSROOT" \
+        --bind="$SRC:/mnt/project" \
+        --bind=/etc/resolv.conf \
+        --setenv=HOME=/root \
+        --setenv=TERM="$TERM" \
+        --hostname=sysroot-env \
+        --console=interactive \
+        /bin/bash
+```
+
+启动后效果如下：
+
+<img src="Windows-交叉编译-Linux-程序/image-20260524130232580.png" alt="image-20260524130232580" style="zoom: 50%;" />
+
+
 
 ## 安装依赖
 
@@ -319,12 +385,13 @@ tar -xzf sysroot-focal.tar.gz \
 ```
 
 
+# Cygwin 构建交叉编译工具链
 
-# 安装 Cygwin
+## 安装 Cygwin
 
-为在 Windows 上编译 Linux 的可执行程序，需要模拟出 Linux 运行环境（基本上就是模拟出 POSIX 接口），由于 MSYS2 的工具链更新太过激进且并不是完全兼容 POSIX 接口，这里选择 Cygwin 作为交叉编译的基础环境。
+为在 Windows 上编译 Linux 的可执行程序，需要模拟出 Linux 运行环境（基本上就是模拟出 POSIX 接口），由于 MSYS2 的工具链更新太过激进，编译低版本的工具链可能出现各种各样的问题，这里选择 Cygwin 作为交叉编译的基础环境。
 
-## 安装依赖
+### 安装依赖
 
 从官网下载 `setup-x86_64.exe`，在包列表中勾选下列依赖（具体版本参考下文的完整安装列表）：
 
@@ -335,11 +402,11 @@ tar -xzf sysroot-focal.tar.gz \
 
 **完整安装列表**见：[cygcheck-c.txt](cygcheck-c.txt)（通过 `cygcheck -c` 输出）
 
-> [!NOTE]
+> [!TIP]
 >
 > 建议将 `setup-x86_64.exe` 放在 Cygwin 的安装目录下面，因为该程序将作为 cygwin 的包管理器，有可能需要频繁使用该程序安装包。
 
-## 设置环境变量
+### 设置环境变量
 
 在 **Cygwin 的 shell 配置文件**（如 `~/.bashrc`）末尾中加入下列内容：
 
@@ -356,7 +423,7 @@ export https_proxy="http://127.0.0.1:7890"
 
 其中 **代理地址** 用于 crosstool-ng 编译时下载源码。
 
-## （可选）卸载 Cygwin
+### （可选）卸载 Cygwin
 
 仅删除安装目录时可能残留注册表项；可用下列 PowerShell 脚本（需 **PowerShell 7+**，删 `HKLM` 需管理员权限）。
 
@@ -405,10 +472,6 @@ foreach ($reg in $regPaths) {
 Write-Host "== 完成 =="
 Write-Host "若曾把 Cygwin 加入系统 PATH，请自行在「环境变量」中删掉含 cygwin 的条目。"
 ```
-
----
-
-# 构建交叉编译工具链
 
 ## 配置工作目录
 
@@ -459,9 +522,9 @@ ct-ng version
 
 <img src="Windows-交叉编译-Linux-程序/image-20260506211127580.png" alt="image-20260506211127580" style="zoom:67%;" />
 
-## （可选）配置工具链
+## 配置工具链
 
-使用菜单进行配置或直接使用已经配置好的 [`.config`](config.txt)：
+使用菜单进行配置或直接使用已经配置好的 [config.HOST-x86_64-cygwin-gnu-x86_64-pc-linux-gnu.txt](config.HOST-x86_64-cygwin-gnu-x86_64-pc-linux-gnu.txt)：
 
 ```bash
 ct-ng menuconfig
@@ -540,6 +603,134 @@ file hello
 
 <img src="Windows-交叉编译-Linux-程序/image-20260506213913450.png" alt="image-20260506213913450" style="zoom:67%;" />
 
+# Linux 构建交叉编译工具链
+
+Cygwin 上编译的程序会依赖 Cygwin-1.dll 做 POSIX 接口到 WinAPI 的翻译，导致其性能和稳定性都不如原生 Windows 程序高，做一些简单的验证没问题，但是在复杂场景上会因为各种兼容性问题导致编译的 .o 损坏、编译器 ICE（internal compile error）等，为了更好的适配实际场景，可以通过在 Linux 上编译出 Windows 上运行的交叉编译工具链。
+
+> [!NOTE]
+>
+> 由于编译工具链的平台和工具链运行的平台不一致，这种编译方式就成为 Canadian Cross 编译方式
+>
+> 交叉编译中有3个平台概念（triplet）：
+>
+> ***build***：**编译工具链** 的平台
+>
+> ***host***：**运行工具链** 的平台 
+>
+> ***target***：**运行编译产物** 的平台
+>
+> 如果 build 平台和 host 平台不一致，就需要2步才能完成交叉编译工具链的构建：
+>
+> 1. 构建出 (\<build>-\<build>-\<host>) 的工具链，称为前置准备工具链（prerequisite tools）
+>
+>    或者至少要求能有一个在 build 平台上能编译 host 平台程序的工具，基本也就是一个精简/全量的交叉编译工具了
+>
+> 2. 利用 step 1 中准备的工具链，构建出最终需要的（\<build>-\<host>-\<target>）交叉编译的工具链
+>
+> 这种方式相当于是用 交叉编译工具 构建 交叉编译工具，有点套娃的意思。
+
+这种方式听起来很复杂，相比 Cygwin 方案需要多准备一些东西，但 crosstool-ng 已经封装好了相关的编译脚本，只需要将依赖的软件包准备好，剩下的操作基本就和 Cygwin 上一致了，而且由于是原生 Linux 系统，相对于 Cygwin 的运行速度更快，且更稳定。
+
+## 安装依赖
+
+以 Ubuntu 20.04 为例，建议分两组安装依赖。
+
+先安装基础依赖：
+
+```bash
+sudo apt update
+sudo apt install -y \
+  build-essential gperf bison flex texinfo help2man gawk libtool-bin \
+  libncurses5-dev python3-dev automake autoconf unzip rsync curl file \
+  patch wget xz-utils zip p7zip-full cmake ninja-build pkg-config
+```
+
+再安装交叉编译windows工具链使用的的 `mingw` 依赖：
+
+```bash
+sudo apt install -y \
+  gcc-mingw-w64-x86-64 \
+  g++-mingw-w64-x86-64
+```
+
+crosstool-ng 的安装方式同 Cygwin 一致，这里不过多赘述。
+
+## 配置工具链
+
+当前使用的 triplet 为：
+
+- `build`: `x86_64-pc-linux-gnu`（WSL / Ubuntu）
+- `host`: `x86_64-w64-mingw32`（工具链运行在 Windows）
+- `target`: `x86_64-pc-linux-gnu`（最终程序运行在 Linux x86_64 上）
+
+> [!TIP]
+>
+> 如果需要交叉编译 aarch64，只需要将 target 切换为 `aarch64-pc-linux-gnu` 即可
+
+也就是 `x86_64-w64-mingw32,x86_64-pc-linux-gnu`（Canadian Cross）。
+
+先查看可用 samples（建议先确认名称再创建）：
+
+```bash
+ct-ng list-samples | grep "mingw32.*linux-gnu"
+```
+
+输出结果如下：
+
+<img src="Windows-交叉编译-Linux-程序/image-20260524122935457.png" alt="image-20260524122935457" style="zoom: 67%;" />
+
+创建工作目录并基于 sample 生成 `.config`：
+
+```bash
+mkdir -p ~/devenv/mingw-cross
+cd ~/devenv/mingw-cross
+ct-ng x86_64-w64-mingw32,x86_64-pc-linux-gnu
+```
+
+在此基础上可通过 `menuconfig` 做交互调整：
+
+```bash
+ct-ng menuconfig
+```
+
+修改后建议执行一次默认化补全并核对：
+
+```bash
+ct-ng olddefconfig
+ct-ng show-config
+```
+
+输出如下
+
+<img src="Windows-交叉编译-Linux-程序/image-20260524123229215.png" alt="image-20260524123229215" style="zoom: 50%;" />
+
+本次实践里比较关键的版本组合（对标 Ubuntu 20.04，如果需要其他的对标版本，例如 Ubuntu 18.04，则根据实际需要调整即可）：
+
+- Linux headers: `4.4.302`
+- glibc: `2.31`(Ubuntu 18 使用 2.27)
+- binutils: `2.34`（Ubuntu 18 使用 2.30）
+- gcc: `9.5.0`
+
+为降低复杂度，可先关闭不必要组件（例如 `ltrace/strace`），`gdb` 推荐先使用相对稳定版本（如 `12.1`）。
+
+配置时的几个注意事项：
+
+1. `ct-ng x86_64-w64-mingw32,x86_64-pc-linux-gnu` 只负责生成初始 `.config`，后续改动都要在同一目录内进行。
+2. 直接编辑 `.config` 后，一定执行 `ct-ng olddefconfig`，否则部分新旧键可能不一致。
+3. `CT_PREFIX_DIR` 建议指向独立目录（例如 `${HOME}/x-tools/...`），避免覆盖历史构建结果。
+4. `CT_LOCAL_TARBALLS_DIR` 建议设置缓存目录，重复构建可显著减少下载时间。
+5. 如果在 Ubuntu 20.04 上对齐 sysroot，建议保持 `glibc/binutils/linux headers` 与目标基线一致，避免链接期和运行期偏差。
+
+此时会在当前目录生成 `.config`。本次实际使用并验证通过的配置如下：
+
+- [config.HOST-x86_64-w64-mingw32-aarch64-pc-linux-gnu](config.HOST-x86_64-w64-mingw32-aarch64-pc-linux-gnu.txt)：对标 Ubuntu 18.04
+- [config.HOST-x86_64-w64-mingw32-x86_64-pc-linux-gnu](config.HOST-x86_64-w64-mingw32-x86_64-pc-linux-gnu.txt)：对标 Ubuntu 20.04
+
+## 打包工具链和 sysroot
+
+这种方式构建出来的工具链可以直接在 Windows 环境下运行，而不依赖 msys2 / cygwin 等环境，**只需要额外处理软链接问题即可**。
+
+最简单的处理方式就是将软链接全部转换为实际的文件（dereference），虽然会造成空间的浪费，但是这种方案实现起来简单，而且处理之后可以直接在 windows 上使用，**但Windows 上仍需要保证文件夹的路径大小写敏感**。处理脚本为 [dereference_symlink.py](dereference_symlink.py)。
 
 
 # 交叉编译验证
@@ -817,3 +1008,4 @@ echo "==> Done: ${n} program(s), ${failed} failed."
 同时下图展示了 WSL 下运行 glfw heightmap 案例的效果：
 
 <img src="Windows-交叉编译-Linux-程序/image-20260506234529896.png" alt="image-20260506234529896" style="zoom:50%;" />
+
