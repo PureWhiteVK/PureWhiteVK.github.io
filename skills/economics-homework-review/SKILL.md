@@ -138,6 +138,7 @@ description: "Use when: reviewing, correcting, and rewriting Principles of Econo
 10. 对供求题，若用户没要求作图，可直接用文字说明，不强行写“画图如下”。
 11. 默认采用直接、简洁、偏工程化的表达风格。
 12. **答案位置习惯**：在处理包含多个小问（如 a, b, c）的应用题时，应将完整的解析/内容统一写在**所有小问题干的最后方**，而不是分段穿插在各个小问中间，以保持题目描述的物理完整性。
+13. **题目格式**：所有题目题干（含主标题、选择题选项和 a, b, c 等子问）统一使用粗体斜体（`*** ***`）包裹，与答案正文区分开。
 
 ## Special Guidance For Chapter 3/4 Style Questions
 
