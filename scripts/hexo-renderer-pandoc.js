@@ -180,7 +180,7 @@ const renderer = (data) => {
         task.on('close', code => {
             let stderr_msg = Buffer.concat(stderr_chunks).toString(encoding);
             if (code) {
-                const e = new Error(`pandoc process exited with code ${code}.${stderr_msg.length > 0 ? `\n${stderr_msg}` : ''}`);
+                const e = new Error(`when processing ${data.path}, pandoc process exited with code ${code}.${stderr_msg.length > 0 ? `\n${stderr_msg}` : ''}`);
                 e.code = code;
                 return reject(e);
             }
