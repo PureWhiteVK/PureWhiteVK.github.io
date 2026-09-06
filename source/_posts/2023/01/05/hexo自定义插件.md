@@ -152,7 +152,7 @@ hexo.extend.filter.register('before_post_render', normal_function2);
 import { unified } from 'unified';
 ```
 
-(unified 是一个[纯 es6 模块](https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c)，不支持 comman js 导入)
+(unified 是一个[纯 es6 模块](https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c)，不支持 common js 导入)
 
 而必须使用 common js 的导包方式
 
