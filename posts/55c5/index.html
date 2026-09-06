@@ -20,12 +20,12 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"purewhitevk.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.28.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":"default"},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false,"trigger":"auto"}}</script><script src="/js/config.js" defer></script>
 
-    <meta name="description" content="刷牛客时经常能刷到面向对象相关的题目，多态作为面向对象中的一个重要特性（封装，继承和多态），在八股中经常考察其实现原理。为了方便理解，我们给出一个简单的多态样例 12345678910111213141516171819class A &#123;public:  virtual int func1(int v) &#123; return value + v; &#125;  virtual i">
+    <meta name="description" content="刷牛客时经常能刷到面向对象相关的题目。多态作为面向对象中的重要特性（封装、继承和多态），在八股中经常考察其实现原理。为了方便理解，先给出一个简单的多态样例： 1234567891011121314151617181920class A &#123;public:  virtual int func1(int v) &#123; return value + v; &#125;  virtual i">
 <meta property="og:type" content="article">
 <meta property="og:title" content="虚函数执行原理理解">
 <meta property="og:url" content="https://purewhitevk.github.io/posts/55c5/">
 <meta property="og:site_name" content="PureWhiteVK&#39;s Blog">
-<meta property="og:description" content="刷牛客时经常能刷到面向对象相关的题目，多态作为面向对象中的一个重要特性（封装，继承和多态），在八股中经常考察其实现原理。为了方便理解，我们给出一个简单的多态样例 12345678910111213141516171819class A &#123;public:  virtual int func1(int v) &#123; return value + v; &#125;  virtual i">
+<meta property="og:description" content="刷牛客时经常能刷到面向对象相关的题目。多态作为面向对象中的重要特性（封装、继承和多态），在八股中经常考察其实现原理。为了方便理解，先给出一个简单的多态样例： 1234567891011121314151617181920class A &#123;public:  virtual int func1(int v) &#123; return value + v; &#125;  virtual i">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://purewhitevk.github.io/posts/55c5/image-20230202162248754.png">
 <meta property="og:image" content="https://purewhitevk.github.io/posts/55c5/image-20230202183658979.png">
@@ -34,8 +34,7 @@
 <meta property="og:image" content="https://purewhitevk.github.io/posts/55c5/image-20230202192352189.png">
 <meta property="og:image" content="https://purewhitevk.github.io/posts/55c5/image-20230202192817764.png">
 <meta property="og:image" content="https://purewhitevk.github.io/posts/55c5/image-20230202192847211.png">
-<meta property="og:image" content="https://purewhitevk.github.io/posts/55c5/image-20230202221518873.png">
-<meta property="og:image" content="https://purewhitevk.github.io/posts/55c5/image-20230202223902378.png">
+<meta property="og:image" content="https://purewhitevk.github.io/posts/55c5/image-20260906152105891.png">
 <meta property="article:published_time" content="2023-01-31T14:25:30.000Z">
 <meta property="article:modified_time" content="2023-01-31T14:25:30.000Z">
 <meta property="article:author" content="PureWhiteVK">
@@ -178,7 +177,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%88%90%E5%91%98%E5%87%BD%E6%95%B0%E6%8C%87%E9%92%88"><span class="nav-number">1.</span> <span class="nav-text">成员函数指针</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%88%90%E5%91%98%E5%87%BD%E6%95%B0%E6%8C%87%E9%92%88%E7%9A%84%E5%A4%A7%E5%B0%8F"><span class="nav-number">2.</span> <span class="nav-text">成员函数指针的大小？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%99%9A%E8%A1%A8%E5%92%8C%E8%99%9A%E6%8C%87%E9%92%88"><span class="nav-number">3.</span> <span class="nav-text">虚表和虚指针</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%99%9A%E5%87%BD%E6%95%B0%E8%B0%83%E7%94%A8%E8%BF%87%E7%A8%8B"><span class="nav-number">4.</span> <span class="nav-text">虚函数调用过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%88%90%E5%91%98%E5%87%BD%E6%95%B0%E6%8C%87%E9%92%88"><span class="nav-number">1.</span> <span class="nav-text">成员函数指针</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%99%9A%E8%A1%A8%E4%B8%8E%E8%99%9A%E6%8C%87%E9%92%88"><span class="nav-number">2.</span> <span class="nav-text">虚表与虚指针</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%99%9A%E5%87%BD%E6%95%B0%E8%B0%83%E7%94%A8%E6%96%B9%E5%BC%8F"><span class="nav-number">2.1.</span> <span class="nav-text">虚函数调用方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E8%99%9A%E8%A1%A8%E5%92%8C%E7%B1%BB%E5%B8%83%E5%B1%80"><span class="nav-number">2.2.</span> <span class="nav-text">查看虚表和类布局</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%9A%E8%BF%87-vptr-%E6%89%8B%E5%B7%A5%E8%B0%83%E7%94%A8%E8%99%9A%E5%87%BD%E6%95%B0"><span class="nav-number">2.3.</span> <span class="nav-text">通过 vptr 手工调用虚函数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%88%90%E5%91%98%E5%87%BD%E6%95%B0%E6%8C%87%E9%92%88%E9%87%8C%E5%AD%98%E4%BA%86%E4%BB%80%E4%B9%88"><span class="nav-number">3.</span> <span class="nav-text">成员函数指针里存了什么</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%93%E6%9E%84%E4%BD%93%E5%AE%9A%E4%B9%89"><span class="nav-number">3.1.</span> <span class="nav-text">结构体定义</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C%E4%B8%80%E5%8D%95%E7%BB%A7%E6%89%BF%E7%9A%84%E8%99%9A%E5%87%BD%E6%95%B0"><span class="nav-number">3.1.1.</span> <span class="nav-text">实验一：单继承的虚函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C%E4%BA%8C%E5%A4%9A%E7%BB%A7%E6%89%BF%E7%9A%84%E8%99%9A%E5%87%BD%E6%95%B0"><span class="nav-number">3.1.2.</span> <span class="nav-text">实验二：多继承的虚函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B1%87%E7%BC%96%E4%BB%A3%E7%A0%81"><span class="nav-number">3.1.3.</span> <span class="nav-text">汇编代码</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%8B%E5%8A%A8%E8%A7%A3%E6%9E%90%E8%99%9A%E5%87%BD%E6%95%B0%E6%8C%87%E9%92%88%E8%B0%83%E7%94%A8%E8%99%9A%E5%87%BD%E6%95%B0"><span class="nav-number">3.2.</span> <span class="nav-text">手动解析虚函数指针调用虚函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%99%9A%E5%87%BD%E6%95%B0%E7%9A%84%E4%BA%8C%E7%BA%A7%E5%AF%BB%E5%9D%80"><span class="nav-number">3.3.</span> <span class="nav-text">虚函数的二级寻址</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%99%9A%E8%B0%83%E7%94%A8%E7%9A%84%E5%BC%80%E9%94%80"><span class="nav-number">4.1.</span> <span class="nav-text">虚调用的开销</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BB%B6%E4%BC%B8%E8%99%9A%E7%BB%A7%E6%89%BF%E4%B8%BA%E4%BB%80%E4%B9%88%E6%9B%B4%E5%A4%8D%E6%9D%82"><span class="nav-number">4.2.</span> <span class="nav-text">延伸：虚继承为什么更复杂</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BB%B6%E4%BC%B8dynamic_cast-%E4%B8%8E-rtti"><span class="nav-number">4.3.</span> <span class="nav-text">延伸：dynamic_cast 与 RTTI</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -290,14 +289,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>3.7k</span>
+      <span>8.1k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>14 分钟</span>
+      <span>30 分钟</span>
     </span>
 </div>
 
@@ -307,62 +306,71 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><p>刷牛客时经常能刷到面向对象相关的题目，多态作为面向对象中的一个重要特性（封装，继承和多态），在八股中经常考察其实现原理。为了方便理解，我们给出一个简单的多态样例</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">A</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="function"><span class="keyword">virtual</span> <span class="type">int</span> <span class="title">func1</span><span class="params">(<span class="type">int</span> v)</span> </span>&#123; <span class="keyword">return</span> value + v; &#125;</span><br><span class="line">  <span class="function"><span class="keyword">virtual</span> <span class="type">int</span> <span class="title">func2</span><span class="params">(<span class="type">int</span> v)</span> </span>&#123; <span class="keyword">return</span> value - v; &#125;</span><br><span class="line">  <span class="function"><span class="type">int</span> <span class="title">func3</span><span class="params">(<span class="type">int</span> v)</span> </span>&#123; <span class="keyword">return</span> value * v; &#125;</span><br><span class="line">  <span class="function"><span class="type">static</span> <span class="type">int</span> <span class="title">func4</span><span class="params">(<span class="type">int</span> v)</span> </span>&#123; <span class="keyword">return</span> v * <span class="number">2</span>; &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="type">int</span> value&#123;<span class="number">0xfeff</span>&#125;;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">B</span> : <span class="keyword">public</span> A &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="function"><span class="type">int</span> <span class="title">func1</span><span class="params">(<span class="type">int</span> v)</span> <span class="keyword">override</span> </span>&#123; <span class="keyword">return</span> value + <span class="number">2</span> * v; &#125;</span><br><span class="line">  <span class="function"><span class="type">int</span> <span class="title">func3</span><span class="params">(<span class="type">int</span> v)</span> </span>&#123; <span class="keyword">return</span> value * <span class="number">2</span> * v; &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="type">int</span> value&#123;<span class="number">0xfffd</span>&#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+    <div class="post-body" itemprop="articleBody"><p>刷牛客时经常能刷到面向对象相关的题目。多态作为面向对象中的重要特性（封装、继承和多态），在八股中经常考察其实现原理。为了方便理解，先给出一个简单的多态样例：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">A</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="function"><span class="keyword">virtual</span> <span class="type">int</span> <span class="title">func1</span><span class="params">(<span class="type">int</span> v)</span> </span>&#123; <span class="keyword">return</span> value + v; &#125;</span><br><span class="line">  <span class="function"><span class="keyword">virtual</span> <span class="type">int</span> <span class="title">func2</span><span class="params">(<span class="type">int</span> v)</span> </span>&#123; <span class="keyword">return</span> value - v; &#125;</span><br><span class="line">  <span class="function"><span class="type">int</span> <span class="title">func3</span><span class="params">(<span class="type">int</span> v)</span> </span>&#123; <span class="keyword">return</span> value * v; &#125;</span><br><span class="line">  <span class="function"><span class="type">static</span> <span class="type">int</span> <span class="title">func4</span><span class="params">(<span class="type">int</span> v)</span> </span>&#123; <span class="keyword">return</span> v * <span class="number">2</span>; &#125;</span><br><span class="line">  <span class="function"><span class="type">void</span> <span class="title">test</span><span class="params">()</span> </span>&#123;&#125; <span class="comment">// 供后文“成员函数指针”一节示例使用</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="type">int</span> value&#123;<span class="number">0xfeff</span>&#125;;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">B</span> : <span class="keyword">public</span> A &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="function"><span class="type">int</span> <span class="title">func1</span><span class="params">(<span class="type">int</span> v)</span> <span class="keyword">override</span> </span>&#123; <span class="keyword">return</span> value + <span class="number">2</span> * v; &#125;</span><br><span class="line">  <span class="function"><span class="type">int</span> <span class="title">func3</span><span class="params">(<span class="type">int</span> v)</span> </span>&#123; <span class="keyword">return</span> value * <span class="number">2</span> * v; &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="type">int</span> value&#123;<span class="number">0xfffd</span>&#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 
-<p>接下来就是经典调用函数写输出</p>
+<p>接下来是一个经典示例：调用不同性质的函数并打印输出：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span> **argv)</span> </span>&#123;</span><br><span class="line">  B b;</span><br><span class="line">  b.value = <span class="number">2</span>;</span><br><span class="line">  A *a = &amp;b;</span><br><span class="line">  a-&gt;value = <span class="number">4</span>;</span><br><span class="line">  <span class="type">int</span> v = <span class="number">20</span>;</span><br><span class="line">  fmt::<span class="built_in">print</span>(<span class="string">&quot;b.A::value=&#123;&#125;\nb.B::value=&#123;&#125;\n&quot;</span>, b.A::value, b.B::value);</span><br><span class="line">  fmt::<span class="built_in">print</span>(<span class="string">&quot;a-&gt;func1(&#123;&#125;) = &#123;&#125;\n&quot;</span>, v, a-&gt;<span class="built_in">func1</span>(v));</span><br><span class="line">  fmt::<span class="built_in">print</span>(<span class="string">&quot;a-&gt;func2(&#123;&#125;) = &#123;&#125;\n&quot;</span>, v, a-&gt;<span class="built_in">func2</span>(v));</span><br><span class="line">  fmt::<span class="built_in">print</span>(<span class="string">&quot;a-&gt;func3(&#123;&#125;) = &#123;&#125;\n&quot;</span>, v, a-&gt;<span class="built_in">func3</span>(v));</span><br><span class="line">  fmt::<span class="built_in">print</span>(<span class="string">&quot;a-&gt;func4(&#123;&#125;) = &#123;&#125;\n&quot;</span>, v, a-&gt;<span class="built_in">func4</span>(v));</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <span id="more"></span>
 
-<p>执行如下</p>
+<p>执行如下：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">(base) PS D:\Code\Cpp\learn-git&gt; xmake -brv learn-git &amp;&amp; xmake run learn-git</span><br><span class="line">[100%]: build ok!</span><br><span class="line">b.A::value=4</span><br><span class="line">b.B::value=2</span><br><span class="line">a-&gt;func1(20) = 42</span><br><span class="line">a-&gt;func2(20) = -16</span><br><span class="line">a-&gt;func3(20) = 80</span><br><span class="line">a-&gt;func4(20) = 40</span><br></pre></td></tr></table></figure>
 
-<p>执行结果不难想到，根据虚函数运行时绑定的特性（晚绑定），通过基类调用虚函数时会根据实际类型调用对应的函数。对于非虚函数则是直接调用普通的成员函数（是
-A 类时调用 <code>A::func3</code>，是 B 类时调用
-<code>B::func3</code>），且需要调用的函数在编译期间就已经确定好了。</p>
+<p>输出可以分为两类：<code>func1</code>/<code>func2</code>
+是虚函数，按对象的实际类型在运行时绑定；<code>func3</code>/<code>func4</code>
+的调用目标在编译期就确定了。main 里先 <code>b.value = 2</code> 再
+<code>a-&gt;value = 4</code>，前者写 B 自己的成员，后者写 A
+子对象的成员，二者互不干扰——理解下面的数字需要先知道这一点。下面与输出逐行对应：</p>
+<ol type="1">
+<li><code>b.A::value = 4</code>：A 子对象的成员被
+<code>a-&gt;value = 4</code> 改写，所以读到 4。</li>
+<li><code>b.B::value = 2</code>：B 自己的成员仍是
+<code>b.value = 2</code> 写入的值，与 A 子对象互不干扰。</li>
+<li><code>a-&gt;func1(20) = 42</code>：虚调用落到 B 覆盖后的
+<code>B::func1</code>，其内部读到 B 的 <code>value</code>（2），即 2 +
+2×20。</li>
+<li><code>a-&gt;func2(20) = -16</code>：同样是虚调用，但 B 没有覆盖
+<code>func2</code>，执行的是 <code>A::func2</code>，其内部读到 A 的
+<code>value</code>（4），即 4 − 20。</li>
+<li><code>a-&gt;func3(20) = 80</code>：非虚，按静态类型 A 绑定
+<code>A::func3</code>，即 4×20。</li>
+<li><code>a-&gt;func4(20) = 40</code>：静态成员函数，与对象无关，即
+20×2。</li>
+</ol>
 <h2 id="成员函数指针">成员函数指针</h2>
-<p>例子就介绍到这，下面我们要简单理解 C++
-中实现原理，首先从成员函数指针来看，对于任意一个类别的成员函数，我们可以使用类似于函数指针的表达方式，即<code>void(T::*)()</code>，写成模板形式的话如下（当然，使用
-<code>auto</code> 是最简单的，就是容易变成 auto
-script，然后导致代码理解起来有困难）</p>
+<p>考虑一个实际场景：事件回调。在界面上有一个“保存”按钮，用户点击需要执行
+<code>window-&gt;save()</code>。但事件系统在设计时并不知道将来是谁来处理这次点击，它只负责“到点触发一个动作”。因此我们需要把
+<code>window-&gt;save()</code>
+这个动作先存下来、注册进去，等点击发生时再调用。</p>
+<p>最简单的思路就是类似于普通的函数，直接保存成员函数指针（例如
+<code>&amp;A::test</code>），在真正需要调用的时候指定对象进行调用（实际开发中也可以用
+<code>std::function</code> + lambda
+把对象和动作一起打包，这里先从更基础的成员函数指针看起），<code>&amp;A::test</code>
+的类型类似于普通的函数指针<code>void(*)()</code>，只不过加上了类的限定符<code>A::</code>，即
+<code>void(A::*)()</code>，写成模板定义就是如下形式：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> <span class="title class_">T</span>, <span class="keyword">typename</span> R, <span class="keyword">typename</span>... Args&gt; <span class="keyword">struct</span> <span class="title class_">MemberFuncPtr</span> &#123;</span><br><span class="line">  <span class="keyword">using</span> type = <span class="built_in">R</span> (T::*)(Args...);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 
-<p>例如 <code>A::func1</code> 就可以采用如下的定义方式</p>
+<p>例如 <code>A::test</code> 就可以这样定义：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">MemberFuncPtr&lt;A, <span class="type">void</span>&gt;::type ptr_test = &amp;A::test;</span><br></pre></td></tr></table></figure>
 
 <p><img data-src="/posts/55c5/image-20230202162248754.png"
 style="zoom: 67%;" /></p>
-<p>可以看到，其实际上就是
-<code>void (A::*)()</code>，但是这样比写函数指针稍微舒服一点，我们可以通过
-<code>.*</code> 和 <code>-&gt;*</code> 的方式来调用成员函数指针</p>
+<p>可以看到它实际上就是
+<code>void (A::*)()</code>，比直接写出整个函数指针类型简洁一些。假设下面已经存在一个
+<code>A *a</code>，调用成员函数指针可以使用 <code>.*</code> 和
+<code>-&gt;*</code>：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(a-&gt;*ptr_test)();</span><br><span class="line">((*a).*ptr_test)();</span><br></pre></td></tr></table></figure>
 
-<p>除此之外，我们也可以使用 <code>std::function</code>
-的方式来封装封装成员函数，在函数的入参添加 <code>A*</code> 或
-<code>A&amp;</code> 参数接口（对于 <code>const</code> 的函数还需要添加
-<code>const</code> 修饰符</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">std::function&lt;<span class="type">void</span>(A*)&gt; std_ptr_test = &amp;A::test;</span><br></pre></td></tr></table></figure>
-
-<p>然后在调用这个函数时将对象指针也作为参数传递过去即可</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">std_ptr_test</span>(a);</span><br></pre></td></tr></table></figure>
-
-<p>最后总结一下调用成员函数的几种方式（<em><strong>”茴“字的 4
-种写法</strong></em>）</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 正常版</span></span><br><span class="line">a-&gt;<span class="built_in">test</span>();</span><br><span class="line"><span class="comment">// 指针版</span></span><br><span class="line">MemberFuncPtr&lt;A,<span class="type">void</span>&gt;::type ptr_test = &amp;A::test;</span><br><span class="line">(a-&gt;*ptr_test)();</span><br><span class="line"><span class="comment">// std::function 版</span></span><br><span class="line">std::function&lt;<span class="type">void</span>(A*)&gt; std_ptr_test = &amp;A::test;</span><br></pre></td></tr></table></figure>
-
-<p>之所以出现后面两种写法，主要就是为了实现
-<code>Delegate</code>，当我们需要由代码来决定成员函数的调用时机时（例如事件响应等），我们就可以使用后面两种调用方式，不过在我们这里主要是探究虚函数的调用机制。</p>
-<h2 id="成员函数指针的大小">成员函数指针的大小？</h2>
 <p>当我们通过 <code>&amp;A::test</code>
-拿到成员函数的地址时，我们自然将其联想到和普通函数指针大小一致，但是不然，<strong>其大小与不同的编译器有关（或者更准确的说，与
-C++ Compiler ABI 有关）。</strong></p>
+拿到成员函数指针时，很自然会以为它和普通函数指针一样大，但实际上不一定——<strong>其大小取决于实现所遵循的
+C++ ABI</strong>（例如 GCC/Clang 使用 Itanium C++ ABI，MSVC 使用自家
+ABI），C++ 标准并不规定它的大小。</p>
 <p>我们在 <a target="_blank" rel="noopener" href="https://godbolt.org">Compiler Explorer</a>
-中进行运行测试（不支持 MSVC Compiler 的运行测试，但是可以测试 Clang 和
-GCC）</p>
+中进行运行测试（它不支持运行 MSVC，但可以运行 Clang 和 GCC）：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">A</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">func</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;sizeof &amp;A::func = &quot;</span> &lt;&lt; <span class="built_in">sizeof</span>(&amp;A::func) &lt;&lt; endl;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>测试结果如下表所示</p>
+<p>输出结果如下表所示：</p>
 <table>
 <thead>
 <tr>
@@ -400,10 +408,14 @@ GCC）</p>
 </tr>
 </tbody>
 </table>
-<blockquote>
-<p>注：关于 MSVC 的成员函数指针大小的设置，参考<a
+<div class="markdown-alert markdown-alert-note">
+<div class="markdown-alert-title">
+<svg class="octicon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>
+<strong>Note</strong>
+</div>
+<p>MSVC 成员函数指针的大小可以通过 <a
 target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-cn/cpp/preprocessor/pointers-to-members?view=msvc-160">pointers_to_members
-pragma | Microsoft Learn</a>，可以手动指定成员函数指针形式</p>
+pragma | Microsoft Learn</a> 手动指定：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#pragma pointers_to_members( full_generality, virtual_inheritance )</span><br></pre></td></tr></table></figure>
 
 <ul>
@@ -411,48 +423,141 @@ pragma | Microsoft Learn</a>，可以手动指定成员函数指针形式</p>
 <li>multiple_inheritance 表示多继承</li>
 <li>virtual_inheritance 表示虚继承</li>
 </ul>
-<p>如果不指定，就是根据函数类型自动选择空间最小的表示方式（也就是混合上面三种表示方式）</p>
-</blockquote>
-<h2 id="虚表和虚指针">虚表和虚指针</h2>
-<p>对于一个包含虚函数的类而言，其会在类的起始处添加一个指向虚表的指针（vtable），称为虚指针（vptr）（在
-MSVC C++ 中称为 vftable 和 vfptr）</p>
-<p>虚表中存储了各种各样的类别数据信息（RTTI等），也存储了虚函数的实际地址，通过虚指针和虚表，我们就可以在运行过程中动态解析函数地址并进行调用。</p>
-<p>MSVC、Clang 以及 GCC 中都提供了类内存布局查看的命令</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># gcc 调用命令</span></span><br><span class="line">g++ -fdump-lang-class=- test.cpp</span><br><span class="line"><span class="comment"># clang 查看命令 （-Xclang 表示传递后面的参数给 clang compiler） </span></span><br><span class="line">clang++-15 -Xclang -fdump-record-layouts test.cpp</span><br><span class="line">clang++-15 -Xclang -fdump-vtable-layouts test.cpp</span><br><span class="line"><span class="comment"># msvc 查看命令</span></span><br><span class="line">cl /d1 reportAllClassLayout test.cpp</span><br></pre></td></tr></table></figure>
+<p>如果不指定，编译器会根据函数类型自动选择空间最小的表示方式（也就是混合使用上面三种表示方式）。</p>
+</div>
+<p>普通函数指针在 x86-64 上只有 8 字节，而 GCC/Clang
+的成员函数指针固定是 16 字节，MSVC 还会随继承方式在 8/16/24
+字节之间变化。这说明<strong>成员函数指针存的不一定是真正的函数地址</strong>（在
+MSVC 单继承模式下，虚成员函数指针大小也是 8
+字节，和普通函数一样，但其实际存储的是一个编译器生成的辅助跳转函数（vcall
+thunk）地址，而不是最终函数地址）。</p>
+<p>带着这个疑问，我们首先了解一下虚函数的实际函数地址究竟存在哪里？</p>
+<hr />
+<h2 id="虚表与虚指针">虚表与虚指针</h2>
+<p>包含虚函数的类，其对象起始处会多存一个指针：它指向一张按槽位存放虚函数入口地址的表。这张表称为虚函数表（vtable，简称虚表），对象里指向它的指针称为虚指针（vptr）（MSVC
+文档里分别称为 vftable 和 vfptr）。</p>
+<div class="markdown-alert markdown-alert-note">
+<div class="markdown-alert-title">
+<svg class="octicon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>
+<strong>Note</strong>
+</div>
+<p>这里的 vptr 与上一节的“成员函数指针”不是一回事：</p>
+<ul>
+<li><p>成员函数指针是用户保存下来的“指向某个成员函数”的值，</p></li>
+<li><p>vptr 则是对象自身携带、指向整张虚表的指针。</p></li>
+</ul>
+</div>
+<p>虚表本质是一张按槽位组织的函数地址表，除虚函数入口地址外，还会放 RTTI
+等辅助信息。</p>
+<h3 id="虚函数调用方式">虚函数调用方式</h3>
+<p>虚调用的基本原理可以概括成：调用方不直接持有最终函数地址，而是从对象取出
+vptr → 找到该对象实际类型对应的虚表 →
+按固定的槽位取出函数地址再调用。<strong>基类和派生类把同一个虚函数放在相同槽位，但槽里存的是各自实际实现的地址，所以同一段调用代码作用于不同对象时，实际执行的函数不同</strong>。</p>
+<p>还是以开头的案例为例进行说明，编译器为
+<code>a-&gt;func1(v)</code>（<code>a</code> 是 <code>A*</code>，实际指向
+<code>B</code> 对象）生成的调用，概念上等价于：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">A *self = a;                             // 单继承且基类偏移为 0，this 无需修正</span><br><span class="line">auto fn = self-&gt;vptr[0];                 // func1 的槽位在编译期固定为 0</span><br><span class="line">fn(self, v);                             // 间接调用，落到谁由 vptr 决定</span><br></pre></td></tr></table></figure>
 
-<p>我们可以使用一个简单的类测试</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">A</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">func</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="type">int</span> n&#123;<span class="number">0xfffd</span>&#125;;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    A a;</span><br><span class="line">    a.<span class="built_in">func</span>();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>实际汇编大概是这样（x86-64，示意）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mov  rcx, [a]        ; rcx = a（指向 b）</span><br><span class="line">mov  rax, [rcx]      ; rax = b.vptr → B 的虚表</span><br><span class="line">call qword ptr [rax] ; 间接调用 vptr[0]（rcx 作为 this 传入）</span><br></pre></td></tr></table></figure>
 
-<p>x86-64 gcc 9.4 输出结果</p>
+<p>对照开头的例子：</p>
+<ul>
+<li><p><code>a-&gt;func1</code> 的槽位是 vptr[0]，b 的虚表这一槽是
+<code>B::func1</code>，所以得到 42；</p></li>
+<li><p><code>a-&gt;func2</code> 的槽位是 vptr[1]，B 的虚表这一槽仍指向
+<code>A::func2</code>，所以得到 -16。</p></li>
+</ul>
+<p>调用点的指令对 A、B 完全一样，区别只出现在
+<code>mov rax, [rcx]</code> 读到的 vptr
+上——这也是“动态绑定”中“动态”二字真正发生的地方。</p>
+<h3 id="查看虚表和类布局">查看虚表和类布局</h3>
+<p>下面先用三个编译器的布局输出验证这张表的结构。</p>
+<p>MSVC、Clang 以及 GCC
+都提供了查看虚表和类内存布局的命令，分别如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># gcc 调用命令</span></span><br><span class="line">g++ -fdump-lang-class=- test.cpp</span><br><span class="line"><span class="comment"># clang 查看命令（-Xclang 表示把后面的参数传给 Clang 编译器）</span></span><br><span class="line">clang++-15 -Xclang -fdump-record-layouts test.cpp</span><br><span class="line">clang++-15 -Xclang -fdump-vtable-layouts test.cpp</span><br><span class="line"><span class="comment"># MSVC 查看命令</span></span><br><span class="line">cl /d1 reportAllClassLayout test.cpp</span><br></pre></td></tr></table></figure>
+
+<p>用下面的简单类来验证：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">A</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">func</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="type">int</span> n&#123;<span class="number">0xfffd</span>&#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>下面分别是三个编译器对类 A 的虚函数表和类布局输出：</p>
+<p><strong>x86-64 gcc 9.4 输出结果</strong></p>
 <figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">➜  src g++ -fdump-lang-class=- test.cpp</span><br><span class="line">Vtable for A</span><br><span class="line">A::_ZTV1A: 3 entries</span><br><span class="line">0     (int (*)(...))0</span><br><span class="line">8     (int (*)(...))(&amp; _ZTI1A)</span><br><span class="line">16    (int (*)(...))A::func</span><br><span class="line"></span><br><span class="line">Class A</span><br><span class="line">   size=16 align=8</span><br><span class="line">   base size=12 base align=8</span><br><span class="line">A (0x0x7ff174281420) 0</span><br><span class="line">    vptr=((&amp; A::_ZTV1A) + 16)</span><br></pre></td></tr></table></figure>
 
-<p>x86-64 clang 15.0.7 输出结果</p>
+<p>从输出中可以看到，GCC 的虚表 <code>_ZTV1A</code> 一共有三项：偏移 0
+是 offset-to-top（值为 0），偏移 8 是 RTTI
+指针（<code>&amp;_ZTI1A</code>），偏移 16 才是第一个虚函数
+<code>A::func</code>。对象里的 vptr 指向
+<code>&amp;_ZTV1A + 16</code>，也就是虚表中 <code>A::func</code>
+所在的位置，而不是虚表开头。对象布局显示 vptr 在偏移 0、成员变量
+<code>A::n</code> 从偏移 8 开始、对象总大小 16 字节。</p>
+<p><strong>x86-64 clang 15.0.7 输出结果</strong></p>
 <figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">➜  src clang++-15 -Xclang -fdump-record-layouts test.cpp</span><br><span class="line"></span><br><span class="line">*** Dumping AST Record Layout</span><br><span class="line">         0 | class A</span><br><span class="line">         0 |   (A vtable pointer)</span><br><span class="line">         8 |   int n</span><br><span class="line">           | [sizeof=16, dsize=12, align=8,</span><br><span class="line">           |  nvsize=12, nvalign=8]</span><br><span class="line">             </span><br><span class="line">*** Dumping IRgen Record Layout    </span><br><span class="line">...</span><br><span class="line">➜  src clang++-15 -Xclang -fdump-vtable-layouts test.cpp</span><br><span class="line">Vtable for &#x27;A&#x27; (3 entries).</span><br><span class="line">   0 | offset_to_top (0)</span><br><span class="line">   1 | A RTTI</span><br><span class="line">       -- (A, 0) vtable address --</span><br><span class="line">   2 | void A::func()</span><br><span class="line"></span><br><span class="line">VTable indices for &#x27;A&#x27; (1 entries).</span><br><span class="line">   0 | void A::func()</span><br></pre></td></tr></table></figure>
 
-<p>x86-64 msvc 19.25.28614 输出结果</p>
-<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">(base) PS D:\Code\Cpp\learn-git&gt; cl /d1 reportAllClassLayout test.cpp</span><br><span class="line">...</span><br><span class="line">class A size(16):</span><br><span class="line">        +---</span><br><span class="line"> 0      | &#123;vfptr&#125;</span><br><span class="line"> 8      | n</span><br><span class="line">        | &lt;alignment member&gt; (size=4)</span><br><span class="line">        +---</span><br><span class="line"></span><br><span class="line">A::$vftable@:</span><br><span class="line">        | &amp;A_meta</span><br><span class="line">        |  0</span><br><span class="line"> 0      | &amp;A::func</span><br><span class="line"></span><br><span class="line">A::func this adjustor: 0</span><br></pre></td></tr></table></figure>
+<p>从输出中可以看到，上半部分是对象布局：vptr 在偏移 0、成员变量
+<code>A::n</code> 从偏移 8 开始；下半部分是虚表：第 0、1 项是
+offset_to_top 和 RTTI，第 2 项才是 <code>A::func</code>；最后的
+<code>VTable indices</code> 表示 func 的槽位索引是 0。整体结构和 GCC 的
+dump 一致，只是展示形式不同。</p>
+<p><strong>x86-64 msvc 19.25.28614 输出结果</strong></p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">➜  src cl /d1 reportAllClassLayout test.cpp</span><br><span class="line">...</span><br><span class="line">class A size(16):</span><br><span class="line">        +---</span><br><span class="line"> 0      | &#123;vfptr&#125;</span><br><span class="line"> 8      | n</span><br><span class="line">        | &lt;alignment member&gt; (size=4)</span><br><span class="line">        +---</span><br><span class="line"></span><br><span class="line">A::$vftable@:</span><br><span class="line">        | &amp;A_meta</span><br><span class="line">        |  0</span><br><span class="line"> 0      | &amp;A::func</span><br><span class="line"></span><br><span class="line">A::func this adjustor: 0</span><br></pre></td></tr></table></figure>
 
-<p>从图中我们可以看出，三个编译器给出的虚表结构以及内存布局基本一致，虚指针都位于类的前8字节，可以使用
-<code>reinterpret_cast</code>
-来读取，而虚表本质上是一个指针数组。我们可以尝试直接从虚表中拿到虚函数的真实地址进行调用。代码如下</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">A</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="function"><span class="keyword">virtual</span> <span class="type">int</span> <span class="title">func</span><span class="params">(<span class="type">int</span> v)</span> </span>&#123; <span class="keyword">return</span> v + <span class="number">20</span>; &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  A a;</span><br><span class="line">  <span class="comment">// 读取类的前8字节，拿到虚表指针</span></span><br><span class="line">  <span class="type">uintptr_t</span> *vptr = *<span class="built_in">reinterpret_cast</span>&lt;<span class="type">uintptr_t</span> **&gt;(&amp;a);</span><br><span class="line">  <span class="comment">// 从虚表中拿到虚函数的地址</span></span><br><span class="line">  <span class="type">uintptr_t</span> ptr_func = vptr[<span class="number">0</span>];</span><br><span class="line">  <span class="keyword">using</span> Func = <span class="built_in">int</span> (*)(A *, <span class="type">int</span>);</span><br><span class="line">  Func f = <span class="built_in">reinterpret_cast</span>&lt;Func&gt;(ptr_func);</span><br><span class="line">  <span class="type">int</span> res = <span class="built_in">f</span>(&amp;a, <span class="number">20</span>);</span><br><span class="line">  std::cout &lt;&lt; <span class="string">&quot;a.func(20) = &quot;</span> &lt;&lt; res &lt;&lt; std::endl;</span><br><span class="line">  res = a.<span class="built_in">func</span>(<span class="number">20</span>);</span><br><span class="line">  std::cout &lt;&lt; <span class="string">&quot;a.func(20) = &quot;</span> &lt;&lt; res &lt;&lt; std::endl;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>从输出中可以看到，上半部分是对象布局：<code>{vfptr}</code> 在偏移
+0、成员变量 <code>A::n</code> 从偏移 8 开始，后面补 4
+字节对齐，布局与前面两份一致；下半部分是虚表：<code>&amp;A_meta</code>
+是 RTTI 元数据，<code>&amp;A::func</code>
+是第一个虚函数槽；<code>this adjustor: 0</code>
+表示当前类调用虚函数无需修正 this。</p>
+<div class="markdown-alert markdown-alert-note">
+<div class="markdown-alert-title">
+<svg class="octicon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>
+<strong>Note</strong>
+</div>
+<p>三份 dump 的展示格式不同，但关键结论一致——无论虚表开头有没有
+offset-to-top、RTTI 等辅助项，<strong>对象里的 vptr
+都指向“第一个虚函数槽”</strong>（GCC 输出里的
+<code>vptr=((&amp; A::_ZTV1A) + 16)</code>
+就是这个意思），所以后面代码里 <code>vptr[0]</code>
+恰好是第一个虚函数。</p>
+</div>
+<p>多继承场景也是类似：每个类各有一张虚表，虚函数按声明顺序占槽位；派生类覆盖某个虚函数时替换对应槽位，没覆盖的槽位沿用基类实现。</p>
+<p>回到开头的 A/B 例子：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">A 的虚表：[0] A::func1    [1] A::func2</span><br><span class="line">B 的虚表：[0] B::func1    [1] A::func2   // func1 被覆盖，func2 沿用基类实现</span><br></pre></td></tr></table></figure>
+
+<p>虚函数不把函数地址存进对象，对象只存一个
+vptr，由构造函数写入并指向真实类型对应的虚表：</p>
+<ul>
+<li>构造 B 对象之后（例如 <code>B b{};</code>），<code>b</code> 的 vptr
+就指向 B 类的虚表；</li>
+<li><code>A *a = &amp;b;</code> 只是让基类指针 <code>a</code>
+指向子类对象，以统一的方式进行存储和使用，不会改对象也不会改 vptr；</li>
+<li>基类调用虚函数时 <code>a-&gt;func1()</code> 就可以通过虚函数表调用到
+<code>B::func1</code>。</li>
+</ul>
+<p>除开头元数据信息外，三个编译器的虚函数表布局基本一致，虚指针都位于类的前
+8 字节。</p>
+<h3 id="通过-vptr-手工调用虚函数">通过 vptr 手工调用虚函数</h3>
+<p>根据类结构和vptr的定义，我们可以用 <code>reinterpret_cast</code> 把
+vptr
+读出来，手动从虚表取实际函数地址再进行调用——把编译器自动做的事手工做一遍。代码如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;cstdint&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">A</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="function"><span class="keyword">virtual</span> <span class="type">int</span> <span class="title">func</span><span class="params">(<span class="type">int</span> v)</span> </span>&#123; <span class="keyword">return</span> v + <span class="number">20</span>; &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  A a;</span><br><span class="line">  <span class="comment">// 读取类的前 8 字节，拿到虚表指针</span></span><br><span class="line">  <span class="type">uintptr_t</span> *vptr = *<span class="built_in">reinterpret_cast</span>&lt;<span class="type">uintptr_t</span> **&gt;(&amp;a);</span><br><span class="line">  <span class="comment">// 从虚表中拿到虚函数的地址</span></span><br><span class="line">  <span class="type">uintptr_t</span> ptr_func = vptr[<span class="number">0</span>];</span><br><span class="line">  <span class="keyword">using</span> Func = <span class="built_in">int</span> (*)(A *, <span class="type">int</span>);</span><br><span class="line">  Func f = <span class="built_in">reinterpret_cast</span>&lt;Func&gt;(ptr_func);</span><br><span class="line">  <span class="type">int</span> res = <span class="built_in">f</span>(&amp;a, <span class="number">20</span>);</span><br><span class="line">  std::cout &lt;&lt; <span class="string">&quot;a.func(20) = &quot;</span> &lt;&lt; res &lt;&lt; std::endl;</span><br><span class="line">  res = a.<span class="built_in">func</span>(<span class="number">20</span>);</span><br><span class="line">  std::cout &lt;&lt; <span class="string">&quot;a.func(20) = &quot;</span> &lt;&lt; res &lt;&lt; std::endl;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <blockquote>
-<p><code>uintptr_t</code> 表示和指针大小一致的整型数，在 64 位平台上就为
-<code>uint64_t</code>，使用这个方便跨平台使用</p>
+<p><code>uintptr_t</code> 是大小与指针一致的整型，在 64 位平台上就是
+<code>uint64_t</code>，用它便于跨平台。</p>
 </blockquote>
-<p>如果调用正确，我们可以看到两行一样的输出</p>
+<p>如果调用正确，两行输出应当完全一致：</p>
 <p><img data-src="/posts/55c5/image-20230202183658979.png" /></p>
-<p>输出的确如我们所愿（x86-64 msvc 19.25.28614）</p>
-<p>再在 compiler explorer 上跑下 GCC 和 Clang 的结果</p>
+<p>输出的确如我们所愿（x86-64 msvc 19.25.28614）。</p>
+<p>再在 Compiler Explorer 上跑一下 GCC 和 Clang：</p>
 <p><img data-src="/posts/55c5/image-20230202190619327.png"
 style="zoom:67%;" /></p>
 <p>GCC 执行结果</p>
 <p><img data-src="/posts/55c5/image-20230202190941102.png"
 style="zoom:67%;" /></p>
-<p>这个例子比较简单，没有考虑继承情况，以及最关键的 this
-指针问题，下面给一个稍微复杂一点的例子</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">A</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="built_in">A</span>(<span class="type">int</span> n) : <span class="built_in">n</span>(n) &#123;&#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">virtual</span> <span class="type">int</span> <span class="title">func</span><span class="params">(<span class="type">int</span> v)</span> </span>&#123;</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;v = &quot;</span> &lt;&lt; v &lt;&lt; std::endl;</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;n = &quot;</span> &lt;&lt; n &lt;&lt; std::endl;</span><br><span class="line">    <span class="keyword">return</span> v + n;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="type">int</span> n&#123;<span class="number">0xfffd</span>&#125;;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">B</span> : <span class="keyword">public</span> A &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="built_in">B</span>(<span class="type">int</span> n, <span class="type">int</span> f) : <span class="built_in">A</span>(n), <span class="built_in">f</span>(f) &#123;&#125;</span><br><span class="line">  <span class="function"><span class="keyword">virtual</span> <span class="type">int</span> <span class="title">func</span><span class="params">(<span class="type">int</span> v)</span> </span>&#123;</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;v = &quot;</span> &lt;&lt; v &lt;&lt; std::endl;</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;n = &quot;</span> &lt;&lt; n &lt;&lt; std::endl;</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;f = &quot;</span> &lt;&lt; f &lt;&lt; std::endl;</span><br><span class="line">    <span class="keyword">return</span> v + n + f;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="type">int</span> f&#123;<span class="number">0xfffd</span>&#125;;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="function">B <span class="title">b</span><span class="params">(<span class="number">10</span>, <span class="number">20</span>)</span></span>;</span><br><span class="line">  A *a = &amp;b;</span><br><span class="line">  <span class="type">uintptr_t</span> *vptr = *<span class="built_in">reinterpret_cast</span>&lt;<span class="type">uintptr_t</span> **&gt;(&amp;b);</span><br><span class="line">  <span class="type">uintptr_t</span> ptr_func = vptr[<span class="number">0</span>];</span><br><span class="line">  <span class="keyword">using</span> Func = <span class="built_in">int</span> (*)(A *, <span class="type">int</span>);</span><br><span class="line">  Func f = <span class="built_in">reinterpret_cast</span>&lt;Func&gt;(ptr_func);</span><br><span class="line">  <span class="type">int</span> res = <span class="built_in">f</span>(a, <span class="number">30</span>);</span><br><span class="line">  std::cout &lt;&lt; res &lt;&lt; std::endl;</span><br><span class="line">  res = a-&gt;<span class="built_in">func</span>(<span class="number">30</span>);</span><br><span class="line">  std::cout &lt;&lt; res &lt;&lt; std::endl;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面的例子比较简单，既没有继承，也没有处理更关键的 this
+指针问题，下面给出一个稍复杂的例子：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;cstdint&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">A</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="built_in">A</span>(<span class="type">int</span> n) : <span class="built_in">n</span>(n) &#123;&#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">virtual</span> <span class="type">int</span> <span class="title">func</span><span class="params">(<span class="type">int</span> v)</span> </span>&#123;</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;v = &quot;</span> &lt;&lt; v &lt;&lt; std::endl;</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;n = &quot;</span> &lt;&lt; n &lt;&lt; std::endl;</span><br><span class="line">    <span class="keyword">return</span> v + n;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="type">int</span> n&#123;<span class="number">0xfffd</span>&#125;;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">B</span> : <span class="keyword">public</span> A &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="built_in">B</span>(<span class="type">int</span> n, <span class="type">int</span> f) : <span class="built_in">A</span>(n), <span class="built_in">f</span>(f) &#123;&#125;</span><br><span class="line">  <span class="function"><span class="keyword">virtual</span> <span class="type">int</span> <span class="title">func</span><span class="params">(<span class="type">int</span> v)</span> </span>&#123;</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;v = &quot;</span> &lt;&lt; v &lt;&lt; std::endl;</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;n = &quot;</span> &lt;&lt; n &lt;&lt; std::endl;</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;f = &quot;</span> &lt;&lt; f &lt;&lt; std::endl;</span><br><span class="line">    <span class="keyword">return</span> v + n + f;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="type">int</span> f&#123;<span class="number">0xfffd</span>&#125;;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="function">B <span class="title">b</span><span class="params">(<span class="number">10</span>, <span class="number">20</span>)</span></span>;</span><br><span class="line">  A *a = &amp;b;</span><br><span class="line">  <span class="type">uintptr_t</span> *vptr = *<span class="built_in">reinterpret_cast</span>&lt;<span class="type">uintptr_t</span> **&gt;(&amp;b);</span><br><span class="line">  <span class="type">uintptr_t</span> ptr_func = vptr[<span class="number">0</span>];</span><br><span class="line">  <span class="keyword">using</span> Func = <span class="built_in">int</span> (*)(A *, <span class="type">int</span>);</span><br><span class="line">  Func f = <span class="built_in">reinterpret_cast</span>&lt;Func&gt;(ptr_func);</span><br><span class="line">  <span class="type">int</span> res = <span class="built_in">f</span>(a, <span class="number">30</span>);</span><br><span class="line">  std::cout &lt;&lt; res &lt;&lt; std::endl;</span><br><span class="line">  res = a-&gt;<span class="built_in">func</span>(<span class="number">30</span>);</span><br><span class="line">  std::cout &lt;&lt; res &lt;&lt; std::endl;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>MSVC 执行结果</p>
 <p><img data-src="/posts/55c5/image-20230202192352189.png"
@@ -463,89 +568,383 @@ style="zoom:67%;" /></p>
 <p>Clang 执行结果</p>
 <p><img data-src="/posts/55c5/image-20230202192847211.png"
 style="zoom:67%;" /></p>
-<h2 id="虚函数调用过程">虚函数调用过程</h2>
-<p>最后，我们尝试理解成员函数指针到底是什么？为什么其比寻常的函数指针更大？</p>
-<p>我们直接将其转换成字节数组，然后读取其值</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iomanip&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">A</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">func</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> <span class="title class_">T</span>, <span class="keyword">typename</span> Ret, <span class="keyword">typename</span>... Args&gt; <span class="keyword">struct</span> <span class="title class_">MemberFuncPtr</span> &#123;</span><br><span class="line">  <span class="keyword">using</span> type = <span class="built_in">Ret</span> (T::*)(Args...);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  A a;</span><br><span class="line">  <span class="keyword">constexpr</span> <span class="type">size_t</span> size_a = <span class="built_in">sizeof</span>(&amp;A::func);</span><br><span class="line">  <span class="type">uint8_t</span> bytes[size_a];</span><br><span class="line">  MemberFuncPtr&lt;A, <span class="type">void</span>&gt;::type ptr = &amp;A::func;</span><br><span class="line">  std::<span class="built_in">copy</span>(&amp;ptr, &amp;ptr + size_a, bytes);</span><br><span class="line">  std::cout &lt;&lt; <span class="string">&quot;[ &quot;</span>;</span><br><span class="line">  <span class="keyword">for</span> (<span class="type">uint8_t</span> v : bytes) &#123;</span><br><span class="line">    std::cout &lt;&lt; std::<span class="built_in">setbase</span>(<span class="number">16</span>) &lt;&lt; std::<span class="built_in">setw</span>(<span class="number">2</span>) &lt;&lt; (<span class="type">uint32_t</span>)v &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  std::cout &lt;&lt; <span class="string">&quot;]&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>三种编译器下都得到 <code>60</code>，解释和前面一致：b 的 vptr 指向 B
+的虚表，第 0 槽是 <code>B::func</code>。</p>
+<div class="markdown-alert markdown-alert-note">
+<div class="markdown-alert-title">
+<svg class="octicon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>
+<strong>Note</strong>
+</div>
+<p><strong>上述手动调用方式仅适用于单继承场景，不适用于多继承场景</strong>。</p>
+<p>把 <code>a</code> 直接当作 this 传给取出的 <code>B::func</code>
+是安全的。而在多继承下，第二个及以后的基类子对象不在偏移
+0，调用前必须先把 this 修正到对应子对象。</p>
+</div>
+<hr />
+<h2 id="成员函数指针里存了什么">成员函数指针里存了什么</h2>
+<p>既然虚函数的最终地址要等运行时才知道，那么 <code>&amp;A::func</code>
+这种成员函数指针里存的又是什么？为什么 GCC/Clang
+下它比普通函数指针大、MSVC 下它大小一样却不是实际的函数地址？</p>
+<p>下面先看 ABI 是怎么定义它的，再结合实际场景进行验证。</p>
+<h3 id="结构体定义">结构体定义</h3>
+<p>普通函数指针可以直接存“目标函数的地址”，调用时拿到地址就能跳转执行。而成员函数指针不行：它还要处理隐含的
+this
+指针，而且如果指向虚函数，最终地址在编译期根本不知道。<strong>所以它存的是一份“怎么找到并调用目标”的信息，具体字段由
+ABI 决定</strong>。如下所示：</p>
+<p>GCC/Clang 使用的 Itanium C++ ABI 布局：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// gcc / clang —— Itanium C++ ABI</span></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">member_func_info</span> &#123;</span><br><span class="line">  <span class="comment">// 普通成员函数：ptr 就是最终函数地址；</span></span><br><span class="line">  <span class="comment">// 指向虚函数时：ptr 存“虚表槽的字节偏移 + 1”</span></span><br><span class="line">  <span class="comment">// （最低位的 1 是“这是虚函数”的标记，调用前要把它去掉）</span></span><br><span class="line">  <span class="type">uintptr_t</span> ptr;</span><br><span class="line">  <span class="comment">// this 修正量：多继承时先把 this 定位到对应子对象，单继承为 0</span></span><br><span class="line">  <span class="type">ptrdiff_t</span> adj;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 
-<p>这个结果会随着编译器不同有所改变，在 MSVC 下，输出结果如下</p>
+<p>MSVC 自家 ABI 则是另一种布局：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// MSVC —— 单继承</span></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">member_func_info</span> &#123;</span><br><span class="line">  <span class="comment">// vcall thunk 地址（8 字节）</span></span><br><span class="line">  <span class="type">uintptr_t</span> ptr;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// MSVC —— 多继承</span></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">member_func_info</span> &#123;</span><br><span class="line">  <span class="comment">// vcall thunk 地址（8 字节）</span></span><br><span class="line">  <span class="type">uintptr_t</span> ptr;</span><br><span class="line">  <span class="comment">// this 修正量（4 字节，整体按 16 字节对齐）</span></span><br><span class="line">  <span class="type">uint32_t</span> adj;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<div class="markdown-alert markdown-alert-note">
+<div class="markdown-alert-title">
+<svg class="octicon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>
+<strong>Note</strong>
+</div>
+<p>普通成员函数的 <code>ptr</code> 就是函数地址（x86-64 上按 8
+字节对齐，所以最低位恒为 0）；指向虚函数的 <code>ptr</code>
+是“槽字节偏移 + 1”，所以最低位为 1。这类技巧依赖具体平台的
+ABI，上述判别方式只适用于 x86-64 下的 Itanium ABI；部分 ARM
+平台上函数地址的最低位另有用途，不能照搬，分析时应以对应平台的文档为准。</p>
+</div>
+<p>参考文档：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://rants.vastheman.com/2021/09/21/msvc/">MSVC C++ ABI
+Member Function Pointers</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://itanium-cxx-abi.github.io/cxx-abi/abi.html#member-pointers">Itanium
+C++ ABI — member pointers</a></li>
+</ul>
+<h4 id="实验一单继承的虚函数">实验一：单继承的虚函数</h4>
+<p>把 <code>&amp;A::func</code> 的字节打出来：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iomanip&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">A</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">func</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> <span class="title class_">T</span>, <span class="keyword">typename</span> Ret, <span class="keyword">typename</span>... Args&gt; <span class="keyword">struct</span> <span class="title class_">MemberFuncPtr</span> &#123;</span><br><span class="line">  <span class="keyword">using</span> type = <span class="built_in">Ret</span> (T::*)(Args...);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  A a;</span><br><span class="line">  <span class="keyword">constexpr</span> <span class="type">size_t</span> size_a = <span class="built_in">sizeof</span>(&amp;A::func);</span><br><span class="line">  <span class="type">uint8_t</span> bytes[size_a];</span><br><span class="line">  MemberFuncPtr&lt;A, <span class="type">void</span>&gt;::type ptr = &amp;A::func;</span><br><span class="line">  <span class="type">uint8_t</span> *ptr_bytes = <span class="built_in">reinterpret_cast</span>&lt;<span class="type">uint8_t</span> *&gt;(&amp;ptr);</span><br><span class="line">  std::<span class="built_in">copy</span>(ptr_bytes, ptr_bytes + <span class="built_in">sizeof</span>(ptr), bytes);</span><br><span class="line">  std::cout &lt;&lt; <span class="string">&quot;[ &quot;</span>;</span><br><span class="line">  <span class="keyword">for</span> (<span class="type">uint8_t</span> v : bytes) &#123;</span><br><span class="line">    std::cout &lt;&lt; std::<span class="built_in">setbase</span>(<span class="number">16</span>) &lt;&lt; std::<span class="built_in">setw</span>(<span class="number">2</span>) &lt;&lt; (<span class="type">uint32_t</span>)v &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  std::cout &lt;&lt; <span class="string">&quot;]&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>MSVC 下，输出结果如下：</p>
 <figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[ 4d 40 8c 7a f7 7f  0  0 ]</span><br></pre></td></tr></table></figure>
 
-<p>而在 Clang 和 GCC 下，二者输出都是</p>
+<p>Clang 和 GCC 下，输出结果如下：</p>
 <figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0 ]</span><br></pre></td></tr></table></figure>
 
-<p>一个好像看不出什么结果，我们多弄点类和继承，再来看看效果</p>
-<p>测试代码</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;array&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iomanip&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">A</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">func1</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line">  <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">func2</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">B</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">func3</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line">  <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">func4</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">C</span>: <span class="keyword">public</span> A, <span class="keyword">public</span> B &#123;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> <span class="title class_">T</span>, <span class="keyword">typename</span> Ret, <span class="keyword">typename</span>... Args&gt; <span class="keyword">struct</span> <span class="title class_">MemberFuncPtr</span> &#123;</span><br><span class="line">  <span class="keyword">using</span> type = <span class="built_in">Ret</span> (T::*)(Args...);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> <span class="title class_">T</span>, <span class="keyword">typename</span> Ret, <span class="keyword">typename</span>... Args&gt;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">print_bytes</span><span class="params">(<span class="keyword">typename</span> MemberFuncPtr&lt;T, Ret, Args...&gt;::type func_ptr)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">constexpr</span> <span class="type">size_t</span> size = <span class="built_in">sizeof</span>(func_ptr);</span><br><span class="line">  std::array&lt;<span class="type">uint8_t</span>, size&gt; content;</span><br><span class="line">  <span class="type">uint8_t</span> *arr = <span class="built_in">reinterpret_cast</span>&lt;<span class="type">uint8_t</span> *&gt;(&amp;func_ptr);</span><br><span class="line">  std::<span class="built_in">copy</span>(arr, arr + size, content.<span class="built_in">begin</span>());</span><br><span class="line">  std::cout &lt;&lt; <span class="string">&quot;[ &quot;</span>;</span><br><span class="line">  <span class="keyword">for</span> (<span class="type">uint8_t</span> v : content) &#123;</span><br><span class="line">    std::cout &lt;&lt; std::<span class="built_in">setbase</span>(<span class="number">16</span>) &lt;&lt; std::<span class="built_in">setw</span>(<span class="number">2</span>) &lt;&lt; (<span class="type">uint32_t</span>)v &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  std::cout &lt;&lt; <span class="string">&quot;]&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  A a;</span><br><span class="line">  std::cout &lt;&lt; <span class="string">&quot;&amp;A::func1&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">  <span class="built_in">print_bytes</span>&lt;A, <span class="type">void</span>&gt;(&amp;A::func1);</span><br><span class="line">  std::cout &lt;&lt; <span class="string">&quot;&amp;A::func2&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">  <span class="built_in">print_bytes</span>&lt;A, <span class="type">void</span>&gt;(&amp;A::func2);</span><br><span class="line">  std::cout &lt;&lt; <span class="string">&quot;&amp;B::func3&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">  <span class="built_in">print_bytes</span>&lt;B, <span class="type">void</span>&gt;(&amp;B::func3);</span><br><span class="line">  std::cout &lt;&lt; <span class="string">&quot;&amp;B::func4&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">  <span class="built_in">print_bytes</span>&lt;B, <span class="type">void</span>&gt;(&amp;B::func4);</span><br><span class="line">  std::cout &lt;&lt; <span class="string">&quot;&amp;C::func1&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">  <span class="built_in">print_bytes</span>&lt;C, <span class="type">void</span>&gt;(&amp;C::func1);</span><br><span class="line">  std::cout &lt;&lt; <span class="string">&quot;&amp;C::func2&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">  <span class="built_in">print_bytes</span>&lt;C, <span class="type">void</span>&gt;(&amp;C::func2);</span><br><span class="line">  std::cout &lt;&lt; <span class="string">&quot;&amp;C::func3&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">  <span class="built_in">print_bytes</span>&lt;C, <span class="type">void</span>&gt;(&amp;C::func3);</span><br><span class="line">  std::cout &lt;&lt; <span class="string">&quot;&amp;C::func4&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">  <span class="built_in">print_bytes</span>&lt;C, <span class="type">void</span>&gt;(&amp;C::func4);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>参照 ABI 进行解读：</p>
+<ul>
+<li><p>GCC/Clang 的 16 字节正好拆成 <code>ptr</code> 和
+<code>adj</code>两个字段，值是 <code>ptr = 1、adj = 0</code>。按模型
+<code>ptr = 槽字节偏移 + 1</code>，<code>A</code> 只有一个虚函数
+<code>func</code>（槽 0、偏移 0），所以恰是 1；<code>adj = 0</code>
+对应单继承无需修正 this 指针。</p></li>
+<li><p>MSVC 的 8 字节对应 <code>ptr</code>，按模型它是 vcall thunk
+的地址而不是 <code>A::func</code> 函数体的地址。</p></li>
+</ul>
+<h4 id="实验二多继承的虚函数">实验二：多继承的虚函数</h4>
+<p>A类和B类各有两个虚函数，C类同时继承两者（A类子对象在偏移
+0、B类子对象在偏移 8）。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;array&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iomanip&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">A</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">func1</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line">  <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">func2</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">B</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">func3</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line">  <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">func4</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">C</span> : <span class="keyword">public</span> A, <span class="keyword">public</span> B &#123;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> <span class="title class_">T</span>, <span class="keyword">typename</span> Ret, <span class="keyword">typename</span>... Args&gt; <span class="keyword">struct</span> <span class="title class_">MemberFuncPtr</span> &#123;</span><br><span class="line">  <span class="keyword">using</span> type = <span class="built_in">Ret</span> (T::*)(Args...);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> <span class="title class_">T</span>, <span class="keyword">typename</span> Ret, <span class="keyword">typename</span>... Args&gt;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">print_bytes</span><span class="params">(<span class="keyword">typename</span> MemberFuncPtr&lt;T, Ret, Args...&gt;::type func_ptr)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">constexpr</span> <span class="type">size_t</span> size = <span class="built_in">sizeof</span>(func_ptr);</span><br><span class="line">  std::array&lt;<span class="type">uint8_t</span>, size&gt; content;</span><br><span class="line">  <span class="type">uint8_t</span> *arr = <span class="built_in">reinterpret_cast</span>&lt;<span class="type">uint8_t</span> *&gt;(&amp;func_ptr);</span><br><span class="line">  std::<span class="built_in">copy</span>(arr, arr + size, content.<span class="built_in">begin</span>());</span><br><span class="line">  std::cout &lt;&lt; <span class="string">&quot;[ &quot;</span>;</span><br><span class="line">  <span class="keyword">for</span> (<span class="type">uint8_t</span> v : content) &#123;</span><br><span class="line">    std::cout &lt;&lt; std::<span class="built_in">setbase</span>(<span class="number">16</span>) &lt;&lt; std::<span class="built_in">setw</span>(<span class="number">2</span>) &lt;&lt; (<span class="type">uint32_t</span>)v &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  std::cout &lt;&lt; <span class="string">&quot;]&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  A a;</span><br><span class="line">  std::cout &lt;&lt; <span class="string">&quot;&amp;A::func1&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">  <span class="built_in">print_bytes</span>&lt;A, <span class="type">void</span>&gt;(&amp;A::func1);</span><br><span class="line">  std::cout &lt;&lt; <span class="string">&quot;&amp;A::func2&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">  <span class="built_in">print_bytes</span>&lt;A, <span class="type">void</span>&gt;(&amp;A::func2);</span><br><span class="line">  std::cout &lt;&lt; <span class="string">&quot;&amp;B::func3&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">  <span class="built_in">print_bytes</span>&lt;B, <span class="type">void</span>&gt;(&amp;B::func3);</span><br><span class="line">  std::cout &lt;&lt; <span class="string">&quot;&amp;B::func4&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">  <span class="built_in">print_bytes</span>&lt;B, <span class="type">void</span>&gt;(&amp;B::func4);</span><br><span class="line">  std::cout &lt;&lt; <span class="string">&quot;&amp;C::func1&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">  <span class="built_in">print_bytes</span>&lt;C, <span class="type">void</span>&gt;(&amp;C::func1);</span><br><span class="line">  std::cout &lt;&lt; <span class="string">&quot;&amp;C::func2&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">  <span class="built_in">print_bytes</span>&lt;C, <span class="type">void</span>&gt;(&amp;C::func2);</span><br><span class="line">  std::cout &lt;&lt; <span class="string">&quot;&amp;C::func3&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">  <span class="built_in">print_bytes</span>&lt;C, <span class="type">void</span>&gt;(&amp;C::func3);</span><br><span class="line">  std::cout &lt;&lt; <span class="string">&quot;&amp;C::func4&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">  <span class="built_in">print_bytes</span>&lt;C, <span class="type">void</span>&gt;(&amp;C::func4);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>输出结果</p>
-<p>msvc （添加 <code>/RTC1</code> 标志，将所有未初始化的栈上内存标记为
-<code>0xcc</code> ）</p>
-<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&amp;A::func1</span><br><span class="line">[ a2 40 4e 34 f6 7f  0  0 ]</span><br><span class="line">&amp;A::func2</span><br><span class="line">[ 87 1a 4e 34 f6 7f  0  0 ]</span><br><span class="line">&amp;B::func3</span><br><span class="line">[ b8 2a 4e 34 f6 7f  0  0 ]</span><br><span class="line">&amp;B::func4</span><br><span class="line">[ bf 3c 4e 34 f6 7f  0  0 ]</span><br><span class="line">&amp;C::func1</span><br><span class="line">[ a2 40 4e 34 f6 7f  0  0  0  0  0  0 cc cc cc cc ]</span><br><span class="line">&amp;C::func2</span><br><span class="line">[ 87 1a 4e 34 f6 7f  0  0  0  0  0  0 cc cc cc cc ]</span><br><span class="line">&amp;C::func3</span><br><span class="line">[ b8 2a 4e 34 f6 7f  0  0  8  0  0  0 cc cc cc cc ]</span><br><span class="line">&amp;C::func4</span><br><span class="line">[ bf 3c 4e 34 f6 7f  0  0  8  0  0  0 cc cc cc cc ]</span><br></pre></td></tr></table></figure>
-
-<p>GCC / Clang</p>
+<p>GCC / Clang 输出：</p>
 <figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&amp;A::func1</span><br><span class="line">[  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0 ]</span><br><span class="line">&amp;A::func2</span><br><span class="line">[  9  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0 ]</span><br><span class="line">&amp;B::func3</span><br><span class="line">[  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0 ]</span><br><span class="line">&amp;B::func4</span><br><span class="line">[  9  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0 ]</span><br><span class="line">&amp;C::func1</span><br><span class="line">[  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0 ]</span><br><span class="line">&amp;C::func2</span><br><span class="line">[  9  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0 ]</span><br><span class="line">&amp;C::func3</span><br><span class="line">[  1  0  0  0  0  0  0  0  8  0  0  0  0  0  0  0 ]</span><br><span class="line">&amp;C::func4</span><br><span class="line">[  9  0  0  0  0  0  0  0  8  0  0  0  0  0  0  0 ]</span><br></pre></td></tr></table></figure>
 
-<p>C++ 代码</p>
+<p>下表展示了各个函数指针结构体的字段含义：</p>
+<table>
+<thead>
+<tr>
+<th>成员函数指针</th>
+<th>ptr（前 8 字节）</th>
+<th>adj（后 8 字节）</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>A::func1</code></td>
+<td>1</td>
+<td>0</td>
+<td>A 虚表槽 0（偏移 0 + 1）</td>
+</tr>
+<tr>
+<td><code>A::func2</code></td>
+<td>9</td>
+<td>0</td>
+<td>A 虚表槽 1（偏移 8 + 1）</td>
+</tr>
+<tr>
+<td><code>B::func3</code></td>
+<td>1</td>
+<td>0</td>
+<td>B 虚表槽 0</td>
+</tr>
+<tr>
+<td><code>B::func4</code></td>
+<td>9</td>
+<td>0</td>
+<td>B 虚表槽 1</td>
+</tr>
+<tr>
+<td><code>C::func1</code></td>
+<td>1</td>
+<td>0</td>
+<td>A 子对象在 C 里偏移 0，A 虚表槽 0</td>
+</tr>
+<tr>
+<td><code>C::func2</code></td>
+<td>9</td>
+<td>0</td>
+<td>A 子对象在 C 里偏移 0，A 虚表槽 1（偏移 8 + 1）</td>
+</tr>
+<tr>
+<td><code>C::func3</code></td>
+<td>1</td>
+<td>8</td>
+<td>B 子对象在 C 里偏移 8，B 虚表槽 0</td>
+</tr>
+<tr>
+<td><code>C::func4</code></td>
+<td>9</td>
+<td>8</td>
+<td>B 子对象在 C 里偏移 8，B 虚表槽 1（偏移 8 + 1）</td>
+</tr>
+</tbody>
+</table>
+<p>此时眼尖的小伙伴可能会发现，为什么
+<code>A::func1</code>、<code>B::func3</code>、<code>C::func1</code>
+的内容完全一样？</p>
+<p>因为<strong>成员函数指针存是“运行时要怎么找到它”的相对信息</strong>。这三者都是“槽
+0 + 无需修正 this”，编码自然相同。类身份不需要在运行期保存——C++
+类型系统在编译期就保证 <code>A::*</code> 只能配合 A
+及其派生类对象使用，运行期再让对象自己的 vptr
+来解释这份编码。反过来，槽位不同会体现在 <code>ptr</code>（1 →
+9），子对象位置不同会体现在 <code>adj</code>（0 → 8）。</p>
+<p>MSVC 输出（添加 <code>/RTC1</code>
+标志，将所有未初始化的栈上内存标记为 <code>0xcc</code>）：</p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&amp;A::func1</span><br><span class="line">[ a2 40 4e 34 f6 7f  0  0 ]</span><br><span class="line">&amp;A::func2</span><br><span class="line">[ 87 1a 4e 34 f6 7f  0  0 ]</span><br><span class="line">&amp;B::func3</span><br><span class="line">[ b8 2a 4e 34 f6 7f  0  0 ]</span><br><span class="line">&amp;B::func4</span><br><span class="line">[ bf 3c 4e 34 f6 7f  0  0 ]</span><br><span class="line">&amp;C::func1</span><br><span class="line">[ a2 40 4e 34 f6 7f  0  0  0  0  0  0 cc cc cc cc ]</span><br><span class="line">&amp;C::func2</span><br><span class="line">[ 87 1a 4e 34 f6 7f  0  0  0  0  0  0 cc cc cc cc ]</span><br><span class="line">&amp;C::func3</span><br><span class="line">[ b8 2a 4e 34 f6 7f  0  0  8  0  0  0 cc cc cc cc ]</span><br><span class="line">&amp;C::func4</span><br><span class="line">[ bf 3c 4e 34 f6 7f  0  0  8  0  0  0 cc cc cc cc ]</span><br></pre></td></tr></table></figure>
+
+<p>MSVC 的字段布局和 GCC/Clang 不一样：</p>
+<ul>
+<li>A/B 是单继承表示，只有 8 字节（thunk 指针）；</li>
+<li>C 是多继承表示，结构体包含 padding 后的大小为 16
+字节，实际有意义的只有前 12 字节——8 字节 thunk 指针 + 4 字节
+<code>adj</code>，最后 4 字节是按 16
+对齐产生的填充（本次运行里是未初始化栈上的 <code>0xcc</code>）。</li>
+</ul>
+<p>按这个结构把输出拆开，如下表所示：</p>
+<table>
+<thead>
+<tr>
+<th>成员函数指针</th>
+<th>thunk 地址（前 8 字节）</th>
+<th>adj</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>A::func1</code></td>
+<td><code>a2 40 4e 34 f6 7f 00 00</code></td>
+<td>—</td>
+<td>A 槽 0 的 vcall thunk（汇编里的 <code>A::vcall'{0}'</code>）</td>
+</tr>
+<tr>
+<td><code>A::func2</code></td>
+<td><code>87 1a 4e 34 f6 7f 00 00</code></td>
+<td>—</td>
+<td>A 槽 1 的 vcall thunk</td>
+</tr>
+<tr>
+<td><code>B::func3</code></td>
+<td><code>b8 2a 4e 34 f6 7f 00 00</code></td>
+<td>—</td>
+<td>B 槽 0 的 vcall thunk</td>
+</tr>
+<tr>
+<td><code>B::func4</code></td>
+<td><code>bf 3c 4e 34 f6 7f 00 00</code></td>
+<td>—</td>
+<td>B 槽 1 的 vcall thunk</td>
+</tr>
+<tr>
+<td><code>C::func1</code></td>
+<td>与 <code>A::func1</code> 相同</td>
+<td>0</td>
+<td>复用 A 槽 0 的 vcall thunk；A 子对象在 C 里偏移 0</td>
+</tr>
+<tr>
+<td><code>C::func2</code></td>
+<td>与 <code>A::func2</code> 相同</td>
+<td>0</td>
+<td>复用 A 槽 1 的 vcall thunk；A 子对象在 C 里偏移 0</td>
+</tr>
+<tr>
+<td><code>C::func3</code></td>
+<td>与 <code>B::func3</code> 相同</td>
+<td>8</td>
+<td>复用 B 槽 0 的 vcall thunk；B 子对象在 C 里偏移 8</td>
+</tr>
+<tr>
+<td><code>C::func4</code></td>
+<td>与 <code>B::func4</code> 相同</td>
+<td>8</td>
+<td>复用 B 槽 1 的 vcall thunk；B 子对象在 C 里偏移 8</td>
+</tr>
+</tbody>
+</table>
+<p>从表里能读出两个关键点：槽位不同的虚函数对应不同的 thunk（A
+的两行地址不同）；继承到 C 后，thunk 本身可以复用，差异全部体现在
+<code>adj</code> 上——A 子对象在偏移 0，所以 <code>adj = 0</code>；B
+子对象在偏移 8，所以 <code>adj = 8</code>。</p>
+<h4 id="汇编代码">汇编代码</h4>
+<p>前面从结构体定义出发解读了字节输出，下面结合汇编代码加深理解。</p>
+<p>以 <code>&amp;A::func1</code> 为例，源代码是这样一行：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">print_bytes</span>&lt;A, <span class="type">void</span>&gt;(&amp;A::func1);</span><br></pre></td></tr></table></figure>
 
-<p>可以对应到下面的汇编</p>
-<p>MSVC</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">lea     rcx, OFFSET FLAT:[thunk]:A::`vcall<span class="number">&#x27;</span>&#123;<span class="number">0</span>,&#123;flat&#125;&#125;<span class="string">&#x27; &#125;&#x27;</span>            ; A::`vcall<span class="number">&#x27;</span>&#123;<span class="number">0</span>&#125;&#x27;</span><br><span class="line">call    <span class="type">void</span> <span class="built_in">print_bytes</span>&lt;A,<span class="type">void</span>&gt;(<span class="built_in">void</span> (__cdecl A::*)(<span class="type">void</span>)) ; print_bytes&lt;A,<span class="type">void</span>&gt;</span><br></pre></td></tr></table></figure>
+<p>MSVC 对应汇编：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">lea     rcx, OFFSET FLAT:[thunk]:A::`vcall&#x27;&#123;0,&#123;flat&#125;&#125;&#x27; &#125;&#x27;            ; A::`vcall&#x27;&#123;0&#125;&#x27;</span><br><span class="line">call    void print_bytes&lt;A,void&gt;(void (__cdecl A::*)(void)) ; print_bytes&lt;A,void&gt;</span><br></pre></td></tr></table></figure>
 
-<p>GCC 对应调用的汇编</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">mov     r12d, <span class="number">1</span></span><br><span class="line">mov     r13d, <span class="number">0</span></span><br><span class="line">mov     rcx, r12</span><br><span class="line">mov     rbx, r13</span><br><span class="line">mov     rax, r12</span><br><span class="line">mov     rdx, r13</span><br><span class="line">mov     rax, rdx</span><br><span class="line"># 最终 rdi = <span class="number">1</span>, rsi = <span class="number">0</span>，也就是输入到函数的参数</span><br><span class="line">mov     rdi, rcx</span><br><span class="line">mov     rsi, rax</span><br><span class="line">call    <span class="type">void</span> <span class="built_in">print_bytes</span>&lt;A, <span class="type">void</span>&gt;(MemberFuncPtr&lt;A, <span class="type">void</span>&gt;::type)</span><br></pre></td></tr></table></figure>
+<p>这里的 <code>thunk</code> 是编译器自动生成的一小段机器码：MSVC
+单继承下成员函数指针只有 8
+字节，放不下“虚表槽位”这个信息，于是对每个虚函数生成一个 vcall
+thunk——调用时它先取出对象的 vptr，再按编译期写死在 thunk
+指令里的槽位，跳转到真正的虚函数。</p>
+<p><strong>所以 <code>&amp;A::func1</code> 在 MSVC 下取到的是这个 thunk
+的地址，而不是函数体的地址。</strong></p>
+<p>GCC 对应汇编：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">mov     r12d, 1</span><br><span class="line">mov     r13d, 0</span><br><span class="line">mov     rcx, r12</span><br><span class="line">mov     rbx, r13</span><br><span class="line">mov     rax, r12</span><br><span class="line">mov     rdx, r13</span><br><span class="line">mov     rax, rdx</span><br><span class="line"># 最终 rdi = 1, rsi = 0，也就是输入到函数的参数</span><br><span class="line">mov     rdi, rcx</span><br><span class="line">mov     rsi, rax</span><br><span class="line">call    void print_bytes&lt;A, void&gt;(MemberFuncPtr&lt;A, void&gt;::type)</span><br></pre></td></tr></table></figure>
 
-<p>Clang 对应汇编</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mov     qword ptr [rbp - <span class="number">24</span>], <span class="number">0</span></span><br><span class="line">mov     qword ptr [rbp - <span class="number">32</span>], <span class="number">1</span></span><br><span class="line"># 最终 rdi = <span class="number">1</span>, rsi = <span class="number">0</span>，也就是输入到函数的参数 </span><br><span class="line">mov     rdi, qword ptr [rbp - <span class="number">32</span>]</span><br><span class="line">mov     rsi, qword ptr [rbp - <span class="number">24</span>]</span><br><span class="line">call    <span class="type">void</span> <span class="built_in">print_bytes</span>&lt;A, <span class="type">void</span>&gt;(MemberFuncPtr&lt;A, <span class="type">void</span>&gt;::type)</span><br><span class="line">mov     rdi, qword ptr [rbp - <span class="number">160</span>]      # <span class="number">8</span>-byte Reload</span><br></pre></td></tr></table></figure>
+<p>GCC 这段只表达一件事：最终传给函数的是 <code>1</code> 和
+<code>0</code>，也就是 <code>ptr = 1、adj = 0</code>；中间那些
+<code>mov</code> 只是编译器在腾寄存器，可以忽略。</p>
+<p>Clang 对应汇编：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mov     qword ptr [rbp - 24], 0</span><br><span class="line">mov     qword ptr [rbp - 32], 1</span><br><span class="line"># 最终 rdi = 1, rsi = 0，也就是输入到函数的参数</span><br><span class="line">mov     rdi, qword ptr [rbp - 32]</span><br><span class="line">mov     rsi, qword ptr [rbp - 24]</span><br><span class="line">call    void print_bytes&lt;A, void&gt;(MemberFuncPtr&lt;A, void&gt;::type)</span><br><span class="line">mov     rdi, qword ptr [rbp - 160]      # 8-byte Reload</span><br></pre></td></tr></table></figure>
 
-<p>从结果中可以很清楚的看到，MSVC 和 GCC、Clang
-的输出结果完全不一样，但从 MSVC
-的结果上来看，存储的确实应该是一个指针，对于多继承情况下还包含一个4字节（<code>uint32_t</code>）的偏移量，而
-GCC 和 Clang 是两个64位的值。</p>
-<p>根据网上搜集的资料，我们可以得到这两个结构体的含义</p>
+<p>Clang 也一样：在栈上写入 <code>0</code> 和 <code>1</code>，再分别作为
+<code>adj</code>、<code>ptr</code> 传给函数。</p>
+<hr />
+<h3 id="手动解析虚函数指针调用虚函数">手动解析虚函数指针调用虚函数</h3>
+<p>根据前面的结构体理解，现在可以手动解析虚函数指针结构体调用虚函数：不用
+<code>-&gt;*</code> 运算符，直接按 <code>ptr/adj</code>
+编码查虚表并调用。</p>
+<p><strong>下面代码只适配 x86-64 的 Itanium
+ABI（GCC/Clang）</strong></p>
+<p>类沿用前面的 A/B/C 设定：A 只有两个虚函数，B 多带一个数据成员
+<code>f</code>（这样 <code>func3</code>/<code>func4</code> 的结果依赖
+this 是否传对），C 同时继承二者。由于 A 子对象在 C 中偏移 0、B
+子对象仍从偏移 8 开始，下面会看到 <code>C::func1/2</code> 的
+<code>adj = 0</code>、<code>C::func3/4</code> 的
+<code>adj = 8</code>，和前面表格里的编码一致。</p>
+<p>手工调用分四步，对应前面的编码规则：</p>
+<ol type="1">
+<li><code>obj + adj</code>：先把 this
+修正到“要找虚表的那个子对象”（<code>C::func1/2</code> 是
+0，<code>C::func3/4</code> 是 8）；</li>
+<li>读出该子对象首部的 <code>vptr</code>（指向虚表槽 0）；</li>
+<li>去掉 <code>ptr</code>
+最低位的虚函数标记（<code>&amp; ~1</code>），剩下的就是槽的字节偏移，<code>vptr + 偏移</code>
+得到目标槽的地址；</li>
+<li>从槽里取出真正的函数地址，并<strong>把修正后的 <code>sub_obj</code>
+作为 this 传入</strong>——此时它已经指向正确的 A/B 子对象。</li>
+</ol>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;cstdint&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;utility&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">A</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="function"><span class="keyword">virtual</span> <span class="type">int</span> <span class="title">func1</span><span class="params">(<span class="type">int</span> v)</span> </span>&#123; <span class="keyword">return</span> v + <span class="number">100</span>; &#125;</span><br><span class="line">  <span class="function"><span class="keyword">virtual</span> <span class="type">int</span> <span class="title">func2</span><span class="params">(<span class="type">int</span> v)</span> </span>&#123; <span class="keyword">return</span> v - <span class="number">100</span>; &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">B</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="built_in">B</span>(<span class="type">int</span> f) : <span class="built_in">f</span>(f) &#123;&#125;</span><br><span class="line">  <span class="function"><span class="keyword">virtual</span> <span class="type">int</span> <span class="title">func3</span><span class="params">(<span class="type">int</span> v)</span> </span>&#123; <span class="keyword">return</span> f * v; &#125;</span><br><span class="line">  <span class="function"><span class="keyword">virtual</span> <span class="type">int</span> <span class="title">func4</span><span class="params">(<span class="type">int</span> v)</span> </span>&#123; <span class="keyword">return</span> v - f; &#125;</span><br><span class="line"></span><br><span class="line">  <span class="type">int</span> f;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">C</span> : <span class="keyword">public</span> A, <span class="keyword">public</span> B &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="built_in">C</span>(<span class="type">int</span> f) : <span class="built_in">B</span>(f) &#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> <span class="title class_">T</span>, <span class="keyword">typename</span> Ret, <span class="keyword">typename</span>... Args&gt; <span class="keyword">struct</span> <span class="title class_">MemberFuncPtr</span> &#123;</span><br><span class="line">  <span class="keyword">using</span> type = <span class="built_in">Ret</span> (T::*)(Args...);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">member_func_info</span> &#123;</span><br><span class="line">  <span class="type">uintptr_t</span> ptr;</span><br><span class="line">  <span class="type">ptrdiff_t</span> adj;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> <span class="title class_">T</span>, <span class="keyword">typename</span> Ret, <span class="keyword">typename</span>... Args&gt;</span><br><span class="line"><span class="function">member_func_info</span></span><br><span class="line"><span class="function"><span class="title">from_raw</span><span class="params">(<span class="keyword">typename</span> MemberFuncPtr&lt;T, Ret, Args...&gt;::type func_ptr)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> *<span class="built_in">reinterpret_cast</span>&lt;member_func_info *&gt;(&amp;func_ptr);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> <span class="title class_">T</span>, <span class="keyword">typename</span> Ret, <span class="keyword">typename</span>... Args&gt;</span><br><span class="line"><span class="function">Ret <span class="title">invoke</span><span class="params">(T *obj, <span class="keyword">typename</span> MemberFuncPtr&lt;T, Ret, Args...&gt;::type func_ptr,</span></span></span><br><span class="line"><span class="params"><span class="function">           Args &amp;&amp;...args)</span> </span>&#123;</span><br><span class="line">  <span class="type">uintptr_t</span> obj_addr = <span class="built_in">reinterpret_cast</span>&lt;<span class="type">uintptr_t</span>&gt;(obj);</span><br><span class="line">  member_func_info func_info = <span class="built_in">from_raw</span>&lt;T, Ret, Args...&gt;(func_ptr);</span><br><span class="line">  std::cout &lt;&lt; <span class="string">&quot;&lt;ptr=&quot;</span> &lt;&lt; func_info.ptr &lt;&lt; <span class="string">&quot;,adj=&quot;</span> &lt;&lt; func_info.adj &lt;&lt; <span class="string">&quot;&gt;&quot;</span></span><br><span class="line">            &lt;&lt; std::endl;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 1. 修正 this：定位到存放 vptr 的子对象</span></span><br><span class="line">  <span class="type">uintptr_t</span> sub_obj = obj_addr + func_info.adj;</span><br><span class="line">  <span class="comment">// 2. 读出 vptr（指向虚表槽 0）</span></span><br><span class="line">  <span class="type">uintptr_t</span> vptr = *<span class="built_in">reinterpret_cast</span>&lt;<span class="type">uintptr_t</span> *&gt;(sub_obj);</span><br><span class="line">  <span class="comment">// 3. 最低位 1 是“虚函数”标记，去掉后得到槽的字节偏移</span></span><br><span class="line">  <span class="type">uintptr_t</span> slot_addr = vptr + (func_info.ptr &amp; ~<span class="built_in">uintptr_t</span>(<span class="number">1</span>));</span><br><span class="line">  <span class="comment">// 4. 槽里存的是真正的函数地址；成员函数的 this 在 ABI 层就是第一个参数，</span></span><br><span class="line">  <span class="comment">//    这里传入修正后的 sub_obj</span></span><br><span class="line">  <span class="keyword">using</span> Func = <span class="built_in">Ret</span> (*)(<span class="type">void</span> *, Args...);</span><br><span class="line">  Func f = *<span class="built_in">reinterpret_cast</span>&lt;Func *&gt;(slot_addr);</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">f</span>(<span class="built_in">reinterpret_cast</span>&lt;<span class="type">void</span> *&gt;(sub_obj), std::forward&lt;Args&gt;(args)...);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  C c&#123;<span class="number">3</span>&#125;;</span><br><span class="line">  std::cout &lt;&lt; <span class="string">&quot;&amp;C::func1: &quot;</span> &lt;&lt; <span class="built_in">invoke</span>&lt;C, <span class="type">int</span>&gt;(&amp;c, &amp;C::func1, <span class="number">20</span>) &lt;&lt; std::endl;</span><br><span class="line">  std::cout &lt;&lt; <span class="string">&quot;&amp;C::func2: &quot;</span> &lt;&lt; <span class="built_in">invoke</span>&lt;C, <span class="type">int</span>&gt;(&amp;c, &amp;C::func2, <span class="number">20</span>) &lt;&lt; std::endl;</span><br><span class="line">  std::cout &lt;&lt; <span class="string">&quot;&amp;C::func3: &quot;</span> &lt;&lt; <span class="built_in">invoke</span>&lt;C, <span class="type">int</span>&gt;(&amp;c, &amp;C::func3, <span class="number">20</span>) &lt;&lt; std::endl;</span><br><span class="line">  std::cout &lt;&lt; <span class="string">&quot;&amp;C::func4: &quot;</span> &lt;&lt; <span class="built_in">invoke</span>&lt;C, <span class="type">int</span>&gt;(&amp;c, &amp;C::func4, <span class="number">20</span>) &lt;&lt; std::endl;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>执行结果（GCC）</p>
+<p><img data-src="/posts/55c5/image-20260906152105891.png" /></p>
+<p>这个结果说明手工调用读到了正确的方法和正确的数据：</p>
 <ul>
-<li><p><a target="_blank" rel="noopener" href="https://rants.vastheman.com/2021/09/21/msvc/">MSVC C++
-ABI Member Function Pointers « Rants from Vas
-(vastheman.com)</a></p></li>
-<li><p><a
-target="_blank" rel="noopener" href="https://itanium-cxx-abi.github.io/cxx-abi/abi.html#member-pointers">Itanium
-C++ ABI (itanium-cxx-abi.github.io)</a></p></li>
+<li><code>func1</code>：按 <code>ptr = 1</code> 找到
+<code>A::func1</code>，参数 <code>v = 20</code> 算出
+<code>100 + 20 = 120</code>；</li>
+<li><code>func2</code>：按 <code>ptr = 9</code> 找到
+<code>A::func2</code>，算出 <code>20 - 100 = -80</code>；</li>
+<li><code>func3</code>：this 修正到偏移 8 的 B 子对象后读到
+<code>f = 3</code>，算出 <code>3 × 20 = 60</code>；</li>
+<li><code>func4</code>：同样读到 <code>f = 3</code>，算出
+<code>20 - 3 = 17</code>。</li>
 </ul>
-<p>MSVC C++ ABI member function pointer 结构体</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// single inheritance</span></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">member_func_info</span> &#123;</span><br><span class="line">  <span class="comment">// thunk function pointer</span></span><br><span class="line">  <span class="type">uintptr_t</span> ptr;  </span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// muiltiple inheritance</span></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">member_func_info</span> &#123;</span><br><span class="line">    <span class="comment">// thunk function pointer</span></span><br><span class="line">    <span class="type">uintptr_t</span> ptr;</span><br><span class="line">    <span class="comment">// adjustor</span></span><br><span class="line">    <span class="type">uint32_t</span> adj;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p>GCC / Clang Itanium C++ ABI member function pointer 结构体</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// gcc / clang</span></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">member_func_info</span> &#123;</span><br><span class="line">    <span class="comment">// function pointer / vtable offset in bytes</span></span><br><span class="line">    <span class="type">uintptr_t</span> ptr;</span><br><span class="line">    <span class="comment">// adjustor</span></span><br><span class="line">    <span class="type">ptrdiff_t</span> adj;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p><strong>在 x86-64 上，通过 ptr
-的最后一位判断是否是虚函数，因为虚函数指针大小为 8 字节，也就是说 ptr
-的值一定是偶数，即 ptr 的最后一位永远都是
-0，这样对于普通函数而言，这个值就为偶数，而虚函数则是奇数。</strong></p>
-<p><strong>在 arm 上，对于虚函数的判断方式转换成了 adj，通过 adj
-的最后一位标识是否是虚函数</strong></p>
-<blockquote>
-<p>这一点我们同样可以从汇编代码上看出来</p>
-<p>C++代码</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">print_bytes&lt;A, void&gt;(&amp;A::func1);</span><br></pre></td></tr></table></figure>
-
-<p>对应 ARM64 汇编</p>
-<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">movs    r3, #0</span><br><span class="line">str     r3, [r7, #8]</span><br><span class="line">movs    r3, #1</span><br><span class="line">str     r3, [r7, #12]</span><br><span class="line">add     r3, r7, #8</span><br><span class="line">ldm     r3, &#123;r0, r1&#125;</span><br><span class="line"># 最终传入的值为 &#123;0x0,0x1&#125;</span><br><span class="line">bl      void print_bytes&lt;A, void&gt;(MemberFuncPtr&lt;A, void&gt;::type)</span><br></pre></td></tr></table></figure>
-
-</blockquote>
-<p>这样，我们可以尝试解析成员函数指针并进行调用（仅限于 Itanium C++
-ABI，也就是 GCC 和 Clang，对于 MSVC
-实在是没办法，居然是又新增了一段跳转函数，属实是恶心人了）</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;array&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;cstdint&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iomanip&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">A</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="built_in">A</span>(<span class="type">int</span> n) : <span class="built_in">n</span>(n) &#123;&#125;</span><br><span class="line">  <span class="function"><span class="keyword">virtual</span> <span class="type">int</span> <span class="title">func1</span><span class="params">(<span class="type">int</span> v)</span> </span>&#123; <span class="keyword">return</span> n + v; &#125;</span><br><span class="line">  <span class="function"><span class="keyword">virtual</span> <span class="type">int</span> <span class="title">func2</span><span class="params">(<span class="type">int</span> v)</span> </span>&#123; <span class="keyword">return</span> n - v; &#125;</span><br><span class="line"></span><br><span class="line">  <span class="type">int</span> n&#123;<span class="number">0xfffd</span>&#125;;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> <span class="title class_">T</span>, <span class="keyword">typename</span> Ret, <span class="keyword">typename</span>... Args&gt; <span class="keyword">struct</span> <span class="title class_">MemberFuncPtr</span> &#123;</span><br><span class="line">  <span class="keyword">using</span> type = <span class="built_in">Ret</span> (T::*)(Args...);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">member_func_info</span> &#123;</span><br><span class="line">  <span class="type">uintptr_t</span> ptr;</span><br><span class="line">  <span class="type">ptrdiff_t</span> adj;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> <span class="title class_">T</span>, <span class="keyword">typename</span> Ret, <span class="keyword">typename</span>... Args&gt;</span><br><span class="line"><span class="function">member_func_info</span></span><br><span class="line"><span class="function"><span class="title">from_raw</span><span class="params">(<span class="keyword">typename</span> MemberFuncPtr&lt;T, Ret, Args...&gt;::type func_ptr)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> *<span class="built_in">reinterpret_cast</span>&lt;member_func_info *&gt;(&amp;func_ptr);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> <span class="title class_">T</span>, <span class="keyword">typename</span> Ret, <span class="keyword">typename</span>... Args&gt;</span><br><span class="line"><span class="function">Ret <span class="title">invoke</span><span class="params">(T *obj, <span class="keyword">typename</span> MemberFuncPtr&lt;T, Ret, Args...&gt;::type func_ptr,</span></span></span><br><span class="line"><span class="params"><span class="function">           Args &amp;&amp;...args)</span> </span>&#123;</span><br><span class="line">  <span class="type">uintptr_t</span> ptr_this = <span class="built_in">reinterpret_cast</span>&lt;<span class="type">uintptr_t</span>&gt;(obj);</span><br><span class="line">  member_func_info func_info = <span class="built_in">from_raw</span>&lt;T, Ret, Args...&gt;(func_ptr);</span><br><span class="line">  std::cout &lt;&lt; <span class="string">&quot;&lt;ptr=&quot;</span> &lt;&lt; func_info.ptr &lt;&lt; <span class="string">&quot;,adj=&quot;</span> &lt;&lt; func_info.adj &lt;&lt; <span class="string">&quot;&gt;&quot;</span></span><br><span class="line">            &lt;&lt; std::endl;</span><br><span class="line">  <span class="type">uintptr_t</span> adj_this = ptr_this + func_info.adj;</span><br><span class="line">  <span class="type">uintptr_t</span> vptr = *<span class="built_in">reinterpret_cast</span>&lt;<span class="type">uintptr_t</span> *&gt;(adj_this);</span><br><span class="line">  <span class="type">uintptr_t</span> func_address = vptr + func_info.ptr &amp; (~<span class="number">0x1</span>);</span><br><span class="line">  <span class="comment">/*</span></span><br><span class="line"><span class="comment">  // arm case</span></span><br><span class="line"><span class="comment">  uintptr_t adj_this = ptr_this + func_info.adj &gt;&gt; 1;</span></span><br><span class="line"><span class="comment">  uintptr_t vptr = *reinterpret_cast&lt;uintptr_t *&gt;(adj_this);</span></span><br><span class="line"><span class="comment">  uintptr_t func_address = vptr + func_info.ptr;</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line">  <span class="comment">// call function</span></span><br><span class="line">  <span class="keyword">using</span> Func = <span class="built_in">Ret</span> (*)(T *, Args...);</span><br><span class="line">  Func f = *<span class="built_in">reinterpret_cast</span>&lt;Func *&gt;(func_address);</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">f</span>(obj, std::forward&lt;Args&gt;(args)...);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  A a&#123;<span class="number">10</span>&#125;;</span><br><span class="line">  <span class="comment">// 主打的就是一个脱裤子放屁</span></span><br><span class="line">  std::cout &lt;&lt; <span class="built_in">invoke</span>&lt;A, <span class="type">int</span>&gt;(&amp;a, &amp;A::func2, <span class="number">20</span>) &lt;&lt; std::endl;</span><br><span class="line">  <span class="comment">// 等价于 a.func2(20);</span></span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>执行结果</p>
-<p><img data-src="/posts/55c5/image-20230202221518873.png" /></p>
-<p>对于 clang 也是一样</p>
-<p><img data-src="/posts/55c5/image-20230202223902378.png" /></p>
+<p>前两个说明槽位查对了；后两个依赖成员 <code>f</code>，数值正确说明
+this 修正（<code>adj = 8</code>）和虚表读取都对——它们和
+<code>(c.*(&amp;C::func1))(20)</code>
+这类编译器自动生成的调用结果完全一致，打印出的
+<code>ptr/adj</code>（1/0、9/0、1/8、9/8）也和前面字节实验里的编码一一对应。</p>
+<div class="markdown-alert markdown-alert-note">
+<div class="markdown-alert-title">
+<svg class="octicon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>
+<strong>Note</strong>
+</div>
+<p><strong>上面样例只覆盖非虚多重继承</strong>：手工调用依赖“虚表槽偏移
++ 固定
+<code>adj</code>”，而<strong>虚继承</strong>会合并重复的基类子对象，共享虚基类的位置取决于最派生类型，运行期还要借助额外指针、vcall
+offset 或 thunk 才能定位。</p>
+</div>
+<h3 id="虚函数的二级寻址">虚函数的二级寻址</h3>
+<p>此时我们可以回答最开头提出的问题：<code>&amp;A::func</code>
+为什么没法存储最终的函数地址？</p>
+<p>因为最终地址要等运行时、由对象的实际类型决定，编译期根本拿不到。<strong>虚函数指针能存下来的只有“定位规则”——Itanium
+存“虚表槽的字节偏移 + adj”，MSVC 存“vcall thunk 地址 +
+adj”（多继承时才有
+adj），本质上都不是函数体地址，而是“下一次该往哪查”的信息</strong>。</p>
+<p>调用时先经对象的 vptr
+找到虚表槽，槽里才是真正的函数地址，也就是要隔着一层虚表才能拿到最终地址，所以叫<strong>二级寻址</strong>。这也是它能跨继承复用的原因：同一份“定位规则”配上不同的对象
+vptr，就能落到不同的函数上。</p>
 <h2 id="总结">总结</h2>
-<p><strong>虚函数的出现是因为我们无法在静态编译过程中确定要执行的函数，需要动态查找待执行的函数</strong>。具体而言就是通过对象实例中存储的一个指向虚函数表（vtable）的虚指针（vptr），结合待调用的虚函数信息（在
-vtable 上的偏移量）获取到实际的函数地址，最后调用函数。</p>
-<p>对于普通的函数而言，在静态编译过程中能够获取到函数地址，而虚函数则多了一个查找的过程（虚继承情况可能还要再多一次虚基的寻址过程）。</p>
+<p>把一次虚函数调用拆开看，分以下三个阶段：</p>
+<ol type="1">
+<li><strong>编译期</strong>：编译器不为虚函数写死函数地址，只确定虚函数在
+vtable 里的槽位（以及多继承下 this 需要的修正），并在调用点生成“取 vptr
+→ 按槽位取函数地址 → 调用”的代码。</li>
+<li><strong>构造期</strong>：构造函数把 vptr
+写入对象，指向该对象<strong>实际类型</strong>对应的虚表。覆盖函数替换对应槽位，未覆盖的槽位继续指向基类实现。</li>
+<li><strong>调用期</strong>：调用点取出
+vptr，按编译期确定的槽位加载函数地址并调用。a 指向 A 的对象就查到 A
+的虚表，指向 B 的对象就查到 B
+的虚表——这就是“动态/晚绑定”发生的时刻。</li>
+</ol>
+<h3 id="虚调用的开销">虚调用的开销</h3>
+<p>虚调用相比普通调用，概念上多做了两件事：先取
+vptr（一次访存），再按编译期确定的槽位取函数地址（第二次依赖访存），最后间接调用——也就是“先查表，再跳转”。真正容易被低估的是另外两点：</p>
+<ul>
+<li>调用目标在编译期未知，函数体无法内联，跨函数优化（常量传播、寄存器分配等）也会被阻断，对热路径的影响往往大于那一次访存本身；</li>
+<li>间接调用的目标来自内存，分支预测的难度高于直接
+<code>call</code>。</li>
+</ul>
+<p>this 修正并不属于虚调用的固有开销：单继承且基类位于偏移 0 时修正值为
+0；只有多继承/虚继承下才需要额外调整（可能经
+thunk），而且非虚调用同样可能遇到。另外，当编译器能证明实际类型（例如类标记了
+<code>final</code>、或通过静态类型已知的对象直接调用）时，它也可能做
+devirtualization，把虚调用优化成直接调用——这是语义不变前提下的优化，虚调用的机制本身仍按上文三步理解。</p>
+<h3 id="延伸虚继承为什么更复杂">延伸：虚继承为什么更复杂</h3>
+<p>普通多重继承里，各基类子对象在派生类中的偏移是编译期固定的，所以成员函数指针的
+<code>adj</code> 可以直接写死（例如前面 C 里的 B 子对象恒为偏移
+8）。</p>
+<p>虚继承解决的则是菱形继承里的“重复基类”问题：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">A</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="keyword">virtual</span> ~<span class="built_in">A</span>() &#123;&#125;</span><br><span class="line">  <span class="type">int</span> x;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">B</span> : <span class="keyword">public</span> <span class="keyword">virtual</span> A &#123;&#125;;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">C</span> : <span class="keyword">public</span> <span class="keyword">virtual</span> A &#123;&#125;;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">D</span> : <span class="keyword">public</span> B, <span class="keyword">public</span> C &#123;&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>如果不加 <code>virtual</code>，D 会从 B、C 各自继承一份 A；声明
+<code>virtual</code> 后，D 里只保留一份共享的 A。代价是这份 A 相对 B/C
+子对象的位置不再固定——同一个 <code>B*</code> 可能指向独立的
+<code>B</code> 对象，也可能指向 <code>D</code> 中的 B 子对象，A
+的偏移会随最派生对象的完整布局而变化，编译期无法写死。</p>
+<p>所以运行期需要借助额外的指针、虚表里的 vcall offset
+等定位信息，虚表槽里也可能放 thunk；构造期间还会使用 construction
+vtable，保证对象尚未完全构造时虚调用也能分派到当前阶段正确的实现。这也是上文手工
+<code>invoke</code> 只覆盖非虚多重继承的原因。</p>
+<div class="markdown-alert markdown-alert-tip">
+<div class="markdown-alert-title">
+<svg class="octicon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M8 1.5c-2.363 0-4 1.69-4 3.75 0 .984.424 1.625.984 2.304l.214.253c.223.264.47.556.673.848.284.411.537.896.621 1.49a.75.75 0 0 1-1.484.211c-.04-.282-.163-.547-.37-.847a8.456 8.456 0 0 0-.542-.68c-.084-.1-.173-.205-.268-.32C3.201 7.75 2.5 6.766 2.5 5.25 2.5 2.31 4.863 0 8 0s5.5 2.31 5.5 5.25c0 1.516-.701 2.5-1.328 3.259-.095.115-.184.22-.268.319-.207.245-.383.453-.541.681-.208.3-.33.565-.37.847a.751.751 0 0 1-1.485-.212c.084-.593.337-1.078.621-1.489.203-.292.45-.584.673-.848.075-.088.147-.173.213-.253.561-.679.985-1.32.985-2.304 0-2.06-1.637-3.75-4-3.75ZM5.75 12h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5ZM6 15.25a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75Z"></path></svg>
+<strong>Tip</strong>
+</div>
+<p>实际上这种菱形虚继承在工程里出现得并不多：多数场景可以用组合或更扁平的继承结构避开。它带来共享祖先状态的同时，也付出了布局动态化、this
+定位复杂、构造期间特殊处理等代价，只有在确实需要“多个基类共享同一份祖先状态”时才值得使用。标准库的
+<code>iostream</code> 就是这样的典型例子：<code>istream</code> 与
+<code>ostream</code> 虚继承同一个
+<code>basic_ios</code>，使读、写两侧共享同一份流状态。</p>
+</div>
+<h3 id="延伸dynamic_cast-与-rtti">延伸：dynamic_cast 与 RTTI</h3>
+<p>dynamic_cast 与虚调用共享同一套基础设施（多态类要有 vptr，RTTI
+信息也挂在虚表附近），但开销模式不同：它不是按固定槽位取函数地址，而是“读
+RTTI → 沿继承图检查类型 →
+可能失败”，多继承/虚继承下的跨类转换还需要路径搜索和指针修正，所以通常比虚调用更重（编译器也可能把它优化成
+no-op 或一次类型指针比较）。</p>
+<p>这也是不少性能敏感项目自己实现轻量 RTTI 的原因：例如用整型
+<code>type_id</code> 加静态继承链做 is-a 判定，牺牲 dynamic_cast
+的通用性，换取确定、可控的判定开销，以及反射/序列化等额外能力。</p>
 
     </div>
 
@@ -618,13 +1017,13 @@ vtable 上的偏移量）获取到实际的函数地址，最后调用函数。<
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">152k</span>
+    <span title="站点总字数">155k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">9:13</span>
+    <span title="站点阅读时长">9:25</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动

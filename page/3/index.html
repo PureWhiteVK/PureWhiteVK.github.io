@@ -720,14 +720,14 @@ style="zoom: 67%;" /></p>
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>3.5k</span>
+      <span>2.3k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>13 分钟</span>
+      <span>8 分钟</span>
     </span>
 </div>
 
@@ -738,31 +738,11 @@ style="zoom: 67%;" /></p>
     
     
     <div class="post-body" itemprop="articleBody">
-          <h1 id="git-clone">git clone</h1>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> &lt;repo-url&gt;</span><br></pre></td></tr></table></figure>
-
-<p>示例命令如下</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/boostorg/boost.git</span><br></pre></td></tr></table></figure>
-
-<p>一些常用的参数（全部参数选项可以通过 <code>git clone --help</code>
-查看）</p>
-<ul>
-<li><p><code>--recursive</code> 或
-<code>--recurse-submodules</code>（在较新版本的 git
-中使用，命令语义更加清晰）：当要拉取的仓库中包含 submodule
-时，默认不会拉取子仓库，而指定这个参数即可拉取所有的子仓库。</p>
-<p>如果我们在下载的时候忘记指定
-<code>--recursive</code>，也可以通过下面命令重新拉取子仓库</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git submodule update --init --recursive</span><br></pre></td></tr></table></figure>
-</li>
-<li><p><code>--depth</code>：当我们只想下载指定数量的提交历史时，这个参数可以减少下载体积；如果只需要源码，也可以直接下载
-zip 或 tar.gz 等压缩文件。</p></li>
-<li><p><code>-b</code> 或者
-<code>--branch</code>：指定要拉取的分支名称，例如下载 boost-1.86.0
-（这个实际上是一个 tag，但也可以通过这种方式下载）。</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/boostorg/boost.git --branch boost-1.86.0</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
+          <p>Git
+日常用到的命令不少，但真正常碰的，基本都围绕一条主线：把代码从远端拉下来，开分支修改，跟上远端的最新提交，再推回去。单独查某个命令的用法很容易，难的是搞清楚这些命令应该按什么顺序出现。这篇笔记用两个本地仓库把这条主线完整跑一遍，覆盖
+clone、fetch、pull
+--rebase、branch、worktree、rebase、push，以及浅克隆、LFS 和多个 remote
+等场景。</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/posts/8de3/#more" rel="contents">
@@ -1397,13 +1377,13 @@ C++ 依赖解决方案，但是对于一些冷门的库可能就不支持，还�
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">152k</span>
+    <span title="站点总字数">155k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">9:13</span>
+    <span title="站点阅读时长">9:25</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动

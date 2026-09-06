@@ -20,23 +20,18 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"purewhitevk.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.28.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":"default"},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false,"trigger":"auto"}}</script><script src="/js/config.js" defer></script>
 
-    <meta name="description" content="git clone 1git clone &lt;repo-url&gt;  示例命令如下 1git clone https:&#x2F;&#x2F;github.com&#x2F;boostorg&#x2F;boost.git  一些常用的参数（全部参数选项可以通过 git clone --help 查看）  --recursive 或 --recurse-submodules（在较新版本的 git 中使用，命令语义更加清晰）：当要拉">
+    <meta name="description" content="Git 日常用到的命令不少，但真正常碰的，基本都围绕一条主线：把代码从远端拉下来，开分支修改，跟上远端的最新提交，再推回去。单独查某个命令的用法很容易，难的是搞清楚这些命令应该按什么顺序出现。这篇笔记用两个本地仓库把这条主线完整跑一遍，覆盖 clone、fetch、pull --rebase、branch、worktree、rebase、push，以及浅克隆、LFS 和多个 remote 等场景。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Git 常用操作">
 <meta property="og:url" content="https://purewhitevk.github.io/posts/8de3/">
 <meta property="og:site_name" content="PureWhiteVK&#39;s Blog">
-<meta property="og:description" content="git clone 1git clone &lt;repo-url&gt;  示例命令如下 1git clone https:&#x2F;&#x2F;github.com&#x2F;boostorg&#x2F;boost.git  一些常用的参数（全部参数选项可以通过 git clone --help 查看）  --recursive 或 --recurse-submodules（在较新版本的 git 中使用，命令语义更加清晰）：当要拉">
+<meta property="og:description" content="Git 日常用到的命令不少，但真正常碰的，基本都围绕一条主线：把代码从远端拉下来，开分支修改，跟上远端的最新提交，再推回去。单独查某个命令的用法很容易，难的是搞清楚这些命令应该按什么顺序出现。这篇笔记用两个本地仓库把这条主线完整跑一遍，覆盖 clone、fetch、pull --rebase、branch、worktree、rebase、push，以及浅克隆、LFS 和多个 remote 等场景。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://purewhitevk.github.io/posts/8de3/image-20240907110021863.png">
-<meta property="og:image" content="https://purewhitevk.github.io/posts/8de3/image-20240907110149847.png">
-<meta property="og:image" content="https://purewhitevk.github.io/posts/8de3/image-20240907110252194.png">
-<meta property="og:image" content="https://purewhitevk.github.io/posts/8de3/image-20240907110430040.png">
 <meta property="article:published_time" content="2024-09-07T01:59:28.000Z">
 <meta property="article:modified_time" content="2024-09-07T01:59:28.000Z">
 <meta property="article:author" content="PureWhiteVK">
 <meta property="article:tag" content="git">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://purewhitevk.github.io/posts/8de3/image-20240907110021863.png">
 
 
 <link rel="canonical" href="https://purewhitevk.github.io/posts/8de3/">
@@ -172,7 +167,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#git-clone"><span class="nav-number">1.</span> <span class="nav-text">git clone</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9-refspec"><span class="nav-number">1.1.</span> <span class="nav-text">修改 refspec</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%87%8D%E6%96%B0%E6%8B%89%E5%8F%96%E5%AE%8C%E6%95%B4%E5%8E%86%E5%8F%B2"><span class="nav-number">1.2.</span> <span class="nav-text">重新拉取完整历史</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0-ssh-%E5%AF%86%E9%92%A5"><span class="nav-number">1.3.</span> <span class="nav-text">添加 SSH 密钥</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#git-branch"><span class="nav-number">2.</span> <span class="nav-text">git branch</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA"><span class="nav-number">2.1.</span> <span class="nav-text">创建</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%A0%E9%99%A4"><span class="nav-number">2.2.</span> <span class="nav-text">删除</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%87%8D%E5%91%BD%E5%90%8D"><span class="nav-number">2.3.</span> <span class="nav-text">重命名</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%90%88%E5%B9%B6"><span class="nav-number">3.</span> <span class="nav-text">合并</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%8B%89%E5%8F%96"><span class="nav-number">4.</span> <span class="nav-text">拉取</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#git-fetch"><span class="nav-number">4.1.</span> <span class="nav-text">git fetch</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#git-pull"><span class="nav-number">4.2.</span> <span class="nav-text">git pull</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%AC%E5%9C%B0%E5%BC%BA%E8%A1%8C%E5%90%8C%E6%AD%A5%E8%BF%9C%E7%AB%AF%E5%88%86%E6%94%AF"><span class="nav-number">4.3.</span> <span class="nav-text">本地强行同步远端分支</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#git-push"><span class="nav-number">5.</span> <span class="nav-text">git push</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%BA%E8%A1%8C%E6%8E%A8%E9%80%81%E8%BF%9C%E7%AB%AF%E5%88%86%E6%94%AF"><span class="nav-number">5.1.</span> <span class="nav-text">强行推送远端分支</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E8%BF%9C%E7%AB%AF%E5%88%86%E6%94%AF"><span class="nav-number">5.2.</span> <span class="nav-text">删除远端分支</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#git-stash"><span class="nav-number">6.</span> <span class="nav-text">git stash</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#fork"><span class="nav-number">7.</span> <span class="nav-text">fork</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%8C%E6%AD%A5%E8%BF%9C%E7%A8%8B%E4%BB%93%E5%BA%93"><span class="nav-number">7.1.</span> <span class="nav-text">同步远程仓库</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#lfs"><span class="nav-number">8.</span> <span class="nav-text">LFS</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96-lfs"><span class="nav-number">8.1.</span> <span class="nav-text">初始化 LFS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%BD%E8%B8%AA%E5%A4%A7%E6%96%87%E4%BB%B6"><span class="nav-number">8.2.</span> <span class="nav-text">追踪大文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%86%E5%A4%A7%E6%96%87%E4%BB%B6%E8%BF%81%E7%A7%BB%E5%88%B0-lfs"><span class="nav-number">8.3.</span> <span class="nav-text">将大文件迁移到 LFS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8A%8Alfs%E6%8C%87%E9%92%88%E8%BF%98%E5%8E%9F%E4%B8%BA%E7%9C%9F%E5%AE%9E%E6%96%87%E4%BB%B6"><span class="nav-number">8.4.</span> <span class="nav-text">把“LFS指针”还原为真实文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%86-lfs-%E6%96%87%E4%BB%B6%E6%94%B9%E5%9B%9E%E6%99%AE%E9%80%9A-git-%E6%96%87%E4%BB%B6"><span class="nav-number">8.5.</span> <span class="nav-text">将 LFS 文件改回普通 Git 文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%AC%E5%9C%B0%E6%8B%89%E5%8F%96%E6%97%B6%E4%B8%8D%E4%B8%8B%E8%BD%BD-lfs-%E6%96%87%E4%BB%B6"><span class="nav-number">8.6.</span> <span class="nav-text">本地拉取时不下载 LFS 文件</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AF%B4%E6%98%8E"><span class="nav-number">9.</span> <span class="nav-text">说明</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9C%BA%E6%99%AF%E8%AE%BE%E7%BD%AE"><span class="nav-number">1.</span> <span class="nav-text">场景设置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#clonefetchpull"><span class="nav-number">2.</span> <span class="nav-text">clone、fetch、pull</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#shallow-clone"><span class="nav-number">2.1.</span> <span class="nav-text">shallow clone</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lfs"><span class="nav-number">2.2.</span> <span class="nav-text">LFS</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#branchworktree"><span class="nav-number">3.</span> <span class="nav-text">branch、worktree</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#rebase"><span class="nav-number">4.</span> <span class="nav-text">rebase</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#remote"><span class="nav-number">5.</span> <span class="nav-text">remote</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -284,14 +279,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>3.5k</span>
+      <span>2.3k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>13 分钟</span>
+      <span>8 分钟</span>
     </span>
 </div>
 
@@ -301,321 +296,208 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><h1 id="git-clone">git clone</h1>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> &lt;repo-url&gt;</span><br></pre></td></tr></table></figure>
-
-<p>示例命令如下</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/boostorg/boost.git</span><br></pre></td></tr></table></figure>
-
-<p>一些常用的参数（全部参数选项可以通过 <code>git clone --help</code>
-查看）</p>
-<ul>
-<li><p><code>--recursive</code> 或
-<code>--recurse-submodules</code>（在较新版本的 git
-中使用，命令语义更加清晰）：当要拉取的仓库中包含 submodule
-时，默认不会拉取子仓库，而指定这个参数即可拉取所有的子仓库。</p>
-<p>如果我们在下载的时候忘记指定
-<code>--recursive</code>，也可以通过下面命令重新拉取子仓库</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git submodule update --init --recursive</span><br></pre></td></tr></table></figure>
-</li>
-<li><p><code>--depth</code>：当我们只想下载指定数量的提交历史时，这个参数可以减少下载体积；如果只需要源码，也可以直接下载
-zip 或 tar.gz 等压缩文件。</p></li>
-<li><p><code>-b</code> 或者
-<code>--branch</code>：指定要拉取的分支名称，例如下载 boost-1.86.0
-（这个实际上是一个 tag，但也可以通过这种方式下载）。</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/boostorg/boost.git --branch boost-1.86.0</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
+    <div class="post-body" itemprop="articleBody"><p>Git
+日常用到的命令不少，但真正常碰的，基本都围绕一条主线：把代码从远端拉下来，开分支修改，跟上远端的最新提交，再推回去。单独查某个命令的用法很容易，难的是搞清楚这些命令应该按什么顺序出现。这篇笔记用两个本地仓库把这条主线完整跑一遍，覆盖
+clone、fetch、pull
+--rebase、branch、worktree、rebase、push，以及浅克隆、LFS 和多个 remote
+等场景。</p>
 <span id="more"></span>
 
-<h2 id="修改-refspec">修改 refspec</h2>
-<p>使用 shallow clone 时，会出现无法下载远程其他分支的情况，此时需要重设
-refspec，命令如下：</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1) 查看当前 fetch 配置</span></span><br><span class="line">git config --get-all remote.origin.fetch</span><br><span class="line"></span><br><span class="line"><span class="comment"># 2) 清理旧的 fetch 规则（有些 shallow clone 只会保留单分支规则）</span></span><br><span class="line">git config --unset-all remote.origin.fetch</span><br><span class="line"></span><br><span class="line"><span class="comment"># 3) 重新设置为“拉取所有远程分支”</span></span><br><span class="line">git config --add remote.origin.fetch <span class="string">&quot;+refs/heads/*:refs/remotes/origin/*&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 4) 重新拉取远程引用</span></span><br><span class="line">git fetch origin</span><br></pre></td></tr></table></figure>
+<h1 id="场景设置">场景设置</h1>
+<p>场景设定为一个由 alice 和 bob 共同维护的小项目，仓库里只有一个
+<code>README.md</code>，方便直接观察提交在本地和远端之间如何流动。</p>
+<p>下面的流程在本地用三个目录完成，不依赖 GitHub 账号和网络：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git-demo/</span><br><span class="line">├─ team.git    线上仓库（bare）</span><br><span class="line">├─ alice/      开发者 A</span><br><span class="line">└─ bob/        开发者 B</span><br></pre></td></tr></table></figure>
 
-<p>执行完成后，可以通过下面命令确认远程分支是否已经可见：</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git branch -r</span><br></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">mkdir</span> D:\git-demo</span><br><span class="line"><span class="built_in">cd</span> D:\git-demo</span><br><span class="line">git init --bare --initial-branch=main team.git</span><br></pre></td></tr></table></figure>
 
-<p>如果在克隆时就希望浅克隆但拉取所有分支，可以直接使用
-<code>--no-single-branch</code> 选项，具体命令示例如下 ：</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> --depth 1 --no-single-branch &lt;repo-url&gt;</span><br></pre></td></tr></table></figure>
+<p>后面命令中的 <code>file:///&lt;path-to-team.git&gt;</code>
+是占位符，以本示例来说就是
+<code>file:///D:/git-demo/team.git</code>。</p>
+<p><code>team.git</code> 是裸仓库，没有工作区，角色和 GitHub/GitLab
+上的仓库一致。</p>
+<p>alice 是项目的初始开发者，先在本地初始化仓库，再把初始代码推送到
+<code>team.git</code>：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">mkdir</span> alice</span><br><span class="line"><span class="built_in">cd</span> alice</span><br><span class="line">git init --initial-branch=main</span><br><span class="line">git config user.name alice</span><br><span class="line">git config user.email alice@example.com</span><br><span class="line">git remote add origin file:///&lt;path-to-team.git&gt;</span><br></pre></td></tr></table></figure>
 
-<h2 id="重新拉取完整历史">重新拉取完整历史</h2>
-<p>如果仓库本身是浅克隆，想继续查看更完整历史，可以再执行：</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 拉取完整历史</span></span><br><span class="line">git fetch --unshallow</span><br><span class="line"></span><br><span class="line"><span class="comment"># 或者仅补充到指定深度</span></span><br><span class="line">git fetch --depth=1000</span><br></pre></td></tr></table></figure>
+<p>新建 <code>README.md</code>（内容随意），提交并推送：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git add README.md</span><br><span class="line">git commit -m <span class="string">&quot;init: add README&quot;</span></span><br><span class="line">git push -u origin main</span><br></pre></td></tr></table></figure>
 
-<h2 id="添加-ssh-密钥">添加 SSH 密钥</h2>
-<ol type="1">
-<li><p>创建 ssh 密钥对，通过 <code>ssh-keygen</code> 创建即可</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen -t &lt;加密方式&gt; -C &lt;密钥注释&gt;</span><br></pre></td></tr></table></figure>
+<p><code>-u</code> 会把 <code>origin/main</code>
+设为当前分支的上游，之后直接 <code>git push</code> /
+<code>git pull</code> 即可。</p>
+<p>到这里，<code>team.git</code> 的 main 上有了第一个提交，alice 的本地
+main 和 <code>origin/main</code> 也指向同一个提交，项目正式建立。</p>
+<h1 id="clonefetchpull">clone、fetch、pull</h1>
+<p>bob 加入项目的第一步是 clone。clone 完成时，bob 的本地
+main、<code>origin/main</code> 和 <code>team.git</code> 的 main
+都指向同一个提交：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> ..</span><br><span class="line">git <span class="built_in">clone</span> file:///&lt;path-to-team.git&gt; bob</span><br><span class="line"><span class="built_in">cd</span> bob</span><br><span class="line">git config user.name bob</span><br><span class="line">git config user.email bob@example.com</span><br></pre></td></tr></table></figure>
 
-<p>示例如下</p>
-<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">PS D:\Code\Git&gt; ssh-keygen -t ed25519 -C &quot;foo@example.com&quot;</span><br><span class="line">Generating public/private ed25519 key pair.</span><br><span class="line">Enter file in which to save the key (C:\Users\xiao/.ssh/id_ed25519):</span><br><span class="line">Enter passphrase (empty for no passphrase):</span><br><span class="line">Enter same passphrase again:</span><br><span class="line">Your identification has been saved in C:\Users\xiao/.ssh/id_ed25519.</span><br><span class="line">Your public key has been saved in C:\Users\xiao/.ssh/id_ed25519.pub.</span><br><span class="line">The key fingerprint is:</span><br><span class="line">SHA256:rJ2ufXZ93fAPNsdqBrdUsMSABhse7zBpo0ewRa3nn+s foo@example.com</span><br><span class="line">The key&#x27;s randomart image is:</span><br><span class="line">+--[ED25519 256]--+</span><br><span class="line">|      ..*o ..o   |</span><br><span class="line">|       = *+   +  |</span><br><span class="line">|      . Xo.  . o |</span><br><span class="line">|       =.=.   . .|</span><br><span class="line">|      . So.    . |</span><br><span class="line">|       + .. . +. |</span><br><span class="line">|      . o  . *++=|</span><br><span class="line">|       o  o +.===|</span><br><span class="line">|      ..oo oE+..o|</span><br><span class="line">+----[SHA256]-----+</span><br></pre></td></tr></table></figure>
+<p>bob 修改 <code>README.md</code> 后推送：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git add README.md</span><br><span class="line">git commit -m <span class="string">&quot;bob: tweak readme&quot;</span></span><br><span class="line">git push</span><br></pre></td></tr></table></figure>
 
-<p>会提示我们创建的密钥对已经放置在了 <code>C:\Users\xiao\.ssh</code>
-路径下</p></li>
-<li><p>更新 ssh 的配置，修改
-<code>~/.ssh/config</code>，添加如下内容</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Host gitlab.com</span><br><span class="line">  HostName gitlab.com</span><br><span class="line">  PreferredAuthentications publickey</span><br><span class="line">  IdentityFile ~/.ssh/gitlab.<span class="keyword">private</span>-key.pem</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>在 gitlab 或者 github 上添加 SSH 密钥</p>
-<p>进入用户设置，点击 <code>SSH Keys</code></p>
-<p><img data-src="/posts/8de3/image-20240907110021863.png"
-style="zoom:50%;" /></p>
-<p>点击 Add new key</p>
-<p><img data-src="/posts/8de3/image-20240907110149847.png"
-style="zoom: 50%;" /></p>
-<p>将刚才创建的密钥对中公钥部分添加到此处，然后点击 Add 即可添加 SSH
-密钥</p>
-<p><img data-src="/posts/8de3/image-20240907110252194.png"
-style="zoom:50%;" /></p></li>
-<li><p>测试连接，在命令行中输入如下命令</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">PS D:\Code\Git&gt; ssh git@gitlab.com</span><br><span class="line">PTY allocation request failed on channel 0</span><br><span class="line">Welcome to GitLab, @PureWhiteVK!</span><br><span class="line">Connection to gitlab.com closed.</span><br></pre></td></tr></table></figure>
+<p>推送后，远端 main 前进了一个提交。与此同时，alice
+没有先同步，而是直接基于旧版本改了一处并本地提交。此时远端和 alice
+本地各有一个新提交，谁都不包含对方的改动：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> ../alice</span><br><span class="line"><span class="comment"># 修改 README.md</span></span><br><span class="line">git add README.md</span><br><span class="line">git commit -m <span class="string">&quot;alice: rewrite heading&quot;</span></span><br></pre></td></tr></table></figure>
 
-<p>如果有类似输出，则说明 SSH 密钥添加成功</p></li>
-<li><p>通过 SSH 方式下载源码</p>
-<p><img data-src="/posts/8de3/image-20240907110430040.png"
-style="zoom: 50%;" /></p>
-<p>复制 Clone with SSH 中给出命令，在命令行中执行即可拉取源码</p></li>
-</ol>
-<h1 id="git-branch">git branch</h1>
-<h2 id="创建">创建</h2>
-<p>直接使用 <code>git checkout</code> 创建分支，示例如下</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git checkout -b bugfix/my-bugfix-branch</span><br></pre></td></tr></table></figure>
+<p>执行 fetch 并查看状态：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git fetch origin</span><br><span class="line">git status -sb</span><br></pre></td></tr></table></figure>
 
-<p>（这个实际上等价于下面的两条命令）</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git branch -f bugfix/my-bugfix-branch</span><br><span class="line">git checkout bugfix/my-bugfix-branch</span><br></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">## main...origin/main [ahead 1, behind 1]</span></span><br></pre></td></tr></table></figure>
 
-<p>因此使用 <code>git checkout -b &lt;branch&gt;</code>
-是最常用也最典型的操作方式</p>
-<h2 id="删除">删除</h2>
-<p>通过下面命令删除分支</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git branch -D &lt;branch-name&gt;</span><br></pre></td></tr></table></figure>
+<p><code>ahead 1, behind 1</code>
+表示本地和远端各有一个对方没有的提交。fetch 只更新了
+<code>origin/main</code>，工作区没有变化，真正整合用 pull：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git pull --rebase origin main</span><br><span class="line">git <span class="built_in">log</span> --oneline --graph --all</span><br></pre></td></tr></table></figure>
 
-<p>如果要删除远端分支（不推荐），需要通过 <code>git push</code>
-命令完成，示例如下</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git push origin --delete &lt;branch-name&gt;</span><br></pre></td></tr></table></figure>
+<p><code>--rebase</code> 会把 alice
+的本地提交挪到远端提交之后，历史保持一条直线，不会多出 merge
+commit。</p>
+<h2 id="shallow-clone">shallow clone</h2>
+<p>正常情况下 clone
+会拉取全部历史。对于历史很长、或者只是想拿最新代码来阅读和构建的场景，只取最近一段提交会更省时间，也会让
+clone 更快：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> ..</span><br><span class="line">git <span class="built_in">clone</span> --depth 1 --no-single-branch file:///&lt;path-to-team.git&gt; alice-shallow</span><br><span class="line"><span class="built_in">cd</span> alice-shallow</span><br><span class="line">git <span class="built_in">log</span> --oneline</span><br></pre></td></tr></table></figure>
 
-<h2 id="重命名">重命名</h2>
-<p>通过下面命令重命名分支（实际上是移动或者拷贝，这两种方式都可以实现重命名效果）</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git branch -m &lt;old-branch&gt; &lt;new-branch&gt;</span><br></pre></td></tr></table></figure>
+<p><code>--depth 1</code>
+只取最近一层提交，<code>--no-single-branch</code>
+保留所有远端分支的跟踪关系。</p>
+<p>这里用 <code>file:///</code> 加绝对路径是为了让 <code>--depth</code>
+生效，普通本地路径 <code>../team.git</code> 会忽略它；真实 GitHub/GitLab
+地址没有这个问题。</p>
+<p>检查当前仓库是不是浅克隆：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git rev-parse --is-shallow-repository</span><br></pre></td></tr></table></figure>
 
-<p>此处的 <code>-m</code> 表示 move，和 Linux 上 <code>mv</code>
-命令一致，就是移动分支到新的标识符下。</p>
-<p>也可以使用 <code>-c</code> ，其表示 copy，和 Linux 上 <code>cp</code>
-命令一致，其好处就是不会丢弃原有的分支</p>
-<h1 id="合并">合并</h1>
-<p>在 git 中有两种方式可以实现合并，merge 和
-rebase，下面简单描述下二者区别：</p>
-<ul>
-<li><p>merge：<strong>创建一条新的
-commit</strong>，将分支1的改动和分支2的改动合并，记录在此 commit 中</p>
-<p>优点是能完整的记录所有的改动历史</p>
-<p>缺点是主干的历史并不是完全线性的，在版本回退时不太方便（通过 github
-的 PR 或者 gitlab 的 MR 都可以确保主干线性历史）</p></li>
-<li><p>rebase：将分支1中相对于分支2不同的 commit
-在分支2上重新提交一遍，<strong>不会创建新的
-commit</strong>，但是分支1中改动部分的 commit
-哈希值会发生改变（因为相当于在分支2上重新做了一遍）</p>
-<p>优点是能保证改动历史完全线性</p>
-<p>缺点是记录的历史实际上是改动过的（因为哈希值发生变化）</p></li>
-</ul>
-<p>对于这一部分的介绍推荐使用 <a
-target="_blank" rel="noopener" href="https://learngitbranching.js.org/?locale=zh_CN">Learn Git
-Branching</a> 网站通过图形化方式加深对 <code>git merge</code> 和
-<code>git rebase</code> 的理解。</p>
-<h1 id="拉取">拉取</h1>
-<h2 id="git-fetch">git fetch</h2>
-<p>通过 <code>git clone</code> 下载到本地后，实际上 <code>git</code>
-会帮我们自动创建一个 <code>origin/xxx</code> 分支（可以通过
-<code>git branch -a</code> 查看所有分支），而 <code>git fetch</code>
-做的就是将远端更新同步到本地的 <code>origin/xxx</code>
-分支中，如下所示</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">PS D:\Code\Git\Learn-Git&gt; git branch -a</span><br><span class="line">* main</span><br><span class="line">  remotes/origin/HEAD -&gt; origin/main</span><br><span class="line">  remotes/origin/main</span><br></pre></td></tr></table></figure>
+<p>输出 <code>true</code> 表示浅克隆，<code>false</code>
+表示完整仓库。</p>
+<p>之后需要完整历史时：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git fetch --unshallow</span><br></pre></td></tr></table></figure>
 
-<h2 id="git-pull">git pull</h2>
-<p><code>pull</code> 相对于 <code>fetch</code>
-的区别是其默认会将远端分支 merge
-到本地分支（如果远端分支和本地分支存在冲突的话），如果没有冲突就直接
-fast-forward 即可</p>
-<h2 id="本地强行同步远端分支">本地强行同步远端分支</h2>
-<p>当远端分支进行过 rebase
-操作后，可能会导致本地分支和远端分支不一致，如果直接使用
-<code>git pull</code>
-会将远端的操作和本地操作都保留（即出现了两次历史），我们可能想避免这种行为，可以通过以下操作进行同步</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git fetch</span><br><span class="line">git reset --soft origin/&lt;target-branch-name&gt;</span><br></pre></td></tr></table></figure>
+<p>如果仓库历史较多，一次 <code>--unshallow</code>
+拉取压力过大或失败，也可以用 <code>--deepen</code>
+在当前基础上逐步加深，例如每次加深 100 层：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git fetch --deepen 100</span><br></pre></td></tr></table></figure>
 
-<p>通过 reset 命令本地分支强行重置到指定的分支上，这里我们指定的是
-origin 的分支（即远端分支），并通过 <code>--soft</code>
-确保本地尚未提交的改动还能继续保留</p>
-<h1 id="git-push">git push</h1>
-<p>这个命令没什么好说的，就一条</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git push</span><br></pre></td></tr></table></figure>
+<p>可以重复执行直到历史深度满足需要。</p>
+<h2 id="lfs">LFS</h2>
+<p>小项目用普通文件即可，但仓库里一旦出现二进制大文件，直接提交会让仓库体积快速增长，clone
+和 pull 都会越来越慢。LFS
+的做法是在仓库里保存一个很小的指针文件，真实文件放到独立的 LFS
+对象库中，只在需要时下载。下面让 alice 演示这个过程：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> ../alice</span><br><span class="line">git lfs install --<span class="built_in">local</span></span><br><span class="line">git lfs track <span class="string">&quot;*.bin&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 随便生成一个 big.bin（内容无所谓）</span></span><br><span class="line">git add .gitattributes big.bin</span><br><span class="line">git commit -m <span class="string">&quot;track big.bin with git lfs&quot;</span></span><br><span class="line">git push</span><br></pre></td></tr></table></figure>
 
-<p>如果本地创建了一个分支，想要将该分支也提交到远端的话，直接
-<code>git push</code> 会出错，但是 git 也会给出解决方案</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">PS D:\Code\Git\Learn-Git&gt; git push</span><br><span class="line">fatal: The current branch new-branch has no upstream branch.</span><br><span class="line">To push the current branch and <span class="built_in">set</span> the remote as upstream, use</span><br><span class="line"></span><br><span class="line">    git push --set-upstream origin new-branch</span><br><span class="line"></span><br><span class="line">To have this happen automatically <span class="keyword">for</span> branches without a tracking</span><br><span class="line">upstream, see <span class="string">&#x27;push.autoSetupRemote&#x27;</span> <span class="keyword">in</span> <span class="string">&#x27;git help config&#x27;</span>.</span><br></pre></td></tr></table></figure>
+<p>仓库里保存的是指针文件，不是真实文件：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">version https://git-lfs.github.com/spec/v1</span><br><span class="line">oid sha256:cd2eca...</span><br></pre></td></tr></table></figure>
 
-<p>我们只需要执行上面提到的命令即可</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git push --set-upstream origin new-branch</span><br></pre></td></tr></table></figure>
+<p>clone 时跳过 LFS 下载：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> ..</span><br><span class="line"></span><br><span class="line"><span class="comment"># PowerShell</span></span><br><span class="line"><span class="variable">$env</span>:GIT_LFS_SKIP_SMUDGE = 1</span><br><span class="line">git <span class="built_in">clone</span> file:///&lt;path-to-team.git&gt; bob-lfs</span><br><span class="line">Remove-Item Env:GIT_LFS_SKIP_SMUDGE</span><br></pre></td></tr></table></figure>
 
-<p>当然，也可以通过改变 push
-的默认行为来自动创建，不过这个设置就看个人了</p>
-<h2 id="强行推送远端分支">强行推送远端分支</h2>
-<p>当远端分支和本地分支有区别的时候（例如本地进行了 rebase 或者 reset
-操作，导致 git
-的记录出现问题时），我们可能需要强制将本地分支覆盖掉远端分支，就可以通过下面命令进行</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git push -f</span><br></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Bash</span></span><br><span class="line"><span class="comment"># GIT_LFS_SKIP_SMUDGE=1 git clone file:///&lt;path-to-team.git&gt; bob-lfs</span></span><br></pre></td></tr></table></figure>
 
-<p>一般这个命令仅在个人的分支使用（例如
-<code>bugfix/xxx</code>或<code>feature/xxx</code>）</p>
-<h2 id="删除远端分支">删除远端分支</h2>
-<p>使用 <code>--delete</code> 可以删除远端分支，示例如下：</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git push --delete origin old-branch</span><br></pre></td></tr></table></figure>
+<p>进入 bob-lfs 后 <code>big.bin</code>
+还是指针，需要真实文件时执行：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> bob-lfs</span><br><span class="line">git lfs pull</span><br></pre></td></tr></table></figure>
 
-<h1 id="git-stash">git stash</h1>
-<p>当我们本地分支有改动尚未提交（未通过 git add 和 git
-commit）但需要切换分支时，git 会提示有改动未暂存，此时可以通过
-<code>git stash</code> 命令暂存，其使用起来相当于一个栈。</p>
-<ol type="1">
-<li><p>入栈操作：就是将当前所有的改动暂存起来</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git stash</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>出栈操作：就是将当前暂存的改动释放出来，应用到当前分支中</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git stash pop</span><br></pre></td></tr></table></figure>
+<p>想统一存放 LFS 对象时可以配置 <code>lfs.storage</code>：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git config --global lfs.storage <span class="string">&quot;D:/git-lfs-store&quot;</span></span><br></pre></td></tr></table></figure>
 
-<p>也可以使用
-<code>git stash apply</code>，这个相当于查看栈顶元素内容，但是不出栈。</p></li>
-</ol>
-<h1 id="fork">fork</h1>
-<p>fork 是 github 或 gitlab
-等代码托管平台提供的一个功能，可以在托管平台上复制一份现有仓库，到自己账户下。</p>
-<p>复制之后，我们会有两个基本操作，<strong>同步</strong> 和
-<strong>代码变更</strong>。</p>
-<p>直接讲有点干巴巴的，下面给一个实际案例来解释：</p>
-<p>conan
-包管理器中每一个包都有对应的构建脚本，这些构建脚本是开源的，维护在 <a
-target="_blank" rel="noopener" href="https://github.com/conan-io/conan-center-index">conan-center-index</a>
-这个仓库里，但是这些构建脚本有时候更新不及时，在一些平台上可能出现编译问题，为了解决编译问题，就需要
-fork conan-center-index 这个仓库，提交自己的改动。同时当
-conan-center-index 出现其他更新的时候，我们 fork
-的仓库也想同步这个改动。</p>
-<h2 id="同步远程仓库">同步远程仓库</h2>
-<p>还是以 conan-center-index 为例，将原始仓库记为 A 仓库，fork
-之后的仓库记为 B 仓库。当我们拉取 B 仓库时，其 remote 链接对应的就是 B
-仓库的 GitHub 远程链接，例如 <a
-target="_blank" rel="noopener" href="https://github.com/conan-io/conan-center-index，此时我们想要拉取">https://github.com/conan-io/conan-center-index，此时我们想要拉取</a>
-A 仓库的代码更新，可以手动设置新的 remote，并手动拉取。</p>
-<p>具体操作如下：</p>
-<p>A. 添加 A 仓库的 remote 链接，并将其命名为 repoA：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git remote add repoA &lt;remote-url-of-A&gt;</span><br></pre></td></tr></table></figure>
+<h1 id="branchworktree">branch、worktree</h1>
+<p>main 现在处于最新状态。alice 接到一个修改 README 的任务，按惯例不在
+main 上直接改，而是从最新的 main
+开一个功能分支，完成并确认没问题后再合并回去：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> ../alice</span><br><span class="line">git switch -c feature/rewrite-readme</span><br></pre></td></tr></table></figure>
 
-<p>B. 拉取 A 仓库的代码改动，使用 repoA 指定我们需要从 repoA 这个 remote
-拉取代码：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git fetch repoA</span><br></pre></td></tr></table></figure>
+<p>老写法等价于 <code>git checkout -b feature/rewrite-readme</code>。Git
+2.23 之后 <code>checkout</code> 被拆成 <code>switch</code>（切分支）和
+<code>restore</code>（恢复文件）。</p>
+<p>修改 <code>README.md</code> 后提交：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 修改 README.md</span></span><br><span class="line">git status</span><br><span class="line">git diff</span><br><span class="line">git add README.md</span><br><span class="line">git commit -m <span class="string">&quot;feature: rewrite readme&quot;</span></span><br></pre></td></tr></table></figure>
 
-<p>C. 当我们需要保持代码一直是基于最新的 repoA
-主干（master）时，可以使用 rebase 操作，将所做的改动应用到 repoA
-上：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git rebase repoA/master</span><br></pre></td></tr></table></figure>
+<p><code>git status</code> 看改动了哪些文件，<code>git diff</code>
+看具体内容。</p>
+<p>feature 分支还在开发中，线上又反馈了一个 README 拼写错误。如果不想在
+feature 和 hotfix 之间来回切换、频繁暂存未完成的改动，可以直接用
+worktree 把仓库挂到另一个目录：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git worktree add ../alice-fix -b hotfix/fix-typo</span><br><span class="line">git worktree list</span><br></pre></td></tr></table></figure>
 
-<p>其中 <code>repoA/master</code> 就代表 repoA 的 master 分支上。</p>
-<p>如果出现冲突就手动处理一下</p>
-<p>D. 最后，当我们需要提交到自己的远程仓库 repoB 时，需要使用
-<code>-f</code> 进行强制推送，因为我们执行了 rebase 操作：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git push repoB HEAD:master -f</span><br></pre></td></tr></table></figure>
+<p>两个目录共享同一份提交历史，但工作区相互独立；同一个分支不能被两个
+worktree 同时检出。</p>
+<p>分支的增删改：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">git switch -c new-branch              <span class="comment"># 创建并切换</span></span><br><span class="line">git branch -m old new                 <span class="comment"># 重命名</span></span><br><span class="line">git branch -d branch-name             <span class="comment"># 删除已合并的分支</span></span><br><span class="line">git branch -D branch-name             <span class="comment"># 强制删除，慎用</span></span><br><span class="line">git push origin --delete old-branch   <span class="comment"># 删除远端分支</span></span><br></pre></td></tr></table></figure>
 
-<p>其中 <code>HEAD:master</code> 表示将当前分支提交到
-<code>repoB/master</code> 分支上。</p>
-<h1 id="lfs">LFS</h1>
-<p>Git LFS（Large File
-Storage）用于管理大文件。仓库里保存的是<strong>指针文件</strong>（很小的文本），真实大文件存储在
-LFS 对象存储中。</p>
-<h2 id="初始化-lfs">初始化 LFS</h2>
-<p>先安装 Git LFS，然后在本机初始化：</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git lfs install</span><br></pre></td></tr></table></figure>
+<h1 id="rebase">rebase</h1>
+<p>feature 分支在本地已经完成。先把它推到远端，之后 bob 在 main 上也改了
+README，而且恰好是 alice 修改过的同一行。此时 feature
+分支的基准已经落后于 main，直接合回去会产生冲突，常规做法是先把 feature
+rebase 到最新 main，再解决冲突：</p>
+<p>先把功能分支推到远端：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git push -u origin feature/rewrite-readme</span><br></pre></td></tr></table></figure>
 
-<p>检查是否可用：</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git lfs version</span><br></pre></td></tr></table></figure>
+<p>bob 更新 main 后修改同一行并推送：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> ../bob</span><br><span class="line">git pull --rebase</span><br><span class="line"></span><br><span class="line"><span class="comment"># 修改 README.md 中与 alice 相同的一行</span></span><br><span class="line">git add README.md</span><br><span class="line">git commit -m <span class="string">&quot;bob: change same line&quot;</span></span><br><span class="line">git push</span><br></pre></td></tr></table></figure>
 
-<h2 id="追踪大文件">追踪大文件</h2>
-<p>比如我们希望把 <code>.zip</code>、<code>.mp4</code> 这类文件交给
-LFS：</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git lfs track <span class="string">&quot;*.zip&quot;</span></span><br><span class="line">git lfs track <span class="string">&quot;*.mp4&quot;</span></span><br></pre></td></tr></table></figure>
+<p>alice 执行 rebase：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> ../alice</span><br><span class="line">git fetch origin</span><br><span class="line">git rebase origin/main</span><br></pre></td></tr></table></figure>
 
-<p>执行后会更新 <code>.gitattributes</code>，需要把它一起提交：</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git add .gitattributes</span><br><span class="line">git add &lt;large-file&gt;</span><br><span class="line">git commit -m <span class="string">&quot;track large files with git lfs&quot;</span></span><br></pre></td></tr></table></figure>
+<p>冲突输出如下（提交哈希因环境而异）：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Auto-merging README.md</span><br><span class="line">CONFLICT (content): Merge conflict <span class="keyword">in</span> README.md</span><br><span class="line">error: could not apply fc650ca... feature: rewrite readme</span><br></pre></td></tr></table></figure>
 
-<p>可以通过下面命令查看当前被 LFS 跟踪的文件：</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git lfs ls-files</span><br></pre></td></tr></table></figure>
+<p><code>git status</code> 中冲突文件标记为
+<code>UU</code>。打开文件删掉
+<code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code>、<code>=======</code>、<code>&gt;&gt;&gt;&gt;&gt;&gt;&gt;</code>
+标记并保留需要的内容，然后：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git add README.md</span><br><span class="line">git rebase --<span class="built_in">continue</span></span><br></pre></td></tr></table></figure>
 
-<h2 id="将大文件迁移到-lfs">将大文件迁移到 LFS</h2>
-<p>如果某些大文件以前已经作为普通 Git 对象提交过，可以用
-<code>git lfs migrate import</code> 改写历史，把它们转成 LFS 指针：</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git lfs migrate import --include=<span class="string">&quot;*.zip,*.mp4&quot;</span></span><br></pre></td></tr></table></figure>
+<p>rebase 解决冲突后不需要再手动 commit，<code>--continue</code>
+会沿用原提交信息。如果弹出编辑器，保存关闭即可。</p>
+<p>此时直接 push 会被拒绝，因为 rebase
+改写了本地提交，远端还停留在旧版本：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">! [rejected]        feature/rewrite-readme -&gt; feature/rewrite-readme (non-fast-forward)</span><br></pre></td></tr></table></figure>
 
-<p>也可以只处理某个分支：</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git lfs migrate import --include=<span class="string">&quot;*.zip,*.mp4&quot;</span> --include-ref=<span class="string">&quot;refs/heads/main&quot;</span></span><br></pre></td></tr></table></figure>
-
-<div class="markdown-alert markdown-alert-caution">
-<div class="markdown-alert-title">
-<svg class="octicon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M4.47.22A.749.749 0 0 1 5 0h6c.199 0 .389.079.53.22l4.25 4.25c.141.14.22.331.22.53v6a.749.749 0 0 1-.22.53l-4.25 4.25A.749.749 0 0 1 11 16H5a.749.749 0 0 1-.53-.22L.22 11.53A.749.749 0 0 1 0 11V5c0-.199.079-.389.22-.53Zm.84 1.28L1.5 5.31v5.38l3.81 3.81h5.38l3.81-3.81V5.31L10.69 1.5ZM8 4a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 8 4Zm0 8a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>
-<strong>Caution</strong>
-</div>
-<p>这个操作会改写 commit
-历史，执行前建议先备份或在新分支验证。改写后通常需要强制推送：</p>
-</div>
+<p>用 <code>--force-with-lease</code> 强制推送。它比 <code>-f</code>
+多一层检查：远端分支不在上次记录的位置时直接拒绝，避免覆盖别人的提交。force
+push 只用于个人负责的分支。</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git push --force-with-lease</span><br></pre></td></tr></table></figure>
 
-<h2 id="把lfs指针还原为真实文件">把“LFS指针”还原为真实文件</h2>
-<p>正常情况下，<code>git clone</code> / <code>git pull</code> 会自动下载
-LFS 文件。</p>
-<p>如果你看到文件内容是这种文本（<code>version https://git-lfs.github.com/spec/v1</code>），说明当前工作区还是指针文件，可以执行：</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git lfs pull</span><br></pre></td></tr></table></figure>
+<p>fetch + rebase 的两步可以合并为 <code>git pull --rebase</code>：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git pull --rebase</span><br></pre></td></tr></table></figure>
 
-<p>如果之前跳过了 LFS 文件下载（例如设置过
-<code>GIT_LFS_SKIP_SMUDGE=1</code>），可以显式执行：</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git lfs fetch</span><br><span class="line">git lfs checkout</span><br></pre></td></tr></table></figure>
+<h1 id="remote">remote</h1>
+<p>上面的场景始终只有一个远端
+<code>team.git</code>。实际参与开源或上游项目时，一个本地仓库经常会同时挂两个
+remote：fork 出来的 <code>origin</code>，以及原项目的
+<code>upstream</code>。为了在本地模拟，下面的演示把
+<code>upstream</code> 也指向
+<code>team.git</code>，效果与挂两个不同地址的远端一致：</p>
+<p>给 alice 添加 upstream（本地演示指向同一个
+<code>team.git</code>）：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git remote add upstream file:///&lt;path-to-team.git&gt;</span><br><span class="line">git fetch upstream</span><br><span class="line">git branch -r</span><br></pre></td></tr></table></figure>
 
-<p>其中：</p>
-<ul>
-<li><code>git lfs fetch</code>：下载 LFS 对象到本地缓存</li>
-<li><code>git lfs checkout</code>：把工作区中的指针替换成真实文件</li>
-</ul>
-<h2 id="将-lfs-文件改回普通-git-文件">将 LFS 文件改回普通 Git 文件</h2>
-<p>如果后续不想让某类文件继续走 LFS：</p>
-<ol type="1">
-<li><p>取消跟踪规则</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git lfs untrack <span class="string">&quot;*.zip&quot;</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>重新加入文件并提交</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git add .gitattributes</span><br><span class="line">git add &lt;file&gt;</span><br><span class="line">git commit -m <span class="string">&quot;stop tracking zip with lfs&quot;</span></span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>如果需要把<strong>历史里</strong>的 LFS 指针也导回普通 Git
-对象，可使用：</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git lfs migrate <span class="built_in">export</span> --include=<span class="string">&quot;*.zip&quot;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">origin/feature/rewrite-readme</span><br><span class="line">origin/main</span><br><span class="line">upstream/feature/rewrite-readme</span><br><span class="line">upstream/main</span><br></pre></td></tr></table></figure>
 
-<p>同样会改写历史，推送时通常需要 <code>--force-with-lease</code>。</p>
-<h2 id="本地拉取时不下载-lfs-文件">本地拉取时不下载 LFS 文件</h2>
-<p>有时仓库已经启用 LFS，但本地磁盘空间紧张，只想保留代码和 LFS
-指针文件，不保留真实大文件。可以按照如下方式进行设置：</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1) 让当前仓库默认跳过 LFS smudge（仅本仓库生效）</span></span><br><span class="line">git lfs install --<span class="built_in">local</span> --skip-smudge</span><br><span class="line"></span><br><span class="line"><span class="comment"># 2) 重新检出当前提交，把工作区文件改写为指针形态</span></span><br><span class="line">git reset --hard HEAD</span><br><span class="line"></span><br><span class="line"><span class="comment"># 3) （可选）清理未跟踪文件</span></span><br><span class="line">git clean -fd</span><br><span class="line"></span><br><span class="line"><span class="comment"># 4) 清理本地 LFS 缓存对象，释放磁盘空间</span></span><br><span class="line">git lfs prune</span><br></pre></td></tr></table></figure>
+<p><code>origin/main</code> 和 <code>upstream/main</code>
+是两组独立的远端跟踪引用，分别对应 <code>refs/remotes/origin/main</code>
+和
+<code>refs/remotes/upstream/main</code>。<code>git fetch upstream</code>
+只更新 <code>upstream/*</code>，不影响 <code>origin/*</code>
+和本地分支。</p>
+<p>remote 的常见操作：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git remote -v                          <span class="comment"># 查看所有 remote</span></span><br><span class="line">git remote add upstream &lt;url&gt;          <span class="comment"># 新增 remote</span></span><br><span class="line">git remote set-url origin &lt;new-url&gt;    <span class="comment"># 修改 remote 地址</span></span><br><span class="line">git remote remove upstream             <span class="comment"># 删除 remote</span></span><br></pre></td></tr></table></figure>
 
-<p>执行后，LFS 文件在工作区会显示为指针文本（例如包含
-<code>version https://git-lfs.github.com/spec/v1</code>）。</p>
-<p>如果你想用“删光工作区再恢复”的方式，也可以这样做：</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 注意：会删除未提交改动，请先确认</span></span><br><span class="line">git lfs install --<span class="built_in">local</span> --skip-smudge</span><br><span class="line">git reset --hard HEAD</span><br></pre></td></tr></table></figure>
+<p>同步上游：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git fetch upstream</span><br><span class="line">git rebase upstream/main</span><br><span class="line">git push origin HEAD</span><br></pre></td></tr></table></figure>
 
-<p>通常不需要手工逐个删除文件，<code>reset --hard</code>
-已足够把已跟踪文件重写为指针。</p>
-<p>后续如果要恢复真实 LFS 文件下载：</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git lfs install --<span class="built_in">local</span></span><br><span class="line">git lfs pull</span><br></pre></td></tr></table></figure>
+<h1 id="总结">总结</h1>
+<p>核心流程速记：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> &lt;url&gt;          <span class="comment"># 拿代码</span></span><br><span class="line">git switch -c &lt;branch&gt;   <span class="comment"># 开分支</span></span><br><span class="line">git pull --rebase        <span class="comment"># 追上远端</span></span><br><span class="line">git push                 <span class="comment"># 推代码</span></span><br><span class="line">git push --force-with-lease  <span class="comment"># rebase 后重推</span></span><br><span class="line">git fetch upstream       <span class="comment"># fork 后同步上游</span></span><br></pre></td></tr></table></figure>
 
-<h1 id="说明">说明</h1>
-<p>上面介绍了一些常用的 git 命令，如果碰到其他的就直接使用
-<code>git &lt;command&gt; --help</code> 查看相关文档，或者直接问 AI
-即可。</p>
+<p>整个流程走下来，命令本身并不多，关键是要清楚每一步动了什么：fetch
+只更新 <code>origin/main</code> 这类远端跟踪引用，rebase
+会重写本地提交，push
+才把提交真正送到远端。之后遇到具体的参数或报错，直接查
+<code>git xxx --help</code> 或问 AI 即可。</p>
 
     </div>
 
@@ -687,13 +569,13 @@ LFS 文件。</p>
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">152k</span>
+    <span title="站点总字数">155k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">9:13</span>
+    <span title="站点阅读时长">9:25</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
